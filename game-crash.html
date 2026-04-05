@@ -405,9 +405,15 @@ function getProvenCrash() {
     var val = parseInt(hash.substring(0,8), 16);
     document.getElementById('pfHash').textContent =
       'Server:' + serverSeed.substring(0,12) + '... Nonce:' + pfNonce + ' Hash:' + hash.substring(0,20) + '...';
-    if(val % 20 === 0) return 1.00;
+    // Pouzij RTP z DB (nacte se pri startu hry)
+    var gs = window._gs || {rtp_pct:97, crash_instant_crash_pct:5};
+    var rtp = parseFloat(gs.rtp_pct || 97) / 100;
+    var instPct = parseFloat(gs.crash_instant_crash_pct || 5);
+    var instMod = Math.max(2, Math.round(100 / instPct)); // 5% = kazdych 20
+
+    if(val % instMod === 0) return 1.00;
     var r = val / 0xFFFFFFFF;
-    return Math.max(1.00, Math.min(parseFloat((-Math.log(1-r*0.95)+1).toFixed(2)), 500));
+    return Math.max(1.00, Math.min(parseFloat((-Math.log(1-r*rtp)+1).toFixed(2)), 1000));
   });
 }
 function verifyHash() {
@@ -945,61 +951,45 @@ updateBal();
 <script>
 // Napoj CK na hru po nacteni supabase.js
 (async function(){
-  // Pockej az se supabase.js inicializuje
-  var tries = 0;
-  while(!window.CK && tries < 20) {
-    await new Promise(function(r){setTimeout(r,100);});
-    tries++;
-  }
-  if(!window.CK) {
-    console.log('Demo mode - supabase.js nenalezen, balance 0.1 BTC');
-    return;
-  }
+  var tries=0;
+  while(!window.CK&&tries<20){await new Promise(function(r){setTimeout(r,100);});tries++;}
+  if(!window.CK){console.log('[Crash] Demo mode');return;}
 
-  // Nacti reálnou balance
-  var bal = await CK.getBalance();
-  balance = bal;
-  updateBal();
+  // 1. Balance
+  var bal=await CK.getBalance();
+  balance=bal;updateBal();
 
-  // Napoj _casino na CK funkce
-  window._casino = {
-    async deductBet(amount) {
-      if(balance < amount) {
-        alert('Nedostatecny zustatek! Dobijte BTC na deposit strance.');
-        return false;
-      }
-      var result = await CK.deductBet(Math.floor(amount * 1e8));
-      if(result.ok || result.demo) {
-        balance -= amount;
-        updateBal();
-        return true;
-      }
+  // 2. Game Settings z DB — RTP, house edge, limity
+  var gs=await CK.getGameSettings('crash');
+  window._gs=gs;
+  console.log('[Crash] RTP:'+gs.rtp_pct+'% | HouseEdge:'+gs.house_edge_pct+'% | InstantCrash:'+gs.crash_instant_crash_pct+'%');
+
+  // 3. Casino funkce s limity z DB
+  window._casino={
+    async deductBet(amount){
+      var maxBet=parseFloat(gs.max_bet_btc||0.1);
+      if(amount>maxBet){alert('Max bet: '+maxBet.toFixed(4)+' BTC');return false;}
+      if(balance<amount){alert('Nedostatecny zustatek!');return false;}
+      var r=await CK.deductBet(Math.floor(amount*1e8));
+      if(r.ok||r.demo){balance-=amount;updateBal();return true;}
       return false;
     },
-    async creditWin(amount) {
-      await CK.addWin(Math.floor(amount * 1e8));
-      balance = await CK.refreshBalance();
-      updateBal();
+    async creditWin(amount){
+      var maxWin=parseFloat(gs.max_win_btc||1.0);
+      var capped=Math.min(amount,maxWin);
+      await CK.addWin(Math.floor(capped*1e8));
+      balance=await CK.refreshBalance();updateBal();
     },
-    async saveGame(gameName, gameType, betAmt, winAmt, multi, outcome) {
-      await CK.logBet(
-        gameType,
-        Math.floor(betAmt * 1e8),
-        Math.floor((winAmt - betAmt) * 1e8),
-        multi || 0,
-        {game_name: gameName, outcome: outcome}
-      );
+    async saveGame(n,t,b,w,m,o){
+      await CK.logBet(t,Math.floor(b*1e8),Math.floor((w-b)*1e8),m||0,{game_name:n,outcome:o});
     }
   };
 
-  // Realtime balance update (pri depositu)
-  CK.subscribeBalance(function(newBal) {
-    balance = newBal;
-    updateBal();
-  });
+  // 4. Realtime
+  CK.subscribeBalance(function(b){balance=b;updateBal();});
 
-  var username = await CK.getUsername();
-  console.log('CryptoKasino OK | ' + username + ' | ' + balance.toFixed(8) + ' BTC');
+  var u=await CK.getUsername();
+  console.log('[Crash] OK |',u,'|',balance.toFixed(8),'BTC');
 })();
 </script>
 </body>
