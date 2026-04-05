@@ -542,54 +542,20 @@ footer { border-top:1px solid rgba(212,160,23,0.1); padding:2.5rem 1.5rem; margi
       <!-- Rendered by JS -->
     </div>
 
-    <!-- ACTIVE GAME VIEW (Poker) -->
+    <!-- ACTIVE GAME VIEW -->
     <div class="game-table-view" id="gameView">
-
       <div class="poker-table-wrap">
         <div class="ptw-header">
-          <span class="ptw-title" id="gameViewTitle">🃏 Texas Hold'em — Table #1</span>
+          <span class="ptw-title" id="gameViewTitle">🃏 Table</span>
           <div style="display:flex;gap:0.6rem;align-items:center">
-            <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim)" id="gameRound">Waiting for players...</span>
+            <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim)" id="gameRound">Waiting...</span>
             <button onclick="leaveTable()" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--red);padding:0.3rem 0.7rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.6rem;cursor:pointer">Leave</button>
           </div>
         </div>
         <div class="ptw-body">
-
-          <!-- POT -->
-          <div class="pot-display">
-            <div class="pot-label">Total Pot</div>
-            <div class="pot-value" id="potValue">0.00000 BTC</div>
-          </div>
-
-          <!-- COMMUNITY CARDS -->
-          <div class="community-cards" id="communityCards">
-            <div class="card hidden-card">🂠</div>
-            <div class="card hidden-card">🂠</div>
-            <div class="card hidden-card">🂠</div>
-            <div class="card hidden-card">🂠</div>
-            <div class="card hidden-card">🂠</div>
-          </div>
-
-          <!-- PLAYER SEATS -->
-          <div class="poker-seats" id="pokerSeats">
-            <!-- Rendered by JS -->
-          </div>
-
-          <!-- ACTION BAR -->
-          <div class="action-bar">
-            <span class="action-label" id="actionLabel">Your turn</span>
-            <div class="action-btns">
-              <button class="ab ab-fold" onclick="pokerAction('fold')" id="btnFold">Fold</button>
-              <button class="ab ab-check" onclick="pokerAction('check')" id="btnCheck">Check</button>
-              <button class="ab ab-call" onclick="pokerAction('call')" id="btnCall">Call 0.01</button>
-              <input class="raise-input" id="raiseAmount" type="number" value="0.02" min="0.001" step="0.001">
-              <button class="ab ab-raise" onclick="pokerAction('raise')">Raise</button>
-            </div>
-          </div>
-
-          <!-- GAME LOG -->
+          <!-- dynamicky renderováno podle hry -->
+          <div id="gameBody"></div>
           <div class="game-log" id="gameLog" style="margin-top:1rem"></div>
-
         </div>
       </div>
     </div>
@@ -817,21 +783,102 @@ function watchTable(tableId, game, name){
 }
 
 function openGameView(tableId, game, name, watchOnly=false){
+  currentGameType = game;
   document.getElementById('gameView').classList.add('show');
-  document.getElementById('gameViewTitle').textContent = `${game==='poker'?'🃏':game==='blackjack'?'♠️':'🎲'} ${name}`;
+  const icon = game==='poker'?'🃏':game==='blackjack'?'♠️':'🎲';
+  document.getElementById('gameViewTitle').textContent = icon+' '+name;
   document.getElementById('gameView').scrollIntoView({ behavior:'smooth', block:'start' });
 
-  if(watchOnly){
-    document.querySelectorAll('.ab').forEach(b=>b.disabled=true);
-    document.getElementById('actionLabel').textContent = '👁 Watching';
-  } else {
-    document.querySelectorAll('.ab').forEach(b=>b.disabled=false);
-    document.getElementById('actionLabel').textContent = 'Your turn';
-  }
-
-  renderPokerSeats(tableId);
+  // Render správné UI podle hry
+  renderGameUI(game, watchOnly, tableId);
   loadGameLog(tableId);
-  document.getElementById('gameRound').textContent = 'Round 1 · Pre-flop';
+}
+
+function renderGameUI(game, watchOnly, tableId){
+  const body = document.getElementById('gameBody');
+
+  if(game === 'poker'){
+    document.getElementById('gameRound').textContent = 'Round 1 · Pre-flop';
+    body.innerHTML = `
+      <div class="pot-display">
+        <div class="pot-label">Total Pot</div>
+        <div class="pot-value" id="potValue">0.00000 BTC</div>
+      </div>
+      <div class="community-cards" id="communityCards">
+        <div class="card hidden-card">🂠</div><div class="card hidden-card">🂠</div>
+        <div class="card hidden-card">🂠</div><div class="card hidden-card">🂠</div>
+        <div class="card hidden-card">🂠</div>
+      </div>
+      <div class="poker-seats" id="pokerSeats"></div>
+      <div class="action-bar">
+        <span class="action-label" id="actionLabel">${watchOnly?'👁 Watching':'Your turn'}</span>
+        <div class="action-btns">
+          <button class="ab ab-fold" onclick="pokerAction('fold')" ${watchOnly?'disabled':''}>Fold</button>
+          <button class="ab ab-check" onclick="pokerAction('check')" ${watchOnly?'disabled':''}>Check</button>
+          <button class="ab ab-call" onclick="pokerAction('call')" ${watchOnly?'disabled':''}>Call 0.01</button>
+          <input class="raise-input" id="raiseAmount" type="number" value="0.02" min="0.001" step="0.001">
+          <button class="ab ab-raise" onclick="pokerAction('raise')" ${watchOnly?'disabled':''}>Raise</button>
+        </div>
+      </div>`;
+    renderPokerSeats(tableId);
+
+  } else if(game === 'blackjack'){
+    document.getElementById('gameRound').textContent = 'Place your bet';
+    body.innerHTML = `
+      <div class="pot-display">
+        <div class="pot-label">Dealer</div>
+        <div style="display:flex;gap:0.6rem;justify-content:center;margin:1rem 0;flex-wrap:wrap">
+          <div class="card hidden-card">🂠</div>
+          <div class="card revealed" style="font-size:1.8rem;background:#fff;color:#000">7♠</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:1rem">
+        <div class="pot-label">Your Hand</div>
+        <div style="display:flex;gap:0.6rem;justify-content:center;margin:0.8rem 0;flex-wrap:wrap">
+          <div class="card revealed" style="font-size:1.8rem;background:#fff;color:#000">A♥</div>
+          <div class="card revealed" style="font-size:1.8rem;background:#fff;color:#e00">6♦</div>
+        </div>
+        <div style="font-family:'Cinzel',serif;font-size:0.8rem;color:var(--gold)">Hand value: 17</div>
+      </div>
+      <div class="poker-seats" id="pokerSeats" style="grid-template-columns:repeat(2,1fr)"></div>
+      <div class="action-bar">
+        <span class="action-label" id="actionLabel">${watchOnly?'👁 Watching':'Your turn'}</span>
+        <div class="action-btns">
+          <button class="ab ab-fold" onclick="bjAction('stand')" ${watchOnly?'disabled':''}>🖐 Stand</button>
+          <button class="ab ab-raise" onclick="bjAction('hit')" ${watchOnly?'disabled':''}>👊 Hit</button>
+          <button class="ab ab-call" onclick="bjAction('double')" ${watchOnly?'disabled':''}>×2 Double</button>
+          <button class="ab ab-check" onclick="bjAction('split')" ${watchOnly?'disabled':''}>✂️ Split</button>
+        </div>
+      </div>`;
+    renderPokerSeats(tableId);
+
+  } else if(game === 'craps'){
+    document.getElementById('gameRound').textContent = 'Come-Out Roll';
+    body.innerHTML = `
+      <div class="pot-display">
+        <div class="pot-label">Total Pot</div>
+        <div class="pot-value" id="potValue">0.00000 BTC</div>
+      </div>
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div class="pot-label" style="margin-bottom:1rem">Dice</div>
+        <div style="display:flex;gap:1rem;justify-content:center;margin-bottom:1rem">
+          <div style="width:70px;height:70px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.5)" id="die1">⚄</div>
+          <div style="width:70px;height:70px;background:white;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.5)" id="die2">⚂</div>
+        </div>
+        <div style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold-light)" id="diceTotal">Total: 7 — Natural Win!</div>
+      </div>
+      <div class="poker-seats" id="pokerSeats" style="grid-template-columns:repeat(3,1fr)"></div>
+      <div class="action-bar">
+        <span class="action-label" id="actionLabel">${watchOnly?'👁 Watching':'Place your bet'}</span>
+        <div class="action-btns">
+          <button class="ab ab-raise" onclick="crapsAction('pass')" ${watchOnly?'disabled':''}>✅ Pass Line</button>
+          <button class="ab ab-fold" onclick="crapsAction('dontpass')" ${watchOnly?'disabled':''}>❌ Don't Pass</button>
+          <button class="ab ab-call" onclick="crapsAction('come')" ${watchOnly?'disabled':''}>🎯 Come</button>
+          <button class="ab ab-check" onclick="crapsRoll()" ${watchOnly?'disabled':''}>🎲 Roll!</button>
+        </div>
+      </div>`;
+    renderPokerSeats(tableId);
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -886,9 +933,58 @@ function handleTableUpdate(table){
   renderTables(allTables);
 }
 
-// ══════════════════════════════════════════════════
-//  POKER ACTIONS
-// ══════════════════════════════════════════════════
+let currentGameType = 'poker';
+
+// Blackjack akce
+function bjAction(action){
+  const labels = {stand:'🖐 Stand',hit:'👊 Hit',double:'×2 Double',split:'✂️ Split'};
+  addGameLog('You: '+labels[action], true);
+  showToast(labels[action]);
+  if(sb && currentUser && currentTableId){
+    sb.from('game_actions').insert({
+      table_id:currentTableId, user_id:currentUser.id,
+      username:currentUser.username, action_type:action, amount_btc:0
+    }).then(()=>{}).catch(()=>{});
+  }
+}
+
+// Craps akce
+const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+function crapsAction(bet){
+  const labels = {pass:'Pass Line',dontpass:"Don't Pass",come:'Come'};
+  addGameLog('You bet: '+labels[bet], true);
+  showToast('Bet placed: '+labels[bet], 'gold');
+}
+function crapsRoll(){
+  const d1 = Math.floor(Math.random()*6)+1;
+  const d2 = Math.floor(Math.random()*6)+1;
+  const total = d1+d2;
+  const die1 = document.getElementById('die1');
+  const die2 = document.getElementById('die2');
+  const totalEl = document.getElementById('diceTotal');
+  if(!die1||!die2) return;
+
+  // Animace
+  let rolls = 0;
+  const anim = setInterval(()=>{
+    die1.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    die2.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    rolls++;
+    if(rolls>8){ clearInterval(anim);
+      die1.textContent = DICE_FACES[d1-1];
+      die2.textContent = DICE_FACES[d2-1];
+      let msg = 'Total: '+total;
+      if(total===7||total===11) msg += ' — Natural Win! 🎉';
+      else if(total===2||total===3||total===12) msg += ' — Craps! 💥';
+      else msg += ' — Point: '+total;
+      if(totalEl) totalEl.textContent = msg;
+      addGameLog('Rolled '+d1+'+'+d2+'='+total, true);
+      if(sb&&currentUser&&currentTableId){
+        sb.from('game_actions').insert({table_id:currentTableId,user_id:currentUser.id,username:currentUser.username,action_type:'roll',meta:{d1,d2,total}}).then(()=>{}).catch(()=>{});
+      }
+    }
+  }, 80);
+}
 async function pokerAction(action){
   if(!currentTableId) return;
   const raiseAmt = parseFloat(document.getElementById('raiseAmount').value)||0.02;
