@@ -70,17 +70,18 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .crash-pill.high{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid rgba(74,222,128,0.3);}
 .crash-pill.mega{background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3);}
 .crash-layout{display:grid;grid-template-columns:1fr 260px;gap:1.2rem;margin-bottom:1.2rem;}
-.crash-container{background:rgba(10,7,0,0.92);border:1px solid rgba(212,160,23,0.25);border-radius:16px;padding:1.2rem;position:relative;overflow:hidden;}
-.crash-container::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 80%,rgba(251,146,60,0.06),transparent 60%);pointer-events:none;}
+.crash-container{background:linear-gradient(180deg,rgba(5,3,0,0.98) 0%,rgba(10,5,0,0.95) 100%);border:1px solid rgba(212,160,23,0.3);border-radius:16px;padding:1.2rem;position:relative;overflow:hidden;}
+.crash-container::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 90%,rgba(251,146,60,0.08),transparent 50%),radial-gradient(ellipse at 80% 10%,rgba(168,85,247,0.05),transparent 50%);pointer-events:none;}
 .multiplier-display{text-align:center;margin-bottom:0.8rem;}
-.multiplier-value{font-family:'Cinzel',serif;font-size:clamp(3rem,6vw,5rem);font-weight:900;color:var(--orange);text-shadow:0 0 40px rgba(251,146,60,0.8);letter-spacing:0.05em;line-height:1;transition:color 0.2s;}
+.multiplier-value{font-family:'Cinzel',serif;font-size:clamp(3.5rem,7vw,6rem);font-weight:900;color:var(--orange);text-shadow:0 0 50px rgba(251,146,60,0.9),0 0 100px rgba(251,146,60,0.4);letter-spacing:0.05em;line-height:1;transition:all 0.15s;}
 .multiplier-value.crashed{color:var(--red);text-shadow:0 0 40px rgba(248,113,113,0.8);animation:crashShake 0.4s ease-in-out;}
 .multiplier-value.mega{color:#c084fc;text-shadow:0 0 50px rgba(168,85,247,0.9);}
 @keyframes crashShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px) rotate(-1deg);}75%{transform:translateX(6px) rotate(1deg);}}
-.game-status{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-top:0.3rem;}
-.crash-graph-wrap{position:relative;height:220px;margin-top:1rem;}
+@keyframes multiplierPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+.game-status{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-dim);margin-top:0.2rem;}
+.crash-graph-wrap{position:relative;height:260px;margin-top:0.5rem;}
 #crashCanvas{width:100%;height:100%;border-radius:8px;display:block;}
-.rocket{position:absolute;font-size:1.8rem;pointer-events:none;transition:left 0.1s linear,bottom 0.1s linear;filter:drop-shadow(0 0 10px rgba(251,146,60,1));z-index:2;}
+.rocket{position:absolute;pointer-events:none;z-index:2;display:none;}
 .multiplayer-panel{background:rgba(10,7,0,0.92);border:1px solid rgba(212,160,23,0.2);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
 .mp-header{padding:0.8rem 1rem;background:rgba(212,160,23,0.06);border-bottom:1px solid rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:space-between;}
 .mp-title{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);}
@@ -495,31 +496,251 @@ function doubleBet() { setBet(Math.min(balance, (parseFloat(document.getElementB
 function maxBet() { setBet(Math.min(balance, 0.1)); }
 function resizeCanvas() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
 
+// Hvezdy na pozadi grafu
+var stars = [];
+function initStars(W,H){
+  stars=[];
+  for(var i=0;i<60;i++){
+    stars.push({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.2+0.3,
+      a:Math.random(),
+      speed:Math.random()*0.008+0.003
+    });
+  }
+}
+
+function drawStars(W,H){
+  stars.forEach(function(s){
+    s.a+=s.speed;
+    if(s.a>1) s.a=0;
+    var alpha=Math.sin(s.a*Math.PI)*0.7+0.1;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,'+alpha.toFixed(2)+')';
+    ctx.fill();
+  });
+}
+
+function drawRocket(rx,ry,angle,crashed){
+  ctx.save();
+  ctx.translate(rx,ry);
+  ctx.rotate(angle);
+
+  // Plamen / exhaust
+  if(!crashed){
+    var flameLen = 18+Math.random()*8;
+    var fg=ctx.createLinearGradient(0,0,0,flameLen);
+    fg.addColorStop(0,'rgba(251,146,60,0.9)');
+    fg.addColorStop(0.5,'rgba(251,200,60,0.6)');
+    fg.addColorStop(1,'rgba(251,146,60,0)');
+    ctx.beginPath();
+    ctx.moveTo(-5,4);ctx.quadraticCurveTo(0,flameLen,5,4);
+    ctx.fillStyle=fg;ctx.fill();
+
+    // Vnitrni plamen
+    var fg2=ctx.createLinearGradient(0,0,0,flameLen*0.6);
+    fg2.addColorStop(0,'rgba(255,255,200,0.95)');
+    fg2.addColorStop(1,'rgba(251,146,60,0)');
+    ctx.beginPath();
+    ctx.moveTo(-2.5,4);ctx.quadraticCurveTo(0,flameLen*0.6,2.5,4);
+    ctx.fillStyle=fg2;ctx.fill();
+  }
+
+  // Telo rakety
+  ctx.beginPath();
+  ctx.moveTo(0,-18);    // spicka
+  ctx.lineTo(7,2);      // prava strana
+  ctx.lineTo(5,8);      // prava dolni
+  ctx.lineTo(-5,8);     // leva dolni
+  ctx.lineTo(-7,2);     // leva strana
+  ctx.closePath();
+
+  var bodyGrad=ctx.createLinearGradient(-7,0,7,0);
+  bodyGrad.addColorStop(0,'#c0c0d0');
+  bodyGrad.addColorStop(0.3,'#ffffff');
+  bodyGrad.addColorStop(0.7,'#e0e0f0');
+  bodyGrad.addColorStop(1,'#8080a0');
+  ctx.fillStyle=crashed?'#f87171':bodyGrad;
+  ctx.fill();
+  ctx.strokeStyle=crashed?'#ef4444':'rgba(255,255,255,0.4)';
+  ctx.lineWidth=0.8;ctx.stroke();
+
+  // Okno
+  ctx.beginPath();ctx.arc(0,-4,3.5,0,Math.PI*2);
+  ctx.fillStyle=crashed?'#fee2e2':'rgba(147,210,255,0.9)';ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.6)';ctx.lineWidth=0.8;ctx.stroke();
+
+  // Kridla
+  ctx.beginPath();ctx.moveTo(7,2);ctx.lineTo(13,8);ctx.lineTo(7,7);ctx.closePath();
+  ctx.fillStyle=crashed?'#f87171':'#fb923c';ctx.fill();
+  ctx.beginPath();ctx.moveTo(-7,2);ctx.lineTo(-13,8);ctx.lineTo(-7,7);ctx.closePath();
+  ctx.fillStyle=crashed?'#f87171':'#fb923c';ctx.fill();
+
+  // Glow kolem rakety
+  if(!crashed){
+    ctx.shadowColor='rgba(251,146,60,0.8)';
+    ctx.shadowBlur=15;
+    ctx.beginPath();ctx.arc(0,-4,4,0,Math.PI*2);
+    ctx.fillStyle='rgba(251,200,60,0.1)';ctx.fill();
+    ctx.shadowBlur=0;
+  }
+
+  ctx.restore();
+}
+
 function drawGraph() {
   resizeCanvas();
   var W = canvas.width, H = canvas.height;
   ctx.clearRect(0,0,W,H);
+
+  // Init hvezdy pri prvnim volani
+  if(stars.length===0) initStars(W,H);
+
+  // Hvezdne pozadi
+  drawStars(W,H);
+
   if(graphPoints.length < 2) return;
-  ctx.strokeStyle = 'rgba(212,160,23,0.07)'; ctx.lineWidth = 1;
-  for(var i=0;i<=4;i++){var y=H*i/4;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  for(var i=0;i<=5;i++){var x=W*i/5;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+
   var crashed = gameState==='crashed';
-  var color = crashed ? '#f87171' : cashedOut ? '#4ade80' : '#fb923c';
+  var cashedColor = '#4ade80';
+  var flyColor = '#fb923c';
+  var crashColor = '#f87171';
+  var color = crashed ? crashColor : cashedOut ? cashedColor : flyColor;
+
+  // Mrizka - lepsi styl
+  ctx.strokeStyle='rgba(212,160,23,0.06)';ctx.lineWidth=1;
+  for(var i=0;i<=4;i++){
+    var y=H*i/4;
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    // Popisky osy Y
+    if(i>0){
+      var mul=(4-i);
+      ctx.fillStyle='rgba(138,122,80,0.5)';
+      ctx.font='10px Cinzel,serif';
+      ctx.textAlign='left';
+      ctx.fillText(mul>0?mul+'x':'',4,y-3);
+    }
+  }
+  for(var i=1;i<=4;i++){
+    var x=W*i/5;
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+  }
+
+  // Vertikalni cas osa
+  ctx.strokeStyle='rgba(212,160,23,0.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(W,H);ctx.stroke();
+
+  // Gradient pod krivkou
   ctx.beginPath();
-  graphPoints.forEach(function(pt,i){var x=pt.x*W,y=H-pt.y*H*0.85;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.lineTo(graphPoints[graphPoints.length-1].x*W,H);ctx.lineTo(0,H);ctx.closePath();
-  var grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, crashed?'rgba(248,113,113,0.35)':'rgba(251,146,60,0.35)');
-  grad.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle = grad; ctx.fill();
+  graphPoints.forEach(function(pt,i){
+    var x=pt.x*W, y=H-pt.y*H*0.85;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.lineTo(graphPoints[graphPoints.length-1].x*W,H);
+  ctx.lineTo(0,H);ctx.closePath();
+  var grad=ctx.createLinearGradient(0,0,0,H);
+  if(crashed){
+    grad.addColorStop(0,'rgba(248,113,113,0.45)');
+    grad.addColorStop(0.6,'rgba(248,113,113,0.15)');
+    grad.addColorStop(1,'rgba(248,113,113,0)');
+  } else if(cashedOut){
+    grad.addColorStop(0,'rgba(74,222,128,0.35)');
+    grad.addColorStop(0.6,'rgba(74,222,128,0.1)');
+    grad.addColorStop(1,'rgba(74,222,128,0)');
+  } else {
+    grad.addColorStop(0,'rgba(251,146,60,0.4)');
+    grad.addColorStop(0.5,'rgba(251,146,60,0.15)');
+    grad.addColorStop(1,'rgba(251,146,60,0)');
+  }
+  ctx.fillStyle=grad;ctx.fill();
+
+  // Glow pod krivkou (extra vrstva)
+  if(!crashed&&!cashedOut&&graphPoints.length>3){
+    ctx.beginPath();
+    graphPoints.forEach(function(pt,i){
+      var x=pt.x*W,y=H-pt.y*H*0.85;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.lineTo(graphPoints[graphPoints.length-1].x*W,H);
+    ctx.lineTo(0,H);ctx.closePath();
+    var glow=ctx.createLinearGradient(0,0,0,H);
+    glow.addColorStop(0,'rgba(251,200,60,0.12)');
+    glow.addColorStop(1,'rgba(251,146,60,0)');
+    ctx.fillStyle=glow;ctx.fill();
+  }
+
+  // Hlavni krivka - silnejsi cari
   ctx.beginPath();
-  graphPoints.forEach(function(pt,i){var x=pt.x*W,y=H-pt.y*H*0.85;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.stroke();
-  if(graphPoints.length > 0) {
-    var last = graphPoints[graphPoints.length-1];
-    var rx = last.x*W, ry = H-last.y*H*0.85;
-    rocket.style.left = (rx-20)+'px'; rocket.style.bottom = (H-ry-10)+'px';
-    rocket.style.display = crashed ? 'none' : 'block';
+  graphPoints.forEach(function(pt,i){
+    var x=pt.x*W, y=H-pt.y*H*0.85;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle=color;
+  ctx.lineWidth=3.5;
+  ctx.lineJoin='round';
+  ctx.lineCap='round';
+  ctx.shadowColor=color;
+  ctx.shadowBlur=12;
+  ctx.stroke();
+  ctx.shadowBlur=0;
+
+  // Tenka svetla carka nad hlavni
+  ctx.beginPath();
+  graphPoints.forEach(function(pt,i){
+    var x=pt.x*W, y=H-pt.y*H*0.85;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle=crashed?'rgba(248,113,113,0.4)':'rgba(255,220,150,0.35)';
+  ctx.lineWidth=1;
+  ctx.stroke();
+
+  // Raketa na konci krivky
+  if(graphPoints.length>0){
+    var last=graphPoints[graphPoints.length-1];
+    var rx=last.x*W, ry=H-last.y*H*0.85;
+
+    // Uhel rakety = smer krivky
+    var angle=-Math.PI/2; // default nahoru
+    if(graphPoints.length>2){
+      var prev=graphPoints[graphPoints.length-2];
+      var dx=(last.x-prev.x)*W;
+      var dy=-(last.y-prev.y)*H*0.85;
+      angle=Math.atan2(dy,dx)-Math.PI/2;
+      // Omez uhel
+      angle=Math.max(-Math.PI*0.7,Math.min(-Math.PI*0.2,angle));
+    }
+
+    drawRocket(rx,ry,angle,crashed);
+
+    // Trail za raketou
+    if(!crashed&&graphPoints.length>4){
+      for(var t=1;t<=6;t++){
+        var idx=Math.max(0,graphPoints.length-t*3);
+        var pt=graphPoints[idx];
+        var tx=pt.x*W, ty=H-pt.y*H*0.85;
+        var alpha=(1-t/7)*0.4;
+        var size=(1-t/7)*3;
+        ctx.beginPath();ctx.arc(tx,ty,size,0,Math.PI*2);
+        ctx.fillStyle='rgba(251,146,60,'+alpha+')';
+        ctx.fill();
+      }
+    }
+
+    // Crash exploze
+    if(crashed){
+      var progress=(Date.now()%1000)/1000;
+      for(var e=0;e<8;e++){
+        var ea=e/8*Math.PI*2;
+        var er=(20+progress*40);
+        var ea2=ea+progress*0.5;
+        ctx.beginPath();
+        ctx.moveTo(rx,ry);
+        ctx.arc(rx,ry,er,ea2,ea2+0.3);
+        ctx.strokeStyle='rgba(248,113,113,'+(0.8-progress*0.8)+')';
+        ctx.lineWidth=2+progress*2;
+        ctx.stroke();
+      }
+    }
   }
 }
 
@@ -549,8 +770,10 @@ function startRound() {
       elapsed += 0.05;
       currentMulti = Math.round(Math.pow(Math.E, elapsed*0.18)*100)/100;
       var mv = document.getElementById('multiplierVal');
-      if(currentMulti >= 10) mv.className = 'multiplier-value mega';
-      else mv.className = 'multiplier-value';
+      if(currentMulti >= 100) mv.className = 'multiplier-value mega';
+      else if(currentMulti >= 10) mv.className = 'multiplier-value mega';
+      else if(currentMulti >= 3) { mv.className = 'multiplier-value'; mv.style.color='#fbbf24'; mv.style.textShadow='0 0 50px rgba(251,191,36,0.9),0 0 100px rgba(251,191,36,0.4)'; }
+      else { mv.className = 'multiplier-value'; mv.style.color=''; mv.style.textShadow=''; }
       var progress = Math.min(elapsed/8, 1);
       graphPoints.push({x:progress, y:Math.min((currentMulti-1)/Math.max(crashPoint-1,1),1)});
       mv.textContent = currentMulti.toFixed(2) + 'x';
@@ -632,7 +855,7 @@ function doCrash() {
     document.getElementById('multiplierVal').className = 'multiplier-value';
     document.getElementById('gameStatus').textContent = 'Place your bet';
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    rocket.style.display = 'block'; rocket.style.left = '0px'; rocket.style.bottom = '0px';
+    stars = []; // reset hvezd
   }, 3000);
 }
 
@@ -779,8 +1002,5 @@ updateBal();
   console.log('CryptoKasino OK | ' + username + ' | ' + balance.toFixed(8) + ' BTC');
 })();
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
 </body>
 </html>
