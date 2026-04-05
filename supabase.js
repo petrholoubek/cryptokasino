@@ -67,7 +67,8 @@
     async getBalance() {
       const p = await _getProfile();
       if (!p) return 0.1; // demo balance pro nepřihlášené
-      return parseFloat(p.balance || 0);
+      const bal = parseFloat(p.balance || 0);
+return bal > 0 ? bal : 0.1;
     },
 
     // ── Balance v satoshi ────────────────────────────────
