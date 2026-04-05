@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotions – CryptoKasino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#D4A017; --gold-light:#F5C842; --gold-glow:rgba(212,160,23,0.6);
+  --dark:#0a0700; --text:#e8d5a0; --text-dim:#8a7a50;
+  --green:#4ade80; --red:#f87171; --purple:#a855f7; --blue:#60a5fa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.15) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.10) 0%,transparent 60%);pointer-events:none;z-index:0;}
+#particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;}
+
+/* ─── HEADER ─── */
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;flex-shrink:0;}
+.logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+nav a:hover,nav a.active{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
+.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 16px rgba(212,160,23,0.4);transition:all 0.2s;}
+.btn-dep:hover{background:var(--gold-light);}
+.btn-login{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
+.mobile-menu a:hover{color:var(--gold-light);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;font-size:0.75rem;}
+
+/* ─── HERO GRADIENT ─── */
+.hero{position:relative;width:100%;min-height:480px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:5rem 1.5rem;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% 100%,rgba(10,7,0,1) 0%,rgba(10,7,0,0.6) 60%,transparent 100%),linear-gradient(135deg,#1a0d00 0%,#2d1505 30%,#1a0d00 60%,#0d0800 100%);}
+.hero-glow1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,0.18) 0%,transparent 70%);top:-100px;left:-100px;animation:glowFloat 8s ease-in-out infinite alternate;}
+.hero-glow2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,0.1) 0%,transparent 70%);bottom:-50px;right:-50px;animation:glowFloat 10s ease-in-out infinite alternate-reverse;}
+.hero-glow3{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,0.12) 0%,transparent 70%);top:50%;right:20%;animation:glowFloat 7s ease-in-out infinite alternate;}
+@keyframes glowFloat{0%{transform:translate(0,0) scale(1);}100%{transform:translate(30px,-20px) scale(1.1);}}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.35);border-radius:20px;padding:0.4rem 1.2rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1.2rem;backdrop-filter:blur(8px);}
+.hero-title{font-family:'Cinzel',serif;font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:0.04em;margin-bottom:1rem;}
+.hero-title .l1{color:#fff;display:block;}
+.hero-title .l2{color:var(--gold-light);text-shadow:0 0 60px rgba(245,200,66,0.9);display:block;}
+.hero-sub{font-size:1rem;color:var(--text-dim);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2rem;}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.h-stat{text-align:center;}
+.h-stat-val{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;color:var(--gold-light);}
+.h-stat-lbl{font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-top:0.2rem;}
+.hero-cta{display:inline-block;background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.9rem 3rem;border-radius:10px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;text-decoration:none;box-shadow:0 0 40px rgba(212,160,23,0.6);transition:all 0.3s;}
+.hero-cta:hover{transform:scale(1.05);box-shadow:0 0 70px rgba(212,160,23,1);}
+
+/* ─── COUNTDOWN ─── */
+.countdown-bar{background:rgba(212,160,23,0.08);border-top:1px solid rgba(212,160,23,0.2);border-bottom:1px solid rgba(212,160,23,0.2);padding:0.8rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;}
+.cd-label{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);}
+.cd-timer{display:flex;align-items:center;gap:0.5rem;}
+.cd-unit{text-align:center;}
+.cd-num{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:var(--gold-light);min-width:40px;display:inline-block;}
+.cd-lbl{font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);display:block;}
+.cd-sep{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold);margin-top:-4px;}
+
+/* ─── MAIN ─── */
+.main{position:relative;z-index:2;max-width:1300px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+
+/* SECTION TITLE */
+.sec-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,160,23,0.4),transparent);}
+
+/* ─── BONUS CARDS ─── */
+.bonus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:3rem;}
+
+.bonus-card{border-radius:20px;padding:2rem;position:relative;overflow:hidden;transition:transform 0.3s;cursor:pointer;}
+.bonus-card:hover{transform:translateY(-5px);}
+.bonus-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,0.06),transparent 60%);pointer-events:none;}
+
+.bc-welcome{background:linear-gradient(135deg,rgba(212,160,23,0.18),rgba(120,60,5,0.25));border:1px solid rgba(212,160,23,0.4);}
+.bc-reload{background:linear-gradient(135deg,rgba(74,222,128,0.12),rgba(10,80,40,0.25));border:1px solid rgba(74,222,128,0.3);}
+.bc-cashback{background:linear-gradient(135deg,rgba(96,165,250,0.12),rgba(20,40,100,0.25));border:1px solid rgba(96,165,250,0.3);}
+.bc-freespins{background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(60,10,100,0.25));border:1px solid rgba(168,85,247,0.3);}
+.bc-refer{background:linear-gradient(135deg,rgba(251,146,60,0.12),rgba(100,40,5,0.25));border:1px solid rgba(251,146,60,0.3);}
+.bc-vip{background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(80,20,120,0.3));border:2px solid rgba(168,85,247,0.4);}
+
+.bonus-ribbon{position:absolute;top:1rem;right:-10px;background:var(--red);color:#fff;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.22rem 1rem 0.22rem 0.7rem;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,8% 50%);}
+.bonus-ribbon.green{background:rgba(74,222,128,0.9);color:#000;}
+.bonus-ribbon.purple{background:rgba(168,85,247,0.9);}
+.bonus-ribbon.gold{background:var(--gold);color:#000;}
+
+.bonus-icon{font-size:2.8rem;margin-bottom:0.8rem;display:block;}
+.bonus-tag{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;}
+.bonus-amount{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;line-height:1;margin-bottom:0.5rem;}
+.bc-welcome .bonus-amount{color:var(--gold-light);}
+.bc-reload .bonus-amount{color:var(--green);}
+.bc-cashback .bonus-amount{color:var(--blue);}
+.bc-freespins .bonus-amount{color:#c084fc;}
+.bc-refer .bonus-amount{color:#fb923c;}
+.bc-vip .bonus-amount{color:#c084fc;}
+.bonus-desc{font-size:0.85rem;color:var(--text-dim);line-height:1.6;margin-bottom:1.2rem;}
+.bonus-details{display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.bonus-detail{background:rgba(0,0,0,0.3);border-radius:6px;padding:0.3rem 0.7rem;font-size:0.68rem;color:var(--text-dim);}
+.bonus-detail strong{color:var(--text);font-family:'Cinzel',serif;}
+.bonus-cta{display:inline-block;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.6rem 1.5rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.bc-welcome .bonus-cta{background:var(--gold);color:#000;box-shadow:0 0 20px rgba(212,160,23,0.4);}
+.bc-reload .bonus-cta{background:rgba(74,222,128,0.2);color:var(--green);border:1px solid rgba(74,222,128,0.35);}
+.bc-cashback .bonus-cta{background:rgba(96,165,250,0.2);color:var(--blue);border:1px solid rgba(96,165,250,0.35);}
+.bc-freespins .bonus-cta{background:rgba(168,85,247,0.2);color:#c084fc;border:1px solid rgba(168,85,247,0.35);}
+.bc-refer .bonus-cta{background:rgba(251,146,60,0.2);color:#fb923c;border:1px solid rgba(251,146,60,0.35);}
+.bc-vip .bonus-cta{background:rgba(168,85,247,0.3);color:#c084fc;border:1px solid rgba(168,85,247,0.5);}
+.bonus-cta:hover{transform:scale(1.04);}
+.bonus-progress{margin-top:1rem;}
+.bp-label{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-dim);margin-bottom:0.3rem;}
+.bp-label span:last-child{color:var(--gold);}
+.bp-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.bp-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.bc-welcome .bp-fill{background:linear-gradient(to right,var(--gold),var(--gold-light));}
+.bc-reload .bp-fill{background:linear-gradient(to right,#22c55e,var(--green));}
+
+/* ─── BONUS WHEEL ─── */
+.wheel-section{background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.2);border-radius:24px;padding:2.5rem;margin-bottom:3rem;display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:center;position:relative;overflow:hidden;}
+.wheel-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(212,160,23,0.07),transparent 60%);pointer-events:none;}
+
+.wheel-wrap{position:relative;width:260px;height:260px;flex-shrink:0;}
+.wheel-pointer-top{position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:10;font-size:1.5rem;filter:drop-shadow(0 0 8px rgba(245,200,66,0.9));}
+#bonusWheelCanvas{display:block;filter:drop-shadow(0 0 20px rgba(212,160,23,0.5));}
+
+.wheel-info h2{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold-light);margin-bottom:0.5rem;}
+.wheel-info .wheel-sub{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem;}
+.wheel-info p{font-size:0.9rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.5rem;}
+.wheel-cooldown{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--text-dim);margin-bottom:1rem;}
+.wheel-cooldown span{color:var(--gold);}
+.spin-wheel-btn{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.85rem 2.5rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;box-shadow:0 0 30px rgba(212,160,23,0.5);transition:all 0.3s;}
+.spin-wheel-btn:hover:not(:disabled){transform:scale(1.05);box-shadow:0 0 55px rgba(212,160,23,0.9);}
+.spin-wheel-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.wheel-result{margin-top:1rem;font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--green);min-height:1.5rem;}
+
+/* ─── TOURNAMENTS ─── */
+.tournaments-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:3rem;}
+.tournament-card{background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.15);border-radius:20px;overflow:hidden;transition:all 0.3s;}
+.tournament-card:hover{border-color:rgba(212,160,23,0.4);transform:translateY(-3px);}
+.tc-header{padding:1.2rem 1.5rem;position:relative;}
+.tc-header.slots-bg{background:linear-gradient(135deg,rgba(212,160,23,0.2),rgba(120,60,5,0.3));}
+.tc-header.crash-bg{background:linear-gradient(135deg,rgba(251,146,60,0.2),rgba(150,50,0,0.3));}
+.tc-type{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
+.tc-name{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:#fff;}
+.tc-prize{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold-light);margin-top:0.2rem;}
+.tc-status{position:absolute;top:1rem;right:1rem;background:rgba(74,222,128,0.9);color:#000;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:4px;}
+.tc-body{padding:1.2rem 1.5rem;}
+.tc-progress{margin-bottom:1rem;}
+.tc-prog-label{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-dim);margin-bottom:0.4rem;}
+.tc-prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.tc-prog-fill{height:100%;border-radius:3px;background:linear-gradient(to right,var(--gold),var(--gold-light));}
+.tc-leaderboard{margin-bottom:1rem;}
+.tc-lb-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tc-lb-row:last-child{border-bottom:none;}
+.tc-lb-rank{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;text-align:center;}
+.tc-lb-rank.r1{color:var(--gold-light);}
+.tc-lb-rank.r2{color:#b0c4de;}
+.tc-lb-rank.r3{color:#cd7f32;}
+.tc-lb-rank.rn{color:var(--text-dim);}
+.tc-lb-name{font-size:0.8rem;color:var(--text);}
+.tc-lb-score{font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);}
+.tc-join-btn{width:100%;padding:0.7rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border:1px solid rgba(212,160,23,0.3);background:rgba(212,160,23,0.1);color:var(--gold);transition:all 0.2s;}
+.tc-join-btn:hover{background:rgba(212,160,23,0.2);box-shadow:0 0 15px rgba(212,160,23,0.3);}
+
+/* ─── REFERRAL ─── */
+.referral-section{background:linear-gradient(135deg,rgba(251,146,60,0.1),rgba(100,40,5,0.2));border:1px solid rgba(251,146,60,0.25);border-radius:20px;padding:2.5rem;margin-bottom:3rem;position:relative;overflow:hidden;}
+.referral-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(251,146,60,0.08),transparent 60%);pointer-events:none;}
+.ref-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+.ref-text h2{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:#fb923c;margin-bottom:0.5rem;}
+.ref-text p{font-size:0.9rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.5rem;}
+.ref-steps{display:flex;flex-direction:column;gap:0.8rem;}
+.ref-step{display:flex;align-items:center;gap:0.8rem;}
+.ref-step-num{width:28px;height:28px;border-radius:50%;background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;color:#fb923c;flex-shrink:0;}
+.ref-step-text{font-size:0.85rem;color:var(--text-dim);}
+.ref-step-text strong{color:var(--text);}
+.ref-box{background:rgba(0,0,0,0.4);border:1px solid rgba(251,146,60,0.2);border-radius:14px;padding:1.5rem;}
+.ref-box-title{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.8rem;}
+.ref-rewards{display:flex;gap:1rem;margin-bottom:1.5rem;}
+.ref-reward{flex:1;background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.15);border-radius:10px;padding:1rem;text-align:center;}
+.ref-reward-icon{font-size:1.5rem;margin-bottom:0.4rem;}
+.ref-reward-val{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:#fb923c;}
+.ref-reward-lbl{font-size:0.62rem;color:var(--text-dim);margin-top:0.2rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Cinzel',serif;}
+.ref-link-row{display:flex;gap:0.6rem;margin-bottom:1rem;}
+.ref-link-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(251,146,60,0.2);border-radius:8px;padding:0.6rem 0.8rem;font-family:monospace;font-size:0.75rem;color:var(--text-dim);outline:none;}
+.ref-copy-btn{background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.35);color:#fb923c;padding:0.6rem 1rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.ref-copy-btn:hover{background:rgba(251,146,60,0.3);}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.ref-stat{background:rgba(0,0,0,0.3);border-radius:8px;padding:0.7rem;text-align:center;}
+.ref-stat-val{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:#fb923c;}
+.ref-stat-lbl{font-size:0.6rem;color:var(--text-dim);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* ─── TERMS ─── */
+.terms-section{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:20px;padding:2rem;margin-bottom:3rem;}
+.terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;}
+.term-item{display:flex;gap:0.8rem;}
+.term-icon{font-size:1.3rem;flex-shrink:0;margin-top:0.1rem;}
+.term-text h4{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
+.term-text p{font-size:0.83rem;color:var(--text-dim);line-height:1.6;}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-top:2rem;}
+.footer-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
+.footer-brand h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:900;color:var(--gold-light);margin-bottom:0.8rem;}
+.footer-brand p{font-size:0.85rem;color:var(--text-dim);line-height:1.7;}
+.footer-col h4{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text);margin-bottom:1rem;}
+.footer-col ul{list-style:none;}
+.footer-col li{margin-bottom:0.6rem;}
+.footer-col a{color:var(--text-dim);text-decoration:none;font-size:0.85rem;transition:color 0.2s;}
+.footer-col a:hover{color:var(--gold-light);}
+.footer-bottom{max-width:1300px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-dim);flex-wrap:wrap;gap:0.5rem;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){.bonus-grid{grid-template-columns:1fr 1fr;}.footer-inner{grid-template-columns:1fr 1fr;}.wheel-section{grid-template-columns:1fr;text-align:center;}.wheel-wrap{margin:0 auto;}.ref-layout{grid-template-columns:1fr;}}
+@media(max-width:768px){.tournaments-grid{grid-template-columns:1fr;}.terms-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){
+  header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
+  nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
+  .hero{padding:3rem 1rem;min-height:380px;}.hero-title{font-size:clamp(2rem,8vw,3rem);}
+  .hero-stats{gap:1.2rem;}.h-stat-val{font-size:1.1rem;}
+  .main{padding:2rem 0.8rem 4rem;}
+  .bonus-grid{grid-template-columns:1fr;}
+  .countdown-bar{gap:1rem;}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}.footer-brand{grid-column:1/-1;}
+}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
+  <nav>
+    <a href="casino.html">Casino</a>
+    <a href="live.html">Live</a>
+    <a href="sports.html">Sports</a>
+    <a href="promotions.html" class="active">Promotions</a>
+  </nav>
+  <div class="header-right">
+    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html" onclick="closeMenu()">Casino</a>
+  <a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a>
+  <a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow1"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-glow3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🎁 Exclusive Bonuses & Rewards</div>
+    <h1 class="hero-title">
+      <span class="l1">YOUR REWARDS</span>
+      <span class="l2">AWAIT</span>
+    </h1>
+    <p class="hero-sub">Daily Bonuses · Free Spins · Tournaments · VIP Cashback</p>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-val">1.0 BTC</div><div class="h-stat-lbl">Welcome Bonus</div></div>
+      <div class="h-stat"><div class="h-stat-val">50</div><div class="h-stat-lbl">Free Spins</div></div>
+      <div class="h-stat"><div class="h-stat-val">25%</div><div class="h-stat-lbl">VIP Cashback</div></div>
+      <div class="h-stat"><div class="h-stat-val" id="hTournamentPool">2.45 BTC</div><div class="h-stat-lbl">Tournament Pool</div></div>
+    </div>
+    <a href="deposit.html" class="hero-cta">🚀 Claim Your Bonus</a>
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="countdown-bar">
+  <span class="cd-label">⏰ Weekly Reload Bonus Resets In:</span>
+  <div class="cd-timer">
+    <div class="cd-unit"><span class="cd-num" id="cdDays">02</span><span class="cd-lbl">Days</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-unit"><span class="cd-num" id="cdHours">14</span><span class="cd-lbl">Hours</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-unit"><span class="cd-num" id="cdMins">37</span><span class="cd-lbl">Mins</span></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-unit"><span class="cd-num" id="cdSecs">22</span><span class="cd-lbl">Secs</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- BONUS CARDS -->
+  <div class="sec-title">🎁 Active Promotions</div>
+  <div class="bonus-grid">
+
+    <!-- WELCOME -->
+    <div class="bonus-card bc-welcome">
+      <div class="bonus-ribbon">🔥 New Players</div>
+      <span class="bonus-icon">🎁</span>
+      <div class="bonus-tag">Welcome Package</div>
+      <div class="bonus-amount">100% up to<br>1.0 BTC</div>
+      <div class="bonus-desc">Make your first deposit and we double it instantly. Plus 50 free spins on our premium slot games. No maximum cashout!</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Min Deposit:</strong> 0.001 BTC</span>
+        <span class="bonus-detail"><strong>Wagering:</strong> 30x</span>
+        <span class="bonus-detail"><strong>Valid:</strong> 30 days</span>
+        <span class="bonus-detail"><strong>Games:</strong> All</span>
+      </div>
+      <a href="deposit.html" class="bonus-cta">Claim Now</a>
+      <div class="bonus-progress">
+        <div class="bp-label"><span>New players this week</span><span id="bpWelcome">247 claimed</span></div>
+        <div class="bp-bar"><div class="bp-fill" style="width:72%"></div></div>
+      </div>
+    </div>
+
+    <!-- RELOAD -->
+    <div class="bonus-card bc-reload">
+      <div class="bonus-ribbon green">Every Monday</div>
+      <span class="bonus-icon">🔄</span>
+      <div class="bonus-tag">Weekly Reload</div>
+      <div class="bonus-amount">50% up to<br>0.5 BTC</div>
+      <div class="bonus-desc">Every Monday deposit and receive 50% bonus on your reload. Keep the winning streak going all week long!</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Min Deposit:</strong> 0.005 BTC</span>
+        <span class="bonus-detail"><strong>Wagering:</strong> 20x</span>
+        <span class="bonus-detail"><strong>Valid:</strong> 7 days</span>
+        <span class="bonus-detail"><strong>Games:</strong> Casino</span>
+      </div>
+      <a href="deposit.html" class="bonus-cta">Reload Now</a>
+      <div class="bonus-progress">
+        <div class="bp-label"><span>Weekly claims</span><span>189 claimed</span></div>
+        <div class="bp-bar"><div class="bp-fill" style="width:55%"></div></div>
+      </div>
+    </div>
+
+    <!-- CASHBACK -->
+    <div class="bonus-card bc-cashback">
+      <div class="bonus-ribbon" style="background:var(--blue);color:#000;">Daily</div>
+      <span class="bonus-icon">💰</span>
+      <div class="bonus-tag">Daily Cashback</div>
+      <div class="bonus-amount">15%<br>Cashback</div>
+      <div class="bonus-desc">Get 15% cashback on your net losses every day. Credited automatically at midnight. No wagering on cashback!</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Max Cashback:</strong> 0.1 BTC/day</span>
+        <span class="bonus-detail"><strong>Wagering:</strong> 0x ✅</span>
+        <span class="bonus-detail"><strong>Credited:</strong> Midnight</span>
+        <span class="bonus-detail"><strong>Games:</strong> All</span>
+      </div>
+      <a href="login.html" class="bonus-cta">Activate</a>
+    </div>
+
+    <!-- FREE SPINS -->
+    <div class="bonus-card bc-freespins">
+      <div class="bonus-ribbon purple">Free Spins</div>
+      <span class="bonus-icon">🎰</span>
+      <div class="bonus-tag">Friday Free Spins</div>
+      <div class="bonus-amount">50 Free<br>Spins</div>
+      <div class="bonus-desc">Every Friday get 50 free spins on our Vegas Slots game. Make a minimum deposit of 0.01 BTC to qualify!</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Min Deposit:</strong> 0.01 BTC</span>
+        <span class="bonus-detail"><strong>Wagering:</strong> 25x</span>
+        <span class="bonus-detail"><strong>Valid:</strong> 48 hours</span>
+        <span class="bonus-detail"><strong>Game:</strong> Vegas Slots</span>
+      </div>
+      <a href="deposit.html" class="bonus-cta">Get Spins</a>
+    </div>
+
+    <!-- REFERRAL MINI -->
+    <div class="bonus-card bc-refer">
+      <div class="bonus-ribbon" style="background:#fb923c;color:#000;">Refer</div>
+      <span class="bonus-icon">👥</span>
+      <div class="bonus-tag">Refer a Friend</div>
+      <div class="bonus-amount">0.05 BTC<br>Per Referral</div>
+      <div class="bonus-desc">Invite your friends and earn 0.05 BTC for each one who deposits. Your friend gets a 50% bonus on first deposit too!</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Your Reward:</strong> 0.05 BTC</span>
+        <span class="bonus-detail"><strong>Friend Bonus:</strong> 50%</span>
+        <span class="bonus-detail"><strong>No limit</strong></span>
+        <span class="bonus-detail"><strong>Instant</strong></span>
+      </div>
+      <a href="#referral" class="bonus-cta">Invite Now</a>
+    </div>
+
+    <!-- VIP -->
+    <div class="bonus-card bc-vip">
+      <div class="bonus-ribbon purple">VIP Exclusive</div>
+      <span class="bonus-icon">👑</span>
+      <div class="bonus-tag">VIP Royal Program</div>
+      <div class="bonus-amount">Up to 25%<br>Cashback</div>
+      <div class="bonus-desc">5 exclusive tiers with increasing rewards. Personal account manager, higher limits, and priority withdrawals at Royal tier.</div>
+      <div class="bonus-details">
+        <span class="bonus-detail"><strong>Tiers:</strong> 5 Levels</span>
+        <span class="bonus-detail"><strong>Cashback:</strong> 5–25%</span>
+        <span class="bonus-detail"><strong>Manager:</strong> Royal tier</span>
+        <span class="bonus-detail"><strong>No wagering</strong></span>
+      </div>
+      <a href="casino.html#vip" class="bonus-cta">View VIP</a>
+    </div>
+
+  </div>
+
+  <!-- BONUS WHEEL -->
+  <div class="sec-title">🎡 Daily Bonus Wheel</div>
+  <div class="wheel-section">
+    <div class="wheel-wrap">
+      <div class="wheel-pointer-top">▼</div>
+      <canvas id="bonusWheelCanvas" width="260" height="260"></canvas>
+    </div>
+    <div class="wheel-info">
+      <div class="wheel-sub">Free Daily Spin</div>
+      <h2>Spin The Wheel<br>Win Every Day!</h2>
+      <p>Every player gets one free spin per day. Prizes range from free spins to BTC bonuses. Deposit to unlock extra spins!</p>
+      <div class="wheel-cooldown">Next free spin available in: <span id="wheelCooldown">12:34:17</span></div>
+      <button class="spin-wheel-btn" id="spinWheelBtn" onclick="spinBonusWheel()">🎡 Spin Now – FREE</button>
+      <div class="wheel-result" id="wheelResult"></div>
+    </div>
+  </div>
+
+  <!-- TOURNAMENTS -->
+  <div class="sec-title">🏆 Active Tournaments</div>
+  <div class="tournaments-grid">
+
+    <!-- SLOTS TOURNAMENT -->
+    <div class="tournament-card">
+      <div class="tc-header slots-bg">
+        <div class="tc-status">Active</div>
+        <div class="tc-type">Weekly Tournament</div>
+        <div class="tc-name">🎰 Slots Championship</div>
+        <div class="tc-prize">Prize Pool: 1.5 BTC</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-progress">
+          <div class="tc-prog-label"><span>Tournament ends in 3 days</span><span>247 players</span></div>
+          <div class="tc-prog-bar"><div class="tc-prog-fill" style="width:62%"></div></div>
+        </div>
+        <div class="tc-leaderboard">
+          <div class="tc-lb-row"><span class="tc-lb-rank r1">🥇</span><span class="tc-lb-name">SlotKing</span><span class="tc-lb-score">84,210 pts</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank r2">🥈</span><span class="tc-lb-name">BTC_Pro</span><span class="tc-lb-score">71,540 pts</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank r3">🥉</span><span class="tc-lb-name">Lucky7</span><span class="tc-lb-score">63,820 pts</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank rn">4</span><span class="tc-lb-name">Satoshi</span><span class="tc-lb-score">58,100 pts</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank rn">5</span><span class="tc-lb-name">Player77</span><span class="tc-lb-score">52,440 pts</span></div>
+        </div>
+        <button class="tc-join-btn" onclick="alert('Join tournament – login required!')">Join Tournament</button>
+      </div>
+    </div>
+
+    <!-- CRASH TOURNAMENT -->
+    <div class="tournament-card">
+      <div class="tc-header crash-bg">
+        <div class="tc-status">Active</div>
+        <div class="tc-type">Daily Tournament</div>
+        <div class="tc-name">🚀 Crash Championship</div>
+        <div class="tc-prize">Prize Pool: 0.95 BTC</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-progress">
+          <div class="tc-prog-label"><span>Resets in 8 hours</span><span>189 players</span></div>
+          <div class="tc-prog-bar"><div class="tc-prog-fill" style="width:78%"></div></div>
+        </div>
+        <div class="tc-leaderboard">
+          <div class="tc-lb-row"><span class="tc-lb-rank r1">🥇</span><span class="tc-lb-name">CrashKing</span><span class="tc-lb-score">142.5x avg</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank r2">🥈</span><span class="tc-lb-name">0xA91…</span><span class="tc-lb-score">118.2x avg</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank r3">🥉</span><span class="tc-lb-name">VegasKing</span><span class="tc-lb-score">97.8x avg</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank rn">4</span><span class="tc-lb-name">CryptoX</span><span class="tc-lb-score">84.1x avg</span></div>
+          <div class="tc-lb-row"><span class="tc-lb-rank rn">5</span><span class="tc-lb-name">RocketMan</span><span class="tc-lb-score">71.3x avg</span></div>
+        </div>
+        <button class="tc-join-btn" onclick="alert('Join tournament – login required!')">Join Tournament</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- REFERRAL -->
+  <div class="sec-title" id="referral">👥 Refer a Friend</div>
+  <div class="referral-section">
+    <div class="ref-layout">
+      <div class="ref-text">
+        <h2>Earn BTC By<br>Referring Friends</h2>
+        <p>Share your unique referral link and earn 0.05 BTC for every friend who signs up and makes their first deposit. No limits – refer as many friends as you like!</p>
+        <div class="ref-steps">
+          <div class="ref-step"><div class="ref-step-num">1</div><div class="ref-step-text"><strong>Share your link</strong> with friends via any platform</div></div>
+          <div class="ref-step"><div class="ref-step-num">2</div><div class="ref-step-text">Friend <strong>signs up & deposits</strong> minimum 0.01 BTC</div></div>
+          <div class="ref-step"><div class="ref-step-num">3</div><div class="ref-step-text">You receive <strong>0.05 BTC instantly</strong> to your balance</div></div>
+          <div class="ref-step"><div class="ref-step-num">4</div><div class="ref-step-text">Friend gets <strong>50% welcome bonus</strong> on first deposit</div></div>
+        </div>
+      </div>
+      <div class="ref-box">
+        <div class="ref-box-title">Your Referral Dashboard</div>
+        <div class="ref-rewards">
+          <div class="ref-reward"><div class="ref-reward-icon">₿</div><div class="ref-reward-val">0.05 BTC</div><div class="ref-reward-lbl">Per Referral</div></div>
+          <div class="ref-reward"><div class="ref-reward-icon">🎁</div><div class="ref-reward-val">50%</div><div class="ref-reward-lbl">Friend Bonus</div></div>
+          <div class="ref-reward"><div class="ref-reward-icon">♾️</div><div class="ref-reward-val">No Limit</div><div class="ref-reward-lbl">Referrals</div></div>
+        </div>
+        <div class="ref-box-title" style="margin-bottom:0.5rem">Your Referral Link</div>
+        <div class="ref-link-row">
+          <input type="text" class="ref-link-input" id="refLink" value="cryptokasino.io/?ref=YOUR_ID" readonly>
+          <button class="ref-copy-btn" onclick="copyRef()">📋 Copy</button>
+        </div>
+        <div class="ref-stats">
+          <div class="ref-stat"><div class="ref-stat-val" id="refCount">0</div><div class="ref-stat-lbl">Referrals</div></div>
+          <div class="ref-stat"><div class="ref-stat-val" id="refEarned">0.00 BTC</div><div class="ref-stat-lbl">Earned</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="sec-title">📋 Bonus Terms & Conditions</div>
+  <div class="terms-section">
+    <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:0.5rem;">All bonuses are subject to the following terms. Please read carefully before claiming any promotion.</p>
+    <div class="terms-grid">
+      <div class="term-item"><div class="term-icon">🔄</div><div class="term-text"><h4>Wagering Requirements</h4><p>Bonus funds must be wagered the required number of times before withdrawal. Welcome bonus: 30x. Reload: 20x. Cashback: 0x (no wagering).</p></div></div>
+      <div class="term-item"><div class="term-icon">⏰</div><div class="term-text"><h4>Validity Period</h4><p>Bonuses expire if not used within their validity period. Welcome bonus: 30 days. Weekly reload: 7 days. Free spins: 48 hours.</p></div></div>
+      <div class="term-item"><div class="term-icon">👤</div><div class="term-text"><h4>One Per Player</h4><p>Welcome bonuses are limited to one per player, household, IP address, and payment method. Creating multiple accounts to abuse bonuses will result in a ban.</p></div></div>
+      <div class="term-item"><div class="term-icon">🎮</div><div class="term-text"><h4>Game Contributions</h4><p>Slots contribute 100% to wagering. Table games contribute 10%. Crash and Dice contribute 50%. Sports bets do not contribute to casino bonus wagering.</p></div></div>
+      <div class="term-item"><div class="term-icon">💰</div><div class="term-text"><h4>Maximum Withdrawal</h4><p>Welcome bonus: Maximum withdrawal of 5x the bonus amount. Reload bonus: No maximum cashout. VIP cashback: No restrictions.</p></div></div>
+      <div class="term-item"><div class="term-icon">⚖️</div><div class="term-text"><h4>Abuse Policy</h4><p>CryptoKasino reserves the right to cancel any bonus and void winnings if bonus abuse is detected. All decisions are final.</p></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand"><h3>₿ CRYPTOKASINO</h3><p>The best bonuses in crypto gambling. Transparent terms, instant payouts, provably fair games.</p></div>
+    <div class="footer-col"><h4>Bonuses</h4><ul><li><a href="#">Welcome Bonus</a></li><li><a href="#">Weekly Reload</a></li><li><a href="#">Daily Cashback</a></li><li><a href="#">Free Spins</a></li><li><a href="#vip">VIP Program</a></li></ul></div>
+    <div class="footer-col"><h4>Casino</h4><ul><li><a href="casino.html">All Games</a></li><li><a href="game-crash.html">Crash</a></li><li><a href="game-slots.html">Slots</a></li><li><a href="live.html">Live Casino</a></li><li><a href="sports.html">Sports</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">FAQ</a></li><li><a href="#">Live Chat</a></li><li><a href="#">Responsible Gambling</a></li><li><a href="#">Terms</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 CryptoKasino · All rights reserved</span><span>18+ · Play Responsibly · T&Cs Apply</span></div>
+</footer>
+
+<script>
+// ── PARTICLES ──
+const pCanvas=document.getElementById('particleCanvas'),pCtx=pCanvas.getContext('2d');
+let particles=[];
+function resizeP(){pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;}
+resizeP();window.addEventListener('resize',resizeP);
+
+// Ambient gold particles
+function spawnAmbient(){
+  for(let i=0;i<3;i++){
+    particles.push({
+      x:Math.random()*window.innerWidth, y:window.innerHeight+10,
+      vx:(Math.random()-0.5)*0.5, vy:-(Math.random()*1.5+0.5),
+      size:Math.random()*3+1,
+      color:Math.random()>0.5?'rgba(245,200,66,0.6)':'rgba(212,160,23,0.4)',
+      life:1, decay:Math.random()*0.003+0.001, gravity:0
+    });
+  }
+}
+setInterval(spawnAmbient,200);
+
+function animateP(){
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  particles=particles.filter(p=>p.life>0&&p.y>-20);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;
+    pCtx.globalAlpha=p.life*0.6;
+    pCtx.beginPath();pCtx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    pCtx.fillStyle=p.color;pCtx.fill();
+  });
+  pCtx.globalAlpha=1;
+  requestAnimationFrame(animateP);
+}
+animateP();
+
+// ── COUNTDOWN ──
+function updateCountdown(){
+  // Target: next Monday
+  const now=new Date();
+  const day=now.getDay();
+  const daysUntilMonday=day===0?1:(8-day)%7||7;
+  const target=new Date(now);
+  target.setDate(now.getDate()+daysUntilMonday);
+  target.setHours(0,0,0,0);
+  const diff=target-now;
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('cdDays').textContent=String(d).padStart(2,'0');
+  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+}
+setInterval(updateCountdown,1000);updateCountdown();
+
+// ── WHEEL COOLDOWN ──
+function updateWheelCooldown(){
+  const now=new Date();
+  const tomorrow=new Date(now);
+  tomorrow.setHours(24,0,0,0);
+  const diff=tomorrow-now;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('wheelCooldown').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+setInterval(updateWheelCooldown,1000);updateWheelCooldown();
+
+// ── BONUS WHEEL ──
+const wCanvas=document.getElementById('bonusWheelCanvas');
+const wCtx=wCanvas.getContext('2d');
+const WHEEL_PRIZES=[
+  {label:'5 Free Spins',color:'#16a34a',icon:'🎰'},
+  {label:'0.001 BTC',color:'#c8920a',icon:'₿'},
+  {label:'10% Cashback',color:'#1d4ed8',icon:'💰'},
+  {label:'10 Free Spins',color:'#7e22ce',icon:'🎰'},
+  {label:'0.005 BTC',color:'#dc2626',icon:'₿'},
+  {label:'25 Free Spins',color:'#0f766e',icon:'🎰'},
+  {label:'0.002 BTC',color:'#c8920a',icon:'₿'},
+  {label:'50 Free Spins',color:'#b45309',icon:'🎰'},
+];
+let wAngle=0,wSpinning=false;
+
+function drawWheel(angle){
+  const W=wCanvas.width,H=wCanvas.height,cx=W/2,cy=H/2,R=W/2-4;
+  wCtx.clearRect(0,0,W,H);
+  const n=WHEEL_PRIZES.length,sa=(Math.PI*2)/n;
+  wCtx.beginPath();wCtx.arc(cx,cy,R,0,Math.PI*2);
+  const outerGrad=wCtx.createRadialGradient(cx,cy,R-8,cx,cy,R);
+  outerGrad.addColorStop(0,'#4a2a0a');outerGrad.addColorStop(1,'#2d1a05');
+  wCtx.fillStyle=outerGrad;wCtx.fill();
+  wCtx.strokeStyle='#c8920a';wCtx.lineWidth=3;wCtx.stroke();
+  WHEEL_PRIZES.forEach((p,i)=>{
+    const startA=angle+i*sa-Math.PI/2,endA=startA+sa;
+    wCtx.beginPath();wCtx.moveTo(cx,cy);wCtx.arc(cx,cy,R-6,startA,endA);wCtx.closePath();
+    wCtx.fillStyle=p.color;wCtx.fill();
+    wCtx.strokeStyle='rgba(200,146,10,0.5)';wCtx.lineWidth=1;wCtx.stroke();
+    const midA=startA+sa/2,tx=cx+(R-35)*Math.cos(midA),ty=cy+(R-35)*Math.sin(midA);
+    wCtx.save();wCtx.translate(tx,ty);wCtx.rotate(midA+Math.PI/2);
+    wCtx.fillStyle='#fff';wCtx.font=`bold 9px Cinzel,serif`;
+    wCtx.textAlign='center';wCtx.textBaseline='middle';
+    wCtx.fillText(p.label,0,0);wCtx.restore();
+  });
+  wCtx.beginPath();wCtx.arc(cx,cy,R*0.22,0,Math.PI*2);
+  const hubGrad=wCtx.createRadialGradient(cx-4,cy-4,0,cx,cy,R*0.22);
+  hubGrad.addColorStop(0,'#f5c842');hubGrad.addColorStop(0.5,'#c8920a');hubGrad.addColorStop(1,'#8a6020');
+  wCtx.fillStyle=hubGrad;wCtx.fill();
+  wCtx.strokeStyle='#f5c842';wCtx.lineWidth=2;wCtx.stroke();
+  wCtx.beginPath();wCtx.arc(cx,cy,5,0,Math.PI*2);wCtx.fillStyle='#2d1a05';wCtx.fill();
+}
+drawWheel(0);
+
+function spinBonusWheel(){
+  if(wSpinning)return;
+  wSpinning=true;
+  document.getElementById('spinWheelBtn').disabled=true;
+  document.getElementById('wheelResult').textContent='';
+  const result=Math.floor(Math.random()*WHEEL_PRIZES.length);
+  const n=WHEEL_PRIZES.length,sa=(Math.PI*2)/n;
+  const targetAngle=-(result*sa)+(Math.PI*2*6);
+  const startAngle=wAngle,duration=4000,start=performance.now();
+  function animate(now){
+    const elapsed=now-start,progress=Math.min(elapsed/duration,1);
+    const ease=1-Math.pow(1-progress,4);
+    wAngle=startAngle+(targetAngle-startAngle)*ease;
+    drawWheel(wAngle);
+    if(progress<1){requestAnimationFrame(animate);}
+    else{
+      wAngle=targetAngle%(Math.PI*2);drawWheel(wAngle);
+      const prize=WHEEL_PRIZES[result];
+      document.getElementById('wheelResult').textContent=`🎉 You won: ${prize.label}!`;
+      wSpinning=false;
+      // Don't re-enable – once per day
+      setTimeout(()=>document.getElementById('spinWheelBtn').disabled=false,3000);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// ── REFERRAL ──
+function copyRef(){
+  const inp=document.getElementById('refLink');
+  inp.select();
+  document.execCommand('copy');
+  const btn=document.querySelector('.ref-copy-btn');
+  btn.textContent='✅ Copied!';
+  setTimeout(()=>btn.textContent='📋 Copy',2000);
+}
+
+// ── CLAIMED COUNTER ANIMATION ──
+let claimCount=247;
+setInterval(()=>{
+  if(Math.random()>0.7){
+    claimCount++;
+    const el=document.getElementById('bpWelcome');
+    if(el) el.textContent=claimCount+' claimed';
+  }
+},8000);
+
+// ── TOURNAMENT POOL ANIMATION ──
+let pool=2.45;
+setInterval(()=>{
+  pool+=Math.random()*0.001;
+  document.getElementById('hTournamentPool').textContent=pool.toFixed(3)+' BTC';
+},5000);
+
+// HAMBURGER
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+</script>
+</body>
+</html>

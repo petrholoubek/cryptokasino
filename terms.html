@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service – CryptoKasino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#0a0700;--text:#e8d5a0;--text-dim:#8a7a50;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.15) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.10) 0%,transparent 60%);pointer-events:none;z-index:0;}
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 16px rgba(212,160,23,0.4);transition:all 0.2s;}
+.btn-dep:hover{background:var(--gold-light);}
+.btn-login{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
+.mobile-menu a:hover{color:var(--gold-light);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;font-size:0.75rem;}
+
+.page{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.page-header{text-align:center;margin-bottom:2.5rem;}
+.page-tag{display:inline-block;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);border-radius:20px;padding:0.25rem 1rem;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.page-header h1{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,0.5);margin-bottom:0.5rem;}
+.page-header p{color:var(--text-dim);font-size:0.9rem;}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:220px 1fr;gap:1.5rem;align-items:start;}
+.toc-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.18);border-radius:16px;overflow:hidden;position:sticky;top:76px;}
+.toc-hdr{padding:0.9rem 1.2rem;background:rgba(212,160,23,0.07);border-bottom:1px solid rgba(212,160,23,0.12);}
+.toc-title{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+.toc-body{padding:0.8rem 0;}
+.toc-link{display:block;padding:0.4rem 1.2rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:all 0.2s;border-left:2px solid transparent;}
+.toc-link:hover{color:var(--gold-light);border-left-color:var(--gold);background:rgba(212,160,23,0.05);}
+
+/* CONTENT */
+.content-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.18);border-radius:20px;overflow:hidden;}
+.content-body{padding:2rem 2rem;}
+.warn-box{background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:1rem 1.2rem;margin-bottom:2rem;display:flex;gap:0.8rem;align-items:flex-start;}
+.warn-icon{font-size:1.1rem;flex-shrink:0;}
+.warn-text{font-size:0.88rem;color:var(--text-dim);line-height:1.6;}
+.warn-text strong{color:var(--red);}
+h2{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin:2rem 0 0.75rem;padding-top:2rem;border-top:1px solid rgba(212,160,23,0.08);}
+h2:first-of-type{border-top:none;margin-top:0;padding-top:0;}
+p{font-size:0.95rem;color:var(--text-dim);line-height:1.85;margin-bottom:0.75rem;}
+ul{list-style:none;padding:0;margin:0 0 1rem;}
+ul li{font-size:0.92rem;color:var(--text-dim);line-height:1.75;padding:0.2rem 0 0.2rem 1.2rem;position:relative;}
+ul li::before{content:'·';position:absolute;left:0;color:var(--gold);}
+strong{color:var(--text);}
+a{color:var(--gold);text-decoration:none;}a:hover{color:var(--gold-light);}
+
+footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.toc-card{position:static;}}
+@media(max-width:640px){
+  header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
+  nav,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
+  .page{padding:1.5rem 0.8rem 4rem;}
+  .content-body{padding:1.5rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
+  <div class="header-right">
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html" onclick="closeMenu()">Casino</a><a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a><a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+</div>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-tag">Last Updated: January 2026</div>
+    <h1>Terms of Service</h1>
+    <p>Please read these terms carefully before using CryptoKasino.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- TOC -->
+    <div class="toc-card">
+      <div class="toc-hdr"><div class="toc-title">Contents</div></div>
+      <div class="toc-body">
+        <a href="#acceptance" class="toc-link">1. Acceptance</a>
+        <a href="#eligibility" class="toc-link">2. Eligibility</a>
+        <a href="#account" class="toc-link">3. Account</a>
+        <a href="#deposits" class="toc-link">4. Deposits</a>
+        <a href="#games" class="toc-link">5. Games</a>
+        <a href="#prohibited" class="toc-link">6. Prohibited</a>
+        <a href="#bonuses" class="toc-link">7. Bonuses</a>
+        <a href="#liability" class="toc-link">8. Liability</a>
+        <a href="#termination" class="toc-link">9. Termination</a>
+        <a href="#governing" class="toc-link">10. Law</a>
+        <a href="#contact" class="toc-link">11. Contact</a>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-card">
+      <div class="content-body">
+
+        <div class="warn-box">
+          <div class="warn-icon">⚠️</div>
+          <div class="warn-text"><strong>Important:</strong> CryptoKasino is a cryptocurrency gaming platform. Gambling involves financial risk. Only gamble with amounts you can afford to lose. You must be 18+ to use this service.</div>
+        </div>
+
+        <h2 id="acceptance">1. Acceptance of Terms</h2>
+        <p>By accessing or using CryptoKasino ("the Platform," "we," "our"), you agree to be legally bound by these Terms of Service. If you do not agree, you must immediately cease using the Platform.</p>
+        <p>These Terms constitute a binding legal agreement. We may update them at any time; continued use after changes constitutes acceptance.</p>
+
+        <h2 id="eligibility">2. Eligibility</h2>
+        <p>You must meet <strong>all</strong> of the following criteria:</p>
+        <ul>
+          <li>Be at least <strong>18 years of age</strong> (or the legal gambling age in your jurisdiction)</li>
+          <li>Not be a resident of a Restricted Jurisdiction (USA, UK, France, Netherlands, Australia, and others where online gambling is illegal)</li>
+          <li>Not be self-excluded from gambling platforms</li>
+          <li>Have legal capacity to enter into a binding agreement</li>
+          <li>Not be acting on behalf of another person</li>
+        </ul>
+
+        <h2 id="account">3. Account Registration &amp; Security</h2>
+        <p>One account per person is permitted. You are responsible for maintaining the confidentiality of your credentials. All activity under your account is your sole responsibility.</p>
+        <p>Providing false information is grounds for immediate account closure and forfeiture of balance. Accounts operated by bots or automated systems will be suspended without warning.</p>
+
+        <h2 id="deposits">4. Deposits &amp; Withdrawals</h2>
+        <p>All transactions are processed in Bitcoin (BTC). <strong>Minimum deposit: 0.001 BTC.</strong> Withdrawals are sent to the Bitcoin address you specify. CryptoKasino is not liable for funds sent to incorrect addresses.</p>
+        <p>We use an HD (Hierarchical Deterministic) Wallet system — each user receives a unique deposit address. Withdrawal processing time is typically <strong>under 60 seconds</strong>. Standard Bitcoin network fees apply.</p>
+
+        <h2 id="games">5. Games &amp; Provably Fair</h2>
+        <p>All games implement a <strong>Provably Fair</strong> system using SHA-256 cryptographic hashing. You can verify any outcome using the server seed hash, client seed, and nonce provided for each bet. Game results are final and non-reversible.</p>
+        <p>House edge varies by game: Crash (1–5%), Dice (1%), Slots (3–5%), Roulette (2.7%), Poker (variable).</p>
+
+        <h2 id="prohibited">6. Prohibited Conduct</h2>
+        <ul>
+          <li>Using bots, scripts, or automated betting software</li>
+          <li>Collusion, chip dumping, or match fixing</li>
+          <li>Exploiting bugs or glitches (report them instead)</li>
+          <li>Money laundering or using gambling to obscure funds</li>
+          <li>Creating multiple accounts ("multi-accounting")</li>
+          <li>Abusing bonus terms or promotions</li>
+          <li>Sharing accounts or credentials with others</li>
+        </ul>
+
+        <h2 id="bonuses">7. Bonuses &amp; Promotions</h2>
+        <p>Bonuses are subject to <strong>wagering requirements</strong> as specified per promotion. Default wagering requirement: <strong>30× the bonus amount</strong>. Bonuses expire after 30 days if requirements are not met. We reserve the right to cancel any bonus if we suspect abuse.</p>
+
+        <h2 id="liability">8. Limitation of Liability</h2>
+        <p>CryptoKasino provides the Platform "as is." We are not liable for losses caused by technical failures, internet outages, regulatory actions, or decisions made while gambling. Our total liability shall not exceed net deposits made by you in the preceding 12-month period.</p>
+
+        <h2 id="termination">9. Termination</h2>
+        <p>We may terminate or suspend your account at any time for violations of these Terms. Pending withdrawals will be processed after account review. You may close your account at any time by contacting support.</p>
+
+        <h2 id="governing">10. Governing Law</h2>
+        <p>These Terms are governed by the laws of Curaçao. CryptoKasino operates under a Curaçao eGaming sublicense. Disputes are subject to the exclusive jurisdiction of Curaçao courts.</p>
+
+        <h2 id="contact">11. Contact</h2>
+        <p>For questions: <strong>legal@cryptokasino.io</strong> · <a href="support.html">Support Center →</a></p>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer><p>© 2026 CryptoKasino · All rights reserved · 18+ · Play Responsibly · <a href="casino.html">← Back to Casino</a></p></footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(m&&h&&!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About – CryptoKasino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#0a0700;--text:#e8d5a0;--text-dim:#8a7a50;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.15) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.10) 0%,transparent 60%);pointer-events:none;z-index:0;}
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 16px rgba(212,160,23,0.4);transition:all 0.2s;}
+.btn-dep:hover{background:var(--gold-light);}
+.btn-login{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
+.mobile-menu a:hover{color:var(--gold-light);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;font-size:0.75rem;}
+.page{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.page-header{text-align:center;margin-bottom:2.5rem;}
+.page-tag{display:inline-block;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);border-radius:20px;padding:0.25rem 1rem;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.page-header h1{font-family:'Cinzel',serif;font-size:2.4rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,0.5);margin-bottom:0.5rem;}
+.page-header p{color:var(--text-dim);font-size:0.95rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-card{background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.15);border-radius:14px;padding:1.4rem;text-align:center;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold-light),transparent);}
+.stat-num{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold-light);line-height:1;}
+.stat-label{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-top:0.4rem;}
+.section-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.18);border-radius:20px;overflow:hidden;margin-bottom:1.5rem;}
+.card-hdr{padding:1.1rem 1.5rem;background:rgba(212,160,23,0.07);border-bottom:1px solid rgba(212,160,23,0.12);}
+.card-title{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+.card-body{padding:1.8rem 1.5rem;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.body-text{font-size:1rem;color:var(--text);line-height:1.85;}
+.body-text-dim{font-size:1rem;color:var(--text-dim);line-height:1.85;}
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.value-item{background:rgba(255,255,255,0.02);border:1px solid rgba(212,160,23,0.1);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:1rem 1.1rem;}
+.val-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.35rem;}
+.val-text{font-size:0.85rem;color:var(--text-dim);line-height:1.6;}
+.timeline{padding:0 0.2rem;}
+.tl-row{display:flex;gap:1.5rem;padding:1.2rem 0;border-bottom:1px solid rgba(212,160,23,0.07);}
+.tl-row:last-child{border-bottom:none;}
+.tl-left{min-width:72px;text-align:right;flex-shrink:0;}
+.tl-year{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);}
+.tl-dot{width:9px;height:9px;background:var(--gold);border-radius:50%;box-shadow:0 0 8px var(--gold-glow);margin:0.45rem 0 0 auto;}
+.tl-title{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;}
+.tl-desc{font-size:0.88rem;color:var(--text-dim);line-height:1.65;}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.team-card{background:rgba(255,255,255,0.02);border:1px solid rgba(212,160,23,0.1);border-radius:14px;padding:1.4rem;text-align:center;}
+.team-avatar{width:52px;height:52px;border-radius:50%;background:rgba(212,160,23,0.12);border:2px solid rgba(212,160,23,0.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 0.9rem;}
+.team-name{font-family:'Cinzel',serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:0.2rem;}
+.team-role{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.7rem;}
+.team-bio{font-size:0.82rem;color:var(--text-dim);line-height:1.5;}
+.cta-box{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.2);border-radius:20px;padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold-light),transparent);}
+.cta-title{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 30px rgba(245,200,66,0.4);margin-bottom:0.5rem;}
+.cta-sub{font-size:0.95rem;color:var(--text-dim);margin-bottom:1.5rem;}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-gold{background:var(--gold);color:#000;border:none;padding:0.75rem 2rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;text-decoration:none;box-shadow:0 0 20px rgba(212,160,23,0.4);transition:all 0.2s;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-outline{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.75rem 2rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold-light);}
+footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+footer a{color:var(--gold);text-decoration:none;}footer a:hover{color:var(--gold-light);}
+@media(max-width:768px){.stats-grid,.values-grid,.two-col,.team-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){
+  header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
+  nav,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
+  .page{padding:1.5rem 0.8rem 4rem;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:0.6rem;}
+  .values-grid,.two-col,.team-grid{grid-template-columns:1fr;}
+  .page-header h1{font-size:1.8rem;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
+  <div class="header-right">
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html" onclick="closeMenu()">Casino</a><a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a><a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+</div>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-tag">Est. 2024 · Curaçao Licensed</div>
+    <h1>₿ About Us</h1>
+    <p>Built by players, for players. Fast, fair, and absolutely free from limits.</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">50K+</div><div class="stat-label">Active Players</div></div>
+    <div class="stat-card"><div class="stat-num">₿2.4M</div><div class="stat-label">Total Paid Out</div></div>
+    <div class="stat-card"><div class="stat-num">99.9%</div><div class="stat-label">Uptime</div></div>
+    <div class="stat-card"><div class="stat-num">&lt;60s</div><div class="stat-label">Avg Withdrawal</div></div>
+  </div>
+
+  <div class="section-card">
+    <div class="card-hdr"><div class="card-title">🎯 Our Mission</div></div>
+    <div class="card-body">
+      <div class="two-col">
+        <p class="body-text">We set out to create a gaming platform that puts the player first. No hidden fees, no withdrawal delays, no identity leaks. Just provably fair games backed by Bitcoin's immutable ledger.</p>
+        <p class="body-text-dim">Every bet at CryptoKasino is cryptographically verifiable on-chain. Our HD Wallet infrastructure ensures your deposits are always yours — segregated, safe, and instantly accessible.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="card-hdr"><div class="card-title">💎 Core Values</div></div>
+    <div class="card-body">
+      <div class="values-grid">
+        <div class="value-item"><div class="val-title">Provably Fair</div><div class="val-text">Every game outcome is cryptographically verified using SHA-256 hashed server seeds. You can audit every single bet.</div></div>
+        <div class="value-item"><div class="val-title">True Anonymity</div><div class="val-text">No KYC required for standard limits. Your Bitcoin address is your identity — nothing more needed.</div></div>
+        <div class="value-item"><div class="val-title">Lightning Fast</div><div class="val-text">Deposits credited after 1 confirmation. Withdrawals processed in under 60 seconds via our HD Wallet engine.</div></div>
+        <div class="value-item"><div class="val-title">Responsible Gaming</div><div class="val-text">Built-in limits, self-exclusion tools, and 24/7 support. We care about player wellbeing above all else.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="card-hdr"><div class="card-title">📅 Our Story</div></div>
+    <div class="card-body" style="padding-top:1rem;padding-bottom:0.5rem;">
+      <div class="timeline">
+        <div class="tl-row">
+          <div class="tl-left"><div class="tl-year">Q1 2024</div><div class="tl-dot"></div></div>
+          <div><div class="tl-title">Founded</div><div class="tl-desc">Three crypto enthusiasts decided the existing casino landscape was broken — slow, KYC-heavy, and unfair. CryptoKasino was born.</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-left"><div class="tl-year">Q3 2024</div><div class="tl-dot"></div></div>
+          <div><div class="tl-title">Beta Launch</div><div class="tl-desc">Crash and Dice went live. First 1,000 players onboarded within 48 hours. All games provably fair from day one.</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-left"><div class="tl-year">Q1 2025</div><div class="tl-dot"></div></div>
+          <div><div class="tl-title">Full Platform</div><div class="tl-desc">Slots, Roulette, Poker, Live Casino, Sports Betting added. 10,000 registered players milestone. HD Wallet server live.</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-left"><div class="tl-year">2026</div><div class="tl-dot"></div></div>
+          <div><div class="tl-title">Premium Era</div><div class="tl-desc">3D games, progressive jackpots, VIP program, and sub-60s BTC settlements. 50,000+ players and growing.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="card-hdr"><div class="card-title">👥 The Team</div></div>
+    <div class="card-body">
+      <div class="team-grid">
+        <div class="team-card"><div class="team-avatar">👤</div><div class="team-name">Alex Kovac</div><div class="team-role">CEO &amp; Co-founder</div><div class="team-bio">10+ years in fintech and crypto. Ex-Bitfinex security architect. Obsessed with fair systems.</div></div>
+        <div class="team-card"><div class="team-avatar">👤</div><div class="team-name">Mira Solano</div><div class="team-role">CTO &amp; Co-founder</div><div class="team-bio">Blockchain engineer. Designed the HD Wallet infrastructure and provably fair engine from scratch.</div></div>
+        <div class="team-card"><div class="team-avatar">👤</div><div class="team-name">Dan Prochaska</div><div class="team-role">Head of Gaming</div><div class="team-bio">Former professional poker player. Ensures all games are perfectly balanced and entertaining.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Ready to Play?</div>
+    <div class="cta-sub">Join 50,000+ players. No limits. No excuses. Just Bitcoin.</div>
+    <div class="cta-btns">
+      <a href="login.html" class="btn-gold">Get Started</a>
+      <a href="support.html" class="btn-outline">Contact Us</a>
+    </div>
+  </div>
+
+</div>
+
+<footer><p>© 2026 CryptoKasino · All rights reserved · 18+ · Play Responsibly · <a href="casino.html">← Back to Casino</a></p></footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(m&&h&&!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+</script>
+</body>
+</html>
