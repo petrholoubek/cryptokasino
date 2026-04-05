@@ -6,10 +6,7 @@
 <title>Deposit & Withdraw – CryptoKasino</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
-<!-- QR Code library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- HD Wallet library -->
-<script src="https://cdn.jsdelivr.net/npm/@bitauth/libauth@2.0.0-alpha.8/build/libauth.browser.js"></script>
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
@@ -19,8 +16,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.15) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.10) 0%,transparent 60%);pointer-events:none;z-index:0;}
-
-/* HEADER */
 header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
 .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;flex-shrink:0;}
 .logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
@@ -44,16 +39,10 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .mobile-menu a:hover{color:var(--gold-light);}
 .mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
 .mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;font-size:0.75rem;}
-
-/* PAGE */
 .page{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:3rem 1.5rem 5rem;}
-
-/* PAGE HEADER */
 .page-header{text-align:center;margin-bottom:2.5rem;}
 .page-header h1{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,0.5);margin-bottom:0.5rem;}
 .page-header p{color:var(--text-dim);font-size:0.95rem;}
-
-/* ACCOUNT SUMMARY */
 .account-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
 .acc-card{background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.15);border-radius:14px;padding:1.2rem;text-align:center;position:relative;overflow:hidden;}
 .acc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -65,18 +54,12 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .acc-label{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
 .acc-value{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);}
 .acc-value.green{color:var(--green);}.acc-value.red{color:var(--red);}.acc-value.orange{color:var(--orange);}
-
-/* TABS */
 .tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;background:rgba(15,10,2,0.6);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:0.4rem;}
 .tab{flex:1;padding:0.8rem;border-radius:9px;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text-dim);transition:all 0.2s;text-align:center;}
 .tab.active{background:rgba(212,160,23,0.18);color:var(--gold-light);box-shadow:0 0 15px rgba(212,160,23,0.2);}
 .tab:hover:not(.active){color:var(--gold);background:rgba(212,160,23,0.07);}
-
-/* TAB CONTENT */
 .tab-content{display:none;}
 .tab-content.active{display:block;}
-
-/* DEPOSIT CARD */
 .deposit-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.2);border-radius:20px;overflow:hidden;margin-bottom:1.5rem;}
 .dc-header{padding:1.2rem 1.5rem;background:rgba(212,160,23,0.07);border-bottom:1px solid rgba(212,160,23,0.12);display:flex;align-items:center;justify-content:space-between;}
 .dc-title{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
@@ -84,11 +67,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .dc-badge-dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .dc-body{padding:2rem 1.5rem;}
-
-/* DEPOSIT LAYOUT */
 .dep-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
-
-/* QR SECTION */
 .qr-section{text-align:center;}
 .qr-wrap{background:#fff;border-radius:16px;padding:1.2rem;display:inline-block;box-shadow:0 0 40px rgba(212,160,23,0.3),0 0 80px rgba(212,160,23,0.1);margin-bottom:1rem;position:relative;}
 .qr-wrap::before{content:'';position:absolute;inset:-2px;border-radius:18px;background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-light));z-index:-1;}
@@ -98,17 +77,12 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .qr-coin-badge{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);border-radius:20px;padding:0.3rem 0.8rem;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;color:var(--gold-light);margin-top:0.5rem;}
 .new-addr-btn{background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);color:var(--gold);padding:0.45rem 1rem;border-radius:7px;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:0.8rem;display:block;width:100%;}
 .new-addr-btn:hover{background:rgba(212,160,23,0.16);}
-
-/* ADDRESS SECTION */
-.addr-section{}
 .addr-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.5rem;}
 .addr-box{background:rgba(0,0,0,0.4);border:1px solid rgba(212,160,23,0.2);border-radius:10px;padding:0.8rem 1rem;display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;}
 .addr-text{font-family:monospace;font-size:0.72rem;color:var(--gold-light);flex:1;word-break:break-all;line-height:1.5;}
 .copy-btn{background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.3);color:var(--gold);padding:0.4rem 0.8rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
 .copy-btn:hover{background:rgba(212,160,23,0.25);}
 .copy-btn.copied{background:rgba(74,222,128,0.2);border-color:var(--green);color:var(--green);}
-
-/* INFO BOXES */
 .info-boxes{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;}
 .info-box{background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:0.6rem;}
 .info-icon{font-size:1rem;flex-shrink:0;margin-top:0.05rem;}
@@ -116,8 +90,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .info-text strong{color:var(--text);}
 .info-box.warning{background:rgba(251,146,60,0.06);border:1px solid rgba(251,146,60,0.15);}
 .info-box.success{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);}
-
-/* AMOUNT INPUT */
 .amount-section{margin-top:1rem;}
 .amount-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.5rem;}
 .amount-row{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;}
@@ -130,8 +102,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .bonus-preview{margin-top:0.8rem;padding:0.7rem 0.9rem;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;}
 .bp-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
 .bp-value{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:var(--green);}
-
-/* CONFIRMATIONS */
 .conf-tracker{margin-top:1rem;background:rgba(0,0,0,0.3);border-radius:10px;padding:1rem;display:none;}
 .conf-tracker.show{display:block;}
 .ct-title{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.8rem;}
@@ -139,13 +109,10 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .conf-bar{height:100%;background:linear-gradient(to right,var(--orange),var(--gold),var(--green));border-radius:4px;transition:width 1s ease;width:0%;}
 .conf-nums{display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);}
 .conf-status{font-family:'Cinzel',serif;font-size:0.72rem;color:var(--orange);margin-top:0.4rem;text-align:center;}
-
-/* ══ WITHDRAWAL ══ */
 .withdraw-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.2);border-radius:20px;overflow:hidden;margin-bottom:1.5rem;}
 .wc-header{padding:1.2rem 1.5rem;background:rgba(248,113,113,0.06);border-bottom:1px solid rgba(248,113,113,0.1);display:flex;align-items:center;justify-content:space-between;}
 .wc-title{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--red);}
 .wc-body{padding:2rem 1.5rem;}
-
 .withdraw-form{max-width:520px;margin:0 auto;}
 .wf-field{margin-bottom:1.2rem;}
 .wf-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:0.5rem;}
@@ -155,29 +122,22 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .wf-hint{font-size:0.72rem;color:var(--text-dim);margin-top:0.3rem;line-height:1.5;}
 .wf-error{font-size:0.72rem;color:var(--red);margin-top:0.3rem;display:none;}
 .wf-error.show{display:block;}
-
 .wf-amount-row{display:flex;gap:0.5rem;align-items:center;}
 .wf-max-btn{background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);color:var(--gold);padding:0.75rem 1rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
 .wf-max-btn:hover{background:rgba(212,160,23,0.2);}
-
 .wf-summary{background:rgba(255,255,255,0.03);border:1px solid rgba(212,160,23,0.12);border-radius:10px;padding:1rem;margin-bottom:1.2rem;}
 .wfs-row{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .wfs-row:last-child{border-bottom:none;padding-bottom:0;}
 .wfs-label{font-size:0.78rem;color:var(--text-dim);}
 .wfs-value{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--text);}
 .wfs-value.green{color:var(--green);}.wfs-value.red{color:var(--red);}
-
 .withdraw-btn{width:100%;padding:1rem;border-radius:12px;font-family:'Cinzel',serif;font-size:1rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;box-shadow:0 0 25px rgba(239,68,68,0.4);transition:all 0.3s;}
 .withdraw-btn:hover:not(:disabled){transform:scale(1.02);box-shadow:0 0 45px rgba(239,68,68,0.7);}
 .withdraw-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-
-/* SECURITY NOTE */
 .security-note{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.2);border-radius:10px;padding:1rem 1.2rem;margin-top:1rem;display:flex;gap:0.8rem;align-items:flex-start;}
 .sn-icon{font-size:1.2rem;flex-shrink:0;}
 .sn-text h4{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-bottom:0.3rem;}
 .sn-text p{font-size:0.8rem;color:var(--text-dim);line-height:1.6;}
-
-/* ══ TRANSACTION HISTORY ══ */
 .tx-section{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.15);border-radius:20px;overflow:hidden;}
 .tx-header{padding:1rem 1.5rem;background:rgba(212,160,23,0.06);border-bottom:1px solid rgba(212,160,23,0.1);display:flex;align-items:center;justify-content:space-between;}
 .tx-title{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
@@ -192,7 +152,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .tx-type-badge{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
 .txb-dep{background:rgba(74,222,128,0.15);}
 .txb-with{background:rgba(248,113,113,0.15);}
-.tx-info{}
 .tx-info-type{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;color:var(--text);}
 .tx-info-hash{font-family:monospace;font-size:0.6rem;color:var(--text-dim);}
 .tx-amount{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;}
@@ -204,8 +163,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .ts-pending{background:rgba(251,146,60,0.15);color:var(--orange);border:1px solid rgba(251,146,60,0.25);}
 .ts-processing{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.25);}
 .tx-empty{padding:3rem;text-align:center;color:var(--text-dim);font-family:'Cinzel',serif;font-size:0.8rem;}
-
-/* LIMITS TABLE */
 .limits-section{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.15);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
 .ls-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
 .limits-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
@@ -213,8 +170,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .li-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
 .li-value{font-family:'Cinzel',serif;font-size:0.88rem;font-weight:700;color:var(--gold-light);}
 .li-note{font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem;}
-
-/* SUCCESS MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal-box{background:rgba(12,8,2,0.98);border:2px solid rgba(74,222,128,0.4);border-radius:20px;padding:2.5rem;max-width:420px;width:90%;text-align:center;box-shadow:0 0 60px rgba(74,222,128,0.2);}
@@ -223,10 +178,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .modal-text{font-size:0.88rem;color:var(--text-dim);line-height:1.6;margin-bottom:1.5rem;}
 .modal-btn{background:linear-gradient(135deg,#15803d,#4ade80);color:#000;border:none;padding:0.8rem 2.5rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
 .modal-btn:hover{transform:scale(1.04);}
-
 footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:2rem;}
-
-/* RESPONSIVE */
 @media(max-width:768px){.dep-layout{grid-template-columns:1fr;}.account-summary{grid-template-columns:1fr 1fr;}.limits-grid{grid-template-columns:1fr;}.tx-table-hdr,.tx-row{grid-template-columns:auto 1fr 1fr auto;}.tx-date,.tx-table-hdr span:nth-child(4){display:none;}}
 @media(max-width:640px){
   header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
@@ -239,21 +191,20 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 </head>
 <body>
 
-<!-- SUCCESS MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
     <span class="modal-icon" id="modalIcon">✅</span>
-    <div class="modal-title" id="modalTitle">Withdrawal Submitted!</div>
-    <div class="modal-text" id="modalText">Your withdrawal request has been submitted and will be processed within 10 minutes.</div>
+    <div class="modal-title" id="modalTitle">Success!</div>
+    <div class="modal-text" id="modalText">Done.</div>
     <button class="modal-btn" onclick="closeModal()">OK, Got it!</button>
   </div>
 </div>
 
 <header>
-  <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
   <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
   <div class="header-right">
-    <span class="btc-bal" id="headerBal">0.10000000 BTC</span>
+    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -266,91 +217,79 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 </div>
 
 <div class="page">
-
   <div class="page-header">
-    <h1>₿ Deposit & Withdraw</h1>
-    <p>Fast, anonymous Bitcoin transactions · No fees · Instant processing</p>
+    <h1>&#8383; Deposit &amp; Withdraw</h1>
+    <p>Fast, anonymous Bitcoin transactions &middot; No fees &middot; Instant processing</p>
   </div>
 
-  <!-- ACCOUNT SUMMARY -->
   <div class="account-summary">
     <div class="acc-card btc-card">
-      <div class="acc-icon">₿</div>
+      <div class="acc-icon">&#8383;</div>
       <div class="acc-label">Total Balance</div>
-      <div class="acc-value" id="totalBalance">0.10000000 BTC</div>
+      <div class="acc-value" id="totalBalance">0.00000000 BTC</div>
     </div>
     <div class="acc-card dep-card">
-      <div class="acc-icon">⬇️</div>
+      <div class="acc-icon">&#11015;&#65039;</div>
       <div class="acc-label">Total Deposited</div>
       <div class="acc-value green" id="totalDeposited">0.00000000 BTC</div>
     </div>
     <div class="acc-card with-card">
-      <div class="acc-icon">⬆️</div>
+      <div class="acc-icon">&#11014;&#65039;</div>
       <div class="acc-label">Total Withdrawn</div>
       <div class="acc-value red" id="totalWithdrawn">0.00000000 BTC</div>
     </div>
     <div class="acc-card bonus-card">
-      <div class="acc-icon">🎁</div>
+      <div class="acc-icon">&#127873;</div>
       <div class="acc-label">Bonus Balance</div>
       <div class="acc-value orange">0.00000000 BTC</div>
     </div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('deposit',this)">⬇️ Deposit BTC</button>
-    <button class="tab" onclick="switchTab('withdraw',this)">⬆️ Withdraw BTC</button>
-    <button class="tab" onclick="switchTab('history',this)">📋 History</button>
+    <button class="tab active" onclick="switchTab('deposit',this)">&#11015;&#65039; Deposit BTC</button>
+    <button class="tab" onclick="switchTab('withdraw',this)">&#11014;&#65039; Withdraw BTC</button>
+    <button class="tab" onclick="switchTab('history',this)">&#128203; History</button>
   </div>
 
-  <!-- ═══ DEPOSIT TAB ═══ -->
+  <!-- DEPOSIT TAB -->
   <div class="tab-content active" id="tab-deposit">
-
     <div class="deposit-card">
       <div class="dc-header">
-        <span class="dc-title">₿ Bitcoin Deposit</span>
-        <div class="dc-badge"><div class="dc-badge-dot"></div>HD Wallet · Unique Address</div>
+        <span class="dc-title">&#8383; Bitcoin Deposit</span>
+        <div class="dc-badge"><div class="dc-badge-dot"></div>HD Wallet &middot; Unique Address</div>
       </div>
       <div class="dc-body">
         <div class="dep-layout">
-
-          <!-- QR CODE -->
           <div class="qr-section">
-            <div class="qr-wrap">
-              <div id="qrcode"></div>
-            </div>
+            <div class="qr-wrap"><div id="qrcode"></div></div>
             <div class="qr-label">Scan to Deposit BTC</div>
-            <div class="qr-coin-badge">₿ Bitcoin (BTC) · Mainnet</div>
-            <button class="new-addr-btn" onclick="generateNewAddress()">🔄 Generate New Address</button>
+            <div class="qr-coin-badge">&#8383; Bitcoin (BTC) &middot; Mainnet</div>
+            <button class="new-addr-btn" onclick="generateNewAddress()">&#128260; Generate New Address</button>
           </div>
-
-          <!-- ADDRESS + INFO -->
           <div class="addr-section">
             <div class="addr-label">Your Deposit Address</div>
             <div class="addr-box">
               <div class="addr-text" id="btcAddress">Loading...</div>
-              <button class="copy-btn" id="copyBtn" onclick="copyAddress()">📋 Copy</button>
+              <button class="copy-btn" id="copyBtn" onclick="copyAddress()">&#128203; Copy</button>
             </div>
-
             <div class="info-boxes">
               <div class="info-box success">
-                <div class="info-icon">⚡</div>
-                <div class="info-text"><strong>Instant Credit</strong> – Balance credited after 1 confirmation (~10 min)</div>
+                <div class="info-icon">&#9889;</div>
+                <div class="info-text"><strong>Instant Credit</strong> &ndash; Balance credited after 1 confirmation (~10 min)</div>
               </div>
               <div class="info-box">
-                <div class="info-icon">🔒</div>
-                <div class="info-text"><strong>Unique Address</strong> – Each deposit uses a fresh HD Wallet address for maximum privacy</div>
+                <div class="info-icon">&#128274;</div>
+                <div class="info-text"><strong>Unique Address</strong> &ndash; Each deposit uses a fresh HD Wallet address for maximum privacy</div>
               </div>
               <div class="info-box warning">
-                <div class="info-icon">⚠️</div>
-                <div class="info-text"><strong>BTC Only</strong> – Send only Bitcoin to this address. Other coins will be lost permanently.</div>
+                <div class="info-icon">&#9888;&#65039;</div>
+                <div class="info-text"><strong>BTC Only</strong> &ndash; Send only Bitcoin to this address. Other coins will be lost permanently.</div>
               </div>
               <div class="info-box">
-                <div class="info-icon">💰</div>
+                <div class="info-icon">&#128176;</div>
                 <div class="info-text"><strong>Min Deposit:</strong> 0.001 BTC &nbsp;|&nbsp; <strong>No Max</strong> limit</div>
               </div>
             </div>
-
             <div class="amount-section">
               <div class="amount-label">Expected Deposit Amount</div>
               <div class="amount-row">
@@ -367,112 +306,94 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
               </div>
               <div class="bonus-preview" id="bonusPreview" style="display:none">
                 <div>
-                  <div class="bp-label">🎁 Welcome Bonus (100%)</div>
+                  <div class="bp-label">&#127873; Welcome Bonus (100%)</div>
                   <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">First deposit only</div>
                 </div>
                 <div class="bp-value" id="bonusVal">+0.00000 BTC</div>
               </div>
             </div>
-
-            <!-- CONFIRMATIONS TRACKER -->
             <div class="conf-tracker" id="confTracker">
-              <div class="ct-title">📡 Transaction Confirmations</div>
+              <div class="ct-title">&#128225; Transaction Confirmations</div>
               <div class="conf-bar-wrap"><div class="conf-bar" id="confBar"></div></div>
-              <div class="conf-nums"><span>0</span><span>1 ✓</span><span>3 ✓</span><span>6 ✓</span></div>
+              <div class="conf-nums"><span>0</span><span>1 &#10003;</span><span>3 &#10003;</span><span>6 &#10003;</span></div>
               <div class="conf-status" id="confStatus">Waiting for transaction...</div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
-
-    <!-- LIMITS -->
     <div class="limits-section">
-      <div class="ls-title">📊 Deposit Information</div>
+      <div class="ls-title">&#128202; Deposit Information</div>
       <div class="limits-grid">
-        <div class="limit-item"><div class="li-label">Minimum Deposit</div><div class="li-value">0.001 BTC</div><div class="li-note">≈ $65 USD</div></div>
+        <div class="limit-item"><div class="li-label">Minimum Deposit</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
         <div class="limit-item"><div class="li-label">Maximum Deposit</div><div class="li-value">No Limit</div><div class="li-note">Any amount accepted</div></div>
         <div class="limit-item"><div class="li-label">Confirmations Required</div><div class="li-value">1 Confirmation</div><div class="li-note">~10 minutes average</div></div>
-        <div class="limit-item"><div class="li-label">Welcome Bonus</div><div class="li-value">100% up to 1.0 BTC</div><div class="li-note">First deposit only · 30x wagering</div></div>
-        <div class="limit-item"><div class="li-label">Network</div><div class="li-value">Bitcoin Mainnet</div><div class="li-note">BTC only – no Lightning</div></div>
-        <div class="limit-item"><div class="li-label">Deposit Fee</div><div class="li-value">0% – Free</div><div class="li-note">We cover network costs</div></div>
+        <div class="limit-item"><div class="li-label">Welcome Bonus</div><div class="li-value">100% up to 1.0 BTC</div><div class="li-note">First deposit only &middot; 30x wagering</div></div>
+        <div class="limit-item"><div class="li-label">Network</div><div class="li-value">Bitcoin Mainnet</div><div class="li-note">BTC only - no Lightning</div></div>
+        <div class="limit-item"><div class="li-label">Deposit Fee</div><div class="li-value">0% - Free</div><div class="li-note">We cover network costs</div></div>
       </div>
     </div>
-
   </div>
 
-  <!-- ═══ WITHDRAW TAB ═══ -->
+  <!-- WITHDRAW TAB -->
   <div class="tab-content" id="tab-withdraw">
-
     <div class="withdraw-card">
       <div class="wc-header">
-        <span class="wc-title">⬆️ Bitcoin Withdrawal</span>
+        <span class="wc-title">&#11014;&#65039; Bitcoin Withdrawal</span>
         <div class="dc-badge" style="color:var(--blue);background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);">
           <div class="dc-badge-dot" style="background:var(--blue)"></div>Processed in ~10 min
         </div>
       </div>
       <div class="wc-body">
         <div class="withdraw-form">
-
           <div class="wf-field">
             <label class="wf-label">Bitcoin Address (Recipient)</label>
             <input type="text" class="wf-input" id="withdrawAddr" placeholder="bc1q... or 1A1z... or 3J98..." oninput="validateWithdraw()">
             <div class="wf-hint">Enter the Bitcoin address where you want to receive funds. Double-check before submitting!</div>
-            <div class="wf-error" id="addrError">⚠️ Invalid Bitcoin address format</div>
+            <div class="wf-error" id="addrError">Invalid Bitcoin address format</div>
           </div>
-
           <div class="wf-field">
             <label class="wf-label">Amount (BTC)</label>
             <div class="wf-amount-row">
               <input type="number" class="wf-input" id="withdrawAmt" placeholder="0.00000000" min="0.001" step="0.0001" oninput="validateWithdraw()">
               <button class="wf-max-btn" onclick="setMaxWithdraw()">MAX</button>
             </div>
-            <div class="wf-hint">Available: <span id="availBalance" style="color:var(--gold-light);font-family:'Cinzel',serif;font-weight:700;">0.10000000 BTC</span> &nbsp;|&nbsp; Min: 0.001 BTC &nbsp;|&nbsp; Fee: 0.00005 BTC</div>
-            <div class="wf-error" id="amtError">⚠️ Amount must be between 0.001 and your available balance</div>
+            <div class="wf-hint">Available: <span id="availBalance" style="color:var(--gold-light);font-family:'Cinzel',serif;font-weight:700;">0.00000000 BTC</span> &nbsp;|&nbsp; Min: 0.001 BTC &nbsp;|&nbsp; Fee: 0.00005 BTC</div>
+            <div class="wf-error" id="amtError">Amount must be between 0.001 and your available balance</div>
           </div>
-
-          <!-- SUMMARY -->
           <div class="wf-summary" id="wfSummary" style="display:none">
-            <div class="wfs-row"><span class="wfs-label">Amount</span><span class="wfs-value" id="wfsAmt">—</span></div>
+            <div class="wfs-row"><span class="wfs-label">Amount</span><span class="wfs-value" id="wfsAmt">--</span></div>
             <div class="wfs-row"><span class="wfs-label">Network Fee</span><span class="wfs-value red">- 0.00005 BTC</span></div>
-            <div class="wfs-row"><span class="wfs-label">You Receive</span><span class="wfs-value green" id="wfsReceive">—</span></div>
-            <div class="wfs-row"><span class="wfs-label">To Address</span><span class="wfs-value" id="wfsAddr" style="font-size:0.68rem;font-family:monospace">—</span></div>
+            <div class="wfs-row"><span class="wfs-label">You Receive</span><span class="wfs-value green" id="wfsReceive">--</span></div>
+            <div class="wfs-row"><span class="wfs-label">To Address</span><span class="wfs-value" id="wfsAddr" style="font-size:0.68rem;font-family:monospace">--</span></div>
             <div class="wfs-row"><span class="wfs-label">Processing Time</span><span class="wfs-value">~10 minutes</span></div>
           </div>
-
-          <button class="withdraw-btn" id="withdrawBtn" onclick="submitWithdraw()" disabled>⬆️ Submit Withdrawal</button>
-
+          <button class="withdraw-btn" id="withdrawBtn" onclick="submitWithdraw()" disabled>&#11014;&#65039; Submit Withdrawal</button>
           <div class="security-note">
-            <div class="sn-icon">🔐</div>
+            <div class="sn-icon">&#128272;</div>
             <div class="sn-text">
               <h4>Security Notice</h4>
-              <p>Always verify the recipient address before submitting. Cryptocurrency transactions are irreversible. We process withdrawals within 10 minutes after KYC verification.</p>
+              <p>Always verify the recipient address before submitting. Cryptocurrency transactions are irreversible. We process withdrawals within 10 minutes.</p>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-
-    <!-- WITHDRAWAL LIMITS -->
     <div class="limits-section">
-      <div class="ls-title">📊 Withdrawal Information</div>
+      <div class="ls-title">&#128202; Withdrawal Information</div>
       <div class="limits-grid">
-        <div class="limit-item"><div class="li-label">Minimum Withdrawal</div><div class="li-value">0.001 BTC</div><div class="li-note">≈ $65 USD</div></div>
+        <div class="limit-item"><div class="li-label">Minimum Withdrawal</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
         <div class="limit-item"><div class="li-label">Maximum per Day</div><div class="li-value">10.0 BTC</div><div class="li-note">VIP players: unlimited</div></div>
-        <div class="limit-item"><div class="li-label">Network Fee</div><div class="li-value">0.00005 BTC</div><div class="li-note">Fixed fee, we cover excess</div></div>
+        <div class="limit-item"><div class="li-label">Network Fee</div><div class="li-value">0.00005 BTC</div><div class="li-note">Fixed fee</div></div>
         <div class="limit-item"><div class="li-label">Processing Time</div><div class="li-value">~10 Minutes</div><div class="li-note">Automated processing 24/7</div></div>
-        <div class="limit-item"><div class="li-label">Wagering Requirement</div><div class="li-value">1× Deposit</div><div class="li-note">Must wager deposit once</div></div>
+        <div class="limit-item"><div class="li-label">Wagering Requirement</div><div class="li-value">1x Deposit</div><div class="li-note">Must wager deposit once</div></div>
         <div class="limit-item"><div class="li-label">KYC Required</div><div class="li-value">Over 1.0 BTC</div><div class="li-note">Under 1 BTC: no KYC</div></div>
       </div>
     </div>
-
   </div>
 
-  <!-- ═══ HISTORY TAB ═══ -->
+  <!-- HISTORY TAB -->
   <div class="tab-content" id="tab-history">
-
     <div class="tx-section">
       <div class="tx-header">
         <span class="tx-title">Transaction History</span>
@@ -487,532 +408,417 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
       </div>
       <div id="txList"></div>
     </div>
-
   </div>
-
 </div>
 
-<footer><p>© 2026 CryptoKasino · All rights reserved · BTC transactions are irreversible · <a href="casino.html" style="color:var(--gold)">← Back to Casino</a></p></footer>
+<footer><p>2026 CryptoKasino &middot; All rights reserved &middot; BTC transactions are irreversible &middot; <a href="casino.html" style="color:var(--gold)">Back to Casino</a></p></footer>
 
-<script>
-// Fallback pokud Supabase script selže (file:// protokol)
-window.addEventListener('error', function(e){
-  if(e.message && e.message.includes('supabase')){
-    console.warn('Supabase nedostupný - demo mode');
-  }
-}, true);
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ════════════════════════════════════════
-// ⚙️ CONFIG
-// ════════════════════════════════════════
 const SUPABASE_URL = 'https://cckybsbawnsbvxwloxcr.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
 const WALLET_SERVER = 'http://localhost:3001';
 const WALLET_API_KEY = 'casino-super-secret-key-2026';
 
-// ════════════════════════════════════════
-// 🔐 SUPABASE CLIENT
-// ════════════════════════════════════════
-const XPUB_ADDRESSES = ["bc1qc5qylnuhknmgtrt5jf8u8lc8tncs4yfk9c4m6c", "bc1qsw59g4932dcupxtmh5mj30hhd0drpn8pp9u0pj", "bc1q06ndun52yqeuksj0plfu0l94qzu4j5g2v879pt", "bc1q6lhw052endk6huqtr5asv6u2sueg6tj9749j73", "bc1qfn23elp8t5eyzwzyjvy6edz232zp9jtwu0cra8", "bc1q9e4nvdx5r2vshh29rzrwn6xj9panl29kafhd37", "bc1qpsnfv7vwdeun6st0ymluycfh4e9l0m4nv867lm", "bc1q6l6hzlrxlu6enk5w97klmmkf9q83fcadeys5g7", "bc1q5g9qxzqwc5c00zzycqtyv3j80d9cmq4fqpxwq7", "bc1qmwsy3xfm4rkfx643dcwtr2xgkwd8rweautraqn", "bc1q4upmae22s6g6n2w4c63e7gy992fs02ghwsemd7", "bc1q6xcsqf5fah0qanmzp53324ez3pal4tjt43qgrl", "bc1q03tusjfmfv2dm8zuvs6z6sz3rqp5q5vhhzhthe", "bc1q2xdlu2p0yjr22c4nkwu49u0apysawv72m52cem", "bc1qth8emk9c0hj3tft0ff8279j9a359e6cu0h92a0", "bc1q0gtmyat5g5dh52g9jhrxyl6cyd2yvd6vnas9t2", "bc1q4v9kqj5scjqtjws735wlqfxkneum8step60p5u", "bc1qh93kpvghe3xhedmsns02sp90x8wpn53c5p7w3e", "bc1q84elgww7q4p600pdrg2jwz27r3tr3lthvdz3qr", "bc1qvvl0azlczk3yjg92uvr4j6llgzharhyzlxuv5k", "bc1qajmqwtun7esjfmfd6ck8dnw5zpsy0xdtjjpymx", "bc1qtea3fuw285jjaspvye2e0wsmltspnt42784n3d", "bc1qzyj8kxw37hym8vcrm8jkz7tqfnznktwpf4dyr2", "bc1quhsr66s3j833fle2ppkmm3qnklj34rn7grawly", "bc1qt7jj3jy2runlqycqy838sd3f8fzgufz9f2rm9d", "bc1qnnqvfrqswxz37ldlkn6cd64vyt53rh7vdjeck0", "bc1q2yegdwsrclq2xlvzme06tm5ptcw2rpuewcug3u", "bc1qlztemvaq2chypmr7gkn5qgkyk2rqjnf8clcfmv", "bc1qae0zh4vgruwdmylfvz7h4qxz7974e2se6xhe2e", "bc1qaj5h69qf70cjd9skv2hcdc7aewkjw00jpny62w", "bc1qpj0pm32emvezqa3lvvs6w9ywxcqtkhldvyuhd6", "bc1qd40f9rnu65y2pj2xg4d72976sgqdv0emd3vyza", "bc1qfsmuldf9axjs89ah0k34tekpm0ey4wg84dcyah", "bc1qp375g0gd2jy5sxfmk33kghc57236mgwn4zan79", "bc1qqyln57qccz63uzvxwaj7qrmy9suw70ax7udhw5", "bc1qds7g275d0m838en7djrkpaq8w6gc46p7mvwhfu", "bc1q87smcg2yqt5ccn333wh90dt5lma085f8vj5ew5", "bc1qttcvd9pyk0td8ja2l92rrsdtlkqqm3h27uc75h", "bc1qgnmse23xkpycy8ggfquv2n9adj7gevcg8mzr9c", "bc1qlfy8687gz4vl5j8tc0ap0y0se96qk5m03fqecm", "bc1qwk7a3hhqgzph632kjvv3lppzgcptdsywfvhwxx", "bc1qysml09magrmfh4me33y4lmwau5sdrtvjxhyr73", "bc1qvkfvkjedyh507udf96q7nr7qwwvd9zskhyltt8", "bc1qh4tmcf2upv6l36gr9tswqj9qnxslzlah40nycf", "bc1q8snxpelaa9ygtjpkqrt0eecggfss2e778vhp8a", "bc1qps82vg7a6j8jn097h9nllsee05wacp4u9avjt3", "bc1qc9rvjclec2pam0xj4427cvwc7fy28tvysjhu3u", "bc1q3fzmmeq34rl7rrpwagf4pxzcavm57vrxy80suu", "bc1qepulyeqhyuy569ye8sq3hgjfgyedwz7mat7mg3", "bc1q4vlc528x9r9xdw7dq5syz4p5xmmh6qtuurl0zs", "bc1qt6g7v952y0rccps59ux5t52xgnxdwhtzrzrkzh", "bc1qe23vnn0j4xx3urk9k89lpxehrcsmgsjsuhf0nw", "bc1q0qkmaecjkzghllqsjdkq5drwgd6rlcau7ghyk5", "bc1q00j4rnut4xfhyq5ve0qht9wzw59xy4e96esgj5", "bc1qt2wd9uknn36w4rlwzpjwmzwfrc8gxhes0ssna9", "bc1qndk5f4k3h8xpq0d5ep7wzrw3lq3eth43mv63p0", "bc1q294txnmzzpvqvry8yaeqza6w700k5glr46q6wp", "bc1qsgewr98dn435mqw3jmz5pnrqc95fqsw66qtz23", "bc1qemd2qejl9cz546kehjtcdf070u6taz7mclpv63", "bc1q7awz694qx4xecnt3zthzvjvre2yfk58epjta8x", "bc1qwqaaccuka2dxhr7ka6zrkh56lqv9zw4s7umsz2", "bc1qmf9wrtpt3uhywnmj58d3m0qxjk3rvyruwus9jd", "bc1qdcxa5nqau3g45ejjhqmv9ehez5590vzun26kxj", "bc1qzcdsgfd3xnez68rkx88khe23wls40fvnagukgh", "bc1qq6053xmn4wezdrhqcf03gpxcg7v3xfdn7rmvm8", "bc1q586l37mxhtx040fczp2c3d7vmsmzjmrm3pnnpp", "bc1q47venmwany02qtg7pa3pzcw9xq8ce3vhuu58v8", "bc1qrnxw368x3llmelcz770rkafqvxcrvtk5me2vaa", "bc1qcnr8jcl0vsrkdsmn02p3qvywv2akkw7wjaa3m8", "bc1qsthkwq7nes8kusd82zt76fu7quwlxt9eu4kskl", "bc1qq78r0hj7wf7zt7e5v7vyuq22000n0q9rklfway", "bc1qy55432dcgqnzt7qswergdyajkg7wg5quk7p757", "bc1q8rsg4mtmf06slrh87dkd6jpd2cmtvpnxflkjdk", "bc1q43aq2ng6tu0tvl2x52cuymwcuck73rmk44vfkt", "bc1quespv646mzhzmhuruhjumzp867nmszapm8frrx", "bc1qsvra9f72wpakvr52dzg2h2l2zphha74fgyqgcq", "bc1qwz4nxt8e7plvthj36nnyrqvusllas5cxxqcemt", "bc1qrcvrdl37ss7pqcwjprjkmdxh9mv4gyvxjdy97d", "bc1q7pk0xdycsjjpxmukdk54jt3pnea4476tt94y7p", "bc1qccrvc83r8eyatx32lwy3t8c6elgzgrewfu0f4u", "bc1qg3cqvt5l8egz4fk56a2h4qthr2h36t2hd69he5", "bc1qle8h7t4neaj20g3frmez6h9pehma7napj5plzh", "bc1qy9ujws5ty9falhnrgdjwljx3c77zsrs4v0h4zv", "bc1q5ahl6mtx87wduzzuwu5zy8gq6nm3dczg0dextd", "bc1qx0adpp5n8gvjrewm4j07nqc0fjptvp2yenj8ka", "bc1qlaggjl8247lw4p4f9hcy5u3qhmnea40xdvdt6y", "bc1q967gmkh2p9y2tetlhggjmv38q9ps7hssfvsfyd", "bc1qwtlkg8ew8qe7phxnsc9rfxanyu3wg7n9h03p93", "bc1qhk82lrs8rmpvxl9z0jrlejrt49jq5s886wswkn", "bc1qh8cmjswt65rvca0nwkjnksmp6pp5ayk4xqqphm", "bc1q6nv4t3lgqe0z0uwe4d3ec6pr0ekeg9ma6kn9aa", "bc1qpg0geh6tzs4pjl59avyw6pyk6g736q98lz29l4", "bc1qhs9jnwuxdhtent3hy05cdtxd539whlw5w8dz8m", "bc1qe5aqw25ynwcym0a9hwz4q35dhc7twzzkqe6yny", "bc1qsw08x2qwaghw9nd78ysz5dt8m5f7q4259wylgl", "bc1qv84wk64l9p8vgrquxkqpu46pcxtkqhmjp3z085", "bc1qpza5520qgpelfcw3ktvlgppxp4n4jr7jguywee", "bc1qn8v8ynekv059z3lwfz4fa7429hfa7k3egun4u2", "bc1qzrdd4u8l5fn8763ls0se5gmkjcqxzcwtz3fnzk", "bc1qe5w6706nqvlt3h9z8vla3ggf2kmax54jj05r2t", "bc1qew033kpdsqaq3gsvm4pvdp20kazdhfzf6xw2wm", "bc1q6xlr4cdqzxxqh6rxfwvd99asa3kkhzuy4exdzw", "bc1qw7mxhlm34527evwctr9lwlc4ev936dgcy0mk84", "bc1q9gdcluprlt9qdljrsfhxcppqu9l6v7k4ymsq4n", "bc1qzfhjcl7l5ly7zh3z0quz368vhyhmrq647976fg", "bc1qpdayyrpvc9ta6ptv2qwelsly68lz7d92cu9sag", "bc1qhnhzp2qa504frn2h9t55z9ve90lmmvdm47qmxw", "bc1qvhrtwt7up5mvy7dv8srfycwgsc8ka7sqm5mtqq", "bc1qfsvcsynldtgj4c7veakkrkn9xg0vr0gygjg6yh", "bc1qsef03dh86j74a0ta2fve5svmcr8dhdqdgw0z3r", "bc1qjme6fzq2f4ysn4fxwsl9s8ya0p5yhm7hjfpppm", "bc1q6hzv6seknkpa06khv35cp68zku3zuj4rxm8k63", "bc1qdald453w8e93qe4exq3e2r5ntf4vy2kcudckuj", "bc1qm4nk0he7rg9m6rk07exrxsg9d8e8ndafchfy2q", "bc1qpymzwce5udwx02w9hvxpcc9lf37kegy82rlnm6", "bc1qca3slqvclc2sprj4nef5ahmxje3ul9dgvn3lf4", "bc1qasltkn967s5sp8tfe9ejdh26qkm7wx4h0k33nl", "bc1q0jg06trkghq04ddmer36y6yupp88c76430fqrl", "bc1qd93rel2a78jygp60lqe4w5kdtck7kv50nmn6ea", "bc1qudg7eqhc34x4kqp0hs4wjph8pttwk0hs7qdecj", "bc1q7cxuxjn67pxzhtxy9ecaxw7pcppl23h3tx9k7z", "bc1q2369zq5gh3th44z8kucgtulmsq2jjvkal02use", "bc1q3nq445keh52lwqh2evat3vqwtk4z63yk24q03s", "bc1qrtkchw9aw9l2ksmrl3mqxa0wqgvfyka7qvnjpp", "bc1qtnpa750w7cgvt9hrcj8s7wq9p2u5s3j7j3l34u", "bc1qwe4ch2xxm0cdpefq9sxdrhurjw0cxrnnplreww", "bc1qlqug7a2y4qug4njl92z7au3c5gylhk547m6adh", "bc1qludec3xaueutv24lxn0y8y97wh0xrdpffrf8eh", "bc1qks4mv7k6dx3vsvyyuk74xaju60qz4cwpr0aw8p", "bc1q7f62kxf83hm9n2py0eaj9vhn9rveakjfwh5an3", "bc1qzwhwg3tn7hmqjsdrdmp4fes5zcg3ajggekjxyy", "bc1qt49yvq4kfg5k42tmlhyuh0cmlcz5gkzpq5hvn0", "bc1qjf3h5r0k7hks4v46ctc76x8p3w6upx0te0k84d", "bc1qmp7w2dxsdeysrm9khmgklt0c66kjypq297z8r5", "bc1ql9e8xx9sgnyp28ssdg5r34jh6vyvptve63qcyu", "bc1qzfxcxl0jc264dj0avwrnz7z6vz3gl0nh4l4e7l", "bc1qjsysq3pjjxypc8qg3rl5n5zsq6xnjwu4nmp8fs", "bc1q53w9n8jcxlvd7ne9h66z0rcj3e2yquuu2jg9uv", "bc1qtasq6gaxfav8a5s9v89sfd28ztltucz4t283j2", "bc1qkya6n64785wl0yahtht2e32ygcyuajmvdr8uqu", "bc1q9x8x5flu0lusew9m6ce3jpg0rz0uq9jcy7cg3z", "bc1qjrzx80ngf296rwy58sx94w05g5m4tzg2al239v", "bc1q4f2wvpcnc3lhj4e7474p8jv6dgagqxkv2vx92p", "bc1q4whtxqdlnsq7awuv0x9uk75dwq5pqgqtu2kmkv", "bc1q8xdpxzn9up7mqlpfzv2trcfjctvuu8xwsphd32", "bc1q3ezuaekfkzj6jhdty04jzv55r3svq9r9n6n4mq", "bc1q3mzlxu0aves5q7g0zsp9y4m0rwurgwy24n9e4r", "bc1qqra0mxxa8a8cpds5w4jcqt57mqgcz95mn7zwk6", "bc1q7r9fsjpedcpdy4pf7x3nudkpjxyhqy5kpuma6a", "bc1qq4uves8q99xdzkyekggts80vd34d88psmcwcl6", "bc1qgxmmzqq4wnw43299f5f0h2uhc6dz6g7s68upq4", "bc1qk07hzug388hrfrldxalt2c3znlx3hqxnwpvauq", "bc1qtdarpt5qyx2kg840gn3zjgtc720wsugkzqd66a", "bc1q9ljh2j2905g9kfgjmp3c99kwv9tum767wggkct", "bc1q3qremwta98v8xad52fef33f863wggxehs88ee2", "bc1q02aeyq6yg2d2unud6tjum23ll2nvdq9eaww5z0", "bc1qe2rdyn25n0ck8kfffhr87rrakgselxmydzseq9", "bc1qqq569jr54g8h27jxu47txjmkupy4l2np472ela", "bc1qwt6atl7acp7vsgw6dgtnemhkm3t0ajhh8u2fwz", "bc1qac6lsms3wu3qszryky0gl88ga5yu5sf9pkzxvq", "bc1q0xs7gt92k2jz3qdkn5unpx97mkmxvpzkp4fsq8", "bc1qatm89xv84upr5kmz2w69cjf3mnsmxrn27lucyc", "bc1qw2rf5jxu24dqld0ekgr0wu6qs0t2l46khaf397", "bc1q2wthtnnmugz58tkyt4vm8tz4t2gl2u62hlfm57", "bc1qruhscdn65xmwlj7znh0q83f90l3eywl8nsd82l", "bc1qsmknlx8pdvjrr479p4m9tfx22dujxp9xv56w2d", "bc1q8ky3vx6ka28z5agrr0qnwghpnv7440gj9gjjtv", "bc1qtwkrpxyswnpte9vegqxd7qpdnpeysv5a6vpvve", "bc1qy5cn7drdf5q2vxvpkgnzka3q6qzajy4c3m6dc9", "bc1q9l4svktxnjst4xkuhq6j75knt4h4r8xl6c4l87", "bc1qvydravc6gm6q8nxx0nfzd2x4h72pp9y33w2x3k", "bc1qzpg07tzrpnhxwe2suqljmyq2qzpjwcpdktwpca", "bc1qas9hms0ddzep856837etsum9y724vm5gftdgpm", "bc1q7g6ww62chhx5jnp6qg4gfx5nt7qf74la7qyw7w", "bc1qxs4cu85zupyyn6z9dlzpxd2gng4ey6wcn47np5", "bc1qr7yru56mcu9x7nus0rlhw0ktrh3z2amv2whnp0", "bc1qac856z2r2y4hcgf3485yvmzmvmdaehal0fqwnp", "bc1qsl9zgp4nnmg20lyk8v7lu604xk2xdws0dym4m6", "bc1qf66y6l4ecj84gu8wzqzvu4tr3tm26p8whjg44s", "bc1qppqklgs9c3xcv4v9sf8lzerjlgqlktthptczlp", "bc1qnp5m9va7vvfmvvxw8z8xjpsnq862jpes6kqqlx", "bc1qzw575ngfy2elv6vyfd8xjuyj7wgafr3ajcaw70", "bc1qz057z8yf06sgakxctfn6wku6awjx3e7xgcdztz", "bc1qhsm078r9aehm2lzygapszq6wcdptv4q8ncd4yr", "bc1qlrpudpvl0yhz4737uv3d06qsz04vcxmupgruwd", "bc1qppfwqrcg2a8qu6xaqgl84pc38dtua4xnxla0nz", "bc1qc6l95hgt33sn2a8042luk5cjeqp097q3vr87yw", "bc1q70qzvky3mjsy0gkusnwlu5ndxqhcq9rtp67p8a", "bc1qw9gpuyl43gctlkxc0dxaejd8hd3s00wfkh7ug5", "bc1qslf9fgh48808mu0he348tw6tll47uqvhhh2wg3", "bc1qg9cnlxkh5jek7mr3376rzykrstnxgl757rw7dp", "bc1qd78e8tjshsgxkv4n70y8r2xkwzkh4hx6nt7mpa", "bc1qllwqc8kg4tsrft9vjcg06f7xgudmhv6qcwgm7m", "bc1q08yczalsyth68vlwmcaaecr50x866wrzyn8lz4", "bc1qwh84s92gyf62k0nst5sergcq39zs3srsxzann0", "bc1qglyff6gxvz8m3fa8w4xzk8av60aqms5uu4azam", "bc1q4ua5taefwktjwjms98j3zmcs36e9pgx6aa0838", "bc1qds5fhume7uteumddxcp3wnddh0krpturax6e7l", "bc1qyd50jw4akcu2fj2wfc7p5594j8u5u2dyl77a0m", "bc1qgputa8jqjqrhzwaztkwwz4lpg92as3rgp764sf", "bc1qejj52ajw78js47sftgd34dzcusl3d9f04urpfn", "bc1q3vyge2snnphp7r2wza9vrwjjesdy0r7fumf40u", "bc1qgc2hu7f2yxqm2mghg6fawec3zh3y395weqkajs", "bc1qgez8ftzvrvgxd4hvdy7uuykxgqpyvjpk83458u", "bc1q9hlnm8zt0vyxu5au6zffs0hcp7qk2xue0dxadl", "bc1q709ye4jt4p20vrfrdanfv4etatzwh4dkrzewlz", "bc1qer2nvze3vyjfsst4up9lm3unx80k3xxwuk3f6y", "bc1q9n235rhmr07kk2zeer4409ugzhzrv9vyenutlk", "bc1qucae8fxnn8tk0trh299kjuu6ad72v6he04tl5d", "bc1qcsajsha56un883hsf9ajtd3q67kqfj96n4u3le", "bc1qrxfxraekt0wtklkcc4sqecwujshc4sjhvke38f", "bc1qe5vcd98mnuyca2k2dvuzslx7ds4yuxsgu2zf5g", "bc1q5spnp9vveyma5nmdfdtt6sqh7rtxhksyk8papq", "bc1qvh6k25cxujdqglfquqn94u6vhpkgjajjs0lx5c", "bc1qyk5fmxuqfrhzzj0ndwpgq2w78wyrwv6r2qvw7g", "bc1qxkmh4vydeumh24whpwhf5xld38amjw3z23t8ph", "bc1qc6ztnzsp76f8ltwysf5x2awrn6mxnka5v67lrx", "bc1q3970pmujhuzlz62gsdetmwp2c3uchx3yrmsm3e", "bc1q22lek5jsqck9jvmn996ggfkaswqx8lw7u5p4na", "bc1qxa4zdrgxn5kz89n309s6l9qsnnt0w4w0kx5zr5", "bc1qkxrtuw2ccr6gxdvct9svu4azcc4p7yz2ks2wtk", "bc1qsz8qngfvyynff73q5zgh9c2ntnc3sxw8dnq7pm", "bc1q246twn9e8zdnya8qenppsc746fyj9yhm9mehvd", "bc1qwz8hyt7a9ag9s7zk56mua75dc26h9kh52xs6ex", "bc1qsedq0wj8evuv30kgudqvwmwyuwklmwq5ewp9sn", "bc1qzm8ls8sfkm44av0edfwx03jwe309e9xf2rqk4w", "bc1qrghvjyed9wuwadyjzsqtpneu94phaw9uu9pcaj", "bc1q0hqxa4wapqke3xr5aa8xmw8mlecqugg6qphvpc", "bc1q9g5vzwsaayffvxtgc38thug096szs0agcjt4w2", "bc1qjzcjhjyq98nhw0c36llg8ar2fx9l0xu5gz68vh", "bc1qdj0w37kd6d24m4tfdczu003c94alpq48x3w8ex", "bc1qnrz2rcrpqarqdqmn8xap42sekaket9v2z27m4c", "bc1q6rwy987z4sprscsj4473lmncc44v0xf70x89du", "bc1q93wtxf9j55g7qaaud6g6rxzlsrx9z3w3r4c979", "bc1qzrs3rull3lxqn8ty985kcqr05cuxwnmp99qcn3", "bc1qym070p7wcfw98g3gxg3y634mqzn4qgp3gndqcq", "bc1qetwc8hxffem8rrcgupn488zwg2tdqrx56swn4q", "bc1qeu73w82y8ueqlu0u56d6wnzq35hsy6sawkd2jd", "bc1qksh3ffy58vkc3k5yu4g86c9c4dpsnwvmr94s3g", "bc1q6h97uhjhmzct4yge30t2u060j685w0740m7t0q", "bc1qd770rc9vte0ch6meutzmrxskkeudmh35jcptg3", "bc1qjjc8nu5lv35yztqvyqsu9420ne9dzx9w3jwpax", "bc1qa2vznlhtkuy6vfflkq9f3a5qss9trwsw45z809", "bc1qlkky9e302nscl5hvjj206zzvfwz2yjscxgxlf6", "bc1qrnks3llpmlqpk8v23n42xwxc0exnz2rn8hpkw0", "bc1qrxsd6lqkthyys94w2t49v85tur70rx7f9w8aj8", "bc1qvav7djqqy70dep4k4kfupsnatvsumrvx0ruqnc", "bc1q2396avgdy4hc38glu2lrle4vqy2twsfngr432j", "bc1qqdvpm0n40ap6xekzftgz9hwnyttp9m3kz35hkn", "bc1qew0tf06z672kjxxxu4zwmfvd0drk9l49uanlz5", "bc1qens85xdpz4xqr08vejwu798790s7437aw6zqp7", "bc1qmhmac7cvg272p5f266vlecsg3s6fs7sqczjhwj", "bc1qp7q2aunr7gtefzknh7yhyh3yl0x8mgq2w4ys00", "bc1qm2ezlka6g9pgqvagq54gtaqtcn5d2x44ga9a9n", "bc1q5jhqzlcrvlyxpezhu0l4vpxgysvamjdvsky4ml", "bc1qz4v0lzja0zwa372lc42fzgjffltjrcpuya74m5", "bc1qmr9fruvsukrkvvvd8kyhscg2r7tdalzl238lu5", "bc1qclakauy4nf94c2k30yt5glsnyzv80f4usr29tq", "bc1q365z2d5j2xzk3h39azgghtmvkkgqtc08esff6j", "bc1qkqznmzqhkujdhk6dckz3cyuk6v6s6wh93s6uuf", "bc1q00zcntf73nxyghxdkvfp9z8938g5cu2dxhwcds", "bc1qzr28mml2m7tdmylhk6f2yrk9820pvhjuzvndxl", "bc1qvc5erza8h5uxnnwwsj57kms5hg70t8ar2runx9", "bc1qkayhsy45n9mfgrrfptwd6r08tp2axcpqvta8k9", "bc1qd2z5ggf5v9l9c4uslktuhe89cg44h7ckfr3l77", "bc1qsu7wk6a5dalkuqygdex6vfq32wg9kpu5vy5lyz", "bc1qq8en4vk34hknkg7t4nknqe7se9n629a9cdc4xz", "bc1qslz3k5jr8rxl5ennrjj5h73pm590nwg5znyp7j", "bc1q0flxan07jeewtc30ruuxver2wzxhmuqqsm9aft", "bc1qrerz4g4sg52y4fn54uy9yfl0nlg0m2ffcn62w6", "bc1q8u03hp0gxphe0h7fnwhgd6tc2dew9ek67twswr", "bc1qpjlfmxr90u9spk8jdcytjeg0frqm63cpxsfn4x", "bc1q4pcj4lc9xdgx65temrhw8tvjq5e7kg7ju96xqm", "bc1qlcz053um8e0ku06r39dfheheuf3rc0nv96culp", "bc1qs9gqf33kkz8ws00zupj5qzuzjz7alc3k96nctk", "bc1qjgjgffav2vz7kt9dgpdt03czryux99v9yxp9kh", "bc1qh84sv50kxlkt5ljzpe0pwr49kyjq255yvetsmx", "bc1qsg0c2nnj49u29klqxfrgpymhacedpwvtfvlkt9", "bc1qnslm6wjthvxgv6a9j88gc0h38jxjqwhj8en2nl", "bc1qzvttd7vymggysv06l0x4zxn0ahajac5ec28pzw", "bc1q9na8ne8023lthy0xh4ept0hwk47u9p7f06yltm", "bc1qkfulp0sm2gyk800d6ez29xgwgd09a5jrtnvd49", "bc1q3ctt536ecucl77k2fxzzad9rnjk6w7f2dwq4s7", "bc1q46xjayugstqg95s2nx4f6pys88v4yma7k0pv0k", "bc1qlg3kaxcehzz5hn7dcqte0zvdj2vzetaayd7gug", "bc1qnwfj3waz8eaqp8s0s8luh8fvxnk5tf62lg6a28", "bc1qgwltx8y5ycw6l4xtkynde8mhn5slu2knkyz4r5", "bc1q6f430uzyck82n689qpekja3kqe5aj30qs4xwv5", "bc1qm2jwjn5w0c4cnrnx8wl8uvjzx7up67zl45v566", "bc1qyw56cq5t7lzdkkv2cnrvh43lzt9x9sw2pl4zj4", "bc1qfqyyzwua4vlfwdndhq6r4s6djpjcjm6sxd3dw5", "bc1q5mge9ljg3ag9agmy7fyge8adla9mmpzquln3nu", "bc1qekacd5uldajgzaygm2tva8rsy6fs9cv9qmhsmd", "bc1q5zwxg2vh67xdxdh7h5aqqwmla6w33ufm6d9y2p", "bc1q34hdrq70jx29x8mysygesfptyds3z9kjdexvqn", "bc1qwh35tml5rayrx7rugr5nraglmv8ujwyzzskr6u", "bc1qsg4d97d4949uykpggq5thaz40n7m5ymcag5964", "bc1qnutkhgmwctfn4dyuqsf3lauwl02l6xs05wh8w3", "bc1qjf2vk0k22h5l4e27fcmws0x6chtjzmn94puh9j", "bc1qz4wqd6gw6xjxaxlteww9n7nx34g3mdyzvznhpy", "bc1qkfxcn4mpltnxctdq434wkj4vjrkff2ut3c4ujc", "bc1qc32g0lmf9fjhdusmz0cglzku46fktjx6uxnaay", "bc1q2gjg0wnewztgvtfpq2edq2su0tmpyd7fqdf2dx", "bc1qy3aak85cdzlf30gdrkn7ehej7hrx6sv9ws4547", "bc1q37hvka9zj4ak6fehuju78pvna73p2sm9xg47rc", "bc1q7wqe6wpkeuj4vjfa32glshpmpw088legwjqsn4", "bc1qvgpj5fuluqdfzqg632v3q6vrx3au479a44n5vh", "bc1qyx5mjpw8rvghymazpn6twreq030nd952rf9sym", "bc1qa3308hwkt9cvz2vj7mrqyjt0678j76nyd7amzt", "bc1q5yw4jk7jttdlg8wxpuhc8vrv8yndltmyt5mkvy", "bc1qnff630xsfn9y599dztzsu72pwpyaatlm3hzhwk", "bc1qcacdkve25gx4ga5kdq6fax2vh00kg7250nemn5", "bc1qevy3hdwd8x66r56kvv6c5p8q097rcnjhz7xf49", "bc1qnqvaahgwyclrk33hlvqcr5qp79x3k3crthwctv", "bc1qge8dr0wgld3f0zgwvgas0hgd42r3u7ntyx4e00", "bc1qztcmphy2ls75fsqvfw8prxfp9td59gp7sz2pdz", "bc1qd9ft8ghqg24achdrdg7qt0fr7yttuq6ewnju5m", "bc1qvzd0wdhd3030uvq778lfya2h7wd322j0574dcz", "bc1ql8mxwjwe0rzfc3u8cpt5mvnajaymwrd4g886lr", "bc1q4a7zx9zr4s8qlctj7zuj9kpk3h6mc5c5dhajzr", "bc1qp5e9c5fp6243mmafqhyswkssvcsafw4vyz6vfe", "bc1q5uaz4hhp0y3c45r8mp93w2ytgdvkfgrq4hmw9v", "bc1qvzr5jvvdzxc6gvc5k6awd39nl6fwk0rrjllju2", "bc1qk8hhcephs8ahktxfs2s6wymcfc5ln4k3wk45mh", "bc1qt526ua69xg6gmup2quu4ssl7ls3d2m3nj78daf", "bc1qzc9sf72rdgnw3w2he6zhdq5wkn28fdhaam6326", "bc1q9468eteqvaeksa2te8d2gxjnqs5fmzs4uund88", "bc1qh479czyxpw9sdavstzkjskyw978qqyuw80mj48", "bc1qgzs4f2h5pgt8a56h57ecuuunmxrhprpsr4kf3g", "bc1qee7jegwv95yq32ehf9julcfxz7l6xs4vj6tgm6", "bc1qykjj5kvkk5qswend3s0mlapmwh8uku6m9sg5ak", "bc1qdscafu3ynh86z78srpgwrw2p8lntd8usw4qg6c", "bc1qeu2zzl8tfkzywgu4elvc56u0ua0t6rmx6tj7fx", "bc1quze54k2crgp4jtx498af40td42ncs8tc5y65m9", "bc1qj0flheurs7kvmkkne0f3z8gp3dec45xy9svfa8", "bc1q96d69mxvf75nptpxs8r4qas0ulsfvr4wv0wae6", "bc1qckqnc7fxydmsf0njrmecs09rd3dzn4c470yg49", "bc1qax4x57kjh8rnp843xwyv03n039skje7vt0ku9e", "bc1qt27j3n8ma4wncrx0qj0uue65mwh3a4plz220uz", "bc1qahjr7y36t50zlgk0gssqfdz5j6cj4qq0348g7j", "bc1qqwx6zjfcmtn2hz37al37m05shrudhlhrukk2pw", "bc1q7a263f9a5lflspdvnqskj9ctw575fl04uskhts", "bc1qmajrrgx6efms6fqnmhqde053rkl6x0k9krnq42", "bc1qhvv87g93kj37n2khwn08rkyruyv8n6z5yka6kv", "bc1q0n89r93xw0s4a09h9csvkltnu33v607pjjprds", "bc1qqextamw3sjcahas3hjeyxfs3dkdxk42h2p3wyc", "bc1qp89m676jgphd846dr0rhr3dvk839uhzmuzzcdp", "bc1qxxzystnw695lrnnc0stxt79wegk26xul026w8c", "bc1qc7xx3wmrhjkjv4jght5xcgcnqv7fzntf9hx25q", "bc1qdu08qgcm50datrpxzzeahyafws94u2806h44fz", "bc1qktlghrvflyeku394dfytymw2wwzvhjk6vay3sz", "bc1qajntz3eeuxvhm6fa6eyk6p7me4jlpqlmy8fxld", "bc1qu52afjaj6uxm080tynfe4hvjvendskjwy594ag", "bc1q95437dvrgyw4methr8hwl5tzwpvchwrcv42llu", "bc1qgqqs6vwz0swakeq8tt2nd0kht5h4uxck40jdr6", "bc1q4g32qmhcmtajtlgxl4xztd9zw2up2ezx208mmw", "bc1q6ve7cdewx5y7s9v7ynm9jc2j3el75ka62dzc44", "bc1qkt9vvgc4wy5yy8qsu3fhtutac58ykqa9ufae3m", "bc1q5plmqx0f5dfvgdttdwqrf7crdesh950cqwmd9s", "bc1qwj8mvxmp8jpksy3yzusc8qf7lj6u3tnt4340hk", "bc1qzvmgm36zff4033wma0w7dx0rf495rmzdm2uy79", "bc1qgk08lswcat433dk735g5ppp57aduxjq2llau0g", "bc1qw0fwflye39mwehtje3k04sn9qx4u7fcyjfj7ts", "bc1qh0wcnwyaljr3ts4tsqh3y0zc7l9cpgsfx3wdns", "bc1qkm8qwgq02ll0htjwv8te7947dqkd9ew99vnng5", "bc1qs5qzxaxyd002arn3zs796kpu3fx74uer8gf5u7", "bc1qqk2af4vurfzjwlgxdldllu2xrhhqeyfnf5ankh", "bc1qlvc9ddajxqc6k987u64h2ma6nnd4dcsz5jh08f", "bc1qahzfqpy9twpkc47v5nkqpw8uu5hzt72qu6fupp", "bc1q0zwcjs52fdkcsyw8yfm6nyr2aa9yrzxueuh4zt", "bc1q7g2jxqwdj40kcaf6d45nja57fs4v902nd0j5ph", "bc1qrwq4adwu5f29p287rcrh2z9axxga4v8m4e0ds3", "bc1qf2v9vvwgmcvqfcajzk70m82p0wsuyep7jy4lt9", "bc1qj22j6ajl4dl2qrwfqzkejcqe6u7x2xe7026dhs", "bc1qg5c6yzn0npz6g3aqwxgff8pj36k3na07c08pp6", "bc1qd497f9mt985qn9dfhky4t5g8zqs23p4g84kmxt", "bc1qyr86ly0769hqqw7rzwmcgp4uugdypwp79lltat", "bc1qx6lvckzw0ls4637jnsdc33qcgznw4denmdzttx", "bc1q8d2qm4ccfk5l9m3qcsmumt6pmg6dsnqcv9sa8s", "bc1q2dxpwta20a58m0g5wzxhzc6ugg7ksa2g4f0m0f", "bc1qkgxjumsfta53jsg8l7gxw6rtfe9r6t6qvrp7a0", "bc1qld57wxglmjngqals8wfqk4wwezeqwqx59xdlwl", "bc1qny20a50388m6v07gznf36xs5mqx9tj70z3vr57", "bc1qcquq4y8xx8ml670yvysjkjl92c06u8n4r8exd3", "bc1qtkeg9dqecengyjqd7ua4rhn339fxlnjmqm7kxg", "bc1qtcjyznl4gr25cwfea4gr4z7sfal7z2jyqh264q", "bc1qkye8w9ejca587eaqpjqqzdkmz9swlggw9jl867", "bc1q6hkv0javu042yly2d9n9cdhsu0dyrmj4f3l9gv", "bc1qqkrwxfq8wfjrzdhmwa9mx5tqhlhn3zhdkmqy7c", "bc1qxcca2qa0pc63zfgann2uzmvl0asw96ky795nmy", "bc1q6uddjhq0e3mqdcwaxdna74wjh5ydxeg55r4ky4", "bc1q79xwx3v7f4nn0q8zlqvx2j0ahc2h98hg3288jn", "bc1qdyu8tp2lg382742hndnetuxnxcht07cnpdz7wt", "bc1qwlg0fxrrldstad5esychra5vtdkp6nr9ysxnv0", "bc1q4w6aw8cafvrtvv28r0266fvzlmmt24ydg78u3c", "bc1qwltszdse76028mwyrepglkm5usqyusmypgf0zg", "bc1q3r9lu4lywtpzfaqp4n7ujwjqrjlnge9ls2dumh", "bc1q0n9mjcpydzpjcraw2qdqrpe60gplpnuura5n5v", "bc1qf28ujage4gtz88yvzmr8xz7dtljzdjzs7zeqwe", "bc1qhcaenre8t2099zcpnw9cx355qqwmfjm2w9gc57", "bc1qg4r80mm7rxhpxgymgnzm9kn8lm6zjappasjfxa", "bc1qyjpzfukhwvdenz9j29nd5anne9lvdngjnlzf7n", "bc1qj3msn0eqyerm2gcszx4z7wx8a8ahmtm3tagwag", "bc1q07ucvyxclnqxyxu3s9cpflznehqdz3974y9c37", "bc1q8yrqh3uzj7pcqvyfq7ue4fgz0rf5fun256wk22", "bc1q3tyxk4rqh3gqxd6rzaw5spjh233e53kg0ltzfy", "bc1qjw2dave3ke6kyhytkkewxksayngmzl0lgx85sl", "bc1q48xmqxgy4as9j68r7nsvnz0h504n7yvygwdwat", "bc1qckm3larv80v4qge927nt0ah2pp59kxa9q4w7mj", "bc1qaa88gv7yqffhnvadj7tct6mqk03sujxm2xmm3f", "bc1q8zh35puz4dav8y9c5ueymm2zrfk9uy25egsswr", "bc1qj3a94sstpafa4p0dy8ngw0j4q372dp4zdpyfaz", "bc1qqx9tsslrhlwy0hf2tmpt8e4plwlcm6ge2gss72", "bc1qj38qfejt2ufekamzvxgkjv9mw047l88w7l50rk", "bc1qny988gtd9c6ar5dhsvd29f4er2n0ar9rnhww79", "bc1qa90ztwamtzk4g7srwc0wt2yshptk6dlugt260w", "bc1qwpyhgf3mffg4zhl3kkaq0nm89tuppmzh5u8rv9", "bc1qftmphqgkfp6dyxynx8xrmft84edvhexfr7lnrn", "bc1qmj00qgfjjhvejqqsgjw5rcs0l6tz2h9wt7gaaf", "bc1q56ady0vku36yw4vvt8hl7g4f605235nu7g7mfj", "bc1qz8curfwwxuhc2h4cejjqsgfapp5vs96gu0j7su", "bc1qyly37swu3h9ldjpvsdv0np3lwzd0wwjf6q36a6", "bc1qd9cx4r7tdh8ru0t9rmz0q6ap3z369yu6yf997j", "bc1qn74v9fgkx0zncpj85pqwq63nj5jqw9lj49m8kl", "bc1q5xr09tspfr8tek7cx42eajhs3nfysvd5cjvfwt", "bc1qx58u5crchgupdm9s87mdhdtzhm220nnxxvr9r4", "bc1q07j2qarlwtm73dg0km2l50994l424p0zxke4wa", "bc1qg5r348f9pv2k45pegmgqwaryk6s7vr464pkmjq", "bc1q999qqg7wusu4pr26px7cxwwwzmjwdy03zlcpj9", "bc1q32guh92uhv2hujc9cyqfnd78z472hv208p2h2z", "bc1qs2nm7xvttenm7hry2gtw5rcxz4dg5vvmg7e2at", "bc1qspl99jmmjahsudyzfseh5u6zxlrzdhg85afn9y", "bc1q0w4uavkqrwnef7n6jglrl93ep9pz6jqlacs582", "bc1q9egecmclt64rlzgz3mc7jc64a8udxyyujm0zzp", "bc1qhzy8cjuwwranun65zyep8lsuj3waxh3cdz5908", "bc1qq4nrp85e8ucn550djuwsjra2k9vfh2s72avr4l", "bc1qw5zv8u7pchgw74sz34ewa836pcu5wqxxs73qd8", "bc1q0pn363p5gr0vuqu0j7zzxzv06uu7hryyuhjq9e", "bc1qpj70wq32g2f4j6c0rwf0lv69ukrqqm8up8vjhe", "bc1qdu475ayn4hjxs5ngqq8xe2jm7nlrjt99tkc9va", "bc1qs3f64kxl9fpkkc3taktmud7c4jdk9jmn66t7km", "bc1qcckrg0mp054nw6m0rwcsmm62kzwqatjn008ad8", "bc1ql4tzlvtuddacfekyt8n8rw6502ah79xxk8zsjz", "bc1qdjk8gjup78pgpagv4lud9y0vw734hkfl7fe2tm", "bc1qzqy7546rgkw0ra708f28zahx29eydqddjvrazg", "bc1qxpkwrelxw380ftzq84d7axlhkzkltmwz28kr3a", "bc1qjh99wvv8240ecdplt5y54d7455qfens9vlm7pw", "bc1qngmdwyjzhnru53pe3stv0rk2px5mpw8en8f3kk", "bc1q0h8twnfj5rakcsl4hmuwnh95cttrm6c76ltaqf", "bc1q2gvtd8ycgpaxq36q0m4rttxlmtcs7tztppzzgf", "bc1qxvw7nu57nxlw34ktms5v5hle67eklkftnsz7zs", "bc1qhq8zcv88wtugul42qfed97kfq77r2976msneks", "bc1qaa3h597qsel94mqv4ssafk7le5gakqnze0kvtr", "bc1q0ef50gu4kh8w2gylr7vq7avp5f907k4jgthdtr", "bc1qd5zs324z58a7ewllt3wm439msf2nue6rlzfpnn", "bc1qh8s6v3k7sdhku0842gre0ax39jygmm0h3auh7t", "bc1q3k46xhvj9k86fvpnyr95vh5gdslrgaq605f2jj", "bc1q9nnkpyltflzv77kpkte95ff7j3wu8u4vy6lk7w", "bc1qys45zn6k2t4fxaxwfyrlf4pkce26cnq98gcw9w", "bc1qm7tzjfwjcvd8qttdxgzxuyfft9rrjklzppnlty", "bc1qwx7g7u0qg6g94yjzauzkx4t6uyzts6dxsx3s2d", "bc1qsjf7xk3md86ldk3zegt0l3grmw20ddd8txqgm2", "bc1qrwsun6cqmahrjtlrfcjkj33dya82k8sqxrcadm", "bc1ql7a8e2lxhzeszu7jkec3ylygq92uqsy6g2x5h9", "bc1qzqdttgdnr4nh52ucyp9ead79n2nyj7uqg3xhka", "bc1qrauwu7kpv3lhl2myackjtn00622gtmvdpheyst", "bc1qcw6l4ka0v48d2mp8h0zdql7xjj52sxhw9nj428", "bc1q7n4nlpy2ghudaeq64qkvqshmu0hpd60u583cqa", "bc1qkk8emlf3q5xrpm6hehkkwt4dry2v7usfdke7fh", "bc1qgywqurturyc83tv5nvk746d458k8vfd5txg230", "bc1q5l38d6ja4jwvslajg5xuye548t4l3lzz4djjp4", "bc1qzsq85majdnwx0gk56xpgtssw9qsn37dqj5kttu", "bc1q40n7uy3n94k0x7g7zsrukjad4ztu4xwmuykpwx", "bc1qsahtareu5slx74sh2kxxdqum5r330r7gfd857m", "bc1qgg3gx73th4cn5q0kyjs8g9n8v2p36xwnz78gpe", "bc1ql39ynyjjc937s6vl4te458kl46munah9ymxm9k", "bc1qxu63wuvrex4hp5qt8sy0604judl754ctrwdlpk", "bc1qaa78zzpwdsgrw3ddrcv4cu45r839a9h4f7lkzt", "bc1qmm6mzvur23nefyzz5ddagrtmjt4tfk3muwc6sr", "bc1qmx82ndr8zzqy0ch3ytlec9t2x534gzcg77m69c", "bc1qcq0pgg7l90y6dpssfz5szw5fp86vgrllnuqgvk", "bc1qgxejptac9rd0rz3flawflknlmcd9dsnmpjfc39", "bc1q3qnpr0wdma5d0f784u7dk9fh65hhrc20geh795", "bc1qjrj2s8pz7xcw6yval9xxfscl4ep2dgyu8d4ee5", "bc1qjv5w8pn6m4e3xw9w43p4dtl2tqjttdgyqc5zd7", "bc1q4k95r2cgczmxc7ywja3mhgkqsfmxqqal6g6qvr", "bc1q03zgc746tpnuthejtrx3ft9phuhfa9zvgqtw6u", "bc1qrkkjnnw6flshn8dpgsxlt64lf0qfzavqc0hx9v", "bc1q20rfqe5pgg42kys5s4nmvl9kq5jruxyh2xm3xr", "bc1qlezdus8a92uflyc6asu2fzmfkfrqd9gytc6hv2", "bc1qycl68cxeuw69t3kx5uhmqf8d0erf9v3htyklxy", "bc1q43cunlmgjlcy9asurjjqy388k7z873yu3lx5jp", "bc1qmr0lrzdvkl0nezu9e48j7xukrp4flpmt3tg6v0", "bc1q8myaw8tslhqamzdahjp94arrwsavxu85j9ztc2", "bc1qnv4ek070z468shtcutwl74td2c8yjtsgwae8ce", "bc1qsfyyfej73jx0t48t9u446plz8df9n85r0jykst", "bc1qkm2387pazj9legvlp9skcjr97sjdsvupynmrml", "bc1qj09j2cpjrr7gmz6cgea40caqccw5843rtdg8vx", "bc1qz56flklqrmqzykq3jjfdqyyp6yruqezch9nadx", "bc1quqse7jkc0tm8t8qj2su46nqgazspxu994g2tpq"];
-
-let sb = null;
-try{
-  const {createClient} = supabase;
-  sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}catch(e){
-  console.warn('Supabase init failed - demo mode:', e.message);
-}
-
-// STATE
-let balance = 0.00000000;
-let currentUser = null;
-let currentAddr = 'Loading...';
-let confInterval = null;
-
-function fmt(n){return parseFloat(n).toFixed(8);}
-
-async function generateNewAddress(){
-  if(!currentUser) return;
-  try{
-    const r = await fetch(WALLET_SERVER+'/casino/address/'+currentUser.id,{
-      headers:{'x-api-key': WALLET_API_KEY}
-    });
-    const data = await r.json();
-    currentAddr = data.address;
-    document.getElementById('btcAddress').textContent = currentAddr;
-    document.getElementById('copyBtn').textContent = 'Copy';
-    document.getElementById('copyBtn').classList.remove('copied');
-    generateQR(currentAddr);
-    document.getElementById('confTracker').classList.remove('show');
-  }catch(e){console.error('generateNewAddress error:', e.message);}
-}
-
-function generateQR(addr){
-  const qrDiv=document.getElementById('qrcode');
-  qrDiv.innerHTML='';
-  try{
-    new QRCode(qrDiv,{
-      text:'bitcoin:'+addr+'?label=CryptoKasino',
-      width:180,height:180,
-      colorDark:'#000000',colorLight:'#ffffff',
-      correctLevel:QRCode.CorrectLevel.M
-    });
-  }catch(e){qrDiv.innerHTML='<div style="width:180px;height:180px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;text-align:center;padding:10px;">QR Code<br>'+addr.substring(0,12)+'...</div>';}
-}
-
-function copyAddress(){
-  navigator.clipboard.writeText(currentAddr).then(()=>{
-    const btn=document.getElementById('copyBtn');
-    btn.textContent='✅ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 Copy';btn.classList.remove('copied');},3000);
-  }).catch(()=>{
-    // Fallback
-    const el=document.createElement('textarea');el.value=currentAddr;
-    document.body.appendChild(el);el.select();document.execCommand('copy');
-    document.body.removeChild(el);
-    const btn=document.getElementById('copyBtn');btn.textContent='✅ Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 Copy';btn.classList.remove('copied');},3000);
-  });
-}
-
-function setDepAmt(v){
-  document.getElementById('depAmount').value=v.toFixed(3);
-  updateBonus();
-}
-
-function updateBonus(){
-  const amt=parseFloat(document.getElementById('depAmount').value)||0;
-  const bp=document.getElementById('bonusPreview');
-  const bv=document.getElementById('bonusVal');
-  if(amt>=0.001){
-    const bonus=Math.min(amt,1.0);
-    bv.textContent='+'+bonus.toFixed(5)+' BTC';
-    bp.style.display='flex';
-  } else {
-    bp.style.display='none';
-  }
-}
-
-// Simulate confirmation tracking when amount entered
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('depAmount').addEventListener('change',function(){
-    if(parseFloat(this.value)>=0.001){
-      startConfTracker();
-    }
-  });
-});
-
-function startConfTracker(){
-  const tracker=document.getElementById('confTracker');
-  const bar=document.getElementById('confBar');
-  const status=document.getElementById('confStatus');
-  tracker.classList.add('show');
-  let confs=0;
-  bar.style.width='0%';
-  status.textContent='Waiting for transaction broadcast...';
-  status.style.color='var(--orange)';
-  if(confInterval) clearInterval(confInterval);
-  setTimeout(()=>{
-    status.textContent='Transaction detected in mempool! Waiting for confirmations...';
-    confInterval=setInterval(()=>{
-      if(confs>=3){clearInterval(confInterval);return;}
-      confs++;
-      bar.style.width=(confs/3*100)+'%';
-      status.textContent=`${confs}/3 confirmations – ${confs===1?'Almost there...':confs===2?'One more...':'Credited! ✅'}`;
-      if(confs===3){status.style.color='var(--green)';status.textContent='✅ Deposit confirmed! Balance updated.';}
-      else status.style.color='var(--orange)';
-    },8000);
-  },3000);
-}
-
-// switchTab - defined below
-
-// ══ WITHDRAW ══
-function setMaxWithdraw(){
-  document.getElementById('withdrawAmt').value=(balance-0.00005).toFixed(8);
-  validateWithdraw();
-}
-
-function validateBTCAddress(addr){
-  if(!addr||addr.length<26) return false;
-  return addr.startsWith('bc1')||addr.startsWith('1')||addr.startsWith('3');
-}
-
-function validateWithdraw(){
-  const addr=document.getElementById('withdrawAddr').value.trim();
-  const amt=parseFloat(document.getElementById('withdrawAmt').value)||0;
-  const addrOk=validateBTCAddress(addr);
-  const amtOk=amt>=0.001&&amt<=(balance-0.00005);
-
-  document.getElementById('addrError').classList.toggle('show',addr.length>5&&!addrOk);
-  document.getElementById('amtError').classList.toggle('show',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
-  document.getElementById('withdrawAddr').classList.toggle('error',addr.length>5&&!addrOk);
-  document.getElementById('withdrawAmt').classList.toggle('error',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
-
-  const valid=addrOk&&amtOk;
-  document.getElementById('withdrawBtn').disabled=!valid;
-
-  const summary=document.getElementById('wfSummary');
-  if(valid){
-    summary.style.display='block';
-    document.getElementById('wfsAmt').textContent=amt.toFixed(8)+' BTC';
-    document.getElementById('wfsReceive').textContent=(amt-0.00005).toFixed(8)+' BTC';
-    document.getElementById('wfsAddr').textContent=addr.substring(0,18)+'...';
-  } else {
-    summary.style.display='none';
-  }
-}
-
-function submitWithdraw(){
-  const addr=document.getElementById('withdrawAddr').value.trim();
-  const amt=parseFloat(document.getElementById('withdrawAmt').value);
-  if(!validateBTCAddress(addr)||amt<0.001) return;
-
-  // Add to history
-  addTx({type:'withdraw',amount:amt,addr:addr,status:'processing',hash:genHash(),date:new Date()});
-  balance-=amt;
-  document.getElementById('totalBalance').textContent=fmt(balance);
-  document.getElementById('headerBal').textContent=fmt(balance)+' BTC';
-  document.getElementById('availBalance').textContent=fmt(balance);
-  document.getElementById('totalWithdrawn').textContent=fmt(amt)+' BTC';
-  document.getElementById('withdrawAddr').value='';
-  document.getElementById('withdrawAmt').value='';
-  document.getElementById('wfSummary').style.display='none';
-  document.getElementById('withdrawBtn').disabled=true;
-
-  document.getElementById('modalIcon').textContent='✅';
-  document.getElementById('modalTitle').textContent='Withdrawal Submitted!';
-  document.getElementById('modalText').textContent=`Your withdrawal of ${fmt(amt)} BTC to ${addr.substring(0,16)}... has been submitted. Processing in ~10 minutes.`;
-  document.getElementById('modalOverlay').classList.add('show');
-}
-
-// ══ TRANSACTION HISTORY ══
-let transactions=[];
-
-function genHash(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
-
-function addTx(tx){transactions.unshift(tx);}
-
-// Demo transactions
-transactions=[
-  // Transakce se načtou ze Supabase
+// HD Wallet adresy (fallback kdyz server.js nedostupny)
+const XPUB_ADDRESSES = [
+  "bc1qc5qylnuhknmgtrt5jf8u8lc8tncs4yfk9c4m6c",
+  "bc1qsw59g4932dcupxtmh5mj30hhd0drpn8pp9u0pj",
+  "bc1q06ndun52yqeuksj0plfu0l94qzu4j5g2v879pt",
+  "bc1q6lhw052endk6huqtr5asv6u2sueg6tj9749j73",
+  "bc1qfn23elp8t5eyzwzyjvy6edz232zp9jtwu0cra8",
+  "bc1q9e4nvdx5r2vshh29rzrwn6xj9panl29kafhd37",
+  "bc1qpsnfv7vwdeun6st0ymluycfh4e9l0m4nv867lm",
+  "bc1q6l6hzlrxlu6enk5w97klmmkf9q83fcadeys5g7",
+  "bc1q5g9qxzqwc5c00zzycqtyv3j80d9cmq4fqpxwq7",
+  "bc1qmwsy3xfm4rkfx643dcwtr2xgkwd8rweautraqn"
 ];
 
-function renderTxHistory(filter){
-  const list=document.getElementById('txList');
-  const filtered=filter==='all'?transactions:transactions.filter(t=>t.type===filter);
-  if(filtered.length===0){list.innerHTML='<div class="tx-empty">No transactions yet</div>';return;}
-  list.innerHTML='';
-  filtered.forEach(tx=>{
-    const row=document.createElement('div');row.className='tx-row';row.dataset.type=tx.type;
-    const isDep=tx.type==='deposit';
-    const dateStr=tx.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    const statusCls=tx.status==='confirmed'?'ts-confirmed':tx.status==='pending'?'ts-pending':'ts-processing';
-    const statusLbl=tx.status==='confirmed'?'✅ Confirmed':tx.status==='pending'?'⏳ Pending':'🔄 Processing';
-    row.innerHTML=`
-      <div class="tx-type-badge ${isDep?'txb-dep':'txb-with'}">${isDep?'⬇️':'⬆️'}</div>
-      <div class="tx-info">
-        <div class="tx-info-type">${isDep?'Deposit':'Withdrawal'}</div>
-        <div class="tx-info-hash">${tx.hash.substring(0,24)}...</div>
-      </div>
-      <div class="tx-amount ${isDep?'dep':'with'}">${isDep?'+':'-'}${fmt(tx.amount)} BTC</div>
-      <div class="tx-date">${dateStr}</div>
-      <div class="tx-status ${statusCls}">${statusLbl}</div>`;
+let sb = null;
+try {
+  const {createClient} = supabase;
+  sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) {
+  console.warn('Supabase init failed:', e.message);
+}
+
+let balance = 0.0;
+let currentUser = null;
+let currentAddr = '';
+let transactions = [];
+let confInterval = null;
+
+// ── HELPER: bezpecne nastav element ──────────────────────
+function setEl(id, val) {
+  var el = document.getElementById(id);
+  if(el) el.textContent = val;
+}
+
+function fmt(n) { return parseFloat(n||0).toFixed(8); }
+
+// ── QR KOD ───────────────────────────────────────────────
+function generateQR(addr) {
+  var qrDiv = document.getElementById('qrcode');
+  qrDiv.innerHTML = '';
+  try {
+    new QRCode(qrDiv, {
+      text: 'bitcoin:' + addr + '?label=CryptoKasino',
+      width: 180, height: 180,
+      colorDark: '#000000', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(e) {
+    qrDiv.innerHTML = '<div style="width:180px;height:180px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;text-align:center;padding:10px;">' + addr.substring(0,20) + '...</div>';
+  }
+}
+
+// ── KOPIROVAT ADRESU ─────────────────────────────────────
+function copyAddress() {
+  navigator.clipboard.writeText(currentAddr).then(function() {
+    var btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 3000);
+  }).catch(function() {
+    var el = document.createElement('textarea');
+    el.value = currentAddr;
+    document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    var btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 3000);
+  });
+}
+
+// ── GENEROVAT NOVOU ADRESU ───────────────────────────────
+async function generateNewAddress() {
+  if(!currentUser) return;
+  try {
+    var r = await fetch(WALLET_SERVER + '/casino/address/' + currentUser.id, {
+      headers: {'x-api-key': WALLET_API_KEY},
+      signal: AbortSignal.timeout(3000)
+    });
+    var data = await r.json();
+    currentAddr = data.address;
+    document.getElementById('btcAddress').textContent = currentAddr;
+    generateQR(currentAddr);
+    document.getElementById('confTracker').classList.remove('show');
+  } catch(e) {
+    console.warn('generateNewAddress error:', e.message);
+  }
+}
+
+// ── NACTI BTC ADRESU ─────────────────────────────────────
+async function loadDepositAddress() {
+  // Zkus server.js
+  if(currentUser) {
+    try {
+      var r = await fetch(WALLET_SERVER + '/casino/address/' + currentUser.id, {
+        headers: {'x-api-key': WALLET_API_KEY},
+        signal: AbortSignal.timeout(3000)
+      });
+      if(r.ok) {
+        var data = await r.json();
+        currentAddr = data.address;
+        document.getElementById('btcAddress').textContent = currentAddr;
+        generateQR(currentAddr);
+        console.log('Adresa ze serveru:', currentAddr);
+        return;
+      }
+    } catch(e) {
+      console.log('Server nedostupny, pouzivam fallback adresu');
+    }
+  }
+  // Fallback - adresa z pole podle userId
+  var index = 0;
+  if(currentUser) {
+    var hash = 0;
+    for(var i = 0; i < currentUser.id.length; i++) {
+      hash = ((hash << 5) - hash) + currentUser.id.charCodeAt(i);
+      hash |= 0;
+    }
+    index = Math.abs(hash) % XPUB_ADDRESSES.length;
+  }
+  currentAddr = XPUB_ADDRESSES[index];
+  document.getElementById('btcAddress').textContent = currentAddr;
+  generateQR(currentAddr);
+  console.log('Adresa z fallback:', currentAddr);
+}
+
+// ── NACTI PROFIL ZE SUPABASE ─────────────────────────────
+// OPRAVA: pouzivame bezpecnou setEl() funkci misto priameho getElementById
+async function loadProfile() {
+  if(!sb || !currentUser) return;
+  try {
+    var result = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    var profile = result.data;
+    if(profile) {
+      balance = parseFloat(profile.balance || 0);
+      // Bezpecne nastaveni - element nemusi existovat na vsech strankach
+      setEl('headerBal', fmt(balance) + ' BTC');
+      setEl('availBalance', fmt(balance) + ' BTC');
+      setEl('totalBalance', fmt(balance) + ' BTC');
+      setEl('totalDeposited', fmt(parseFloat(profile.total_deposited || 0)) + ' BTC');
+      setEl('totalWithdrawn', fmt(parseFloat(profile.total_withdrawn || 0)) + ' BTC');
+    }
+  } catch(e) {
+    console.warn('loadProfile error:', e.message);
+  }
+}
+
+// ── NACTI HISTORII TRANSAKCI ─────────────────────────────
+async function loadTxHistory() {
+  if(!sb || !currentUser) {
+    document.getElementById('txList').innerHTML = '<div class="tx-empty">Login to see your transaction history</div>';
+    return;
+  }
+  try {
+    var depsResult = await sb.from('deposits').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(20);
+    var withsResult = await sb.from('withdrawals').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(20);
+
+    var deps = depsResult.data || [];
+    var withs = withsResult.data || [];
+
+    transactions = [
+      ...deps.map(function(d) { return {type:'deposit', amount:parseFloat(d.amount_btc), addr:d.btc_address, status:d.status, hash:d.txid||'pending', date:new Date(d.created_at)}; }),
+      ...withs.map(function(w) { return {type:'withdraw', amount:parseFloat(w.amount_btc), addr:w.btc_address, status:w.status, hash:w.txid||'pending', date:new Date(w.created_at)}; })
+    ].sort(function(a,b){ return b.date - a.date; });
+
+    renderTxHistory('all');
+  } catch(e) {
+    console.error('loadTxHistory error:', e.message);
+    document.getElementById('txList').innerHTML = '<div class="tx-empty">Error loading transactions</div>';
+  }
+}
+
+// ── RENDER HISTORIE ──────────────────────────────────────
+function renderTxHistory(filter) {
+  var list = document.getElementById('txList');
+  var filtered = filter === 'all' ? transactions : transactions.filter(function(t){ return t.type === filter; });
+  if(filtered.length === 0) { list.innerHTML = '<div class="tx-empty">No transactions yet</div>'; return; }
+  list.innerHTML = '';
+  filtered.forEach(function(tx) {
+    var row = document.createElement('div'); row.className = 'tx-row'; row.dataset.type = tx.type;
+    var isDep = tx.type === 'deposit';
+    var dateStr = tx.date instanceof Date && !isNaN(tx.date) ?
+      tx.date.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '--';
+    var statusCls = tx.status === 'confirmed' ? 'ts-confirmed' : tx.status === 'pending' ? 'ts-pending' : 'ts-processing';
+    var statusLbl = tx.status === 'confirmed' ? 'Confirmed' : tx.status === 'pending' ? 'Pending' : 'Processing';
+    var hashStr = tx.hash && tx.hash !== 'pending' ? tx.hash.substring(0,24) + '...' : 'Pending';
+    row.innerHTML = '<div class="tx-type-badge ' + (isDep?'txb-dep':'txb-with') + '">' + (isDep?'v':'^') + '</div>' +
+      '<div><div class="tx-info-type">' + (isDep?'Deposit':'Withdrawal') + '</div><div class="tx-info-hash">' + hashStr + '</div></div>' +
+      '<div class="tx-amount ' + (isDep?'dep':'with') + '">' + (isDep?'+':'-') + fmt(tx.amount) + ' BTC</div>' +
+      '<div class="tx-date">' + dateStr + '</div>' +
+      '<div class="tx-status ' + statusCls + '">' + statusLbl + '</div>';
     list.appendChild(row);
   });
 }
 
-function filterTx(filter,el){
-  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+function filterTx(filter, el) {
+  document.querySelectorAll('.tf-btn').forEach(function(b){ b.classList.remove('active'); });
   el.classList.add('active');
   renderTxHistory(filter);
 }
 
-// ══ MODAL ══
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
-
-// HAMBURGER
-function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
-function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
-document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
-
-// ══ REAL INIT – Supabase + server.js ══
-async function init(){
-  // Bez Supabase – demo mode
-  if(!sb){
-    console.log('Demo mode - no Supabase');
-    document.getElementById('btcAddress').textContent = XPUB_ADDRESSES[0];
-    currentAddr = XPUB_ADDRESSES[0];
-    generateQR(currentAddr);
-    return;
-  }
-  // Zkontroluj přihlášení
-  let session = null;
-  try{
-    const r = await sb.auth.getSession();
-    session = r.data.session;
-  }catch(e){
-    console.warn('Session check failed:', e.message);
-  }
-  if(!session){
-    // Demo mode pro nepřihlášené
-    console.log('Not logged in - demo mode');
-    document.getElementById('btcAddress').textContent = XPUB_ADDRESSES[0];
-    currentAddr = XPUB_ADDRESSES[0];
-    generateQR(currentAddr);
-    return;
-  }
-  currentUser=session.user;
-
-  // Načti profil
-  await loadProfile();
-
-  // Načti BTC adresu z server.js
-  await loadDepositAddress();
-
-  // Načti historii transakcí ze Supabase
-  await loadTxHistory();
-
-  // Pravidelná kontrola příchozích plateb (každých 30s)
-  setInterval(checkPendingDeposit, 30000);
-}
-
-// Načti profil ze Supabase
-async function loadProfile(){
-  const {data:profile} = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', currentUser.id)
-    .single();
-
-  if(profile){
-    balance = parseFloat(profile.balance||0);
-    document.getElementById('balDisplay').textContent = fmt(balance)+' BTC';
-    document.getElementById('headerBal').textContent = fmt(balance)+' BTC';
-    document.getElementById('availBalance').textContent = fmt(balance);
-    document.getElementById('totalBalance').textContent = fmt(balance)+' BTC';
-    document.getElementById('totalDeposited').textContent = fmt(parseFloat(profile.total_deposited||0))+' BTC';
-    document.getElementById('totalWithdrawn').textContent = fmt(parseFloat(profile.total_withdrawn||0))+' BTC';
-  }
-}
-
-// Načti BTC adresu z HD Wallet serveru
-async function loadDepositAddress(){
-  // Zkus server.js nejdřív
-  try{
-    const r = await fetch(WALLET_SERVER+'/casino/address/'+currentUser.id,{
-      headers:{'x-api-key': WALLET_API_KEY},
-      signal: AbortSignal.timeout(3000)
-    });
-    if(!r.ok) throw new Error('Server error');
-    const data = await r.json();
-    currentAddr = data.address;
-    document.getElementById('btcAddress').textContent = currentAddr;
-    document.getElementById('availBalance').textContent = fmt(balance);
-    generateQR(currentAddr);
-    console.log('✅ Adresa ze serveru:', currentAddr);
-    return;
-  }catch(e){
-    console.log('⚠️ Server nedostupný, generuji z xpub...');
-  }
-  // Fallback – generuj adresu z xpub přímo v prohlížeči
-  try{
-    const addr = await deriveAddressFromXpub(currentUser.id);
-    currentAddr = addr;
-    document.getElementById('btcAddress').textContent = currentAddr;
-    document.getElementById('availBalance').textContent = fmt(balance);
-    generateQR(currentAddr);
-    console.log('✅ Adresa z xpub:', currentAddr);
-  }catch(e){
-    console.error('❌ Chyba xpub:', e.message);
-    document.getElementById('btcAddress').textContent = 'Přihlaste se pro zobrazení adresy';
-  }
-}
-
-// Derivace adresy z xpub (funguje bez serveru)
-
-function deriveAddressFromXpub(userId){
-  let hash=0;
-  for(let i=0;i<userId.length;i++){hash=((hash<<5)-hash)+userId.charCodeAt(i);hash|=0;}
-  const index=Math.abs(hash)%XPUB_ADDRESSES.length;
-  return XPUB_ADDRESSES[index];
-}
-
-// Zkontroluj příchozí platbu
-async function checkPendingDeposit(){
-  if(!currentUser||!currentAddr) return;
-  try{
-    const r = await fetch(`${WALLET_SERVER}/casino/deposit/check`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':WALLET_API_KEY},
-      body: JSON.stringify({userId: currentUser.id, address: currentAddr})
+// ── ZKONTROLUJ PRIJEM ────────────────────────────────────
+async function checkPendingDeposit() {
+  if(!currentUser || !currentAddr) return;
+  try {
+    var r = await fetch(WALLET_SERVER + '/casino/deposit/check', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-api-key': WALLET_API_KEY},
+      body: JSON.stringify({userId: currentUser.id, address: currentAddr}),
+      signal: AbortSignal.timeout(5000)
     });
     if(!r.ok) return;
-    const data = await r.json();
-    if(data.status==='credited'){
+    var data = await r.json();
+    if(data.status === 'credited') {
       balance = data.new_balance;
-      document.getElementById('balDisplay').textContent = fmt(balance)+' BTC';
-      document.getElementById('headerBal').textContent = fmt(balance)+' BTC';
-      document.getElementById('availBalance').textContent = fmt(balance);
-      document.getElementById('confStatus').textContent = '✅ Deposit confirmed! Balance updated.';
+      setEl('headerBal', fmt(balance) + ' BTC');
+      setEl('availBalance', fmt(balance) + ' BTC');
+      setEl('totalBalance', fmt(balance) + ' BTC');
+      setEl('confStatus', 'Deposit confirmed! Balance updated.');
       document.getElementById('confStatus').style.color = 'var(--green)';
       document.getElementById('confBar').style.width = '100%';
       await loadTxHistory();
-      showModal('✅','Deposit Confirmed!',`+${data.amount_btc} BTC has been credited to your account!`,'success');
-    }else if(data.status==='pending'){
-      document.getElementById('confStatus').textContent = `⏳ ${data.pendingCount} transaction(s) waiting for confirmation...`;
+      showModal('OK', 'Deposit Confirmed!', '+' + data.amount_btc + ' BTC credited!');
+    } else if(data.status === 'pending') {
+      setEl('confStatus', 'Transaction waiting for confirmation...');
     }
-  }catch(e){}
+  } catch(e) { /* server offline - ok */ }
 }
 
-// Načti historii transakcí ze Supabase
-async function loadTxHistory(){
-  if(!currentUser) return;
-  try{
-    const {data:deps} = await sb.from('deposits')
-      .select('*').eq('user_id',currentUser.id)
-      .order('created_at',{ascending:false}).limit(20);
-
-    const {data:withs} = await sb.from('withdrawals')
-      .select('*').eq('user_id',currentUser.id)
-      .order('created_at',{ascending:false}).limit(20);
-
-    transactions = [
-      ...(deps||[]).map(d=>({
-        type:'deposit',amount:parseFloat(d.amount_btc),
-        addr:d.btc_address,status:d.status,
-        hash:d.txid||'pending',date:new Date(d.created_at)
-      })),
-      ...(withs||[]).map(w=>({
-        type:'withdraw',amount:parseFloat(w.amount_btc),
-        addr:w.btc_address,status:w.status,
-        hash:w.txid||'pending',date:new Date(w.created_at)
-      }))
-    ].sort((a,b)=>b.date-a.date);
-
-    renderTxHistory('all');
-  }catch(e){
-    console.error('loadTxHistory error:',e.message);
+// ── BONUS PREVIEW ────────────────────────────────────────
+function setDepAmt(v) { document.getElementById('depAmount').value = v.toFixed(3); updateBonus(); }
+function updateBonus() {
+  var amt = parseFloat(document.getElementById('depAmount').value) || 0;
+  var bp = document.getElementById('bonusPreview');
+  if(amt >= 0.001) {
+    var bonus = Math.min(amt, 1.0);
+    setEl('bonusVal', '+' + bonus.toFixed(5) + ' BTC');
+    bp.style.display = 'flex';
+  } else {
+    bp.style.display = 'none';
   }
 }
 
-// ══ TABS ══
-function switchTab(tab,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(tab==='history') loadTxHistory();
+// ── CONF TRACKER ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('depAmount').addEventListener('change', function() {
+    if(parseFloat(this.value) >= 0.001) startConfTracker();
+  });
+});
+function startConfTracker() {
+  var tracker = document.getElementById('confTracker');
+  var bar = document.getElementById('confBar');
+  var status = document.getElementById('confStatus');
+  tracker.classList.add('show');
+  var confs = 0;
+  bar.style.width = '0%';
+  status.textContent = 'Waiting for transaction broadcast...';
+  status.style.color = 'var(--orange)';
+  if(confInterval) clearInterval(confInterval);
+  setTimeout(function() {
+    status.textContent = 'Transaction detected in mempool!';
+    confInterval = setInterval(function() {
+      if(confs >= 3) { clearInterval(confInterval); return; }
+      confs++;
+      bar.style.width = (confs/3*100) + '%';
+      if(confs === 3) { status.style.color = 'var(--green)'; status.textContent = 'Deposit confirmed! Balance updated.'; }
+      else { status.textContent = confs + '/3 confirmations...'; }
+    }, 8000);
+  }, 3000);
 }
 
-// ══ WITHDRAW – napojený na server.js ══
-function setMaxWithdraw(){
-  document.getElementById('withdrawAmt').value=(balance-0.00005).toFixed(8);
+// ── WITHDRAWAL ───────────────────────────────────────────
+function setMaxWithdraw() {
+  document.getElementById('withdrawAmt').value = Math.max(0, balance - 0.00005).toFixed(8);
   validateWithdraw();
 }
-
-function validateBTCAddress(addr){
-  if(!addr||addr.length<26) return false;
-  return addr.startsWith('bc1')||addr.startsWith('1')||addr.startsWith('3');
+function validateBTCAddress(addr) {
+  if(!addr || addr.length < 26) return false;
+  return addr.startsWith('bc1') || addr.startsWith('1') || addr.startsWith('3');
 }
+function validateWithdraw() {
+  var addr = document.getElementById('withdrawAddr').value.trim();
+  var amt = parseFloat(document.getElementById('withdrawAmt').value) || 0;
+  var addrOk = validateBTCAddress(addr);
+  var amtOk = amt >= 0.001 && amt <= (balance - 0.00005);
 
-function validateWithdraw(){
-  const addr=document.getElementById('withdrawAddr').value.trim();
-  const amt=parseFloat(document.getElementById('withdrawAmt').value)||0;
-  const addrOk=validateBTCAddress(addr);
-  const amtOk=amt>=0.001&&amt<=(balance-0.00005);
+  document.getElementById('addrError').classList.toggle('show', addr.length > 5 && !addrOk);
+  document.getElementById('amtError').classList.toggle('show', document.getElementById('withdrawAmt').value.length > 0 && !amtOk);
+  document.getElementById('withdrawAddr').classList.toggle('error', addr.length > 5 && !addrOk);
+  document.getElementById('withdrawAmt').classList.toggle('error', document.getElementById('withdrawAmt').value.length > 0 && !amtOk);
 
-  document.getElementById('addrError').classList.toggle('show',addr.length>5&&!addrOk);
-  document.getElementById('amtError').classList.toggle('show',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
-  document.getElementById('withdrawAddr').classList.toggle('error',addr.length>5&&!addrOk);
-  document.getElementById('withdrawAmt').classList.toggle('error',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
+  var valid = addrOk && amtOk;
+  document.getElementById('withdrawBtn').disabled = !valid;
 
-  const valid=addrOk&&amtOk;
-  document.getElementById('withdrawBtn').disabled=!valid;
-
-  const summary=document.getElementById('wfSummary');
-  if(valid){
-    summary.style.display='block';
-    document.getElementById('wfsAmt').textContent=amt.toFixed(8)+' BTC';
-    document.getElementById('wfsReceive').textContent=(amt-0.00005).toFixed(8)+' BTC';
-    document.getElementById('wfsAddr').textContent=addr.substring(0,18)+'...';
+  var summary = document.getElementById('wfSummary');
+  if(valid) {
+    summary.style.display = 'block';
+    setEl('wfsAmt', amt.toFixed(8) + ' BTC');
+    setEl('wfsReceive', (amt - 0.00005).toFixed(8) + ' BTC');
+    setEl('wfsAddr', addr.substring(0, 20) + '...');
   } else {
-    summary.style.display='none';
+    summary.style.display = 'none';
   }
 }
 
-async function submitWithdraw(){
-  const addr=document.getElementById('withdrawAddr').value.trim();
-  const amt=parseFloat(document.getElementById('withdrawAmt').value);
-  if(!validateBTCAddress(addr)||amt<0.001) return;
-  if(!currentUser){alert('Please login first');return;}
+async function submitWithdraw() {
+  var addr = document.getElementById('withdrawAddr').value.trim();
+  var amt = parseFloat(document.getElementById('withdrawAmt').value);
+  if(!validateBTCAddress(addr) || amt < 0.001) return;
+  if(!currentUser) { alert('Please login first'); return; }
 
-  document.getElementById('withdrawBtn').disabled=true;
-  document.getElementById('withdrawBtn').textContent='Processing...';
+  document.getElementById('withdrawBtn').disabled = true;
+  document.getElementById('withdrawBtn').textContent = 'Processing...';
 
-  try{
-    const r = await fetch(`${WALLET_SERVER}/casino/withdraw`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':WALLET_API_KEY},
-      body: JSON.stringify({
-        userId: currentUser.id,
-        toAddress: addr,
-        amountBtc: amt,
-        feeRate: 5
-      })
+  try {
+    var r = await fetch(WALLET_SERVER + '/casino/withdraw', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'x-api-key': WALLET_API_KEY},
+      body: JSON.stringify({userId: currentUser.id, toAddress: addr, amountBtc: amt, feeRate: 5}),
+      signal: AbortSignal.timeout(15000)
     });
+    var data = await r.json();
+    if(!r.ok) throw new Error(data.error || 'Withdrawal failed');
 
-    const data = await r.json();
-
-    if(!r.ok){
-      throw new Error(data.error||'Withdrawal failed');
-    }
-
-    // Update balance
     balance = data.new_balance;
-    document.getElementById('balDisplay').textContent = fmt(balance)+' BTC';
-    document.getElementById('headerBal').textContent = fmt(balance)+' BTC';
-    document.getElementById('availBalance').textContent = fmt(balance);
+    setEl('headerBal', fmt(balance) + ' BTC');
+    setEl('availBalance', fmt(balance) + ' BTC');
+    setEl('totalBalance', fmt(balance) + ' BTC');
 
-    document.getElementById('withdrawAddr').value='';
-    document.getElementById('withdrawAmt').value='';
-    document.getElementById('wfSummary').style.display='none';
-
+    document.getElementById('withdrawAddr').value = '';
+    document.getElementById('withdrawAmt').value = '';
+    document.getElementById('wfSummary').style.display = 'none';
     await loadTxHistory();
-
-    showModal('✅','Withdrawal Sent!',
-      `${fmt(amt)} BTC sent to ${addr.substring(0,16)}...\nTXID: ${data.txid.substring(0,20)}...`,'success');
-
-  }catch(e){
-    showModal('❌','Withdrawal Failed!',e.message,'error');
-  }finally{
-    document.getElementById('withdrawBtn').disabled=false;
-    document.getElementById('withdrawBtn').textContent='⬆️ Submit Withdrawal';
+    showModal('OK', 'Withdrawal Sent!', fmt(amt) + ' BTC sent to ' + addr.substring(0,16) + '...');
+  } catch(e) {
+    showModal('ERR', 'Withdrawal Failed', e.message);
+  } finally {
+    document.getElementById('withdrawBtn').disabled = false;
+    document.getElementById('withdrawBtn').textContent = 'Submit Withdrawal';
   }
 }
 
-// ══ TRANSACTION HISTORY ══
+// ── MODAL ────────────────────────────────────────────────
+function showModal(icon, title, text) {
+  setEl('modalIcon', icon);
+  setEl('modalTitle', title);
+  setEl('modalText', text);
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
 
-// HAMBURGER
-function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
-function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
-document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+// ── TABS ─────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if(tab === 'history') loadTxHistory();
+}
 
-// START – zobraz adresu OKAMŽITĚ bez čekání na Supabase
-(function showAddressImmediately(){
-  // Okamžitě zobraz první adresu z xpub
-  if(typeof XPUB_ADDRESSES !== 'undefined' && XPUB_ADDRESSES.length > 0){
-    currentAddr = XPUB_ADDRESSES[0];
-    document.getElementById('btcAddress').textContent = currentAddr;
-    generateQR(currentAddr);
-    console.log('✅ Adresa zobrazena okamžitě:', currentAddr);
+// ── HAMBURGER ────────────────────────────────────────────
+function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('open'); document.getElementById('hamburger').classList.toggle('active'); }
+function closeMenu(){ document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('hamburger').classList.remove('active'); }
+document.addEventListener('click', function(e){ var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger'); if(!m.contains(e.target)&&!h.contains(e.target)) closeMenu(); });
+
+// ── INIT ─────────────────────────────────────────────────
+
+// 1. Okamzite zobraz prvni adresu (bez cekani)
+currentAddr = XPUB_ADDRESSES[0];
+document.getElementById('btcAddress').textContent = currentAddr;
+generateQR(currentAddr);
+console.log('Adresa zobrazena okamzite:', currentAddr);
+
+// 2. Pak nacti realna data ze Supabase
+(async function init() {
+  if(!sb) {
+    console.log('Demo mode - Supabase nedostupny');
+    return;
+  }
+  try {
+    var result = await sb.auth.getSession();
+    var session = result.data.session;
+    if(!session) {
+      console.log('Neprihlaseno - demo mode');
+      return;
+    }
+    currentUser = session.user;
+    console.log('Prihlaseno jako:', currentUser.email);
+
+    // Nacti profil a adresu paralelne
+    await Promise.all([
+      loadProfile(),
+      loadDepositAddress()
+    ]);
+
+    // Spust pravidelnou kontrolu depositu
+    setInterval(checkPendingDeposit, 30000);
+
+  } catch(e) {
+    console.warn('Init error:', e.message);
   }
 })();
-
-// Pak načti reálná data (přihlášení, balance atd.)
-init();
 </script>
 </body>
 </html>
