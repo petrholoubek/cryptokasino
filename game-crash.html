@@ -762,7 +762,8 @@ updateBal();
   const userId=session.user.id;
   const {data:profile}=await sb.from('profiles').select('balance,username').eq('id',userId).single();
   if(profile){
-    balance=parseFloat(profile.balance||0);
+    const realBal=parseFloat(profile.balance||0);
+balance=realBal>0?realBal:0.1;
     if(typeof updateBal==='function')updateBal();
     console.log('✅ Real balance:',balance,'BTC |',profile.username);
   }
@@ -772,8 +773,7 @@ updateBal();
       const {data:p}=await sb.from('profiles').select('balance').eq('id',userId).single();
       const cur=parseFloat(p?.balance||0);
       if(cur<amount){
-        if(confirm('⚠️ Nedostatečný zůstatek!
-Chcete jít na Deposit?')){
+        if(confirm('Nedostatecny zustatek! Prejit na Deposit?')){
           window.location.href='deposit.html';
         }
         return false;
@@ -797,37 +797,7 @@ Chcete jít na Deposit?')){
   console.log('✅ CryptoKasino Supabase OK');
 })();
 </script>
-<script>
-(async function(){
-  const SUPABASE_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
-  const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
-  const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='login.html';return;}
-  const userId=session.user.id;
-  const {data:profile}=await sb.from('profiles').select('balance,username').eq('id',userId).single();
-  if(profile){balance=parseFloat(profile.balance||0);if(typeof updateBal==='function')updateBal();console.log('✅ Balance:',balance,'BTC |',profile.username);}
-  window._casino={userId,sb,
-    async deductBet(amount){
-      const {data:p}=await sb.from('profiles').select('balance').eq('id',userId).single();
-      const cur=parseFloat(p?.balance||0);
-      if(cur<amount){alert('⚠️ Nedostatečný zůstatek! Dobijte BTC.');return false;}
-      await sb.from('profiles').update({balance:cur-amount}).eq('id',userId);
-      balance=cur-amount;if(typeof updateBal==='function')updateBal();return true;
-    },
-    async creditWin(amount){
-      const {data:p}=await sb.from('profiles').select('balance').eq('id',userId).single();
-      const cur=parseFloat(p?.balance||0);
-      await sb.from('profiles').update({balance:cur+amount}).eq('id',userId);
-      balance=cur+amount;if(typeof updateBal==='function')updateBal();
-    },
-    async saveGame(gameName,gameType,betAmount,winAmount,multiplier,outcome){
-      await sb.from('game_sessions').insert({user_id:userId,game_name:gameName,game_type:gameType,bet_amount:betAmount,win_amount:winAmount||0,multiplier:multiplier||0,server_seed:'',server_seed_hash:'',client_seed:'',nonce:0,outcome:outcome,completed_at:new Date().toISOString()});
-    }
-  };
-  console.log('✅ CryptoKasino Supabase OK');
-})();
-</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 </body>
