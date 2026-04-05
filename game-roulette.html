@@ -49,7 +49,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .play-now-btn{display:inline-block;margin-top:1rem;background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;padding:0.7rem 2.5rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;border:none;box-shadow:0 0 30px rgba(212,160,23,0.6);transition:all 0.3s;}
 .play-now-btn:hover{transform:scale(1.05);}
 
-.game-area{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.game-area{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;overflow:visible;}
 
 .balance-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.2);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.2rem;}
 .bal-item{text-align:center;}
@@ -67,16 +67,17 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .player-pill .lose-a{color:var(--red);}
 @keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
 
-.roulette-layout{display:grid;grid-template-columns:300px 1fr;gap:1.5rem;margin-bottom:1.2rem;}
+.roulette-layout{display:grid;grid-template-columns:340px 1fr;gap:1.5rem;margin-bottom:1.2rem;}
 
 .wheel-section{display:flex;flex-direction:column;align-items:center;gap:1rem;}
 
-.wheel-wrap{position:relative;width:280px;height:280px;}
-#wheelCanvas{width:280px;height:280px;display:block;filter:drop-shadow(0 0 30px rgba(212,160,23,0.4)) drop-shadow(0 0 60px rgba(0,0,0,0.9));}
-.wheel-pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:26px solid var(--gold-light);filter:drop-shadow(0 0 8px rgba(245,200,66,0.9));z-index:10;}
+/* Extra space pro glow efekt */
+.wheel-wrap{position:relative;width:320px;height:320px;display:flex;align-items:center;justify-content:center;}
+#wheelCanvas{width:280px;height:280px;display:block;position:relative;z-index:1;border-radius:50%;box-shadow:0 0 30px rgba(212,160,23,0.4),0 0 60px rgba(0,0,0,0.8);}
+.wheel-pointer{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid var(--gold-light);filter:drop-shadow(0 0 6px rgba(245,200,66,0.9));z-index:10;}
 
-/* BALL — canvas overlay */
-#ballCanvas{position:absolute;top:0;left:0;width:280px;height:280px;pointer-events:none;z-index:5;}
+/* BALL — canvas overlay centrovany */
+#ballCanvas{position:absolute;top:20px;left:20px;width:280px;height:280px;pointer-events:none;z-index:5;}
 
 .spin-status{text-align:center;}
 .winning-number{font-family:'Cinzel',serif;font-size:3rem;font-weight:900;text-align:center;min-height:3.5rem;transition:all 0.4s;}
@@ -193,7 +194,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
   .game-area{padding:1rem 0.8rem 3rem;}
   .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;padding:0.8rem;}.bal-value{font-size:0.82rem;}
   .wheel-section{flex-direction:column;align-items:center;}
-  .wheel-wrap{width:220px;height:220px;}#wheelCanvas{width:220px;height:220px;}#ballCanvas{width:220px;height:220px;}
+  .wheel-wrap{width:240px;height:240px;padding:10px;}#wheelCanvas{width:220px;height:220px;}#ballCanvas{top:10px;left:10px;width:220px;height:220px;}
   .num-cell{font-size:0.6rem;padding:5px 1px;min-width:22px;}.zero-cell{font-size:0.7rem;}.out-bet{font-size:0.55rem;padding:5px 2px;}
   .chip{width:36px;height:36px;font-size:0.58rem;}
   .controls-row{grid-template-columns:1fr 1fr 1fr;gap:0.6rem;}.spin-btn{grid-column:1/-1;}
@@ -464,6 +465,7 @@ function updateHotCold(){
 const canvas=document.getElementById('wheelCanvas'),ctx=canvas.getContext('2d');
 const ballCanvas=document.getElementById('ballCanvas'),bCtx=ballCanvas.getContext('2d');
 let wheelAngle=0;
+let animFrame=null;
 
 function drawWheel(angle){
   const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,R=W/2-4;
@@ -472,8 +474,6 @@ function drawWheel(angle){
 
   // Outer decorative ring
   ctx.save();
-  ctx.shadowColor='rgba(212,160,23,0.4)';
-  ctx.shadowBlur=20;
   ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
   const outerGrad=ctx.createRadialGradient(cx,cy,R-10,cx,cy,R);
   outerGrad.addColorStop(0,'#5a3010');
@@ -529,7 +529,6 @@ function drawWheel(angle){
   // Inner decorative hub
   const hubR=R*0.28;
   ctx.save();
-  ctx.shadowColor='rgba(212,160,23,0.6)';ctx.shadowBlur=15;
   ctx.beginPath();ctx.arc(cx,cy,hubR,0,Math.PI*2);
   const hubG=ctx.createRadialGradient(cx-hubR*0.3,cy-hubR*0.3,0,cx,cy,hubR);
   hubG.addColorStop(0,'#fbbf24');
@@ -576,7 +575,7 @@ function drawBall(){
 let idleFrame=null;
 function idleLoop(){
   idleFrame=requestAnimationFrame(idleLoop);
-  wheelAngle+=0.003;
+  wheelAngle=(wheelAngle+0.003)%(Math.PI*2);
   drawWheel(wheelAngle);
 }
 drawWheel(0);
@@ -652,16 +651,23 @@ async function spinWheel(){
   document.getElementById('winningNum').textContent='--';
   document.getElementById('winningNum').className='winning-number';
 
-  // Stop idle
+  // Stop idle loop pred spinem
   if(idleFrame){cancelAnimationFrame(idleFrame);idleFrame=null;}
+  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
 
   playSound('spin');
 
   const result=await getProvenResult(37);
   const resultIdx=WHEEL_ORDER.indexOf(result);
   const sliceAngle=(Math.PI*2)/WHEEL_ORDER.length;
-  const targetSegAngle=-(resultIdx*sliceAngle)-Math.PI/2+sliceAngle/2;
-  const totalRotation=Math.PI*2*6+targetSegAngle-wheelAngle;
+  // Cilovy uhel kola kde bude vitezne cislo pod smernikem
+  const targetSegAngle = -(resultIdx*sliceAngle) - Math.PI/2 + sliceAngle/2;
+  // Normalizuj aktualni uhel
+  const normalizedCurrent = wheelAngle % (Math.PI*2);
+  // Vždy tocit min 6 otacek + dojed na cilovy segment
+  let diff = targetSegAngle - normalizedCurrent;
+  // Zajisti pozitivni smer otaceni
+  const totalRotation = Math.PI*2*6 + diff;
   const startAngle=wheelAngle;
   const duration=5500;
   const startTime=performance.now();
@@ -694,7 +700,7 @@ async function spinWheel(){
     drawBall();
 
     if(progress<1){
-      requestAnimationFrame(animate);
+      animFrame=requestAnimationFrame(animate);
     }else{
       // Snap ball to winning pocket
       ballA=wheelAngle-Math.PI/2+resultIdx*sliceAngle+sliceAngle/2+Math.PI;
@@ -763,6 +769,9 @@ function resolveResult(result,totalBetAmt){
     spinning=false;
     document.getElementById('spinBtn').disabled=false;
     if(winCell)winCell.classList.remove('winning-cell');
+    // Normalizuj wheelAngle na 0..2PI aby se neakumuloval
+    wheelAngle = wheelAngle % (Math.PI*2);
+    if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
     idleLoop();
   },1200);
 }
