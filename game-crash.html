@@ -261,6 +261,14 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
       <button class="quick-btn" onclick="doubleBet()">x2</button>
       <button class="quick-btn" onclick="maxBet()">MAX</button>
     </div>
+<div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
+  <label style="font-size:12px;">Auto</label>
+  <input type="checkbox" id="autoBetToggle">
+
+  <input type="number" id="autoRounds" value="10" min="1" style="width:70px">
+
+  <span style="font-size:12px;color:#888;">rounds</span>
+</div>
     <button class="main-btn bet-state" id="mainBtn" onclick="handleMainBtn()">&#128640; PLACE BET</button>
   </div>
   <div class="stats-section">
@@ -413,7 +421,14 @@ function getProvenCrash() {
 
     if(val % instMod === 0) return 1.00;
     var r = val / 0xFFFFFFFF;
-    return Math.max(1.00, Math.min(parseFloat((-Math.log(1-r*rtp)+1).toFixed(2)), 1000));
+
+// 🔥 NEAR MISS (5 % případů)
+if(r > 0.93 && r < 0.98){
+  return parseFloat((1.1 + Math.random() * 1.5).toFixed(2)); // 1.1x – 2.6x
+}
+
+// normální výpočet
+return Math.max(1.00, Math.min(parseFloat((-Math.log(1 - r * rtp) + 1).toFixed(2)), 1000));
   });
 }
 function verifyHash() {
@@ -480,6 +495,10 @@ for(var _i=0; _i<4; _i++) addLiveFeed();
 // STATE
 // Demo balance 0.1 BTC — prepise se pokud je hrac prihlasen
 var balance = 0.10000000;
+var autoMode = false;
+var autoLeft = 0;
+var baseBet = 0;
+var currentBet = 0;
 var totalBets = 0, bestWin = 0;
 var gameState = 'idle', currentMulti = 1.00, crashPoint = 1.00;
 var betPlaced = false, cashedOut = false, betAmount = 0, gameInterval = null, graphPoints = [];
@@ -752,16 +771,25 @@ function drawGraph() {
 
 // GAME LOOP
 function startRound() {
-  gameState = 'running'; currentMulti = 1.00; cashedOut = false; graphPoints = [{x:0,y:0}];
+  gameState = 'running';
+  currentMulti = 1.00;
+  cashedOut = false;
+  graphPoints = [{x:0,y:0}];
+
   var elapsed = 0;
+
   getProvenCrash().then(function(cp) {
     crashPoint = cp;
+
     document.getElementById('multiplierVal').className = 'multiplier-value';
     document.getElementById('gameStatus').textContent = 'FLYING...';
     rocket.style.display = 'block';
+
     generateMpPlayers();
     playSound('launch');
+
     var btn = document.getElementById('mainBtn');
+
     if(betPlaced && !cashedOut) {
       btn.className = 'main-btn cashout-state';
       btn.textContent = 'CASHOUT 1.00x';
@@ -771,29 +799,76 @@ function startRound() {
       btn.textContent = 'Next Round...';
       btn.disabled = true;
     }
+
     var beepTick = 0;
+
     gameInterval = setInterval(function() {
+
       elapsed += 0.05;
-      currentMulti = Math.round(Math.pow(Math.E, elapsed*0.18)*100)/100;
+
+     // 🔥 REAL CASINO CURVE (FIX)
+currentMulti = Math.exp(elapsed * 0.25);
+currentMulti = Math.round(currentMulti * 100) / 100;
+
+// 🔥 DANGER ZONE
+if(currentMulti > crashPoint * 0.75){
+  document.body.style.boxShadow = "0 0 120px rgba(248,113,113,0.15) inset";
+} else {
+  document.body.style.boxShadow = "";
+}
+
       var mv = document.getElementById('multiplierVal');
-      if(currentMulti >= 100) mv.className = 'multiplier-value mega';
-      else if(currentMulti >= 10) mv.className = 'multiplier-value mega';
-      else if(currentMulti >= 3) { mv.className = 'multiplier-value'; mv.style.color='#fbbf24'; mv.style.textShadow='0 0 50px rgba(251,191,36,0.9),0 0 100px rgba(251,191,36,0.4)'; }
-      else { mv.className = 'multiplier-value'; mv.style.color=''; mv.style.textShadow=''; }
+
+      if(currentMulti >= 100) {
+        mv.className = 'multiplier-value mega';
+      } else if(currentMulti >= 10) {
+        mv.className = 'multiplier-value mega';
+      } else if(currentMulti >= 3) {
+        mv.className = 'multiplier-value';
+        mv.style.color = '#fbbf24';
+        mv.style.textShadow = '0 0 50px rgba(251,191,36,0.9),0 0 100px rgba(251,191,36,0.4)';
+      } else {
+        mv.className = 'multiplier-value';
+        mv.style.color = '';
+        mv.style.textShadow = '';
+      }
+
       var progress = Math.min(elapsed/8, 1);
-      graphPoints.push({x:progress, y:Math.min((currentMulti-1)/Math.max(crashPoint-1,1),1)});
+
+      graphPoints.push({
+        x: progress,
+        y: Math.min((currentMulti-1)/Math.max(crashPoint-1,1),1)
+      });
+
       mv.textContent = currentMulti.toFixed(2) + 'x';
+
       beepTick++;
       if(beepTick % 4 === 0) playSound('beep');
+
       if(betPlaced && !cashedOut) {
         btn.textContent = 'CASHOUT ' + currentMulti.toFixed(2) + 'x';
+
         var autoOn = document.getElementById('autoCashoutToggle').checked;
         var autoVal = parseFloat(document.getElementById('autoCashoutVal').value) || 2;
-        if(autoOn && currentMulti >= autoVal) doCashout();
+
+        if(autoOn && currentMulti >= autoVal) {
+          doCashout();
+        }
       }
+
       updateMpDuringFlight();
       drawGraph();
-      if(currentMulti >= crashPoint) { clearInterval(gameInterval); doCrash(); }
+
+// 🔥 PRE-CRASH SHAKE
+if(currentMulti > crashPoint * 0.9){
+  document.getElementById('multiplierVal').style.animation = "crashShake 0.1s infinite";
+}
+
+      if(currentMulti >= crashPoint) {
+        clearInterval(gameInterval);
+        doCrash();
+      }
+
     }, 50);
   });
 }
@@ -831,54 +906,166 @@ function doCashout() {
 
   if(cashoutMult >= 10) { playSound('megawin'); spawnParticles('mega'); }
   else { playSound('cashout'); spawnParticles('cashout'); }
+// 🔥 MARTINGALE – RESET PO VÝHŘE
+if(autoMode){
+  currentBet = baseBet;
+}
 }
 
 function doCrash() {
-  gameState = 'crashed'; rocket.style.display = 'none';
-  playSound('crash'); spawnParticles('crash');
+
+  // 🔥 RESET EFEKTŮ (SHAKE + DANGER ZONE)
+  document.getElementById('multiplierVal').style.animation = "";
+  document.body.style.boxShadow = "";
+
+  gameState = 'crashed';
+  rocket.style.display = 'none';
+
+  playSound('crash');
+  spawnParticles('crash');
+
   crashMpPlayers();
-  document.getElementById('multiplierVal').textContent = crashPoint.toFixed(2) + 'x';
-  document.getElementById('multiplierVal').className = 'multiplier-value crashed';
+
+  const mv = document.getElementById('multiplierVal');
+  mv.textContent = crashPoint.toFixed(2) + 'x';
+  mv.className = 'multiplier-value crashed';
+
   document.getElementById('gameStatus').textContent = 'CRASHED!';
+
   addCrashPill(crashPoint);
-  if(betPlaced && !cashedOut) {
-    var profit = -betAmount;
-    sessionProfit += profit;
-    document.getElementById('lastResult').textContent = '-' + fmtS(betAmount) + ' BTC';
-    document.getElementById('lastResult').style.color = 'var(--red)';
-    chartData.push(profit); updateChart();
-    addHistory(crashPoint, betAmount, 0, false, profit);
-    updateStats();
-    if(window._casino) window._casino.saveGame('Crash', 'crash', betAmount, 0, crashPoint, 'lose');
+
+  // 🔥 PROHRA
+if(betPlaced && !cashedOut) {
+
+  var profit = -betAmount;
+  sessionProfit += profit;
+
+  document.getElementById('lastResult').textContent = '-' + fmtS(betAmount) + ' BTC';
+  document.getElementById('lastResult').style.color = 'var(--red)';
+
+  chartData.push(profit);
+  updateChart();
+
+  addHistory(crashPoint, betAmount, 0, false, profit);
+  updateStats();
+
+  if(window._casino) {
+    window._casino.saveGame('Crash', 'crash', betAmount, 0, crashPoint, 'lose');
   }
-  drawGraph();
-  var btn = document.getElementById('mainBtn');
-  btn.className = 'main-btn bet-state'; btn.textContent = 'PLACE BET'; btn.disabled = false; betPlaced = false;
-  document.getElementById('gameStatus').textContent = 'Next round in 3s...';
+
+  // 🔥 MARTINGALE – PROHRA (SAFE)
+  if(autoMode){
+
+    currentBet *= 2;
+
+    if(currentBet > balance * 0.3){
+      currentBet = balance * 0.3;
+    }
+
+    if(currentBet > balance){
+      autoMode = false;
+      console.log("AUTO STOP – nedostatek balance");
+    }
+  }
+
+} // ✅ TADY KONČÍ PROHRA BLOK
+
+// ⬇️ TOHLE MUSÍ BÝT AŽ PO TOM
+
+drawGraph();
+
+const btn = document.getElementById('mainBtn');
+btn.className = 'main-btn bet-state';
+btn.textContent = 'PLACE BET';
+btn.disabled = false;
+
+betPlaced = false;
+
+document.getElementById('gameStatus').textContent = 'Next round in 3s...';
+// 🔥 AUTO BET LOOP
+if(autoMode && autoLeft > 0){
+  autoLeft--;
+
+  setTimeout(()=>{
+    if(balance >= betAmount){
+      handleMainBtn();
+    } else {
+      autoMode = false; // stop když není balance
+    }
+  }, 800);
+}
+
   setTimeout(function() {
-    gameState = 'idle'; currentMulti = 1.00; graphPoints = [];
+    gameState = 'idle';
+    currentMulti = 1.00;
+    graphPoints = [];
+
     document.getElementById('multiplierVal').textContent = '1.00x';
     document.getElementById('multiplierVal').className = 'multiplier-value';
+
     document.getElementById('gameStatus').textContent = 'Place your bet';
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    stars = []; // reset hvezd
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars = []; // reset hvězd
   }, 3000);
 }
 
 function handleMainBtn() {
-  if(gameState === 'running' && betPlaced && !cashedOut) { doCashout(); return; }
+
+  // 🔥 AUTO INIT
+  autoMode = document.getElementById('autoBetToggle').checked;
+
+  if(autoMode && autoLeft === 0){
+    autoLeft = parseInt(document.getElementById('autoRounds').value) || 10;
+  }
+
+  // 🔁 CASHOUT během hry
+  if(gameState === 'running' && betPlaced && !cashedOut) {
+    doCashout();
+    return;
+  }
+
+  // ⛔ mimo idle nic nedělej
   if(gameState !== 'idle') return;
-  var amt = parseFloat(document.getElementById('betAmt').value);
-  if(!amt || amt <= 0) { alert('Enter bet amount!'); return; }
-  if(amt > balance) { alert('Insufficient balance!'); return; }
+
+  var inputBet = parseFloat(document.getElementById('betAmt').value);
+
+// 🔥 FIX INIT (KLÍČOVÉ)
+if(!autoMode){
+  baseBet = inputBet;
+  currentBet = inputBet;
+}
+
+if(autoMode && currentBet === 0){
+  baseBet = inputBet;
+  currentBet = inputBet;
+}
+
+var amt = autoMode ? currentBet : inputBet;
+
+  if(!amt || amt <= 0) {
+    alert('Enter bet amount!');
+    return;
+  }
+
+  if(amt > balance) {
+    alert('Insufficient balance!');
+    autoMode = false; // 🔥 stop auto když dojdou peníze
+    return;
+  }
+
   if(window._casino) {
     window._casino.deductBet(amt).then(function(ok) {
-      if(!ok) return;
+      if(!ok){
+        autoMode = false; // 🔥 stop auto při failu
+        return;
+      }
       betAmount = amt;
       _startBet();
     });
   } else {
-    betAmount = amt; balance -= amt;
+    betAmount = amt;
+    balance -= amt;
     _startBet();
   }
 }
