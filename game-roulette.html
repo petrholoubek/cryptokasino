@@ -615,16 +615,26 @@ function betToId(type,param){
 }
 function updateChipDisplays(){
   document.querySelectorAll('.chip-on-cell').forEach(el=>el.remove());
-  document.querySelectorAll('.num-cell,.out-bet,.zero-cell').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll('.num-cell,.out-bet,.zero-cell')
+    .forEach(el=>el.classList.remove('selected'));
+
   bets.forEach(bet=>{
-    const id=betToId(bet.type,bet.param);
-    const cell=document.getElementById(id);
+    const id = betToId(bet.type,bet.param);
+    const cell = document.getElementById(id);
+
     if(cell){
       cell.classList.add('selected');
-      let chip=cell.querySelector('.chip-on-cell');
-      if(!chip){chip=document.createElement('div');chip.className='chip-on-cell';cell.appendChild(chip);}
-      const n=Math.round(bet.amount/chipValue);
-      chip.textContent=n>9?'9+':n;
+
+      const count = Math.round(bet.amount / chipValue);
+
+      for(let i=0;i<Math.min(count,5);i++){
+        const chip = document.createElement('div');
+        chip.className = 'chip-on-cell';
+        chip.style.top = (-i*3)+'px';
+        chip.style.right = (-i*3)+'px';
+        chip.textContent = '';
+        cell.appendChild(chip);
+      }
     }
   });
 }
@@ -637,81 +647,83 @@ function doubleBets(){if(spinning)return;bets=bets.map(b=>({...b,amount:b.amount
 let spinning=false;
 
 async function spinWheel(){
-  if(spinning)return;
+  if(spinning) return;
   if(bets.length===0){alert('Place a bet first!');return;}
-  const total=totalBet();
-  if(total>balance){alert('Insufficient balance!');return;}
 
-  spinning=true;balance-=total;spinCount++;totalWagered+=total;
-  document.getElementById('spinCount').textContent=spinCount;
+  const total = totalBet();
+  if(total > balance){alert('Insufficient balance!');return;}
+
+  spinning = true;
+  balance -= total;
+  spinCount++;
+  totalWagered += total;
+
   updateBal();
-  document.getElementById('spinBtn').disabled=true;
-  document.getElementById('resultMsg').textContent='Spinning...';
-  document.getElementById('resultMsg').className='result-msg';
-  document.getElementById('winningNum').textContent='--';
-  document.getElementById('winningNum').className='winning-number';
+  document.getElementById('spinBtn').disabled = true;
 
-  // Stop idle loop pred spinem
-  if(idleFrame){cancelAnimationFrame(idleFrame);idleFrame=null;}
-  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+  document.body.style.filter = "blur(2px)";
+  setTimeout(()=>document.body.style.filter="",300);
 
   playSound('spin');
 
-  const result=await getProvenResult(37);
-  const resultIdx=WHEEL_ORDER.indexOf(result);
-  const sliceAngle=(Math.PI*2)/WHEEL_ORDER.length;
-  // Cilovy uhel kola kde bude vitezne cislo pod smernikem
-  const targetSegAngle = -(resultIdx*sliceAngle) - Math.PI/2 + sliceAngle/2;
-  // Normalizuj aktualni uhel
-  const normalizedCurrent = wheelAngle % (Math.PI*2);
-  // Vždy tocit min 6 otacek + dojed na cilovy segment
-  let diff = targetSegAngle - normalizedCurrent;
-  // Zajisti pozitivni smer otaceni
-  const totalRotation = Math.PI*2*6 + diff;
-  const startAngle=wheelAngle;
-  const duration=5500;
-  const startTime=performance.now();
+  const result = await getProvenResult(37);
 
-  // Ball init
-  ballA=Math.random()*Math.PI*2;
-  ballR_=(canvas.width/2-12);
-  ballVisible=true;
-  let ballTick=0;
+  const resultIdx = WHEEL_ORDER.indexOf(result);
+  const slice = (Math.PI*2)/WHEEL_ORDER.length;
+
+  const startAngle = wheelAngle;
+  const target = -(resultIdx*slice) - Math.PI/2 + slice/2;
+
+  let diff = target - (wheelAngle % (Math.PI*2));
+  const totalRot = Math.PI*2*6 + diff;
+
+  const duration = 5200;
+  const start = performance.now();
+
+  ballVisible = true;
+  ballA = Math.random()*Math.PI*2;
+  ballR_ = canvas.width/2 - 10;
 
   function animate(now){
-    const elapsed=now-startTime;
-    const progress=Math.min(elapsed/duration,1);
-    // Ease out quartic
-    const ease=1-Math.pow(1-progress,4);
-    wheelAngle=startAngle+totalRotation*ease;
+    const t = Math.min((now-start)/duration,1);
+
+    // 🔥 lepší easing (expo)
+    const ease = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+    wheelAngle = startAngle + totalRot * ease;
     drawWheel(wheelAngle);
 
-    // Ball orbits opposite, decelerating
-    const ballSpeed=(1-ease)*0.18+0.005;
-    ballA-=ballSpeed;
-    // Ball descends toward wheel
-    if(progress>0.6){
-      ballR_=Math.max((canvas.width/2-12)*0.72, ballR_-0.6);
+    // ball motion
+    const speed = (1-ease)*0.25 + 0.01;
+    ballA -= speed;
+
+    if(t > 0.7){
+      ballR_ -= 0.7;
     }
-    // Tick sound
-    ballTick++;
-    if(ballTick%Math.max(3,Math.floor(15*(1-progress*0.7)))===0&&progress<0.9)playSound('tick');
 
     drawBall();
 
-    if(progress<1){
-      animFrame=requestAnimationFrame(animate);
-    }else{
-      // Snap ball to winning pocket
-      ballA=wheelAngle-Math.PI/2+resultIdx*sliceAngle+sliceAngle/2+Math.PI;
-      ballR_=(canvas.width/2-10)*0.68;
-      drawBall();
+    // 🔥 dramatický tick
+    if(t > 0.85 && Math.random() > 0.7){
+      playSound('tick');
+    }
+
+    if(t < 1){
+      requestAnimationFrame(animate);
+    } else {
+      // impact efekt
+      canvas.style.transform = "scale(1.05)";
+      setTimeout(()=>canvas.style.transform="scale(1)",150);
+
       playSound('ball');
+
       setTimeout(()=>resolveResult(result,total),300);
     }
   }
+
   requestAnimationFrame(animate);
 }
+
 
 function resolveResult(result,totalBetAmt){
   ballVisible=false;drawBall();
@@ -739,11 +751,25 @@ function resolveResult(result,totalBetAmt){
   updateBal();
 
   const rm=document.getElementById('resultMsg');
-  if(profit>0){
-    rm.textContent='WIN! +'+fmtS(profit)+' BTC';rm.className='result-msg win';
-    document.getElementById('lastWin').textContent='+'+fmtS(profit)+' BTC';document.getElementById('lastWin').style.color='var(--green)';
-    playSound('win');spawnParticles(true);
-  }else if(profit===0){
+if(profit>0){
+  rm.textContent='WIN! +'+fmtS(profit)+' BTC';
+  rm.className='result-msg win';
+
+  document.getElementById('lastWin').textContent='+'+fmtS(profit)+' BTC';
+  document.getElementById('lastWin').style.color='var(--green)';
+
+  playSound('win');
+  spawnParticles(true);
+
+  // 🔥 WIN EFFECT (TADY!)
+  document.body.style.transition = "box-shadow 0.2s";
+  document.body.style.boxShadow = "0 0 120px rgba(245,200,66,0.5) inset";
+  setTimeout(()=>{
+    document.body.style.boxShadow="";
+  },300);
+
+}else if(profit===0){
+
     rm.textContent='Break Even';rm.className='result-msg';
   }else{
     rm.textContent='LOST '+fmtS(Math.abs(profit))+' BTC';rm.className='result-msg lose';
