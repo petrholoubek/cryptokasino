@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keno – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#0a0700;--text:#e8d5a0;--text-dim:#8a7a50;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#c084fc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.12) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 20% 80%,rgba(96,165,250,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* PARTICLE CANVAS */
+#particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:50;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
+.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-dep:hover{background:var(--gold-light);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
+.mobile-menu a:hover{color:var(--gold-light);}
+
+/* GAME AREA */
+.game-area{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem 1.5rem 4rem;}
+
+/* GAME TITLE BAR */
+.game-title-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+.gtb-left{display:flex;align-items:center;gap:1rem;}
+.game-icon-big{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#0369a1,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 0 20px rgba(56,189,248,0.3);}
+.game-title{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--gold-light);}
+.game-subtitle{font-size:0.72rem;color:var(--text-dim);font-family:'Cinzel',serif;letter-spacing:0.1em;text-transform:uppercase;margin-top:0.1rem;}
+.gtb-right{display:flex;align-items:center;gap:0.6rem;}
+.speed-btn{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.7rem;border-radius:6px;cursor:pointer;border:1px solid rgba(212,160,23,0.2);background:rgba(212,160,23,0.05);color:var(--text-dim);transition:all 0.2s;}
+.speed-btn.active{background:rgba(212,160,23,0.15);border-color:var(--gold);color:var(--gold-light);}
+.speed-label{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
+
+/* BALANCE BAR */
+.balance-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:0.8rem 1.5rem;margin-bottom:1.2rem;}
+.bal-item{text-align:center;}
+.bal-label{font-size:0.6rem;font-family:'Cinzel',serif;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);}
+.bal-value{font-family:'Cinzel',serif;font-size:0.95rem;font-weight:700;color:var(--gold-light);margin-top:0.15rem;}
+.bal-value.green{color:var(--green);}.bal-value.red{color:var(--red);}
+
+/* MAIN LAYOUT */
+.main-grid{display:grid;grid-template-columns:1fr 280px;gap:1.2rem;}
+
+/* KENO BOARD */
+.keno-panel{background:rgba(6,4,0,0.97);border:1px solid rgba(212,160,23,0.2);border-radius:18px;padding:1.2rem;position:relative;overflow:hidden;}
+.keno-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(56,189,248,0.04),transparent 60%);pointer-events:none;}
+
+/* DRAWN NUMBERS BAR */
+.drawn-bar{background:rgba(0,0,0,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:1rem;min-height:52px;}
+.drawn-label{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;}
+.drawn-nums{display:flex;gap:0.35rem;flex-wrap:wrap;min-height:26px;}
+.drawn-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.6rem;font-weight:700;animation:numDrop 0.3s ease;}
+@keyframes numDrop{from{transform:scale(0) rotate(-180deg);opacity:0;}to{transform:scale(1) rotate(0deg);opacity:1;}}
+.dn-hit{background:linear-gradient(135deg,#d4a017,#f5c842);color:#000;box-shadow:0 0 10px rgba(212,160,23,0.6);}
+.dn-miss{background:rgba(30,30,40,0.8);color:var(--text-dim);border:1px solid rgba(255,255,255,0.1);}
+
+/* STATUS MSG */
+.keno-status{text-align:center;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.8rem;min-height:20px;}
+
+/* KENO GRID — 80 čísel 10x8 */
+.keno-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:1rem;}
+
+.kn{
+  aspect-ratio:1;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.07);
+  background:rgba(15,12,5,0.9);
+  color:var(--text-dim);
+  transition:all 0.2s;
+  position:relative;
+  user-select:none;
+}
+.kn:hover{border-color:rgba(56,189,248,0.5);color:var(--blue);background:rgba(56,189,248,0.08);transform:scale(1.06);}
+
+/* Stavy čísel */
+.kn.picked{
+  background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(59,130,246,0.2));
+  border-color:rgba(56,189,248,0.7);
+  color:var(--blue);
+  box-shadow:0 0 12px rgba(56,189,248,0.3);
+  transform:scale(1.04);
+}
+.kn.drawn{
+  background:rgba(30,30,40,0.9);
+  border-color:rgba(100,100,120,0.3);
+  color:rgba(150,150,170,0.6);
+  animation:none;
+}
+.kn.hit{
+  background:linear-gradient(135deg,#c8920a,#e8b020) !important;
+  border-color:var(--gold-light) !important;
+  color:#000 !important;
+  box-shadow:0 0 20px rgba(212,160,23,0.7) !important;
+  animation:hitAnim 0.4s ease !important;
+}
+@keyframes hitAnim{
+  0%{transform:scale(1.0);}
+  40%{transform:scale(1.3);}
+  70%{transform:scale(0.95);}
+  100%{transform:scale(1.08);}
+}
+.kn.drawing{
+  animation:drawPulse 0.3s ease;
+  border-color:rgba(212,160,23,0.8);
+}
+@keyframes drawPulse{
+  0%{box-shadow:0 0 0 0 rgba(212,160,23,0.8);}
+  100%{box-shadow:0 0 0 12px rgba(212,160,23,0);}
+}
+
+/* GAME ACTIONS */
+.actions-row{display:flex;gap:0.6rem;}
+.play-btn{flex:1;padding:0.85rem;border-radius:12px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;box-shadow:0 0 25px rgba(212,160,23,0.5);transition:all 0.3s;}
+.play-btn:hover:not(:disabled){transform:scale(1.02);box-shadow:0 0 45px rgba(212,160,23,0.8);}
+.play-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.clear-btn{padding:0.85rem 1.2rem;border-radius:12px;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;cursor:pointer;border:1px solid rgba(248,113,113,0.3);background:rgba(248,113,113,0.06);color:var(--red);transition:all 0.2s;}
+.clear-btn:hover{background:rgba(248,113,113,0.14);}
+.quick-btn{padding:0.85rem 1rem;border-radius:12px;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;cursor:pointer;border:1px solid rgba(212,160,23,0.25);background:rgba(212,160,23,0.07);color:var(--gold);transition:all 0.2s;}
+.quick-btn:hover{background:rgba(212,160,23,0.14);}
+
+/* RESULT PANEL */
+.result-panel{display:none;margin-top:1rem;padding:1rem;border-radius:12px;text-align:center;animation:slideDown 0.3s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.result-panel.win{background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);}
+.result-panel.lose{background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);}
+.result-big{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold-light);}
+.result-panel.lose .result-big{color:var(--red);}
+.result-sub{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-top:0.3rem;}
+
+/* RIGHT PANEL */
+.right-panel{display:flex;flex-direction:column;gap:1rem;}
+
+/* BET CONTROLS */
+.bet-panel{background:rgba(6,4,0,0.97);border:1px solid rgba(212,160,23,0.18);border-radius:14px;padding:1.1rem;}
+.bp-label{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.5rem;}
+.bet-input-row{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.8rem;}
+.bet-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(212,160,23,0.2);border-radius:8px;padding:0.55rem 0.8rem;font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold-light);outline:none;transition:border-color 0.2s;width:100%;}
+.bet-input:focus{border-color:var(--gold);}
+.bet-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;margin-bottom:0.8rem;}
+.bet-preset{background:rgba(212,160,23,0.07);border:1px solid rgba(212,160,23,0.15);border-radius:6px;padding:0.35rem 0.4rem;font-family:'Cinzel',serif;font-size:0.6rem;font-weight:700;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.2s;}
+.bet-preset:hover{background:rgba(212,160,23,0.15);color:var(--gold);}
+.multiplier-row{display:flex;gap:0.4rem;}
+.multi-btn{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:0.3rem;font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.2s;}
+.multi-btn:hover{background:rgba(212,160,23,0.08);color:var(--gold);}
+
+/* PICK COUNT */
+.pick-info{background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.18);border-radius:8px;padding:0.6rem 0.8rem;display:flex;align-items:center;justify-content:space-between;}
+.pi-label{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
+.pi-count{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--blue);}
+.pi-max{font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);}
+
+/* PAYOUT TABLE */
+.payout-panel{background:rgba(6,4,0,0.97);border:1px solid rgba(212,160,23,0.15);border-radius:14px;overflow:hidden;}
+.pp-header{padding:0.7rem 1rem;background:rgba(212,160,23,0.06);border-bottom:1px solid rgba(212,160,23,0.1);font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
+.pp-table{width:100%;}
+.pp-row{display:grid;grid-template-columns:auto 1fr auto;gap:0.5rem;padding:0.45rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);align-items:center;transition:background 0.2s;}
+.pp-row:last-child{border-bottom:none;}
+.pp-row.active-row{background:rgba(212,160,23,0.08);}
+.pp-hits{font-family:'Cinzel',serif;font-size:0.65rem;color:var(--text-dim);}
+.pp-stars{display:flex;gap:2px;}
+.pp-star{width:8px;height:8px;border-radius:50%;background:rgba(212,160,23,0.15);}
+.pp-star.lit{background:var(--gold);box-shadow:0 0 4px var(--gold);}
+.pp-multi{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;color:var(--gold-light);}
+.pp-row.active-row .pp-multi{color:var(--green);}
+
+/* LAST RESULTS */
+.history-panel{background:rgba(6,4,0,0.97);border:1px solid rgba(212,160,23,0.12);border-radius:14px;overflow:hidden;}
+.hp-header{padding:0.6rem 1rem;background:rgba(212,160,23,0.04);border-bottom:1px solid rgba(212,160,23,0.08);font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);}
+.hp-row{display:grid;grid-template-columns:auto 1fr auto;gap:0.5rem;padding:0.4rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);align-items:center;font-size:0.72rem;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.hp-row:last-child{border-bottom:none;}
+.hp-picks{font-family:'Cinzel',serif;font-size:0.65rem;color:var(--text-dim);}
+.hp-hits{font-family:'Cinzel',serif;font-size:0.65rem;color:var(--blue);}
+.hp-profit{font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;}
+.hp-profit.win{color:var(--green);}.hp-profit.lose{color:var(--red);}
+
+/* SESSION STATS */
+.stats-panel{background:rgba(6,4,0,0.97);border:1px solid rgba(212,160,23,0.12);border-radius:14px;padding:0.9rem;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.stat-box{background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem;text-align:center;}
+.sb-label{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
+.sb-val{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;color:var(--gold);margin-top:0.2rem;}
+.sb-val.green{color:var(--green);}.sb-val.red{color:var(--red);}
+
+/* LIVE PLAYERS */
+.live-bar{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.12);border-radius:10px;padding:0.55rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.8rem;overflow:hidden;}
+.live-dot-sm{width:6px;height:6px;background:var(--red);border-radius:50%;animation:livePulse 1.2s infinite;flex-shrink:0;}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 4px var(--red);}50%{opacity:0.3;}}
+.live-label-sm{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);white-space:nowrap;}
+.live-feed{display:flex;gap:1rem;overflow:hidden;flex:1;font-size:0.7rem;color:var(--text-dim);}
+.lf-item{white-space:nowrap;animation:lfi 0.3s ease;}
+@keyframes lfi{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.lf-win{color:var(--green);font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;}
+.lf-user{color:var(--text);}
+
+footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr;}.right-panel{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}}
+@media(max-width:640px){
+  header{padding:0 1rem;height:52px;}nav,.btc-bal,.btn-dep{display:none;}.hamburger{display:flex;}
+  .game-area{padding:1rem 0.8rem 3rem;}
+  .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;padding:0.7rem;}
+  .keno-grid{gap:3px;}.kn{font-size:0.6rem;border-radius:5px;}
+  .right-panel{display:flex;flex-direction:column;}
+  .game-title{font-size:1.2rem;}
+}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a></nav>
+  <div class="header-right">
+    <span class="btc-bal" id="headerBal">0.10000000 BTC</span>
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html" onclick="closeMenu()">Casino</a>
+  <a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a>
+</div>
+
+<div class="game-area">
+
+  <!-- TITLE BAR -->
+  <div class="game-title-bar">
+    <div class="gtb-left">
+      <div class="game-icon-big">&#127358;</div>
+      <div>
+        <div class="game-title">KENO</div>
+        <div class="game-subtitle">Pick 1-10 numbers &middot; 20 drawn &middot; RTP 92%</div>
+      </div>
+    </div>
+    <div class="gtb-right">
+      <span class="speed-label">Speed:</span>
+      <button class="speed-btn" onclick="setSpeed(800,this)">Slow</button>
+      <button class="speed-btn active" onclick="setSpeed(300,this)">Normal</button>
+      <button class="speed-btn" onclick="setSpeed(80,this)">Fast</button>
+      <button class="speed-btn" onclick="setSpeed(0,this)">Turbo</button>
+    </div>
+  </div>
+
+  <!-- BALANCE BAR -->
+  <div class="balance-bar">
+    <div class="bal-item"><div class="bal-label">Balance</div><div class="bal-value green" id="balDisplay">0.10000000 BTC</div></div>
+    <div class="bal-item"><div class="bal-label">Bet</div><div class="bal-value" id="betDisplay">0.00100 BTC</div></div>
+    <div class="bal-item"><div class="bal-label">Last Win</div><div class="bal-value" id="lastWinDisplay">-- BTC</div></div>
+    <div class="bal-item"><div class="bal-label">Session P/L</div><div class="bal-value" id="plDisplay">±0.00000</div></div>
+    <div class="bal-item"><div class="bal-label">Games</div><div class="bal-value" id="gamesDisplay">0</div></div>
+  </div>
+
+  <!-- LIVE PLAYERS -->
+  <div class="live-bar">
+    <div class="live-dot-sm"></div>
+    <span class="live-label-sm">Live</span>
+    <div class="live-feed" id="liveFeed"></div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- KENO BOARD -->
+    <div class="keno-panel">
+
+      <!-- DRAWN NUMBERS -->
+      <div class="drawn-bar">
+        <div class="drawn-label">Drawn Numbers (<span id="drawnCount">0</span>/20)</div>
+        <div class="drawn-nums" id="drawnNums"></div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="keno-status" id="kenoStatus">Pick your lucky numbers and press PLAY</div>
+
+      <!-- 80 NUMBERS -->
+      <div class="keno-grid" id="kenoGrid"></div>
+
+      <!-- RESULT -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-big" id="resultBig">+0.00000 BTC</div>
+        <div class="result-sub" id="resultSub">0 hits · 0x multiplier</div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions-row">
+        <button class="quick-btn" onclick="quickPick()" title="Random selection">&#127922; Quick Pick</button>
+        <button class="play-btn" id="playBtn" onclick="playKeno()">&#127358; PLAY KENO</button>
+        <button class="clear-btn" onclick="clearPicks()">Clear</button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <!-- BET -->
+      <div class="bet-panel">
+        <div class="bp-label">Bet Amount</div>
+        <input type="number" class="bet-input" id="betInput" value="0.001" step="0.0001" min="0.0001" max="0.1" oninput="updateBetDisplay()">
+        <div class="bet-presets">
+          <div class="bet-preset" onclick="setBet(0.0001)">0.0001</div>
+          <div class="bet-preset" onclick="setBet(0.0005)">0.0005</div>
+          <div class="bet-preset" onclick="setBet(0.001)">0.001</div>
+          <div class="bet-preset" onclick="setBet(0.005)">0.005</div>
+          <div class="bet-preset" onclick="setBet(0.01)">0.01</div>
+          <div class="bet-preset" onclick="setBet(0.05)">0.05</div>
+        </div>
+        <div class="multiplier-row">
+          <div class="multi-btn" onclick="multiplyBet(0.5)">½</div>
+          <div class="multi-btn" onclick="multiplyBet(2)">2×</div>
+          <div class="multi-btn" onclick="multiplyBet(5)">5×</div>
+          <div class="multi-btn" onclick="multiplyBet(10)">10×</div>
+        </div>
+        <div style="margin-top:0.8rem;">
+          <div class="pick-info">
+            <div><div class="pi-label">Numbers Picked</div><div class="pi-count" id="pickCount">0</div></div>
+            <div class="pi-max">Max 10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYOUT TABLE -->
+      <div class="payout-panel">
+        <div class="pp-header">&#128176; Payout Table (per pick count)</div>
+        <div id="payoutTable"></div>
+      </div>
+
+      <!-- SESSION STATS -->
+      <div class="stats-panel">
+        <div class="bp-label" style="margin-bottom:0.6rem">Session Stats</div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="sb-label">Wagered</div><div class="sb-val" id="stWagered">0.00000</div></div>
+          <div class="stat-box"><div class="sb-label">Best Win</div><div class="sb-val green" id="stBestWin">0.00000</div></div>
+          <div class="stat-box"><div class="sb-label">Win Rate</div><div class="sb-val" id="stWinRate">--</div></div>
+          <div class="stat-box"><div class="sb-label">Best Hits</div><div class="sb-val" id="stBestHits">0</div></div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="history-panel">
+        <div class="hp-header">Last Results</div>
+        <div id="histFeed"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer><p>2026 CryptoKasino &middot; 18+ &middot; <a href="casino.html" style="color:var(--gold)">Back to Casino</a></p></footer>
+
+<script>
+// ══ PARTICLES ══
+const pCanvas=document.getElementById('particleCanvas'),pCtx=pCanvas.getContext('2d');
+let particles=[];
+function resizeP(){pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;}
+resizeP();window.addEventListener('resize',resizeP);
+function spawnWin(x,y){
+  const cols=['#F5C842','#4ade80','#fff','#60a5fa','#fb923c'];
+  for(let i=0;i<80;i++){
+    particles.push({x,y,vx:(Math.random()-0.5)*14,vy:Math.random()*-16-4,
+      size:Math.random()*6+2,color:cols[Math.floor(Math.random()*cols.length)],
+      life:1,decay:Math.random()*0.018+0.008,gravity:0.45,
+      shape:Math.random()>0.4?'star':'circle'});
+  }
+}
+function drawStar(c,x,y,r,col){c.beginPath();for(let i=0;i<5;i++){const a=(i*Math.PI*2)/5-Math.PI/2,b=a+Math.PI/5;c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);c.lineTo(x+Math.cos(b)*(r*0.4),y+Math.sin(b)*(r*0.4));}c.closePath();c.fillStyle=col;c.fill();}
+function animateP(){pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;pCtx.globalAlpha=p.life;if(p.shape==='star')drawStar(pCtx,p.x,p.y,p.size,p.color);else{pCtx.beginPath();pCtx.arc(p.x,p.y,p.size,0,Math.PI*2);pCtx.fillStyle=p.color;pCtx.fill();}});pCtx.globalAlpha=1;requestAnimationFrame(animateP);}
+animateP();
+
+// ══ AUDIO ══
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+document.addEventListener('click',()=>{if(AC.state==='suspended')AC.resume();},{once:true});
+function playTick(freq=600){
+  try{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(0.06,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.08);o.start();o.stop(AC.currentTime+0.08);}catch(e){}
+}
+function playHit(){
+  try{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.value=900;g.gain.setValueAtTime(0.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.15);o.start();o.stop(AC.currentTime+0.15);}catch(e){}
+}
+function playWin(){
+  try{[0,0.1,0.2,0.32,0.45].forEach((t,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.value=[523,659,784,1047,1319][i];g.gain.setValueAtTime(0.15,AC.currentTime+t);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+t+0.25);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+0.3);});}catch(e){}
+}
+function playLose(){
+  try{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sawtooth';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.5);g.gain.setValueAtTime(0.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.5);o.start();o.stop(AC.currentTime+0.5);}catch(e){}
+}
+function playPick(){
+  try{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.value=500+picks.size*40;g.gain.setValueAtTime(0.05,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.06);o.start();o.stop(AC.currentTime+0.06);}catch(e){}
+}
+
+// ══ PAYOUT TABLE ══
+// Klíč: počet picks → pole multiplierů [0hits, 1hit, 2hits, ...]
+const PAYOUTS = {
+  1:  [0, 3.6],
+  2:  [0, 0, 7.5],
+  3:  [0, 0, 2.5, 22],
+  4:  [0, 0, 1.5, 5, 50],
+  5:  [0, 0, 1.2, 3, 15, 120],
+  6:  [0, 0, 1.0, 2, 6, 50, 300],
+  7:  [0, 0, 0.5, 1.5, 4, 15, 100, 700],
+  8:  [0, 0, 0.5, 1.2, 2, 8, 30, 200, 1000],
+  9:  [0, 0, 0.5, 1.0, 1.5, 5, 15, 80, 500, 2000],
+  10: [0, 0, 0.5, 0.8, 1.2, 3, 10, 50, 200, 1000, 5000],
+};
+
+// ══ STATE ══
+let balance=0.10000000;
+let picks=new Set();
+let drawnNums=[];
+let playing=false;
+let drawSpeed=300;
+let sessionPL=0,gamesPlayed=0,totalWagered=0,bestWin=0,bestHits=0,wins=0;
+const MAX_PICKS=10;
+const TOTAL_NUMS=80;
+const DRAW_COUNT=20;
+
+// ══ BUILD GRID ══
+function buildGrid(){
+  const grid=document.getElementById('kenoGrid');
+  for(let i=1;i<=TOTAL_NUMS;i++){
+    const el=document.createElement('div');
+    el.className='kn';el.id='kn'+i;el.textContent=i;
+    el.onclick=()=>togglePick(i);
+    grid.appendChild(el);
+  }
+}
+
+function togglePick(n){
+  if(playing)return;
+  const el=document.getElementById('kn'+n);
+  if(picks.has(n)){
+    picks.delete(n);el.classList.remove('picked');
+  } else {
+    if(picks.size>=MAX_PICKS)return;
+    picks.add(n);el.classList.add('picked');
+    playPick();
+  }
+  updatePickCount();
+  updatePayoutTable();
+}
+
+function updatePickCount(){
+  document.getElementById('pickCount').textContent=picks.size;
+}
+
+function clearPicks(){
+  if(playing)return;
+  picks.forEach(n=>document.getElementById('kn'+n)?.classList.remove('picked'));
+  picks.clear();
+  updatePickCount();
+  updatePayoutTable();
+  resetBoard();
+}
+
+function quickPick(){
+  if(playing)return;
+  clearPicks();
+  const count=picks.size||Math.floor(Math.random()*7)+3; // 3-9 čísel
+  const nums=Array.from({length:TOTAL_NUMS},(_,i)=>i+1);
+  nums.sort(()=>Math.random()-0.5);
+  const target=Math.min(count||7,MAX_PICKS);
+  for(let i=0;i<target;i++){
+    picks.add(nums[i]);
+    document.getElementById('kn'+nums[i]).classList.add('picked');
+  }
+  updatePickCount();
+  updatePayoutTable();
+  playPick();
+}
+
+function resetBoard(){
+  for(let i=1;i<=TOTAL_NUMS;i++){
+    const el=document.getElementById('kn'+i);
+    if(el)el.className='kn';
+  }
+  document.getElementById('drawnNums').innerHTML='';
+  document.getElementById('drawnCount').textContent='0';
+  document.getElementById('kenoStatus').textContent='Pick your lucky numbers and press PLAY';
+  document.getElementById('resultPanel').style.display='none';
+  drawnNums=[];
+}
+
+// ══ PAYOUT TABLE ══
+function updatePayoutTable(){
+  const n=picks.size||5;
+  const payouts=PAYOUTS[n]||PAYOUTS[5];
+  const tbl=document.getElementById('payoutTable');
+  tbl.innerHTML='';
+  payouts.forEach((multi,hits)=>{
+    if(multi===0&&hits===0)return;
+    const row=document.createElement('div');row.className='pp-row';
+    const stars=document.createElement('div');stars.className='pp-stars';
+    for(let i=0;i<Math.min(n,10);i++){
+      const s=document.createElement('div');s.className='pp-star'+(i<hits?' lit':'');stars.appendChild(s);
+    }
+    row.innerHTML=`<span class="pp-hits">${hits} hit${hits!==1?'s':''}</span>`;
+    row.appendChild(stars);
+    row.innerHTML+=`<span class="pp-multi">${multi}×</span>`;
+    tbl.appendChild(row);
+  });
+}
+
+// ══ PLAY ══
+async function playKeno(){
+  if(playing)return;
+  if(picks.size===0){setStatus('Pick at least 1 number!');return;}
+  const bet=parseFloat(document.getElementById('betInput').value)||0.001;
+  if(bet>balance){setStatus('Insufficient balance!');return;}
+
+  playing=true;
+  document.getElementById('playBtn').disabled=true;
+  document.getElementById('resultPanel').style.display='none';
+
+  // Odečti sázku
+  balance-=bet;
+  totalWagered+=bet;
+  gamesPlayed++;
+  updateBal();
+  updateStats();
+
+  // Reset vizuální stav
+  for(let i=1;i<=TOTAL_NUMS;i++){
+    const el=document.getElementById('kn'+i);
+    if(el){
+      el.className=picks.has(i)?'kn picked':'kn';
+    }
+  }
+  document.getElementById('drawnNums').innerHTML='';
+  document.getElementById('drawnCount').textContent='0';
+
+  // Vygeneruj 20 unikátních čísel
+  const pool=Array.from({length:TOTAL_NUMS},(_,i)=>i+1);
+  pool.sort(()=>Math.random()-0.5);
+  const drawn=pool.slice(0,DRAW_COUNT);
+  drawnNums=drawn;
+
+  const hits=drawn.filter(n=>picks.has(n));
+  let hitCount=0;
+
+  setStatus('Drawing numbers...');
+
+  // Animace losování
+  for(let i=0;i<drawn.length;i++){
+    const n=drawn[i];
+    const isHit=picks.has(n);
+
+    // Flash animace
+    const el=document.getElementById('kn'+n);
+    if(el){
+      el.classList.add('drawing');
+      setTimeout(()=>{
+        el.className=isHit?'kn hit':'kn drawn';
+      },150);
+    }
+
+    // Přidej do drawn bar
+    const dEl=document.createElement('div');
+    dEl.className='drawn-num '+(isHit?'dn-hit':'dn-miss');
+    dEl.textContent=n;
+    document.getElementById('drawnNums').appendChild(dEl);
+    document.getElementById('drawnCount').textContent=i+1;
+
+    if(isHit){
+      hitCount++;
+      playHit();
+      setStatus(`Hit! ${hitCount} match${hitCount!==1?'es':''} so far...`);
+    } else {
+      playTick(400+Math.random()*200);
+    }
+
+    if(drawSpeed>0)await sleep(drawSpeed);
+  }
+
+  // Výsledek
+  const n=picks.size;
+  const payouts=PAYOUTS[n]||PAYOUTS[5];
+  const multi=payouts[hitCount]||0;
+  const payout=bet*multi;
+  const profit=payout-bet;
+
+  balance+=payout;
+  sessionPL+=profit;
+  if(profit>bestWin)bestWin=profit;
+  if(hitCount>bestHits)bestHits=hitCount;
+  if(profit>0)wins++;
+
+  updateBal();
+  updateStats();
+
+  // Zobraz výsledek
+  const rpEl=document.getElementById('resultPanel');
+  const rbEl=document.getElementById('resultBig');
+  const rsEl=document.getElementById('resultSub');
+
+  rpEl.style.display='block';
+  if(profit>0){
+    rpEl.className='result-panel win';
+    rbEl.textContent='WIN! +'+fmt5(profit)+' BTC';
+    rsEl.textContent=hitCount+' hits · '+multi+'× multiplier';
+    document.getElementById('lastWinDisplay').textContent='+'+fmt5(profit)+' BTC';
+    document.getElementById('lastWinDisplay').className='bal-value green';
+    playWin();
+    // Particle exploze na keno gridu
+    const grid=document.getElementById('kenoGrid');
+    const rect=grid.getBoundingClientRect();
+    spawnWin(rect.left+rect.width/2,rect.top+rect.height/2);
+    setStatus('🏆 Winner! '+hitCount+' hits — '+multi+'× payout!');
+  } else {
+    rpEl.className='result-panel lose';
+    rbEl.textContent='LOST '+fmt5(bet)+' BTC';
+    rsEl.textContent=hitCount+' hits · no payout';
+    document.getElementById('lastWinDisplay').textContent='-'+fmt5(bet)+' BTC';
+    document.getElementById('lastWinDisplay').className='bal-value red';
+    playLose();
+    setStatus(hitCount===0?'No matches. Try again!':hitCount+' hits but not enough. Try again!');
+  }
+
+  // P/L display
+  const plEl=document.getElementById('plDisplay');
+  plEl.textContent=(sessionPL>=0?'+':'')+fmt5(sessionPL)+' BTC';
+  plEl.className='bal-value '+(sessionPL>=0?'green':'red');
+
+  addHistory(picks.size,hitCount,bet,profit);
+  highlightPayoutRow(hitCount);
+
+  playing=false;
+  document.getElementById('playBtn').disabled=false;
+}
+
+function highlightPayoutRow(hits){
+  document.querySelectorAll('.pp-row').forEach((row,i)=>{
+    row.classList.toggle('active-row',i===hits-1);
+  });
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function setStatus(msg){document.getElementById('kenoStatus').textContent=msg;}
+function fmt5(n){return parseFloat(n||0).toFixed(5);}
+function fmt8(n){return parseFloat(n||0).toFixed(8);}
+
+function updateBal(){
+  document.getElementById('balDisplay').textContent=fmt8(balance)+' BTC';
+  document.getElementById('headerBal').textContent=fmt8(balance)+' BTC';
+}
+
+function updateBetDisplay(){
+  const bet=parseFloat(document.getElementById('betInput').value)||0.001;
+  document.getElementById('betDisplay').textContent=fmt5(bet)+' BTC';
+}
+
+function setBet(val){
+  document.getElementById('betInput').value=val;
+  updateBetDisplay();
+}
+
+function multiplyBet(factor){
+  const cur=parseFloat(document.getElementById('betInput').value)||0.001;
+  const newVal=Math.min(Math.max(cur*factor,0.0001),0.1);
+  document.getElementById('betInput').value=parseFloat(newVal.toFixed(8));
+  updateBetDisplay();
+}
+
+function setSpeed(ms,el){
+  drawSpeed=ms;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateStats(){
+  document.getElementById('stWagered').textContent=fmt5(totalWagered);
+  document.getElementById('stBestWin').textContent=fmt5(bestWin);
+  document.getElementById('stWinRate').textContent=gamesPlayed>0?Math.round(wins/gamesPlayed*100)+'%':'--';
+  document.getElementById('stBestHits').textContent=bestHits;
+  document.getElementById('gamesDisplay').textContent=gamesPlayed;
+}
+
+function addHistory(picksN,hits,bet,profit){
+  const feed=document.getElementById('histFeed');
+  const row=document.createElement('div');row.className='hp-row';
+  const ps=profit>=0?'+':'';
+  row.innerHTML=`<span class="hp-picks">${picksN} picks</span><span class="hp-hits">${hits} hits</span><span class="hp-profit ${profit>0?'win':'lose'}">${ps}${fmt5(profit)}</span>`;
+  feed.prepend(row);
+  if(feed.children.length>8)feed.lastChild.remove();
+}
+
+// ══ LIVE PLAYERS ══
+const FAKE=['Satoshi','Lucky7','Player77','CryptoX','VegasKing','0xA91…','SlotKing','BTC_Pro'];
+function addLivePlayer(){
+  const feed=document.getElementById('liveFeed');
+  const name=FAKE[Math.floor(Math.random()*FAKE.length)];
+  const hits=Math.floor(Math.random()*8);
+  const won=hits>=3;
+  const amt=(Math.random()*0.05+0.001).toFixed(4);
+  const el=document.createElement('div');el.className='lf-item';
+  el.innerHTML=`<span class="lf-user">${name}</span> ${won?'<span class="lf-win">hit '+hits+'! +'+amt+' BTC</span>':'missed ('+hits+' hits)'}`;
+  feed.prepend(el);
+  if(feed.children.length>4)feed.lastChild.remove();
+}
+setInterval(addLivePlayer,3200);
+for(let i=0;i<3;i++)addLivePlayer();
+
+// ══ HAMBURGER ══
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+
+// ══ INIT ══
+buildGrid();
+updatePayoutTable();
+updateBetDisplay();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>
+(async function(){
+  var tries=0;
+  while(!window.CK&&tries<20){await new Promise(r=>setTimeout(r,100));tries++;}
+  if(!window.CK){console.log('[Keno] Demo mode');return;}
+  var bal=await CK.getBalance();
+  balance=bal;updateBal();
+  CK.subscribeBalance(function(b){balance=b;updateBal();});
+  console.log('[Keno] OK | balance:',balance);
+})();
+</script>
+</body>
+</html>
