@@ -743,8 +743,30 @@ updateBetDisplay();
   var tries=0;
   while(!window.CK&&tries<20){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK){console.log('[Keno] Demo mode');return;}
+
+  // 1. Balance
   var bal=await CK.getBalance();
   balance=bal;updateBal();
+
+  // 2. Game Settings z DB — RTP, limity
+  var gs=await CK.getGameSettings('keno');
+  window._gs=gs;
+  console.log('[Keno] RTP:'+gs.rtp_pct+'% | HouseEdge:'+gs.house_edge_pct+'% | MaxBet:'+gs.max_bet_btc+' BTC');
+
+  // Aplikuj max bet limit
+  var maxBetInput=document.getElementById('betInput');
+  if(maxBetInput&&gs.max_bet_btc){
+    maxBetInput.max=gs.max_bet_btc;
+  }
+
+  // Disabled check
+  if(gs.enabled===false){
+    document.getElementById('playBtn').disabled=true;
+    document.getElementById('playBtn').textContent='Game temporarily unavailable';
+    console.warn('[Keno] Game disabled in admin panel');
+  }
+
+  // 3. Realtime
   CK.subscribeBalance(function(b){balance=b;updateBal();});
   console.log('[Keno] OK | balance:',balance);
 })();
