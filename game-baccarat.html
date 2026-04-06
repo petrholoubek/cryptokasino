@@ -863,8 +863,33 @@ updateBetDisplay();updateStats();
   var tries=0;
   while(!window.CK&&tries<20){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK){console.log('[Baccarat] Demo mode');return;}
+
+  // 1. Balance
   var bal=await CK.getBalance();
   balance=bal;updateBal();
+
+  // 2. Game Settings z DB
+  var gs=await CK.getGameSettings('baccarat');
+  window._gs=gs;
+  console.log('[Baccarat] RTP:'+gs.rtp_pct+'% | HouseEdge:'+gs.house_edge_pct+'% | MaxBet:'+gs.max_bet_btc+' BTC');
+
+  // Aplikuj max bet limit z DB
+  if(gs.max_bet_btc){
+    // Omez max chip hodnotu
+    document.querySelectorAll('.chip-b').forEach(function(chip){
+      var val=parseFloat(chip.onclick.toString().match(/[\d.]+/)?.[0]||0);
+      if(val>gs.max_bet_btc) chip.style.opacity='0.4';
+    });
+  }
+
+  // Disabled check
+  if(gs.enabled===false){
+    document.getElementById('dealBtn').disabled=true;
+    document.getElementById('dealBtn').textContent='Game temporarily unavailable';
+    console.warn('[Baccarat] Game disabled in admin panel');
+  }
+
+  // 3. Realtime
   CK.subscribeBalance(function(b){balance=b;updateBal();});
   console.log('[Baccarat] OK | balance:',balance);
 })();
