@@ -111,14 +111,41 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .game-card-sm .game-name{font-size:1.1rem;}
 
 /* VIDEO CARD */
-.video-card{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(212,160,23,0.3);aspect-ratio:4/3;background:#0a0700;cursor:pointer;transition:all 0.35s;}
-.video-card:hover{border-color:var(--gold);box-shadow:0 0 60px rgba(212,160,23,0.4);transform:translateY(-6px);}
-.video-card video{width:100%;height:100%;object-fit:cover;opacity:0.85;}
-.video-card-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.7) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.play-circle{width:60px;height:60px;border-radius:50%;background:rgba(212,160,23,0.85);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#000;box-shadow:0 0 40px rgba(212,160,23,0.7);transition:all 0.3s;margin-bottom:0.8rem;}
-.video-card:hover .play-circle{transform:scale(1.15);box-shadow:0 0 60px rgba(212,160,23,1);}
-.video-label{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;}
-.video-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--gold-light);position:absolute;bottom:1rem;left:1rem;}
+.video-card{position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(212,160,23,0.3);aspect-ratio:4/3;background:#0a0700;transition:all 0.35s;}
+.video-card video{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* Promo video cards — 4 looping videos */
+.promo-card{cursor:default;}
+.promo-card:hover{border-color:var(--gold);box-shadow:0 0 60px rgba(212,160,23,0.4),0 20px 40px rgba(0,0,0,0.6);transform:translateY(-6px);}
+.promo-card video{opacity:0.88;transition:opacity 0.4s;}
+.promo-card:hover video{opacity:1;}
+.promo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.0) 50%,rgba(0,0,0,0.55) 100%);pointer-events:none;}
+.promo-badge{
+  position:absolute;top:0.75rem;left:0.75rem;
+  background:rgba(212,160,23,0.15);
+  border:1px solid rgba(212,160,23,0.35);
+  backdrop-filter:blur(6px);
+  border-radius:20px;
+  padding:0.22rem 0.7rem;
+  font-family:'Cinzel',serif;font-size:0.52rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold-light);
+  opacity:0;transition:opacity 0.3s;
+}
+.promo-card:hover .promo-badge{opacity:1;}
+
+/* Sound toggle — mute indicator */
+.promo-card .promo-sound{
+  position:absolute;bottom:0.6rem;right:0.6rem;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(0,0,0,0.55);
+  border:1px solid rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;cursor:pointer;color:rgba(255,255,255,0.6);
+  opacity:0;transition:opacity 0.3s;
+  z-index:5;
+}
+.promo-card:hover .promo-sound{opacity:1;}
 
 /* ═══════════════════════════════
    ALL GAMES — elegantni karty
@@ -283,25 +310,25 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
   </div>
 
   <div class="games-secondary">
-    <a href="game-dice.html" class="game-card-sm">
-      <img src="images/dice.jpg" alt="Dice">
-      <div class="game-card-overlay"></div>
-      <div class="game-card-info"><div class="game-label">Game</div><div class="game-name">Dice</div></div>
-    </a>
-    <a href="live.html" class="game-card-sm">
-      <img src="images/live.jpg" alt="Live Casino">
-      <div class="game-card-overlay"></div>
-      <div class="game-card-info"><div class="game-label">Category</div><div class="game-name">Live Casino</div></div>
-    </a>
-    <a href="sports.html" class="game-card-sm">
-      <img src="images/sports.jpg" alt="Sports">
-      <div class="game-card-overlay"></div>
-      <div class="game-card-info"><div class="game-label">Betting</div><div class="game-name">Sports</div></div>
-    </a>
-    <div class="video-card" onclick="toggleVideo()">
-      <video id="promoVid" src="images/promo.mp4" muted loop poster="images/hero.jpg"></video>
-      <div class="video-card-overlay"><div class="play-circle" id="playBtn">&#9654;</div><div class="video-label">Watch Trailer</div></div>
-      <div class="video-title">CryptoKasino</div>
+    <div class="video-card promo-card" id="pc0">
+      <video src="images/promo.mp4" muted loop playsinline autoplay></video>
+      <div class="promo-overlay"></div>
+      <div class="promo-badge">&#127909; PROMO</div>
+    </div>
+    <div class="video-card promo-card" id="pc1">
+      <video src="images/promo1.mp4" muted loop playsinline autoplay></video>
+      <div class="promo-overlay"></div>
+      <div class="promo-badge">&#127909; PROMO</div>
+    </div>
+    <div class="video-card promo-card" id="pc2">
+      <video src="images/promo2.mp4" muted loop playsinline autoplay></video>
+      <div class="promo-overlay"></div>
+      <div class="promo-badge">&#127909; PROMO</div>
+    </div>
+    <div class="video-card promo-card" id="pc3">
+      <video src="images/promo3.mp4" muted loop playsinline autoplay></video>
+      <div class="promo-overlay"></div>
+      <div class="promo-badge">&#127909; PROMO</div>
     </div>
   </div>
 </div>
@@ -537,7 +564,29 @@ for(var i=0;i<7;i++)addBet();
 setInterval(addBet,2000);
 
 // VIDEO
-function toggleVideo(){var vid=document.getElementById('promoVid'),btn=document.getElementById('playBtn');if(vid.paused){vid.play();btn.style.opacity='0';}else{vid.pause();btn.style.opacity='1';}}
+// Promo videa — autoplay ve smyčce, mute toggle
+(function(){
+  document.querySelectorAll('.promo-card').forEach(function(card){
+    var vid=card.querySelector('video');
+    if(!vid)return;
+    // Přidej sound toggle button
+    var btn=document.createElement('div');
+    btn.className='promo-sound';btn.innerHTML='&#128263;';btn.title='Unmute';
+    card.appendChild(btn);
+    // Autoplay
+    vid.muted=true;vid.loop=true;
+    vid.play().catch(function(){});
+    // Mute/unmute toggle
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      vid.muted=!vid.muted;
+      btn.innerHTML=vid.muted?'&#128263;':'&#128266;';
+      btn.title=vid.muted?'Unmute':'Mute';
+    });
+    // Pause on hover out, play on hover in (already autoplay but ensure)
+    card.addEventListener('mouseenter',function(){vid.play().catch(function(){});});
+  });
+})();
 
 // SUPABASE balance
 document.addEventListener('DOMContentLoaded',function(){
