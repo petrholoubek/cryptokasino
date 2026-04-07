@@ -147,36 +147,176 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 }
 .promo-card:hover .promo-sound{opacity:1;}
 
-/* ═══════════════════════════════
-   ALL GAMES — elegantni karty
-═══════════════════════════════ */
+/* ════════════════════════════════════════
+   ALL GAMES — WOW premium karty
+════════════════════════════════════════ */
 .all-games-section{position:relative;z-index:1;max-width:1300px;margin:0 auto 4rem;padding:0 1.2rem;}
 
-.games-icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:0.7rem;}
+/* Kategorie label */
+.games-category-label{display:flex;align-items:center;gap:0.8rem;margin-bottom:0.7rem;margin-top:1.4rem;}
+.gcl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.gcl-dot.red{background:var(--red);box-shadow:0 0 10px rgba(248,113,113,0.7);}
+.gcl-dot.green{background:var(--green);box-shadow:0 0 10px rgba(74,222,128,0.7);}
+.gcl-text{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);}
+.gcl-line{flex:1;height:1px;}
+.gcl-line.red{background:linear-gradient(90deg,rgba(248,113,113,0.4),transparent);}
+.gcl-line.green{background:linear-gradient(90deg,rgba(74,222,128,0.35),transparent);}
 
-.game-icon-card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem 0.5rem 1.1rem;border:1px solid rgba(212,160,23,0.1);transition:all 0.3s ease;background:rgba(15,10,2,0.85);}
-.game-icon-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(212,160,23,0.04),transparent 70%);pointer-events:none;transition:opacity 0.3s;}
-.game-icon-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(212,160,23,0.12),transparent 70%);opacity:0;transition:opacity 0.3s;pointer-events:none;border-radius:12px;}
+/* GRID — 8 karet na řadu */
+.games-icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:0.8rem;}
+
+/* ── KARTA ── */
+.game-icon-card{
+  position:relative;border-radius:14px;overflow:hidden;
+  cursor:pointer;text-decoration:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:1.6rem 0.6rem 1.2rem;
+  border:1px solid transparent;
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s,border-color 0.3s;
+  isolation:isolate;
+}
+
+/* Shimmer sweep animace */
+.game-icon-card::before{
+  content:'';position:absolute;
+  top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+  transform:skewX(-15deg);
+  transition:left 0.6s ease;
+  z-index:2;pointer-events:none;
+}
+.game-icon-card:hover::before{left:160%;}
+
+/* Bottom glow bar */
+.game-icon-card::after{
+  content:'';position:absolute;
+  bottom:0;left:10%;width:80%;height:2px;
+  border-radius:2px;
+  opacity:0;transition:opacity 0.3s,width 0.3s;
+}
 .game-icon-card:hover::after{opacity:1;}
-.game-icon-card:hover{transform:translateY(-6px);border-color:rgba(212,160,23,0.55);box-shadow:0 12px 40px rgba(0,0,0,0.7),0 0 25px rgba(212,160,23,0.18),inset 0 1px 0 rgba(212,160,23,0.15);}
 
-/* SVG ikony — jednotne zlate */
-.gi-icon{width:52px;height:52px;margin-bottom:0.65rem;display:flex;align-items:center;justify-content:center;position:relative;transition:transform 0.3s;}
+/* Hover state — bounce up */
+.game-icon-card:hover{transform:translateY(-8px) scale(1.04);}
+
+/* ── ROW RED ── */
+.row-red{
+  background:linear-gradient(155deg,#2d0808 0%,#1a0404 60%,#200808 100%);
+  border-color:rgba(185,28,28,0.2);
+  box-shadow:0 4px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(220,38,38,0.08);
+}
+.row-red::after{background:linear-gradient(90deg,transparent,rgba(220,38,38,0.9),transparent);}
+.row-red:hover{
+  border-color:rgba(220,38,38,0.6);
+  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(220,38,38,0.25),inset 0 1px 0 rgba(220,38,38,0.2);
+}
+
+/* ── ROW GREEN ── */
+.row-green{
+  background:linear-gradient(155deg,#031a09 0%,#020f05 60%,#041408 100%);
+  border-color:rgba(21,128,61,0.2);
+  box-shadow:0 4px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(34,197,94,0.06);
+}
+.row-green::after{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.85),transparent);}
+.row-green:hover{
+  border-color:rgba(34,197,94,0.55);
+  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(34,197,94,0.2),inset 0 1px 0 rgba(34,197,94,0.15);
+}
+
+/* ── IKONA ── */
+.gi-icon{
+  width:58px;height:58px;
+  margin-bottom:0.75rem;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),filter 0.3s;
+  z-index:1;
+}
+/* Icon glow ring */
+.gi-icon::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  opacity:0;transition:opacity 0.3s;
+}
+.row-red .gi-icon::before{background:radial-gradient(circle,rgba(220,38,38,0.15),transparent 70%);}
+.row-green .gi-icon::before{background:radial-gradient(circle,rgba(34,197,94,0.14),transparent 70%);}
+.game-icon-card:hover .gi-icon::before{opacity:1;}
 .gi-icon svg{width:100%;height:100%;fill:none;}
-.game-icon-card:hover .gi-icon{transform:scale(1.1);filter:drop-shadow(0 0 8px rgba(212,160,23,0.7));}
+.game-icon-card:hover .gi-icon{transform:scale(1.15) translateY(-2px);}
+.row-red:hover .gi-icon{
+  filter:drop-shadow(0 0 12px rgba(220,38,38,0.7)) drop-shadow(0 0 5px rgba(212,160,23,0.4));
+}
+.row-green:hover .gi-icon{
+  filter:drop-shadow(0 0 12px rgba(34,197,94,0.65)) drop-shadow(0 0 5px rgba(212,160,23,0.35));
+}
 
-.gi-name{font-family:'Cinzel',serif;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-align:center;color:var(--text-dim);transition:color 0.25s;line-height:1.4;text-transform:uppercase;}
-.game-icon-card:hover .gi-name{color:var(--gold-light);text-shadow:0 0 12px rgba(212,160,23,0.4);}
+/* ── NÁZEV ── */
+.gi-name{
+  font-family:'Cinzel',serif;font-size:0.78rem;font-weight:700;
+  letter-spacing:0.07em;text-align:center;
+  color:rgba(230,210,160,0.65);
+  transition:color 0.25s,text-shadow 0.25s,transform 0.25s;
+  line-height:1.3;text-transform:uppercase;
+  z-index:1;
+}
+.game-icon-card:hover .gi-name{transform:translateY(-1px);}
+.row-red:hover .gi-name{color:#fca5a5;text-shadow:0 0 16px rgba(220,38,38,0.55);}
+.row-green:hover .gi-name{color:#86efac;text-shadow:0 0 16px rgba(34,197,94,0.55);}
 
-.gi-badge{position:absolute;top:0.45rem;right:0.45rem;font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.15rem 0.4rem;border-radius:20px;font-weight:700;}
-.badge-hot{background:rgba(212,160,23,0.12);color:var(--gold);border:1px solid rgba(212,160,23,0.25);}
-.badge-new{background:rgba(212,160,23,0.08);color:var(--gold-light);border:1px solid rgba(212,160,23,0.2);}
-.badge-live{background:rgba(248,113,113,0.1);color:#f87171;border:1px solid rgba(248,113,113,0.25);animation:badgePulse 1.5s infinite;}
-.badge-jackpot{background:rgba(212,160,23,0.15);color:var(--gold-light);border:1px solid rgba(212,160,23,0.3);}
-@keyframes badgePulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+/* ── BADGE ── */
+.gi-badge{
+  position:absolute;top:0.5rem;right:0.5rem;
+  font-family:'Cinzel',serif;font-size:0.38rem;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:0.18rem 0.45rem;border-radius:20px;font-weight:700;z-index:3;
+}
+.badge-hot{background:rgba(212,160,23,0.15);color:var(--gold);border:1px solid rgba(212,160,23,0.3);}
+.badge-new{background:rgba(96,165,250,0.12);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);}
+.badge-live{
+  background:rgba(248,113,113,0.15);color:#f87171;
+  border:1px solid rgba(248,113,113,0.3);
+  animation:badgePulse 1.2s infinite;
+}
+.badge-jackpot{
+  background:rgba(212,160,23,0.18);color:var(--gold-light);
+  border:1px solid rgba(212,160,23,0.35);
+  animation:jpBadge 2s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{opacity:1;box-shadow:0 0 4px rgba(248,113,113,0.4);}50%{opacity:0.5;box-shadow:none;}}
+@keyframes jpBadge{0%,100%{box-shadow:0 0 6px rgba(212,160,23,0.5);}50%{box-shadow:0 0 14px rgba(212,160,23,0.9);}}
 
-.gi-line{width:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.4),transparent);margin:0.5rem auto 0;transition:width 0.3s,opacity 0.3s;}
-.game-icon-card:hover .gi-line{width:36px;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.8),transparent);}
+/* ── SEPARATOR LINE ── */
+.gi-line{
+  width:20px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,160,23,0.3),transparent);
+  margin:0.5rem auto 0;
+  transition:width 0.35s,background 0.3s;
+  z-index:1;
+}
+.game-icon-card:hover .gi-line{width:40px;}
+.row-red:hover .gi-line{background:linear-gradient(90deg,transparent,rgba(220,38,38,0.75),transparent);}
+.row-green:hover .gi-line{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.7),transparent);}
+
+/* ── LIVE MULTIPLIER na Crash kartě ── */
+.gi-live-multi{
+  position:absolute;bottom:0.5rem;left:0;right:0;
+  text-align:center;
+  font-family:'Cinzel',serif;font-size:0.62rem;font-weight:900;
+  color:var(--green);
+  text-shadow:0 0 8px rgba(74,222,128,0.6);
+  letter-spacing:0.05em;
+  animation:multiPulse 0.5s ease-out;
+}
+@keyframes multiPulse{from{transform:scale(1.3);}to{transform:scale(1);}}
+
+/* ── SCROLL ENTRANCE ── */
+.game-icon-card.card-hidden{opacity:0;transform:translateY(20px);}
+.game-icon-card.card-visible{
+  opacity:1;transform:translateY(0);
+  transition:opacity 0.5s ease,transform 0.5s cubic-bezier(0.34,1.2,0.64,1),
+             box-shadow 0.3s,border-color 0.3s;
+}
+/* Hover overrides musí být specifičtější */
+.game-icon-card.card-visible:hover{transform:translateY(-8px) scale(1.04)!important;}
 
 /* LIVE BETS */
 .live-bets{margin:0 auto 4rem;max-width:1300px;padding:0 1.2rem;}
@@ -335,121 +475,113 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
 
 <!-- ALL GAMES — ikony -->
 <div class="all-games-section">
-  <div class="section-title" style="margin-bottom:1.2rem;">All Games</div>
-  <div class="games-icon-grid">
+  <div class="section-title" style="margin-bottom:0.8rem;">All Games</div>
 
-    <a href="game-crash.html" class="game-icon-card">
+  <!-- KATEGORIE ČERVENÁ -->
+  <div class="games-category-label">
+    <div class="gcl-dot red"></div>
+    <span class="gcl-text">Casino Classics</span>
+    <div class="gcl-line red"></div>
+  </div>
+
+  <div class="games-icon-grid" id="gridRed">
+    <a href="game-crash.html" class="game-icon-card row-red card-hidden">
       <span class="gi-badge badge-hot">Hot</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,42 20,20 26,28 34,10 46,16"/><circle cx="46" cy="16" r="3" fill="rgba(212,160,23,0.9)" stroke="none"/><line x1="6" y1="42" x2="46" y2="42" stroke-dasharray="2,3"/><line x1="6" y1="42" x2="6" y2="10" stroke-dasharray="2,3"/></svg></div>
       <div class="gi-name">Crash</div>
       <div class="gi-line"></div>
+      <div class="gi-live-multi" id="crashMulti">1.00x</div>
     </a>
-
-    <a href="game-roulette.html" class="game-icon-card">
-      
+    <a href="game-roulette.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="22"/><circle cx="26" cy="26" r="8"/><line x1="26" y1="4" x2="26" y2="18"/><line x1="26" y1="34" x2="26" y2="48"/><line x1="4" y1="26" x2="18" y2="26"/><line x1="34" y1="26" x2="48" y2="26"/><line x1="9.5" y1="9.5" x2="19.5" y2="19.5"/><line x1="32.5" y1="32.5" x2="42.5" y2="42.5"/><line x1="42.5" y1="9.5" x2="32.5" y2="19.5"/><line x1="19.5" y1="32.5" x2="9.5" y2="42.5"/></svg></div>
       <div class="gi-name">Roulette</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-slots.html" class="game-icon-card">
+    <a href="game-slots.html" class="game-icon-card row-red card-hidden">
       <span class="gi-badge badge-hot">Hot</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="8" width="40" height="36" rx="4"/><rect x="11" y="14" width="9" height="24" rx="2"/><rect x="22" y="14" width="9" height="24" rx="2"/><rect x="33" y="14" width="9" height="24" rx="2"/><line x1="11" y1="24" x2="20" y2="24"/><line x1="22" y1="24" x2="31" y2="24"/><line x1="33" y1="24" x2="42" y2="24"/><circle cx="15" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/><circle cx="26" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/><circle cx="37" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/></svg></div>
       <div class="gi-name">Slots</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-blackjack.html" class="game-icon-card">
-      
+    <a href="game-blackjack.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="6" width="18" height="26" rx="3"/><rect x="27" y="20" width="18" height="26" rx="3"/><text x="11" y="22" font-family="serif" font-size="11" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="31" y="36" font-family="serif" font-size="11" fill="rgba(212,160,23,0.7)" stroke="none">K</text></svg></div>
       <div class="gi-name">Blackjack</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-dice.html" class="game-icon-card">
-      
+    <a href="game-dice.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="24" height="24" rx="4"/><rect x="21" y="21" width="24" height="24" rx="4"/><circle cx="16" cy="16" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="16" cy="22" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="22" cy="22" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="33" cy="30" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="33" cy="36" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="33" cy="42" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/></svg></div>
       <div class="gi-name">Dice</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-mines.html" class="game-icon-card">
-      
+    <a href="game-mines.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="12"/><line x1="26" y1="8" x2="26" y2="14"/><line x1="26" y1="38" x2="26" y2="44"/><line x1="8" y1="26" x2="14" y2="26"/><line x1="38" y1="26" x2="44" y2="26"/><line x1="14" y1="14" x2="18" y2="18"/><line x1="34" y1="34" x2="38" y2="38"/><line x1="38" y1="14" x2="34" y2="18"/><line x1="18" y1="34" x2="14" y2="38"/><circle cx="26" cy="26" r="4" fill="rgba(212,160,23,0.2)"/></svg></div>
       <div class="gi-name">Mines</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-poker.html" class="game-icon-card">
-      
+    <a href="game-poker.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="22" height="30" rx="3"/><rect x="14" y="16" width="22" height="30" rx="3"/><text x="12" y="22" font-family="serif" font-size="10" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="18" y="34" font-family="serif" font-size="10" fill="rgba(212,160,23,0.7)" stroke="none">K</text></svg></div>
       <div class="gi-name">Video Poker</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-plinko.html" class="game-icon-card">
-      
+    <a href="game-plinko.html" class="game-icon-card row-red card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="8" r="4" fill="rgba(212,160,23,0.4)" stroke="none"/><circle cx="16" cy="20" r="2.5"/><circle cx="36" cy="20" r="2.5"/><circle cx="10" cy="32" r="2.5"/><circle cx="26" cy="32" r="2.5"/><circle cx="42" cy="32" r="2.5"/><path d="M26 12 Q20 16 16 20" stroke-dasharray="3,2"/><path d="M26 12 Q32 16 36 20" stroke-dasharray="3,2"/><rect x="6" y="42" width="10" height="6" rx="1"/><rect x="21" y="42" width="10" height="6" rx="1"/><rect x="36" y="42" width="10" height="6" rx="1"/></svg></div>
       <div class="gi-name">Plinko</div>
       <div class="gi-line"></div>
     </a>
+  </div>
 
-    <a href="game-wheel.html" class="game-icon-card">
-      
+  <!-- KATEGORIE ZELENÁ -->
+  <div class="games-category-label">
+    <div class="gcl-dot green"></div>
+    <span class="gcl-text">More Games</span>
+    <div class="gcl-line green"></div>
+  </div>
+
+  <div class="games-icon-grid" id="gridGreen">
+    <a href="game-wheel.html" class="game-icon-card row-green card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="22"/><circle cx="26" cy="26" r="8"/><line x1="26" y1="4" x2="26" y2="18"/><line x1="26" y1="34" x2="26" y2="48"/><line x1="4" y1="26" x2="18" y2="26"/><line x1="34" y1="26" x2="48" y2="26"/><line x1="9.5" y1="9.5" x2="19.5" y2="19.5"/><line x1="32.5" y1="32.5" x2="42.5" y2="42.5"/><line x1="42.5" y1="9.5" x2="32.5" y2="19.5"/><line x1="19.5" y1="32.5" x2="9.5" y2="42.5"/></svg></div>
       <div class="gi-name">Wheel</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-craps.html" class="game-icon-card">
-      
+    <a href="game-craps.html" class="game-icon-card row-green card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="18" height="18" rx="3"/><rect x="28" y="28" width="18" height="18" rx="3"/><circle cx="15" cy="15" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="15" cy="37" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="37" cy="37" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="33" cy="33" r="1.5" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="41" cy="41" r="1.5" fill="rgba(212,160,23,0.7)" stroke="none"/></svg></div>
       <div class="gi-name">Craps</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-baccarat.html" class="game-icon-card">
+    <a href="game-baccarat.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-new">New</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="8" width="16" height="24" rx="2"/><rect x="29" y="8" width="16" height="24" rx="2"/><text x="11" y="24" font-family="serif" font-size="11" fill="rgba(212,160,23,0.9)" stroke="none">8</text><text x="33" y="24" font-family="serif" font-size="11" fill="rgba(212,160,23,0.7)" stroke="none">9</text><line x1="12" y1="38" x2="40" y2="38"/><circle cx="26" cy="43" r="3"/></svg></div>
       <div class="gi-name">Baccarat</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-crazytime.html" class="game-icon-card">
+    <a href="game-crazytime.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-live">Live</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="20"/><path d="M26 6 L30 18 L26 14 L22 18 Z"/><line x1="26" y1="6" x2="26" y2="26"/><line x1="26" y1="26" x2="40" y2="32"/><circle cx="26" cy="26" r="3" fill="rgba(212,160,23,0.9)" stroke="none"/><path d="M8 20 Q16 26 8 32" stroke-dasharray="2,2"/></svg></div>
       <div class="gi-name">Crazy Time</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-keno.html" class="game-icon-card">
-      
+    <a href="game-keno.html" class="game-icon-card row-green card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="5" width="42" height="42" rx="4"/><circle cx="15" cy="15" r="4"/><circle cx="26" cy="15" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="37" cy="15" r="4"/><circle cx="15" cy="26" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="26" cy="26" r="4"/><circle cx="37" cy="26" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="15" cy="37" r="4"/><circle cx="26" cy="37" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="37" cy="37" r="4"/></svg></div>
       <div class="gi-name">Keno</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-jackpot.html" class="game-icon-card">
+    <a href="game-jackpot.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-jackpot">JP</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="10" y="18" width="32" height="26" rx="3"/><path d="M18 18 L18 12 Q18 6 26 6 Q34 6 34 12 L34 18"/><line x1="10" y1="28" x2="42" y2="28"/><circle cx="26" cy="37" r="5"/><path d="M24 37 L25.5 35 L26 37 L27.5 35 L28 37" stroke-width="1" fill="none"/></svg></div>
       <div class="gi-name">Jackpot</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="game-hilo.html" class="game-icon-card">
+    <a href="game-hilo.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-new">New</span>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="16" height="22" rx="2"/><rect x="30" y="22" width="16" height="22" rx="2"/><text x="10" y="23" font-family="serif" font-size="12" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="34" y="37" font-family="serif" font-size="10" fill="rgba(212,160,23,0.7)" stroke="none">2</text><polyline points="24,19 28,15 28,15" stroke-width="2"/><polyline points="24,33 28,37 28,37" stroke-width="2"/></svg></div>
       <div class="gi-name">HiLo</div>
       <div class="gi-line"></div>
     </a>
-
-    <a href="sports.html" class="game-icon-card">
-      
+    <a href="sports.html" class="game-icon-card row-green card-hidden">
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="20"/><path d="M26 6 Q32 16 26 26 Q20 36 26 46"/><path d="M6 26 Q16 20 26 26 Q36 32 46 26"/><path d="M10 14 Q20 18 26 26"/><path d="M42 14 Q32 18 26 26"/><path d="M10 38 Q20 34 26 26"/><path d="M42 38 Q32 34 26 26"/></svg></div>
       <div class="gi-name">Sports</div>
       <div class="gi-line"></div>
     </a>
-
   </div>
 </div>
 
@@ -586,6 +718,57 @@ setInterval(addBet,2000);
     // Pause on hover out, play on hover in (already autoplay but ensure)
     card.addEventListener('mouseenter',function(){vid.play().catch(function(){});});
   });
+})();
+
+// ══ SCROLL ENTRANCE — karty přilétají ══
+(function(){
+  var cards=document.querySelectorAll('.card-hidden');
+  if(!('IntersectionObserver' in window)){
+    cards.forEach(function(c){c.classList.remove('card-hidden');c.classList.add('card-visible');});
+    return;
+  }
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var card=e.target;
+        // Staggered delay podle pořadí v gridu
+        var siblings=Array.from(card.parentElement.querySelectorAll('.card-hidden,.card-visible'));
+        var idx=siblings.indexOf(card);
+        setTimeout(function(){
+          card.classList.remove('card-hidden');
+          card.classList.add('card-visible');
+        },idx*65);
+        obs.unobserve(card);
+      }
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  cards.forEach(function(c){obs.observe(c);});
+})();
+
+// ══ LIVE CRASH MULTIPLIER ══
+(function(){
+  var el=document.getElementById('crashMulti');
+  if(!el)return;
+  var multi=1.00,growing=true;
+  function tick(){
+    if(growing){
+      multi+=Math.random()*0.08+0.01;
+      if(Math.random()<0.015){growing=false;multi=1.00;} // crash
+    }else{
+      growing=true;
+    }
+    el.textContent=multi.toFixed(2)+'x';
+    // Barva podle výšky
+    if(multi>5)el.style.color='#fbbf24';
+    else if(multi>2)el.style.color='#4ade80';
+    else el.style.color='#4ade80';
+    // Re-animate element
+    el.style.animation='none';
+    void el.offsetHeight;
+    el.style.animation='multiPulse 0.4s ease-out';
+    setTimeout(tick,Math.random()*200+80);
+  }
+  tick();
 })();
 
 // SUPABASE balance
