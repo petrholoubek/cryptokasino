@@ -388,23 +388,18 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ════════════════════════════════════════════════════════
-// BEZPECNOSTNI POZNAMKY:
-// - WALLET_API_KEY ani WALLET_SERVER nejsou zde! 
-//   Wallet server komunikace probiha POUZE pres server-side proxy
-//   nebo primo pres server.js ktery bezi na tve masine
-// - Vsechny citlive operace (withdraw) volaji /api/wallet/*
-//   kde proxy skryje WALLET_API_KEY (ktery je pouze na serveru)
-// - deposit.html NIKDY primo nevola server.js s API key
+// deposit.html — Wallet komunikace
+// Prohlizec posilá JWT token, NE API key
+// server.js bezi na localhost:3001 a overi JWT
 // ════════════════════════════════════════════════════════
 
 const SUPABASE_URL = 'https://cckybsbawnsbvxwloxcr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
 
-// Wallet server — volani jdou pres CORS proxy na serveru
-// API key se NIKDY neposilá z prohlizece — je pouze na serveru
-// Pro produkcni nasazeni: pouzij /api/wallet/ endpoint ktery proxy
-// Lokalni vyvoj: server.js bezi na localhost a prijima requesty
-const WALLET_PROXY = '/api/wallet'; // produkcni proxy (server.js ho zpracuje)
+// Server.js bezi lokalne nebo na VPS
+// API key se NIKDY neposila z prohlizece — prohlizec posilá JWT token
+// Server overi JWT a pak provede operaci
+const WALLET_SERVER = 'http://localhost:3001';
 
 let sb = null;
 try {
@@ -417,6 +412,13 @@ let balance = 0.0, currentUser = null, currentAddr = '', transactions = [], conf
 // Helper
 function setEl(id, val) { var el = document.getElementById(id); if(el) el.textContent = val; }
 function fmt(n) { return parseFloat(n||0).toFixed(8); }
+
+// JWT token helper
+async function getJWT() {
+  if(!sb) return null;
+  var result = await sb.auth.getSession();
+  return result.data.session?.access_token || null;
+}
 
 // QR Code
 function generateQR(addr) {
@@ -445,29 +447,68 @@ function copyAddress() {
   });
 }
 
-// Generovat novou adresu — POUZE pres server API (ne primy volani s API key)
+// Generovat novou adresu — vola GET /api/wallet/address
+// Server extrahuje userId z JWT tokenu (ne z URL)
 async function generateNewAddress() {
   if(!currentUser) return;
+  var token = await getJWT();
+  if(!token) return;
   try {
-    // Bezpecny call pres Supabase Edge Function nebo server proxy
-    // Server sam pouzije WALLET_API_KEY — prohlizec ho nevidí
-    var r = await fetch(WALLET_PROXY + '/address/' + currentUser.id, {
-      method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session?.access_token }
+    var r = await fetch(WALLET_SERVER + '/api/wallet/address/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      signal: AbortSignal.timeout(8000)
     });
     if(r.ok) {
       var data = await r.json();
       currentAddr = data.address;
       setEl('btcAddress', currentAddr);
       generateQR(currentAddr);
+      console.log('[DEPOSIT] Nova adresa vygenerovana:', currentAddr);
+    } else {
+      console.warn('[DEPOSIT] generateNewAddress failed:', r.status);
+      await loadAddrFromDB();
     }
   } catch(e) {
-    console.log('Wallet proxy nedostupný, adresa ze Supabase');
+    console.log('[DEPOSIT] Server nedostupny, nacitam z DB');
     await loadAddrFromDB();
   }
 }
 
-// Nacti adresu z DB (uložena serverem po prvním vygenerování)
+// Nacti adresu — vola GET /api/wallet/address nebo fallback na DB
+async function loadDepositAddress() {
+  if(!currentUser) return;
+  var token = await getJWT();
+
+  // Zkus server.js
+  if(token) {
+    try {
+      var r = await fetch(WALLET_SERVER + '/api/wallet/address', {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        signal: AbortSignal.timeout(5000)
+      });
+      if(r.ok) {
+        var data = await r.json();
+        currentAddr = data.address;
+        setEl('btcAddress', currentAddr);
+        generateQR(currentAddr);
+        console.log('[DEPOSIT] Adresa ze serveru:', currentAddr);
+        return;
+      }
+    } catch(e) {
+      console.log('[DEPOSIT] Server nedostupny, zkousim DB');
+    }
+  }
+
+  // Fallback — nacti z Supabase DB
+  await loadAddrFromDB();
+}
+
+// Nacti adresu z Supabase DB (ulozena serverem)
 async function loadAddrFromDB() {
   if(!sb || !currentUser) return;
   try {
@@ -478,18 +519,18 @@ async function loadAddrFromDB() {
       .order('hd_index', {ascending:true})
       .limit(1)
       .single();
-    if(r.data?.address) {
+    if(r.data && r.data.address) {
       currentAddr = r.data.address;
       setEl('btcAddress', currentAddr);
       generateQR(currentAddr);
+      console.log('[DEPOSIT] Adresa z DB:', currentAddr);
     } else {
-      // Nema adresu v DB, zobraz info
-      setEl('btcAddress', 'Contact support to get your deposit address');
-      document.getElementById('qrcode').innerHTML = '<div style="width:180px;height:180px;background:#1a0d00;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-dim);text-align:center;padding:10px">Server offline<br>Start server.js first</div>';
+      setEl('btcAddress', 'Spust server.js pro vygenerovani adresy');
+      document.getElementById('qrcode').innerHTML = '<div style="width:180px;height:180px;background:#1a0d00;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-dim);text-align:center;padding:10px">Server offline<br>Spust server.js</div>';
     }
   } catch(e) {
-    console.warn('loadAddrFromDB:', e.message);
-    setEl('btcAddress', 'Server offline — start server.js');
+    console.warn('[DEPOSIT] loadAddrFromDB:', e.message);
+    setEl('btcAddress', 'Server offline — spust server.js');
   }
 }
 
@@ -509,17 +550,17 @@ async function loadProfile() {
   } catch(e) { console.warn('loadProfile:', e.message); }
 }
 
-// Zkontroluj deposit — pres server proxy (ne primy API key)
+// Zkontroluj deposit — vola POST /api/wallet/deposit/check
 async function checkPendingDeposit() {
   if(!currentUser || !currentAddr || !currentAddr.startsWith('bc1')) return;
+  var token = await getJWT();
+  if(!token) return;
   try {
-    var session = (await sb.auth.getSession()).data.session;
-    if(!session) return;
-    var r = await fetch(WALLET_PROXY + '/deposit/check', {
-      method:'POST',
-      headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token},
+    var r = await fetch(WALLET_SERVER + '/api/wallet/deposit/check', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
       body: JSON.stringify({address: currentAddr}),
-      signal: AbortSignal.timeout(8000)
+      signal: AbortSignal.timeout(10000)
     });
     if(!r.ok) return;
     var data = await r.json();
@@ -532,11 +573,11 @@ async function checkPendingDeposit() {
       document.getElementById('confStatus').style.color = 'var(--green)';
       document.getElementById('confBar').style.width = '100%';
       await loadTxHistory();
-      showModal('OK', 'Deposit Confirmed!', '+'+data.amount_btc+' BTC credited to your account!');
+      showModal('&#9989;', 'Deposit Confirmed!', '+'+data.amount_btc+' BTC credited to your account!');
     } else if(data.status === 'pending') {
       setEl('confStatus', 'Transaction waiting for confirmation...');
     }
-  } catch(e) { /* server offline - ok, deposits se zpracuji automaticky serverem */ }
+  } catch(e) { /* server offline - ok */ }
 }
 
 // Bonus
@@ -549,12 +590,12 @@ function updateBonus() {
   if(amt >= 0.001) startConfTracker();
 }
 
-// Conf tracker (vizuální animace pro UX)
+// Conf tracker
 function startConfTracker() {
   var tracker = document.getElementById('confTracker');
   var bar = document.getElementById('confBar');
   var status = document.getElementById('confStatus');
-  if(tracker.classList.contains('show')) return; // already showing
+  if(tracker.classList.contains('show')) return;
   tracker.classList.add('show');
   var confs = 0; bar.style.width = '0%';
   status.textContent = 'Waiting for transaction broadcast...'; status.style.color='var(--orange)';
@@ -572,7 +613,7 @@ function startConfTracker() {
 
 // History
 async function loadTxHistory() {
-  if(!sb || !currentUser) { setEl('txList', ''); document.getElementById('txList').innerHTML='<div class="tx-empty">Login to see your transaction history</div>'; return; }
+  if(!sb || !currentUser) { document.getElementById('txList').innerHTML='<div class="tx-empty">Login to see your transaction history</div>'; return; }
   try {
     var dR = await sb.from('deposits').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
     var wR = await sb.from('withdrawals').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
@@ -605,7 +646,7 @@ function renderTxHistory(filter) {
 }
 function filterTx(filter,el){document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});el.classList.add('active');renderTxHistory(filter);}
 
-// Withdrawal — pres server proxy (ne primy API key)
+// Withdrawal — vola POST /api/wallet/withdraw
 function setMaxWithdraw(){document.getElementById('withdrawAmt').value=Math.max(0,balance-0.00005).toFixed(8);validateWithdraw();}
 function validateBTCAddress(addr){if(!addr||addr.length<26)return false;return addr.startsWith('bc1')||addr.startsWith('1')||addr.startsWith('3');}
 function validateWithdraw(){
@@ -631,7 +672,7 @@ function validateWithdraw(){
 async function submitWithdraw() {
   var addr=document.getElementById('withdrawAddr').value.trim();
   var amt=parseFloat(document.getElementById('withdrawAmt').value);
-  if(!validateBTCAddress(addr)||amt<0.001){return;}
+  if(!validateBTCAddress(addr)||amt<0.001) return;
   if(!currentUser){alert('Please login first');return;}
   if(amt>balance){alert('Insufficient balance');return;}
 
@@ -639,33 +680,32 @@ async function submitWithdraw() {
   btn.disabled=true; btn.textContent='Processing...';
 
   try {
-    // Withdrawal pres bezpecný server proxy
-    // Prohlizec posilá POUZE Supabase JWT token — API key je na serveru
-    var session=(await sb.auth.getSession()).data.session;
-    if(!session) throw new Error('Not authenticated');
+    var token = await getJWT();
+    if(!token) throw new Error('Not authenticated - please login again');
 
-    var r = await fetch(WALLET_PROXY+'/withdraw', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
-      body:JSON.stringify({toAddress:addr, amountBtc:amt}),
-      signal:AbortSignal.timeout(20000)
+    var r = await fetch(WALLET_SERVER + '/api/wallet/withdraw', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+      body: JSON.stringify({toAddress: addr, amountBtc: amt}),
+      signal: AbortSignal.timeout(25000)
     });
-    var data=await r.json();
-    if(!r.ok) throw new Error(data.error||'Withdrawal failed');
+    var data = await r.json();
+    if(!r.ok) throw new Error(data.error || 'Withdrawal failed');
 
-    balance=data.new_balance;
-    setEl('headerBal',fmt(balance)+' BTC');
-    setEl('availBalance',fmt(balance)+' BTC');
-    setEl('totalBalance',fmt(balance)+' BTC');
+    balance = data.new_balance;
+    setEl('headerBal', fmt(balance)+' BTC');
+    setEl('availBalance', fmt(balance)+' BTC');
+    setEl('totalBalance', fmt(balance)+' BTC');
     document.getElementById('withdrawAddr').value='';
     document.getElementById('withdrawAmt').value='';
     document.getElementById('wfSummary').style.display='none';
     await loadTxHistory();
-    showModal('&#11014;&#65039;','Withdrawal Sent!',fmt(amt)+' BTC odesláno na '+addr.substring(0,20)+'...');
+    showModal('&#11014;&#65039;', 'Withdrawal Sent!', fmt(amt)+' BTC odesláno na '+addr.substring(0,20)+'...');
   } catch(e) {
-    showModal('&#10060;','Withdrawal Failed',e.message+'\n\nZkontroluj jestli server.js běží.');
+    showModal('&#10060;', 'Withdrawal Failed', e.message + '\n\nZkontroluj jestli server.js bezi.');
   } finally {
-    btn.disabled=false; btn.textContent='Submit Withdrawal';
+    btn.disabled=false;
+    btn.textContent='Submit Withdrawal';
     validateWithdraw();
   }
 }
@@ -680,7 +720,7 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
 
 // INIT
 (async function init() {
-  if(!sb){
+  if(!sb) {
     document.getElementById('loginRequired').style.display='block';
     return;
   }
@@ -688,31 +728,29 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
     var result = await sb.auth.getSession();
     var session = result.data.session;
     if(!session) {
-      // Nepřihlášený — zobraz login banner, skryj obsah
       document.getElementById('loginRequired').style.display='block';
       document.getElementById('mainContent').style.display='none';
       return;
     }
     currentUser = session.user;
-    // Přihlášený — zobraz obsah, skryj login banner
     document.getElementById('loginRequired').style.display='none';
     document.getElementById('mainContent').style.display='block';
 
-    // Paralelně načti profil a adresu
-    await Promise.all([loadProfile(), loadAddrFromDB()]);
+    // Nacti profil a adresu paralelne
+    await Promise.all([loadProfile(), loadDepositAddress()]);
 
-    // Pravidelně kontroluj deposit (každých 30s)
+    // Kontroluj deposit kazdych 30s
     setInterval(checkPendingDeposit, 30000);
 
-    // Realtime balance updates ze Supabase
+    // Realtime balance update ze Supabase
     sb.channel('profile-'+currentUser.id)
-      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+currentUser.id},
-        function(payload){
-          if(payload.new){
-            balance=parseFloat(payload.new.balance||0);
-            setEl('headerBal',fmt(balance)+' BTC');
-            setEl('availBalance',fmt(balance)+' BTC');
-            setEl('totalBalance',fmt(balance)+' BTC');
+      .on('postgres_changes', {event:'UPDATE', schema:'public', table:'profiles', filter:'id=eq.'+currentUser.id},
+        function(payload) {
+          if(payload.new) {
+            balance = parseFloat(payload.new.balance||0);
+            setEl('headerBal', fmt(balance)+' BTC');
+            setEl('availBalance', fmt(balance)+' BTC');
+            setEl('totalBalance', fmt(balance)+' BTC');
           }
         })
       .subscribe();
