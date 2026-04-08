@@ -287,6 +287,13 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hov
 footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;font-size:.75rem;color:var(--text-dim);}
 @media(max-width:900px){.show-layout{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:640px){header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}.game-area{padding:.8rem .8rem 4rem;}.jackpot-tickers{grid-template-columns:1fr 1fr;}.balance-bar{flex-wrap:wrap;gap:.4rem;padding:.7rem;}.stats-grid{grid-template-columns:1fr 1fr;}.hist-hdr,.hist-row{grid-template-columns:1fr 1fr 1fr;}}
+
+@media(max-width:768px){
+  .show-layout,.game-layout,.main-layout{grid-template-columns:1fr!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .bh-main{grid-template-columns:1fr!important;}
+  .bh-divider{display:none!important;}
+}
 </style>
 </head>
 <body>
@@ -494,16 +501,16 @@ let sb=null,currentUser=null,realBalance=0,RTP=0.965;
 let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
-  // Demo mode OKAMZITE - hra je hratelna bez prihlaseni
+  // Demo mode OKAMZITE — hra hratelna bez prihlaseni
   setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;sb=createClient(SB_URL,SB_KEY);
-    const {data:gs}=await sb.from('game_settings').select('*').eq('game_id','jackpotshow').single();
-    if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
+    const {data:gs}=await sb.from('game_settings').select('*').eq('id','jackpotshow').single();
+    if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     const {data:{session}}=await sb.auth.getSession();
     if(session){currentUser=session.user;const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}}
   }catch(e){console.warn('[JS]',e.message);}
-  if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('jackpotshow');if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
+  if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('jackpotshow');if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
 
 // FIREWALL: vsechny DB operace kontroluji gameMode
@@ -515,8 +522,8 @@ async function sbLog(betSat,profitSat,mult,meta){
   if(!sb||!currentUser)return;
   try{
     await sb.from('bets').insert({user_id:currentUser.id,game:'jackpotshow',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat(mult)||0,meta,created_at:new Date().toISOString()});
-    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_sat,total_profit_sat').eq('game_id','jackpotshow').single();
-    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_sat:(parseInt(gs.total_wagered_sat)||0)+betSat,total_profit_sat:(parseInt(gs.total_profit_sat)||0)+(-profitSat),updated_at:new Date().toISOString()}).eq('game_id','jackpotshow');
+    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_btc,total_paid_btc').eq('id','jackpotshow').single();
+    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_btc:(parseFloat(gs.total_wagered_btc)||0)+betSat/1e8,total_paid_btc:(parseFloat(gs.total_paid_btc)||0)+Math.max(0,profitSat/1e8),updated_at:new Date().toISOString()}).eq('id','jackpotshow');
   }catch(e){console.warn('[JS] log:',e.message);}
 }
 
@@ -820,6 +827,16 @@ document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+// Demo mode - spusti se az kdyz je cely dokument nacteny vcetne vsech funkci
+document.addEventListener('DOMContentLoaded', function(){
+  if(typeof setMode === 'function') {
+    setMode('demo');
+  }
+}, {once: true});
+// Fallback pro pripad ze DOMContentLoaded uz probehlo
+if(document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(function(){ if(typeof setMode === 'function') setMode('demo'); }, 10);
+}
 resizeWheel();updateBal();updateTotal();
 </script>
 </body>
