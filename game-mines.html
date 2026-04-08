@@ -619,6 +619,8 @@ let sbClient=null,currentUser=null;
 let HOUSE_EDGE=0.03,RTP=0.97; // defaults — loaded from DB
 
 async function initSupabase(){
+  // Demo mode OKAMZITE
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sbClient=createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -711,6 +713,7 @@ let demoBalance = DEMO_BALANCE;
 
 function setMode(mode){
   gameMode = mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
   const isDemo = mode === 'demo';
   
   // Toggle buttons
