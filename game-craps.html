@@ -663,6 +663,8 @@ let sb=null,currentUser=null,realBalance=0,RTP=0.986;
 let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
+  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;sb=createClient(SB_URL,SB_KEY);
     const {data:gs}=await sb.from('game_settings').select('*').eq('game_id','craps').single();
@@ -687,7 +689,9 @@ async function sbLog(betSat,profitSat,meta){
 
 // ══ MODE ══
 function setMode(mode){
-  gameMode=mode;const isDemo=mode==='demo';
+  gameMode=mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
+  const isDemo=mode==='demo';
   document.getElementById('modeDemo').classList.toggle('active',isDemo);
   document.getElementById('modeReal').classList.toggle('active',!isDemo);
   document.getElementById('demoBadge').style.display=isDemo?'':'none';
