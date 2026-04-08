@@ -15,7 +15,16 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.18) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.12) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%,rgba(212,120,10,0.22) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 35% at 15% 60%,rgba(220,38,38,0.07) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 35% at 85% 70%,rgba(168,85,247,0.07) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(212,160,23,0.05) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+  animation:bgAnim 10s ease-in-out infinite alternate;
+}
+@keyframes bgAnim{0%{opacity:0.7;}100%{opacity:1;}}
 
 /* HEADER */
 header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
@@ -45,10 +54,169 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 /* HERO */
 .hero{position:relative;width:100%;height:85vh;min-height:560px;overflow:hidden;}
 .hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.2) 50%,rgba(10,7,0,0.95) 100%);}
-.hero-content{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;width:100%;padding:0 1.5rem;}
-.hero-title{font-family:'Cinzel',serif;font-size:clamp(2.2rem,8vw,7rem);font-weight:900;line-height:1;letter-spacing:0.05em;text-shadow:0 0 60px rgba(212,160,23,0.8);}
-.hero-title .play-win{color:#fff;}.hero-title .btc{color:var(--gold-light);text-shadow:0 0 80px rgba(245,200,66,1),0 0 30px rgba(245,200,66,0.8);}
+
+/* KEN BURNS HERO */
+.hero-bg{
+  position:absolute;inset:0;overflow:hidden;
+}
+.hero-img-kb{
+  position:absolute;
+  width:110%;height:110%;
+  top:-5%;left:-5%;
+  object-fit:cover;object-position:center top;
+  display:block;
+  /* Ostrost + sytost */
+  filter:brightness(0.82) saturate(1.4) contrast(1.12) sharpen(1);
+  animation:kenBurns 22s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes kenBurns{
+  0%  {transform:scale(1.0)  translate(0%,    0%);}
+  25% {transform:scale(1.06) translate(-1.5%, -0.8%);}
+  50% {transform:scale(1.04) translate(1.2%,  -1.2%);}
+  75% {transform:scale(1.07) translate(-0.8%, 0.5%);}
+  100%{transform:scale(1.02) translate(0.5%,  -0.5%);}
+}
+
+/* HERO CANVAS — particles přes video */
+#heroCanvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+
+/* Hero overlay — dramatičtější gradient */
+.hero-overlay{
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.1) 0%,
+    rgba(0,0,0,0.05) 20%,
+    rgba(0,0,0,0.2) 55%,
+    rgba(10,7,0,0.97) 100%
+  ) !important;
+}
+
+/* Hero content animace */
+.hero-content{z-index:3!important;}
+.hero-badge-row{animation:heroFadeUp 1s ease 0.2s both;}
+.hero-title{animation:heroFadeUp 1s ease 0.5s both;}
+.hero-sub{animation:heroFadeUp 1s ease 0.8s both;}
+.hero-btns{animation:heroFadeUp 1s ease 1.0s both;}
+.hero-live-stats{animation:heroFadeUp 1s ease 1.2s both;}
+@keyframes heroFadeUp{
+  from{opacity:0;transform:translateY(25px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Floating orbs v hero */
+.hero-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);pointer-events:none;z-index:1;
+  animation:orbFloat 8s ease-in-out infinite alternate;
+}
+.hero-orb-1{
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(212,160,23,0.18),transparent 70%);
+  top:-80px;left:10%;
+  animation-duration:9s;
+}
+.hero-orb-2{
+  width:250px;height:250px;
+  background:radial-gradient(circle,rgba(249,115,22,0.12),transparent 70%);
+  top:20%;right:8%;
+  animation-duration:11s;animation-delay:2s;
+}
+.hero-orb-3{
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(168,85,247,0.1),transparent 70%);
+  bottom:20%;left:5%;
+  animation-duration:13s;animation-delay:1s;
+}
+@keyframes orbFloat{
+  0%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(20px,-15px) scale(1.1);}
+  66%{transform:translate(-15px,20px) scale(0.95);}
+  100%{transform:translate(10px,-10px) scale(1.05);}
+}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.15) 45%,rgba(10,7,0,0.97) 100%);}
+.hero-content{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);text-align:center;width:100%;padding:0 1.5rem;z-index:2;}
+.hero-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(2.2rem,8vw,7rem);
+  font-weight:900;line-height:1;letter-spacing:0.05em;
+  /* Silný drop-shadow + glow — text vystupuje z pozadí */
+  text-shadow:
+    0 0 40px rgba(212,160,23,0.9),
+    0 0 80px rgba(212,160,23,0.5),
+    0 4px 8px rgba(0,0,0,0.9),
+    0 8px 24px rgba(0,0,0,0.8),
+    2px 2px 0px rgba(0,0,0,0.6);
+  animation:titlePulse 4s ease-in-out infinite alternate;
+}
+@keyframes titlePulse{
+  0%{text-shadow:0 0 40px rgba(212,160,23,0.9),0 0 80px rgba(212,160,23,0.5),0 4px 8px rgba(0,0,0,0.9),0 8px 24px rgba(0,0,0,0.8),2px 2px 0px rgba(0,0,0,0.6);}
+  100%{text-shadow:0 0 60px rgba(245,200,66,1),0 0 120px rgba(212,160,23,0.7),0 4px 8px rgba(0,0,0,0.9),0 8px 24px rgba(0,0,0,0.8),2px 2px 0px rgba(0,0,0,0.6);}
+}
+.hero-title .play-win{
+  color:#fff;
+  text-shadow:
+    0 3px 6px rgba(0,0,0,1),
+    0 6px 20px rgba(0,0,0,0.9),
+    1px 1px 0 rgba(0,0,0,0.8);
+}
+.hero-title .btc{
+  color:var(--gold-light);
+  text-shadow:
+    0 0 60px rgba(245,200,66,1),
+    0 0 120px rgba(212,160,23,0.8),
+    0 0 200px rgba(212,160,23,0.4),
+    0 4px 8px rgba(0,0,0,1),
+    0 8px 24px rgba(0,0,0,0.9),
+    2px 2px 0 rgba(100,50,0,0.5);
+  animation:btcGlow 3s ease-in-out infinite alternate;
+}
+@keyframes btcGlow{
+  0%{text-shadow:0 0 60px rgba(245,200,66,1),0 0 120px rgba(212,160,23,0.8),0 4px 8px rgba(0,0,0,1),2px 2px 0 rgba(100,50,0,0.5);}
+  100%{text-shadow:0 0 90px rgba(245,200,66,1),0 0 180px rgba(212,160,23,1),0 0 250px rgba(212,160,23,0.6),0 4px 8px rgba(0,0,0,1),2px 2px 0 rgba(100,50,0,0.5);}
+}
+
+/* HERO BADGES */
+.hero-badge-row{display:flex;justify-content:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+.h-badge{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.28rem 0.85rem;border-radius:20px;backdrop-filter:blur(10px);display:inline-flex;align-items:center;gap:0.4rem;}
+.h-badge-live{background:rgba(220,38,38,0.2);border:1px solid rgba(220,38,38,0.4);color:#fca5a5;}
+.h-badge-dot{width:6px;height:6px;background:#f87171;border-radius:50%;box-shadow:0 0 6px #f87171;animation:livePulse 1.2s infinite;}
+@keyframes livePulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.h-badge-fair{background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);color:var(--gold-light);}
+.h-badge-btc{background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.3);color:#fdba74;}
+
+/* HERO LIVE STATS */
+.hero-live-stats{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.4rem;flex-wrap:wrap;background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);border:1px solid rgba(212,160,23,0.2);border-radius:14px;padding:0.8rem 2rem;display:inline-flex;}
+.hls-item{text-align:center;}
+.hls-val{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:#fff;}
+.hls-val.hls-green{color:var(--green);}
+.hls-val.hls-gold{color:var(--gold-light);}
+.hls-lbl{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:0.15rem;}
+.hls-sep{width:1px;height:35px;background:rgba(212,160,23,0.2);}
+
+/* TOP GAME CARDS — per-game glow colors */
+.game-card.gc-crash:hover{box-shadow:0 0 60px rgba(249,115,22,0.4),0 20px 40px rgba(0,0,0,0.7)!important;border-color:rgba(249,115,22,0.5)!important;}
+.game-card.gc-roulette:hover{box-shadow:0 0 60px rgba(239,68,68,0.4),0 20px 40px rgba(0,0,0,0.7)!important;border-color:rgba(239,68,68,0.5)!important;}
+.game-card.gc-poker:hover{box-shadow:0 0 60px rgba(212,160,23,0.4),0 20px 40px rgba(0,0,0,0.7)!important;border-color:rgba(212,160,23,0.5)!important;}
+.game-card.gc-slots:hover{box-shadow:0 0 60px rgba(168,85,247,0.4),0 20px 40px rgba(0,0,0,0.7)!important;border-color:rgba(168,85,247,0.5)!important;}
+.game-card.gc-crash .game-card-glow{background:radial-gradient(circle at 50% 80%,rgba(249,115,22,0.35),transparent 70%);}
+.game-card.gc-roulette .game-card-glow{background:radial-gradient(circle at 50% 80%,rgba(239,68,68,0.35),transparent 70%);}
+.game-card.gc-poker .game-card-glow{background:radial-gradient(circle at 50% 80%,rgba(212,160,23,0.35),transparent 70%);}
+.game-card.gc-slots .game-card-glow{background:radial-gradient(circle at 50% 80%,rgba(168,85,247,0.35),transparent 70%);}
+
+/* GAME CARD shimmer */
+.game-card::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);transform:skewX(-15deg);transition:left 0.6s ease;z-index:2;pointer-events:none;}
+.game-card:hover::before{left:180%;}
+.game-card-sm::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);transform:skewX(-15deg);transition:left 0.55s ease;z-index:2;pointer-events:none;}
+.game-card-sm:hover::before{left:180%;}
+
+/* JACKPOT BANNER upgrade */
+.jp-amount{font-size:1.8rem!important;letter-spacing:0.06em;}
+
 .hero-sub{margin-top:0.8rem;font-size:0.9rem;color:var(--text-dim);letter-spacing:0.12em;text-transform:uppercase;}
 .hero-btns{margin-top:1.8rem;display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;}
 .btn-enter{background:var(--gold);color:#000;border:none;padding:0.85rem 2.2rem;border-radius:12px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;text-decoration:none;box-shadow:0 0 50px rgba(212,160,23,0.7);transition:all 0.3s;}
@@ -57,15 +225,57 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .btn-deposit-btc:hover{border-color:var(--gold);background:rgba(212,160,23,0.1);}
 
 /* JACKPOT BANNER */
-.jackpot-banner{background:linear-gradient(135deg,rgba(212,160,23,0.08),rgba(168,85,247,0.06));border-top:1px solid rgba(212,160,23,0.2);border-bottom:1px solid rgba(212,160,23,0.2);padding:0.8rem 2rem;display:flex;align-items:center;justify-content:center;gap:2rem;position:relative;overflow:hidden;}
+.jackpot-banner{
+  background:linear-gradient(90deg,rgba(6,3,0,0.99),rgba(15,8,0,0.99),rgba(6,3,0,0.99));
+  border-top:1px solid rgba(212,160,23,0.3);
+  border-bottom:1px solid rgba(212,160,23,0.3);
+  padding:0.8rem 2.5rem;
+  display:flex;align-items:center;justify-content:center;gap:2.5rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(212,160,23,0.12),inset 0 0 80px rgba(212,160,23,0.04);
+}
+/* Sweep animace */
+.jackpot-banner::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(212,160,23,0.07),transparent);
+  animation:jbSweep 2.2s linear infinite;
+}
+@keyframes jbSweep{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+
+/* LEFT */
+.jp-left{display:flex;align-items:center;gap:0.8rem;}
+.jp-trophy-anim{font-size:1.8rem;animation:trophyBounce 1.8s ease-in-out infinite;}
+@keyframes trophyBounce{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-4px) rotate(5deg);}}
+.jp-sublabel{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.15em;color:var(--text-dim);margin-top:0.15rem;}
+
+/* CENTER */
+.jp-center{text-align:center;}
+.jp-amount-wrap{display:flex;align-items:baseline;gap:0.4rem;justify-content:center;}
+.jp-btc-sym{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:var(--gold);text-shadow:0 0 15px var(--gold-glow);}
+.jp-btc-label{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold);text-shadow:0 0 15px var(--gold-glow);}
+.jp-usd{font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);margin-top:0.15rem;letter-spacing:0.1em;}
+
+/* RIGHT */
+.jp-right{display:flex;flex-direction:column;gap:0.3rem;}
+.jp-online-big{display:flex;align-items:center;gap:0.4rem;}
+.jp-online-num{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--green);text-shadow:0 0 12px rgba(74,222,128,0.6);}
+.jp-online-lbl{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
+.jp-winners-row{display:flex;gap:1rem;}
+.jp-winner-item{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--gold);opacity:0.7;}
 .jackpot-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(212,160,23,0.05),transparent);animation:shimmer 3s infinite;}
 @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
 .jp-label{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-dim);}
-.jp-amount{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 30px var(--gold-glow);animation:jpPulse 2s ease-in-out infinite;}
+.jp-amount{
+  font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;
+  color:var(--gold-light);letter-spacing:0.05em;
+  text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(212,160,23,0.3);
+  animation:jpPulse 2s ease-in-out infinite;
+}
 @keyframes jpPulse{0%,100%{text-shadow:0 0 20px var(--gold-glow);}50%{text-shadow:0 0 50px rgba(212,160,23,0.9),0 0 80px rgba(212,160,23,0.5);}}
 .jp-btn{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.4rem 1.2rem;border-radius:20px;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;text-decoration:none;box-shadow:0 0 20px rgba(212,160,23,0.4);transition:all 0.2s;}
 .jp-btn:hover{transform:scale(1.05);}
 .jp-players{font-family:'Cinzel',serif;font-size:0.65rem;color:var(--green);display:flex;align-items:center;gap:0.4rem;}
+.jp-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:livePulse 1.4s infinite;box-shadow:0 0 6px var(--green);}
 .jp-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:livePulse 1.5s infinite;}
 
 /* TICKER */
@@ -74,11 +284,11 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 6px var(--green);}50%{opacity:0.4;}}
 .ticker-track{display:flex;gap:3rem;animation:ticker 22s linear infinite;white-space:nowrap;font-size:0.78rem;color:var(--text-dim);}
 @keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.ticker-win{color:var(--green);font-weight:700;}.ticker-user{color:var(--gold-light);}
+.ticker-win{color:var(--green);font-weight:700;text-shadow:0 0 8px rgba(74,222,128,0.4);}.ticker-user{color:var(--gold-light);font-weight:700;}
 
 /* SECTION */
 .section{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 1.2rem;}
-.section-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.section-title{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(212,160,23,0.4);}
 .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,160,23,0.4),transparent);}
 
 /* GAME CARDS — TOP */
@@ -199,28 +409,58 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 /* Hover state — bounce up */
 .game-icon-card:hover{transform:translateY(-8px) scale(1.04);}
 
-/* ── ROW RED ── */
+/* ── ROW RED — neon glow ── */
 .row-red{
-  background:linear-gradient(155deg,#2d0808 0%,#1a0404 60%,#200808 100%);
-  border-color:rgba(185,28,28,0.2);
-  box-shadow:0 4px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(220,38,38,0.08);
+  background:linear-gradient(155deg,#350a0a 0%,#1e0505 60%,#280a0a 100%);
+  border:1px solid rgba(220,38,38,0.35);
+  box-shadow:
+    0 0 0 1px rgba(220,38,38,0.15),
+    0 4px 20px rgba(0,0,0,0.6),
+    0 0 20px rgba(220,38,38,0.08),
+    inset 0 1px 0 rgba(220,38,38,0.12);
+  animation:redGlow 3s ease-in-out infinite alternate;
 }
-.row-red::after{background:linear-gradient(90deg,transparent,rgba(220,38,38,0.9),transparent);}
+@keyframes redGlow{
+  0%{box-shadow:0 0 0 1px rgba(220,38,38,0.15),0 4px 20px rgba(0,0,0,0.6),0 0 15px rgba(220,38,38,0.08),inset 0 1px 0 rgba(220,38,38,0.12);}
+  100%{box-shadow:0 0 0 1px rgba(220,38,38,0.25),0 4px 20px rgba(0,0,0,0.6),0 0 30px rgba(220,38,38,0.16),inset 0 1px 0 rgba(220,38,38,0.15);}
+}
+.row-red::after{background:linear-gradient(90deg,transparent,rgba(220,38,38,1),transparent);}
 .row-red:hover{
-  border-color:rgba(220,38,38,0.6);
-  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(220,38,38,0.25),inset 0 1px 0 rgba(220,38,38,0.2);
+  border-color:rgba(220,38,38,0.75)!important;
+  box-shadow:
+    0 0 0 1px rgba(220,38,38,0.4),
+    0 20px 50px rgba(0,0,0,0.7),
+    0 0 50px rgba(220,38,38,0.4),
+    0 0 100px rgba(220,38,38,0.15),
+    inset 0 1px 0 rgba(220,38,38,0.3)!important;
+  animation:none;
 }
 
-/* ── ROW GREEN ── */
+/* ── ROW GREEN — neon glow ── */
 .row-green{
-  background:linear-gradient(155deg,#031a09 0%,#020f05 60%,#041408 100%);
-  border-color:rgba(21,128,61,0.2);
-  box-shadow:0 4px 20px rgba(0,0,0,0.5),inset 0 1px 0 rgba(34,197,94,0.06);
+  background:linear-gradient(155deg,#041f0b 0%,#021208 60%,#051a0b 100%);
+  border:1px solid rgba(34,197,94,0.3);
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.12),
+    0 4px 20px rgba(0,0,0,0.6),
+    0 0 20px rgba(34,197,94,0.07),
+    inset 0 1px 0 rgba(34,197,94,0.1);
+  animation:greenGlow 3.5s ease-in-out infinite alternate;
 }
-.row-green::after{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.85),transparent);}
+@keyframes greenGlow{
+  0%{box-shadow:0 0 0 1px rgba(34,197,94,0.12),0 4px 20px rgba(0,0,0,0.6),0 0 15px rgba(34,197,94,0.07),inset 0 1px 0 rgba(34,197,94,0.1);}
+  100%{box-shadow:0 0 0 1px rgba(34,197,94,0.22),0 4px 20px rgba(0,0,0,0.6),0 0 30px rgba(34,197,94,0.14),inset 0 1px 0 rgba(34,197,94,0.14);}
+}
+.row-green::after{background:linear-gradient(90deg,transparent,rgba(34,197,94,1),transparent);}
 .row-green:hover{
-  border-color:rgba(34,197,94,0.55);
-  box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(34,197,94,0.2),inset 0 1px 0 rgba(34,197,94,0.15);
+  border-color:rgba(34,197,94,0.7)!important;
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.35),
+    0 20px 50px rgba(0,0,0,0.7),
+    0 0 50px rgba(34,197,94,0.35),
+    0 0 100px rgba(34,197,94,0.12),
+    inset 0 1px 0 rgba(34,197,94,0.25)!important;
+  animation:none;
 }
 
 /* ── IKONA ── */
@@ -296,7 +536,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .row-red:hover .gi-line{background:linear-gradient(90deg,transparent,rgba(220,38,38,0.75),transparent);}
 .row-green:hover .gi-line{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.7),transparent);}
 
-/* ── LIVE MULTIPLIER na Crash kartě ── */
+/* ── LIVE DATA na každé kartě ── */
 .gi-live-multi{
   position:absolute;bottom:0.5rem;left:0;right:0;
   text-align:center;
@@ -304,9 +544,22 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
   color:var(--green);
   text-shadow:0 0 8px rgba(74,222,128,0.6);
   letter-spacing:0.05em;
-  animation:multiPulse 0.5s ease-out;
 }
+.gi-card-live{
+  position:absolute;bottom:0.45rem;left:0;right:0;
+  text-align:center;
+  font-family:'Cinzel',serif;font-size:0.58rem;font-weight:900;
+  letter-spacing:0.06em;
+  transition:all 0.3s;
+}
+.gi-card-live.gold{color:var(--gold-light);text-shadow:0 0 8px rgba(212,160,23,0.7);}
+.gi-card-live.red{color:#f87171;text-shadow:0 0 8px rgba(248,113,113,0.7);}
+.gi-card-live.green{color:var(--green);text-shadow:0 0 8px rgba(74,222,128,0.6);}
+.gi-card-live.blue{color:#60a5fa;text-shadow:0 0 8px rgba(96,165,250,0.6);}
+.gi-card-live.purple{color:#c084fc;text-shadow:0 0 8px rgba(192,132,252,0.6);}
+.gi-card-live.orange{color:#fb923c;text-shadow:0 0 8px rgba(251,146,60,0.7);}
 @keyframes multiPulse{from{transform:scale(1.3);}to{transform:scale(1);}}
+.live-flash{animation:multiPulse 0.35s ease;}
 
 /* ── SCROLL ENTRANCE ── */
 .game-icon-card.card-hidden{opacity:0;transform:translateY(20px);}
@@ -329,7 +582,12 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .bet-player{color:var(--text-dim);font-size:0.8rem;}
 .bet-game{color:var(--text);}
 .bet-amount{color:var(--gold);font-family:'Cinzel',serif;font-size:0.8rem;}
-.bet-profit{color:#4ade80;font-family:'Cinzel',serif;font-size:0.8rem;text-align:right;}
+.bet-profit{color:#4ade80;font-family:'Cinzel',serif;font-size:0.8rem;text-align:right;font-weight:700;}
+.bet-profit.loss{color:#f87171;}
+.bet-row:hover{background:rgba(212,160,23,0.04);}
+/* Live bets table upgrade */
+.bets-table{box-shadow:0 0 30px rgba(0,0,0,0.5);}
+.bets-header{background:rgba(212,160,23,0.07)!important;}
 .bet-profit.loss{color:#f87171;}
 
 /* FOOTER */
@@ -366,6 +624,9 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
 </head>
 <body>
 
+<!-- PARTICLE CANVAS -->
+<canvas id="bgParticles" style="position:fixed;inset:0;pointer-events:none;z-index:0;"></canvas>
+
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
   <nav>
@@ -391,26 +652,84 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
   </div>
 </div>
 
-<!-- HERO -->
+<!-- HERO — Ken Burns živý obrázek -->
 <section class="hero">
-  <img src="images/hero.jpg" alt="CryptoKasino" class="hero-img">
+  <!-- Ostrý obrázek s Ken Burns animací -->
+  <div class="hero-bg">
+    <img src="images/hero.jpg" alt="CryptoKasino" class="hero-img-kb">
+  </div>
+  <!-- Particle canvas přes hero -->
+  <canvas id="heroCanvas"></canvas>
   <div class="hero-overlay"></div>
+  <!-- Floating color orbs -->
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
   <div class="hero-content">
+    <div class="hero-badge-row">
+      <span class="h-badge h-badge-live"><span class="h-badge-dot"></span>Live Now</span>
+      <span class="h-badge h-badge-fair">&#128272; Provably Fair</span>
+      <span class="h-badge h-badge-btc">&#8383; Bitcoin Only</span>
+    </div>
     <h1 class="hero-title"><span class="play-win">PLAY. WIN.<br></span><span class="btc">WITH BTC</span></h1>
     <p class="hero-sub">Instant deposits &middot; Real money &middot; No limits</p>
     <div class="hero-btns">
-      <a href="casino.html" class="btn-enter">ENTER CASINO</a>
-      <a href="deposit.html" class="btn-deposit-btc">Deposit BTC</a>
+      <a href="casino.html" class="btn-enter">&#127920; ENTER CASINO</a>
+      <a href="deposit.html" class="btn-deposit-btc">&#8383; Deposit BTC</a>
+    </div>
+    <div class="hero-live-stats">
+      <div class="hls-item">
+        <div class="hls-val" id="hlsPlayers">2,847</div>
+        <div class="hls-lbl">Online Now</div>
+      </div>
+      <div class="hls-sep"></div>
+      <div class="hls-item">
+        <div class="hls-val hls-green" id="hlsWin">+0.0481 BTC</div>
+        <div class="hls-lbl">Last Big Win</div>
+      </div>
+      <div class="hls-sep"></div>
+      <div class="hls-item">
+        <div class="hls-val">17</div>
+        <div class="hls-lbl">Games</div>
+      </div>
+      <div class="hls-sep"></div>
+      <div class="hls-item">
+        <div class="hls-val hls-gold">96.8%</div>
+        <div class="hls-lbl">Avg RTP</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- JACKPOT BANNER -->
+<!-- JACKPOT BANNER — velký, živý -->
 <div class="jackpot-banner">
-  <span class="jp-label">&#127942; Progressive Jackpot</span>
-  <span class="jp-amount" id="jpAmt">0.00105894 BTC</span>
-  <a href="game-jackpot.html" class="jp-btn">Win Now</a>
-  <span class="jp-players"><div class="jp-dot"></div><span id="onlinePlayers">847</span> online</span>
+  <div class="jp-left">
+    <div class="jp-trophy-anim">&#127942;</div>
+    <div>
+      <div class="jp-label">Progressive Jackpot</div>
+      <div class="jp-sublabel">Next draw in <span id="jpTimer" style="color:var(--gold-light);font-weight:700;">4:58</span></div>
+    </div>
+  </div>
+  <div class="jp-center">
+    <div class="jp-amount-wrap">
+      <span class="jp-btc-sym">&#8383;</span>
+      <span class="jp-amount" id="jpAmt">0.00105894</span>
+      <span class="jp-btc-label">BTC</span>
+    </div>
+    <div class="jp-usd" id="jpUsd">≈ $68.40 USD</div>
+  </div>
+  <div class="jp-right">
+    <div class="jp-online-big">
+      <span class="jp-dot"></span>
+      <span class="jp-online-num" id="onlinePlayers">10,284</span>
+      <span class="jp-online-lbl">online now</span>
+    </div>
+    <div class="jp-winners-row">
+      <span class="jp-winner-item">&#127881; SlotKing +0.482 BTC</span>
+      <span class="jp-winner-item">&#127881; BTC_Pro +0.218 BTC</span>
+    </div>
+  </div>
+  <a href="game-jackpot.html" class="jp-btn">&#9889; Play Now</a>
 </div>
 
 <!-- TICKER -->
@@ -423,25 +742,25 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
 <div class="section" style="margin-top:2.5rem;">
   <div class="section-title">Top Games</div>
   <div class="games-main">
-    <a href="game-crash.html" class="game-card">
+    <a href="game-crash.html" class="game-card gc-crash">
       <img src="images/crash.jpg" alt="Crash">
       <div class="game-card-overlay"></div>
       <div class="game-card-glow glow-red"></div>
       <div class="game-card-info"><div class="game-label">Game</div><div class="game-name">Crash</div><span class="play-btn">Play Now</span></div>
     </a>
-    <a href="game-roulette.html" class="game-card">
+    <a href="game-roulette.html" class="game-card gc-roulette">
       <img src="images/roulette.jpg" alt="Roulette">
       <div class="game-card-overlay"></div>
       <div class="game-card-glow glow-gold"></div>
       <div class="game-card-info"><div class="game-label">Game</div><div class="game-name">Roulette</div><span class="play-btn">Play Now</span></div>
     </a>
-    <a href="game-poker.html" class="game-card">
+    <a href="game-poker.html" class="game-card gc-poker">
       <img src="images/poker.jpg" alt="Poker">
       <div class="game-card-overlay"></div>
       <div class="game-card-glow glow-gold"></div>
       <div class="game-card-info"><div class="game-label">Game</div><div class="game-name">Poker</div><span class="play-btn">Play Now</span></div>
     </a>
-    <a href="game-slots.html" class="game-card">
+    <a href="game-slots.html" class="game-card gc-slots">
       <img src="images/slots.jpg" alt="Slots">
       <div class="game-card-overlay"></div>
       <div class="game-card-glow glow-purple"></div>
@@ -493,37 +812,44 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
       <div class="gi-live-multi" id="crashMulti">1.00x</div>
     </a>
     <a href="game-roulette.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live red" id="live-roulette">&#9679; 17 RED</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="22"/><circle cx="26" cy="26" r="8"/><line x1="26" y1="4" x2="26" y2="18"/><line x1="26" y1="34" x2="26" y2="48"/><line x1="4" y1="26" x2="18" y2="26"/><line x1="34" y1="26" x2="48" y2="26"/><line x1="9.5" y1="9.5" x2="19.5" y2="19.5"/><line x1="32.5" y1="32.5" x2="42.5" y2="42.5"/><line x1="42.5" y1="9.5" x2="32.5" y2="19.5"/><line x1="19.5" y1="32.5" x2="9.5" y2="42.5"/></svg></div>
       <div class="gi-name">Roulette</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-slots.html" class="game-icon-card row-red card-hidden">
       <span class="gi-badge badge-hot">Hot</span>
+      <div class="gi-card-live gold" id="live-slots">&#128142; JP: 0.0248 BTC</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="8" width="40" height="36" rx="4"/><rect x="11" y="14" width="9" height="24" rx="2"/><rect x="22" y="14" width="9" height="24" rx="2"/><rect x="33" y="14" width="9" height="24" rx="2"/><line x1="11" y1="24" x2="20" y2="24"/><line x1="22" y1="24" x2="31" y2="24"/><line x1="33" y1="24" x2="42" y2="24"/><circle cx="15" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/><circle cx="26" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/><circle cx="37" cy="19" r="2" fill="rgba(212,160,23,0.8)" stroke="none"/></svg></div>
       <div class="gi-name">Slots</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-blackjack.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live green" id="live-bj">&#9827; 21 — Win!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="7" y="6" width="18" height="26" rx="3"/><rect x="27" y="20" width="18" height="26" rx="3"/><text x="11" y="22" font-family="serif" font-size="11" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="31" y="36" font-family="serif" font-size="11" fill="rgba(212,160,23,0.7)" stroke="none">K</text></svg></div>
       <div class="gi-name">Blackjack</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-dice.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live blue" id="live-dice">&#127922; 6 &#183; 94.2%</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="24" height="24" rx="4"/><rect x="21" y="21" width="24" height="24" rx="4"/><circle cx="16" cy="16" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="16" cy="22" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="22" cy="22" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="33" cy="30" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="33" cy="36" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="33" cy="42" r="1.8" fill="rgba(212,160,23,0.7)" stroke="none"/></svg></div>
       <div class="gi-name">Dice</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-mines.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live orange" id="live-mines">&#128163; 3.24x safe</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="12"/><line x1="26" y1="8" x2="26" y2="14"/><line x1="26" y1="38" x2="26" y2="44"/><line x1="8" y1="26" x2="14" y2="26"/><line x1="38" y1="26" x2="44" y2="26"/><line x1="14" y1="14" x2="18" y2="18"/><line x1="34" y1="34" x2="38" y2="38"/><line x1="38" y1="14" x2="34" y2="18"/><line x1="18" y1="34" x2="14" y2="38"/><circle cx="26" cy="26" r="4" fill="rgba(212,160,23,0.2)"/></svg></div>
       <div class="gi-name">Mines</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-poker.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live gold" id="live-poker">&#127183; Full House!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="22" height="30" rx="3"/><rect x="14" y="16" width="22" height="30" rx="3"/><text x="12" y="22" font-family="serif" font-size="10" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="18" y="34" font-family="serif" font-size="10" fill="rgba(212,160,23,0.7)" stroke="none">K</text></svg></div>
       <div class="gi-name">Video Poker</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-plinko.html" class="game-icon-card row-red card-hidden">
+      <div class="gi-card-live blue" id="live-plinko">&#128992; 88x hit!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="8" r="4" fill="rgba(212,160,23,0.4)" stroke="none"/><circle cx="16" cy="20" r="2.5"/><circle cx="36" cy="20" r="2.5"/><circle cx="10" cy="32" r="2.5"/><circle cx="26" cy="32" r="2.5"/><circle cx="42" cy="32" r="2.5"/><path d="M26 12 Q20 16 16 20" stroke-dasharray="3,2"/><path d="M26 12 Q32 16 36 20" stroke-dasharray="3,2"/><rect x="6" y="42" width="10" height="6" rx="1"/><rect x="21" y="42" width="10" height="6" rx="1"/><rect x="36" y="42" width="10" height="6" rx="1"/></svg></div>
       <div class="gi-name">Plinko</div>
       <div class="gi-line"></div>
@@ -539,11 +865,13 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
 
   <div class="games-icon-grid" id="gridGreen">
     <a href="game-wheel.html" class="game-icon-card row-green card-hidden">
+      <div class="gi-card-live gold" id="live-wheel">&#128256; 50x spun!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="22"/><circle cx="26" cy="26" r="8"/><line x1="26" y1="4" x2="26" y2="18"/><line x1="26" y1="34" x2="26" y2="48"/><line x1="4" y1="26" x2="18" y2="26"/><line x1="34" y1="26" x2="48" y2="26"/><line x1="9.5" y1="9.5" x2="19.5" y2="19.5"/><line x1="32.5" y1="32.5" x2="42.5" y2="42.5"/><line x1="42.5" y1="9.5" x2="32.5" y2="19.5"/><line x1="19.5" y1="32.5" x2="9.5" y2="42.5"/></svg></div>
       <div class="gi-name">Wheel</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-craps.html" class="game-icon-card row-green card-hidden">
+      <div class="gi-card-live red" id="live-craps">&#127922; 7 — Pass!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="18" height="18" rx="3"/><rect x="28" y="28" width="18" height="18" rx="3"/><circle cx="15" cy="15" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="15" cy="37" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="37" cy="37" r="2" fill="rgba(212,160,23,0.9)" stroke="none"/><circle cx="33" cy="33" r="1.5" fill="rgba(212,160,23,0.7)" stroke="none"/><circle cx="41" cy="41" r="1.5" fill="rgba(212,160,23,0.7)" stroke="none"/></svg></div>
       <div class="gi-name">Craps</div>
       <div class="gi-line"></div>
@@ -561,23 +889,27 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:3rem 1.2rem 2rem;margin
       <div class="gi-line"></div>
     </a>
     <a href="game-keno.html" class="game-icon-card row-green card-hidden">
+      <div class="gi-card-live blue" id="live-keno">&#128162; 8 hits!</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="5" width="42" height="42" rx="4"/><circle cx="15" cy="15" r="4"/><circle cx="26" cy="15" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="37" cy="15" r="4"/><circle cx="15" cy="26" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="26" cy="26" r="4"/><circle cx="37" cy="26" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="15" cy="37" r="4"/><circle cx="26" cy="37" r="4" fill="rgba(212,160,23,0.3)"/><circle cx="37" cy="37" r="4"/></svg></div>
       <div class="gi-name">Keno</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-jackpot.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-jackpot">JP</span>
+      <div class="gi-card-live gold" id="live-jackpot">&#127942; 0.00248 BTC</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><rect x="10" y="18" width="32" height="26" rx="3"/><path d="M18 18 L18 12 Q18 6 26 6 Q34 6 34 12 L34 18"/><line x1="10" y1="28" x2="42" y2="28"/><circle cx="26" cy="37" r="5"/><path d="M24 37 L25.5 35 L26 37 L27.5 35 L28 37" stroke-width="1" fill="none"/></svg></div>
       <div class="gi-name">Jackpot</div>
       <div class="gi-line"></div>
     </a>
     <a href="game-hilo.html" class="game-icon-card row-green card-hidden">
       <span class="gi-badge badge-new">New</span>
+      <div class="gi-card-live purple" id="live-hilo">&#128200; 4.2x streak</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="16" height="22" rx="2"/><rect x="30" y="22" width="16" height="22" rx="2"/><text x="10" y="23" font-family="serif" font-size="12" fill="rgba(212,160,23,0.9)" stroke="none">A</text><text x="34" y="37" font-family="serif" font-size="10" fill="rgba(212,160,23,0.7)" stroke="none">2</text><polyline points="24,19 28,15 28,15" stroke-width="2"/><polyline points="24,33 28,37 28,37" stroke-width="2"/></svg></div>
       <div class="gi-name">HiLo</div>
       <div class="gi-line"></div>
     </a>
     <a href="sports.html" class="game-icon-card row-green card-hidden">
+      <div class="gi-card-live green" id="live-sports">&#9917; 15 live</div>
       <div class="gi-icon"><svg viewBox="0 0 52 52" stroke="rgba(212,160,23,0.9)" stroke-width="1.5" stroke-linecap="round"><circle cx="26" cy="26" r="20"/><path d="M26 6 Q32 16 26 26 Q20 36 26 46"/><path d="M6 26 Q16 20 26 26 Q36 32 46 26"/><path d="M10 14 Q20 18 26 26"/><path d="M42 14 Q32 18 26 26"/><path d="M10 38 Q20 34 26 26"/><path d="M42 38 Q32 34 26 26"/></svg></div>
       <div class="gi-name">Sports</div>
       <div class="gi-line"></div>
@@ -655,13 +987,34 @@ setInterval(function(){
   document.getElementById('jpAmt').textContent = jp.toFixed(8)+' BTC';
 },1800);
 
-// ONLINE PLAYERS - simulace
-var players = 847;
+// ONLINE PLAYERS — 10k+
+var players = 10284;
 setInterval(function(){
-  players += Math.floor(Math.random()*3)-1;
-  players = Math.max(800,Math.min(950,players));
-  document.getElementById('onlinePlayers').textContent = players;
-},5000);
+  players += Math.floor(Math.random()*8)-3;
+  players = Math.max(9800,Math.min(11200,players));
+  var el = document.getElementById('onlinePlayers');
+  if(el) el.textContent = players.toLocaleString();
+},3500);
+
+// JACKPOT USD estimate
+setInterval(function(){
+  var jpEl = document.getElementById('jpAmt');
+  var usdEl = document.getElementById('jpUsd');
+  if(jpEl && usdEl){
+    var btcVal = parseFloat(jpEl.textContent)||0.001;
+    usdEl.textContent = '≈ $' + (btcVal * 65000).toFixed(2) + ' USD';
+  }
+},2000);
+
+// JP TIMER countdown
+var jpSecs = 4*60+58;
+setInterval(function(){
+  jpSecs--;
+  if(jpSecs<0)jpSecs=5*60+Math.floor(Math.random()*120);
+  var m=Math.floor(jpSecs/60),s=jpSecs%60;
+  var el=document.getElementById('jpTimer');
+  if(el)el.textContent=m+':'+String(s).padStart(2,'0');
+},1000);
 
 // TICKER
 var games=['Crash','Roulette','Poker','Slots','Dice','Blackjack','Baccarat','Wheel','Mines'];
@@ -677,6 +1030,140 @@ function makeTicker(){
   t.innerHTML=html+html;
 }
 makeTicker();
+
+// ══ LIVE CARD DATA — animace na každé kartě ══
+(function(){
+  var rouletteNums=[
+    {n:0,c:'green'},{n:32,c:'red'},{n:17,c:'black'},{n:14,c:'red'},
+    {n:5,c:'red'},{n:26,c:'black'},{n:7,c:'red'},{n:11,c:'black'},
+    {n:23,c:'red'},{n:36,c:'red'},{n:16,c:'red'},{n:1,c:'red'},
+    {n:33,c:'black'},{n:20,c:'black'},{n:8,c:'black'},{n:19,c:'red'},
+  ];
+  var ri=0;
+  setInterval(function(){
+    var r=rouletteNums[ri%rouletteNums.length];
+    var el=document.getElementById('live-roulette');
+    if(el){
+      el.textContent='⬤ '+r.n+' '+r.c.toUpperCase();
+      el.className='gi-card-live '+(r.c==='red'?'red':r.c==='green'?'green':'gold');
+      el.classList.add('live-flash');
+      setTimeout(function(){el.classList.remove('live-flash');},350);
+    }
+    ri++;
+  },2200);
+
+  // Slots — jackpot roste
+  var slotJp=0.0248;
+  setInterval(function(){
+    slotJp+=Math.random()*0.0002+0.00005;
+    var el=document.getElementById('live-slots');
+    if(el)el.textContent='💎 JP: '+slotJp.toFixed(4)+' BTC';
+  },1800);
+
+  // Blackjack — různé výsledky
+  var bjResults=['♠ 21 — Win!','♥ BJ! 3:2','♣ 19 — Win!','♦ Bust!','♠ 20 vs 18','♥ 21 — BJ!'];
+  var bji=0;
+  setInterval(function(){
+    var el=document.getElementById('live-bj');
+    if(el){
+      el.textContent=bjResults[bji%bjResults.length];
+      el.classList.add('live-flash');
+      setTimeout(function(){el.classList.remove('live-flash');},350);
+      bji++;
+    }
+  },3000);
+
+  // Dice — náhodný roll
+  setInterval(function(){
+    var roll=(Math.random()*99+1).toFixed(1);
+    var above=Math.random()>0.5;
+    var el=document.getElementById('live-dice');
+    if(el)el.textContent='🎲 '+(above?'Over':'Under')+' '+roll;
+  },2500);
+
+  // Mines — growing multiplier
+  var mineMulti=1.5;
+  var mineDir=1;
+  setInterval(function(){
+    mineMulti+=mineDir*0.15;
+    if(mineMulti>6||mineMulti<1.2)mineDir*=-1;
+    var el=document.getElementById('live-mines');
+    if(el){el.textContent='💣 '+mineMulti.toFixed(2)+'x safe';el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);}
+  },1200);
+
+  // Poker
+  var pokerHands=['♠ Full House!','♥ Flush!','♣ Straight!','♦ Two Pair','♠ Royal Flush!','♥ Four of a Kind!'];
+  var pi=0;
+  setInterval(function(){
+    var el=document.getElementById('live-poker');
+    if(el){el.textContent=pokerHands[pi%pokerHands.length];el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);pi++;}
+  },3500);
+
+  // Plinko — random multiplier
+  var plinkoMults=[2,5,10,25,50,88,100,0.5,1,3];
+  setInterval(function(){
+    var m=plinkoMults[Math.floor(Math.random()*plinkoMults.length)];
+    var el=document.getElementById('live-plinko');
+    if(el){
+      el.textContent='🔵 '+m+'x hit!';
+      el.className='gi-card-live '+(m>=50?'gold':m>=10?'blue':m<1?'red':'green');
+      el.classList.add('live-flash');
+      setTimeout(function(){el.classList.remove('live-flash');},350);
+    }
+  },2800);
+
+  // Wheel
+  var wheelPrizes=['50x','10x','2x','1x','20x','100x','5x'];
+  var wi2=0;
+  setInterval(function(){
+    var el=document.getElementById('live-wheel');
+    if(el){el.textContent='🎡 '+wheelPrizes[wi2%wheelPrizes.length]+' spun!';el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);wi2++;}
+  },2600);
+
+  // Craps
+  var crapsRolls=['7 — Pass!','11 — Win!','4 — Point','2 — Craps!','8 — Point','7 — Out!'];
+  var ci=0;
+  setInterval(function(){
+    var el=document.getElementById('live-craps');
+    if(el){
+      el.textContent='🎲 '+crapsRolls[ci%crapsRolls.length];
+      el.className='gi-card-live '+(crapsRolls[ci%crapsRolls.length].includes('Win')||crapsRolls[ci%crapsRolls.length].includes('Pass')?'green':'red');
+      el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);ci++;
+    }
+  },2900);
+
+  // Keno — hits
+  var kenoHits=['8 hits! +5x','7 hits +3x','10 hits! 🏆','6 hits +2x','9 hits! +8x'];
+  var ki=0;
+  setInterval(function(){
+    var el=document.getElementById('live-keno');
+    if(el){el.textContent='🔢 '+kenoHits[ki%kenoHits.length];el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);ki++;}
+  },3200);
+
+  // Jackpot — grows
+  var jackpotVal=0.00248;
+  setInterval(function(){
+    jackpotVal+=Math.random()*0.00005;
+    var el=document.getElementById('live-jackpot');
+    if(el)el.textContent='🏆 '+jackpotVal.toFixed(5)+' BTC';
+  },1500);
+
+  // HiLo — streak
+  var hiloStreaks=[1.5,2.1,3.4,4.2,6.8,2.5,1.8,5.1];
+  var hsi=0;
+  setInterval(function(){
+    var el=document.getElementById('live-hilo');
+    if(el){el.textContent='📈 '+hiloStreaks[hsi%hiloStreaks.length]+'x streak';el.classList.add('live-flash');setTimeout(function(){el.classList.remove('live-flash');},350);hsi++;}
+  },2400);
+
+  // Sports — live matches
+  var sportsCounts=[15,16,14,17,13,15,16];
+  var si2=0;
+  setInterval(function(){
+    var el=document.getElementById('live-sports');
+    if(el){el.textContent='⚽ '+sportsCounts[si2%sportsCounts.length]+' live now';si2++;}
+  },4000);
+})();
 
 // LIVE BETS
 var feed=document.getElementById('betsFeed');
@@ -769,6 +1256,136 @@ setInterval(addBet,2000);
     setTimeout(tick,Math.random()*200+80);
   }
   tick();
+})();
+
+// ══ HERO CANVAS PARTICLES ══
+(function(){
+  var canvas=document.getElementById('heroCanvas');
+  if(!canvas)return;
+  var hero=canvas.closest('.hero');
+  if(!hero)return;
+
+  function resize(){
+    canvas.width=hero.offsetWidth;
+    canvas.height=hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize',function(){resize();});
+
+  var ctx=canvas.getContext('2d');
+  var particles=[];
+  var W=canvas.width,H=canvas.height;
+
+  // Různé typy particles
+  function createParticle(type){
+    if(type==='spark'){
+      return{
+        type:'spark',
+        x:Math.random()*W,y:H+10,
+        vx:(Math.random()-0.5)*1.5,vy:-(Math.random()*2+0.8),
+        size:Math.random()*2+0.5,
+        life:1,decay:Math.random()*0.008+0.004,
+        color:Math.random()>0.5?'rgba(212,160,23,':'rgba(251,146,60,',
+        alpha:Math.random()*0.6+0.3
+      };
+    }
+    if(type==='star'){
+      return{
+        type:'star',
+        x:Math.random()*W,y:Math.random()*H,
+        size:Math.random()*1.5+0.3,
+        alpha:Math.random()*0.4+0.1,
+        twinkle:Math.random()*Math.PI*2,
+        twinkleSpeed:Math.random()*0.05+0.02,
+        color:'rgba(255,255,255,'
+      };
+    }
+    return null;
+  }
+
+  // Init stars
+  for(var i=0;i<80;i++){
+    var s=createParticle('star');
+    if(s)particles.push(s);
+  }
+
+  var lastSpark=0;
+
+  function animate(now){
+    ctx.clearRect(0,0,W,H);
+    resize();W=canvas.width;H=canvas.height;
+
+    // Spawn sparks
+    if(now-lastSpark>120){
+      particles.push(createParticle('spark'));
+      if(Math.random()<0.3)particles.push(createParticle('spark'));
+      lastSpark=now;
+    }
+
+    particles=particles.filter(function(p){return p.life>0||p.type==='star';});
+
+    particles.forEach(function(p){
+      if(p.type==='star'){
+        p.twinkle+=p.twinkleSpeed;
+        var a=p.alpha*(0.5+0.5*Math.sin(p.twinkle));
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle=p.color+a+')';ctx.fill();
+      } else if(p.type==='spark'){
+        p.x+=p.vx;p.y+=p.vy;
+        p.life-=p.decay;
+        if(p.life<=0)return;
+        // Trail effect
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(p.x-p.vx*4,p.y-p.vy*4);
+        ctx.strokeStyle=p.color+(p.life*p.alpha)+')';
+        ctx.lineWidth=p.size;ctx.lineCap='round';ctx.stroke();
+        // Dot
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size*0.8,0,Math.PI*2);
+        ctx.fillStyle=p.color+(p.life*p.alpha)+')';ctx.fill();
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+})();
+
+// ══ BACKGROUND PARTICLES ══
+(function(){
+  var c=document.getElementById('bgParticles');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  var W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  var COLORS=['rgba(212,160,23,','rgba(255,255,255,','rgba(251,146,60,','rgba(74,222,128,'];
+  function mkPt(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+0.2,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,alpha:Math.random()*0.35+0.05,col:COLORS[Math.floor(Math.random()*COLORS.length)]};}
+  for(var i=0;i<100;i++)pts.push(mkPt());
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col+p.alpha+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ══ HERO LIVE STATS ══
+(function(){
+  var wins=['+0.0481 BTC','+0.2800 BTC','+0.0880 BTC','+0.1420 BTC','+0.0350 BTC'];
+  var wi=0;
+  setInterval(function(){
+    var el=document.getElementById('hlsWin');
+    if(el){el.textContent=wins[wi%wins.length];wi++;}
+    var pe=document.getElementById('hlsPlayers');
+    if(pe)pe.textContent=(2800+Math.floor(Math.random()*120)).toLocaleString();
+  },3500);
 })();
 
 // SUPABASE balance
