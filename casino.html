@@ -593,13 +593,32 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
-<!-- JACKPOT BAR -->
+<!-- JACKPOT BAR — mega živý -->
 <div class="jackpot-bar">
-  <span class="jb-trophy">&#127942;</span>
-  <span class="jb-label">Progressive Jackpot</span>
-  <span class="jb-amount" id="jbAmt">0.00105894 BTC</span>
-  <a href="game-jackpot.html" class="jb-btn">&#9889; Win Now</a>
-  <span class="jb-online"><div class="jb-dot"></div><span id="jbOnline">847</span>&nbsp;online</span>
+  <div class="jb-left">
+    <div class="jb-trophy-wrap"><span class="jb-trophy">&#127942;</span></div>
+    <div>
+      <div class="jb-label">&#128293; Progressive Jackpot</div>
+      <div class="jb-sublabel">Next draw: <span id="jbTimer" class="jb-timer-val">4:58</span></div>
+    </div>
+  </div>
+  <div class="jb-center">
+    <div class="jb-amount-row">
+      <span class="jb-btc-sym">&#8383;</span>
+      <span class="jb-amount" id="jbAmt">0.00105894</span>
+      <span class="jb-btc-tag">BTC</span>
+    </div>
+    <div class="jb-usd" id="jbUsd">&#8776; $68.40 USD</div>
+  </div>
+  <div class="jb-stats">
+    <div class="jb-online-big">
+      <div class="jb-dot"></div>
+      <span class="jb-online-num" id="jbOnline">10,284</span>
+      <span class="jb-online-lbl">online</span>
+    </div>
+    <div class="jb-last-win">&#127881; SlotKing won <b>0.482 BTC</b> · 2h ago</div>
+  </div>
+  <a href="game-jackpot.html" class="jb-btn">&#9889; Play Now</a>
 </div>
 
 <!-- TOAST CONTAINER -->
@@ -680,6 +699,8 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-players" id="gp1">847 playing</div>
       <div class="game-overlay"></div>
       <div class="game-multi" id="gm1">x1.00</div>
+      <!-- Live crash graph mini -->
+      <canvas class="card-mini-canvas" id="crashGraph" width="200" height="50"></canvas>
       <div class="game-info">
         <div class="game-cat">Instant Win</div>
         <div class="game-name">Crash</div>
@@ -692,6 +713,8 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-jackpot">&#128142; Jackpot</div>
       <div class="game-players" id="gp2">623 playing</div>
       <div class="game-overlay"></div>
+      <div class="game-multi" id="gm2_dummy"></div>
+      <div class="card-live-stat cls-gold" id="cls-slots">&#128142; JP: 0.0248 BTC</div>
       <div class="game-info">
         <div class="game-cat">Slots</div>
         <div class="game-name">Vegas Slots</div>
@@ -704,6 +727,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-live"><div class="badge-live-dot"></div>Live</div>
       <div class="game-players" id="gp3">412 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-red" id="cls-roulette">&#9679; 17 RED</div>
       <div class="game-info">
         <div class="game-cat">Table Game</div>
         <div class="game-name">Roulette</div>
@@ -716,6 +740,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-hot">&#128293; Hot</div>
       <div class="game-players" id="gp4">289 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-gold" id="cls-poker">&#127183; Full House!</div>
       <div class="game-info">
         <div class="game-cat">Table Game</div>
         <div class="game-name">Texas Hold'em</div>
@@ -728,6 +753,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-new">&#10024; New</div>
       <div class="game-players" id="gp5">521 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-blue" id="cls-dice">&#127922; Over 94.2</div>
       <div class="game-info">
         <div class="game-cat">Instant Win</div>
         <div class="game-name">Dice</div>
@@ -752,6 +778,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-live"><div class="badge-live-dot"></div>Live</div>
       <div class="game-players" id="gp7">342 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-green" id="cls-bj">&#9827; 21 — WIN!</div>
       <div class="game-info">
         <div class="game-cat">Table Game</div>
         <div class="game-name">Blackjack</div>
@@ -764,6 +791,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-hot">&#128293; Hot</div>
       <div class="game-players" id="gp8">521 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-blue" id="cls-plinko">&#128992; 88x hit!</div>
       <div class="game-info">
         <div class="game-cat">Instant Win</div>
         <div class="game-name">Plinko</div>
@@ -776,6 +804,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-new">&#128163; New</div>
       <div class="game-players" id="gp9">412 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-orange" id="cls-mines">&#128163; 3.24x safe</div>
       <div class="game-info">
         <div class="game-cat">Strategy</div>
         <div class="game-name">Mines</div>
@@ -788,6 +817,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-live"><div class="badge-live-dot"></div>Live</div>
       <div class="game-players" id="gp10">876 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-purple" id="cls-crazy">&#127953; CRAZY TIME!</div>
       <div class="game-info">
         <div class="game-cat">Game Show</div>
         <div class="game-name">Crazy Time</div>
@@ -800,6 +830,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-live"><div class="badge-live-dot"></div>Live</div>
       <div class="game-players" id="gp11">298 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-gold" id="cls-wheel">&#128256; 50x spun!</div>
       <div class="game-info">
         <div class="game-cat">Game Show</div>
         <div class="game-name">Wheel of Fortune</div>
@@ -812,6 +843,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-jackpot">&#128142; Progressive</div>
       <div class="game-players" id="gp12">234 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-gold" id="cls-jackpot">&#127942; 0.00248 BTC</div>
       <div class="game-info">
         <div class="game-cat">Progressive</div>
         <div class="game-name">Jackpot Slots</div>
@@ -824,6 +856,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-new-game">&#10024; New</div>
       <div class="game-players" id="gp13">189 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-green" id="cls-bacc">&#127136; Banker wins</div>
       <div class="game-info">
         <div class="game-cat">Table Game</div>
         <div class="game-name">Baccarat</div>
@@ -836,6 +869,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-new-game">&#10024; New</div>
       <div class="game-players" id="gp14">156 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-red" id="cls-craps">&#127922; 7 — Pass!</div>
       <div class="game-info">
         <div class="game-cat">Table Game</div>
         <div class="game-name">Craps</div>
@@ -848,6 +882,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-new-game">&#10024; New</div>
       <div class="game-players" id="gp15">203 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-blue" id="cls-keno">&#128162; 8 hits!</div>
       <div class="game-info">
         <div class="game-cat">Lottery Style</div>
         <div class="game-name">Keno</div>
@@ -860,6 +895,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
       <div class="game-badge badge-live"><div class="badge-live-dot"></div>Live</div>
       <div class="game-players" id="gp16">1842 playing</div>
       <div class="game-overlay"></div>
+      <div class="card-live-stat cls-green" id="cls-sports">&#9917; 15 live now</div>
       <div class="game-info">
         <div class="game-cat">Sports Betting</div>
         <div class="game-name">Sports</div>
@@ -1040,20 +1076,41 @@ function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('op
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 
-// ══ JACKPOT COUNTER ══
+// ══ JACKPOT COUNTER — rychleji roste ══
 var jp=0.00105894;
 setInterval(function(){
-  jp+=0.00000006+Math.random()*0.00000005;
-  document.getElementById('jbAmt').textContent=jp.toFixed(8)+' BTC';
-},1600);
+  jp+=0.00000015+Math.random()*0.0000002;
+  var el=document.getElementById('jbAmt');
+  if(el)el.textContent=jp.toFixed(8);
+},1000);
 
-// ══ ONLINE COUNTER ══
-var onl=847;
+// ══ ONLINE COUNTER — 10k+ ══
+var onl=10284;
 setInterval(function(){
-  onl+=Math.floor(Math.random()*3)-1;
-  onl=Math.max(800,Math.min(960,onl));
-  document.getElementById('jbOnline').textContent=onl;
-},5000);
+  onl+=Math.floor(Math.random()*12)-5;
+  onl=Math.max(9600,Math.min(11500,onl));
+  var el=document.getElementById('jbOnline');
+  if(el)el.textContent=onl.toLocaleString();
+},2800);
+
+// JP USD estimate
+setInterval(function(){
+  var ja=document.getElementById('jbAmt');
+  var ju=document.getElementById('jbUsd');
+  if(ja&&ju){
+    var v=parseFloat(ja.textContent)||0.001;
+    ju.textContent='≈ $'+(v*65000).toFixed(2)+' USD';
+  }
+},2000);
+
+// JP TIMER
+var jbSecs=4*60+58;
+setInterval(function(){
+  jbSecs--;if(jbSecs<0)jbSecs=5*60+Math.floor(Math.random()*120);
+  var m=Math.floor(jbSecs/60),s=jbSecs%60;
+  var el=document.getElementById('jbTimer');
+  if(el)el.textContent=m+':'+String(s).padStart(2,'0');
+},1000);
 
 // ══ TICKER ══
 var USERS=['0xA91…','CryptoX','SlotKing','Satoshi','Lucky7','VegasKing','Player77','BTC_Pro','RouletteK','0xF3B…'];
@@ -1212,19 +1269,205 @@ function showToast(type,title,msg,burst){
   while(c.children.length>5)c.removeChild(c.firstChild);
 }
 
-// Auto toasts
+// Auto toasts — více a dramatičtější
 var toastQ=[
-  function(){showToast('win','💰 Big Win!','SlotKing just won 0.482 BTC on Jackpot Slots!',true);},
-  function(){showToast('jp','🏆 Jackpot Alert!','Progressive jackpot hits 0.002 BTC!',true);},
-  function(){showToast('streak','🔥 Streak!','Player77 is 5x in a row on Roulette!');},
-  function(){showToast('crash','💥 Crash 22.4x!','CryptoX cashed out 22.4x — +0.224 BTC',true);},
-  function(){showToast('info','⚡ New Record!','Biggest Crash ever: 142x!');},
-  function(){showToast('win','💰 Win!','Lucky7 won 0.128 BTC on Blackjack!',true);},
-  function(){showToast('win','💰 Plinko 88x!','BTC_Pro hit 88x on Plinko — +0.088 BTC',true);},
+  function(){showToast('win','💰 MEGA WIN!','SlotKing just won <b>0.482 BTC</b> on Jackpot Slots!',true);},
+  function(){showToast('jp','🏆 JACKPOT ALERT!','Progressive jackpot approaching <b>0.01 BTC</b>!',true);},
+  function(){showToast('streak','🔥 HOT STREAK!','CryptoX is on <b>9x streak</b> on Roulette — +0.389 BTC!');},
+  function(){showToast('crash','💥 CRASH 22.4x!','CryptoX cashed out <b>22.4x</b> — +0.224 BTC',true);},
+  function(){showToast('info','⚡ NEW RECORD!','Biggest Crash ever: <b>142x</b>! Unbelievable!');},
+  function(){showToast('win','💰 BLACKJACK!','Lucky7 hit Blackjack — won <b>0.128 BTC</b>!',true);},
+  function(){showToast('win','🔵 PLINKO 88x!','BTC_Pro hit <b>88x</b> on Plinko — +0.088 BTC',true);},
+  function(){showToast('win','🎡 WHEEL 100x!','Player77 spun <b>100x</b> on Wheel — +0.450 BTC!',true);},
+  function(){showToast('jp','🏆 10,000 ONLINE!','CryptoKasino just hit <b>10,000 players</b> online!');},
+  function(){showToast('crash','💥 CRASH 55.8x!','Satoshi rode to <b>55.8x</b> — +0.558 BTC!',true);},
 ];
 var tqi=0;
-function nextToast(){toastQ[tqi%toastQ.length]();tqi++;setTimeout(nextToast,Math.random()*7000+5000);}
-setTimeout(nextToast,3000);
+function nextToast(){toastQ[tqi%toastQ.length]();tqi++;setTimeout(nextToast,Math.random()*5000+4000);}
+setTimeout(nextToast,2000);
+// Immediate first toast
+setTimeout(function(){showToast('jp','🔥 10,248 Players Online!','CryptoKasino is LIVE — biggest jackpot ever approaching!');},800);
+
+// ══ LIVE CARD DATA UPDATERS ══
+(function(){
+  // Slots jackpot
+  var slotJp=0.0248;
+  setInterval(function(){
+    slotJp+=Math.random()*0.0003;
+    var el=document.getElementById('cls-slots');
+    if(el)el.textContent='💎 JP: '+slotJp.toFixed(4)+' BTC';
+  },1500);
+
+  // Roulette
+  var rnums=[{n:0,c:'green'},{n:32,c:'red'},{n:17,c:'black'},{n:5,c:'red'},{n:23,c:'black'},{n:14,c:'red'},{n:8,c:'black'},{n:11,c:'black'},{n:7,c:'red'},{n:36,c:'red'}];
+  var ri=0;
+  setInterval(function(){
+    var r=rnums[ri%rnums.length];
+    var el=document.getElementById('cls-roulette');
+    if(el){
+      el.textContent='⬤ '+r.n+' '+r.c.toUpperCase();
+      el.className='card-live-stat cls-'+(r.c==='red'?'red':r.c==='green'?'green':'blue');
+    }
+    ri++;
+  },2200);
+
+  // Poker
+  var hands=['♠ Full House!','♥ Flush!','♣ Royal Flush!','♦ Straight!','♠ Four of a Kind!'];
+  var pi=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-poker');
+    if(el)el.textContent=hands[pi%hands.length];pi++;
+  },3200);
+
+  // Dice
+  setInterval(function(){
+    var v=(Math.random()*97+1).toFixed(1);
+    var el=document.getElementById('cls-dice');
+    if(el)el.textContent='🎲 '+(Math.random()>0.5?'Over':'Under')+' '+v;
+  },2000);
+
+  // Blackjack
+  var bj=['♠ 21 — WIN!','♥ Blackjack!','♣ 19 — WIN!','♦ Bust!','♠ 20 vs 18'];
+  var bi=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-bj');
+    if(el){el.textContent=bj[bi%bj.length];el.className='card-live-stat '+(bj[bi%bj.length].includes('WIN')||bj[bi%bj.length].includes('Blackjack')?'cls-green':'cls-red');bi++;}
+  },2800);
+
+  // Plinko
+  var pm=[2,5,10,25,50,88,100,0.5,3];
+  setInterval(function(){
+    var m=pm[Math.floor(Math.random()*pm.length)];
+    var el=document.getElementById('cls-plinko');
+    if(el){el.textContent='🔵 '+m+'x hit!';el.className='card-live-stat '+(m>=50?'cls-gold':m>=10?'cls-blue':'cls-green');}
+  },2500);
+
+  // Mines — growing
+  var mm=1.5,md=1;
+  setInterval(function(){
+    mm+=md*0.2;if(mm>8||mm<1.2)md*=-1;
+    var el=document.getElementById('cls-mines');
+    if(el)el.textContent='💣 '+mm.toFixed(2)+'x safe';
+  },1100);
+
+  // Crazy Time
+  var ct=['🎪 CRAZY TIME!','🎯 4x COIN!','🎪 PACHINKO!','🎲 2x SPIN!','🎠 CASH HUNT!'];
+  var ci=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-crazy');
+    if(el)el.textContent=ct[ci%ct.length];ci++;
+  },3000);
+
+  // Wheel
+  var wv=['50x','10x','2x','1x','20x','100x','5x','40x'];
+  var wi=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-wheel');
+    if(el){el.textContent='🎡 '+wv[wi%wv.length]+' won!';el.className='card-live-stat '+(parseInt(wv[wi%wv.length])>=50?'cls-gold':'cls-gold');wi++;}
+  },2700);
+
+  // Jackpot grows
+  var jpv=0.00248;
+  setInterval(function(){
+    jpv+=Math.random()*0.00008;
+    var el=document.getElementById('cls-jackpot');
+    if(el)el.textContent='🏆 '+jpv.toFixed(5)+' BTC';
+  },1200);
+
+  // Baccarat
+  var bv=['🎴 Banker wins','🎴 Player wins','🎴 TIE! 8:1','🎴 Banker wins','🎴 Player wins'];
+  var bvi=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-bacc');
+    if(el){el.textContent=bv[bvi%bv.length];el.className='card-live-stat '+(bv[bvi%bv.length].includes('TIE')?'cls-gold':'cls-green');bvi++;}
+  },3400);
+
+  // Craps
+  var cr=['🎲 7 — Pass!','🎲 11 — Win!','🎲 4 — Point','🎲 2 — Craps!','🎲 7 — Out!'];
+  var cri=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-craps');
+    if(el){el.textContent=cr[cri%cr.length];el.className='card-live-stat '+(cr[cri%cr.length].includes('Win')||cr[cri%cr.length].includes('Pass')?'cls-green':'cls-red');cri++;}
+  },2900);
+
+  // Keno
+  var kh=['🔢 8 hits! +5x','🔢 10 hits! 🏆','🔢 7 hits +3x','🔢 9 hits! +8x'];
+  var khi=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-keno');
+    if(el)el.textContent=kh[khi%kh.length];khi++;
+  },3100);
+
+  // Sports
+  var sc=[15,16,14,17,13,18];
+  var sci=0;
+  setInterval(function(){
+    var el=document.getElementById('cls-sports');
+    if(el)el.textContent='⚽ '+sc[sci%sc.length]+' live now';sci++;
+  },4000);
+
+  // ── MINI CRASH GRAPH na Crash kartě ──
+  (function(){
+    var canvas=document.getElementById('crashGraph');
+    if(!canvas)return;
+    var ctx=canvas.getContext('2d');
+    var pts=[1.0],maxPts=40;
+    var crashed=false,multi=1.0;
+
+    function addPt(){
+      if(crashed){
+        pts=[];multi=1.0;crashed=false;
+        return;
+      }
+      multi+=Math.random()*0.3+0.05;
+      if(Math.random()<0.04&&multi>1.5){
+        crashed=true;
+        setTimeout(function(){crashed=false;},800);
+      }
+      pts.push(multi);
+      if(pts.length>maxPts)pts.shift();
+    }
+
+    function drawGraph(){
+      var W=canvas.offsetWidth||200,H=50;
+      canvas.width=W;canvas.height=H;
+      ctx.clearRect(0,0,W,H);
+      if(pts.length<2)return;
+
+      var maxV=Math.max(...pts,2);
+      var grad=ctx.createLinearGradient(0,0,0,H);
+      grad.addColorStop(0,crashed?'rgba(248,113,113,0.4)':'rgba(251,146,60,0.35)');
+      grad.addColorStop(1,'rgba(0,0,0,0)');
+
+      ctx.beginPath();
+      pts.forEach(function(p,i){
+        var x=(i/(maxPts-1))*W;
+        var y=H-(p/maxV)*(H-4)-2;
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+
+      var lastX=((pts.length-1)/(maxPts-1))*W;
+      var lastY=H-(pts[pts.length-1]/maxV)*(H-4)-2;
+
+      ctx.strokeStyle=crashed?'rgba(248,113,113,0.9)':'rgba(251,146,60,0.9)';
+      ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+
+      ctx.lineTo(lastX,H);ctx.lineTo(0,H);ctx.closePath();
+      ctx.fillStyle=grad;ctx.fill();
+
+      // Dot at end
+      ctx.beginPath();ctx.arc(lastX,lastY,3,0,Math.PI*2);
+      ctx.fillStyle=crashed?'#f87171':'#fb923c';
+      ctx.fill();
+      ctx.beginPath();ctx.arc(lastX,lastY,6,0,Math.PI*2);
+      ctx.fillStyle=crashed?'rgba(248,113,113,0.3)':'rgba(251,146,60,0.3)';
+      ctx.fill();
+    }
+
+    setInterval(function(){addPt();drawGraph();},350);
+    drawGraph();
+  })();
+})();
 
 // ══ PROVABLY FAIR DEMO ══
 async function demoVerify(){
