@@ -146,7 +146,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hov
 /* CSS 3D Die */
 .die-wrap{perspective:400px;display:flex;align-items:center;justify-content:center;}
 .die{
-  width:110px;height:110px;border-radius:18px;
+  width:110px;height:110px;border-radius:18px;transform-style:preserve-3d;
   background:linear-gradient(145deg,#1a0e2a 0%,#0d0818 100%);
   border:2px solid rgba(212,160,23,.25);
   box-shadow:0 8px 32px rgba(0,0,0,.8),inset 0 2px 4px rgba(255,255,255,.08),0 0 20px rgba(0,0,0,.6);
@@ -308,6 +308,131 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
   .hist-hdr,.hist-row{grid-template-columns:1fr 1fr 1fr 1fr;}
   .martingale-bar{flex-direction:column;gap:.4rem;align-items:flex-start;}
 }
+
+/* ═══ MEGA DICE ANIMATIONS ═══ */
+
+/* Kostky leti ze stran */
+@keyframes diceFlightLeft{
+  0%{transform:translateX(-320px) rotateX(720deg) rotateY(540deg) scale(.4);opacity:0;}
+  35%{opacity:1;}
+  70%{transform:translateX(18px) rotateX(200deg) rotateY(120deg) scale(1.12);}
+  85%{transform:translateX(-10px) rotateX(30deg) rotateY(15deg) scale(.96);}
+  100%{transform:translateX(0) rotateX(0) rotateY(0) scale(1);}
+}
+@keyframes diceFlightRight{
+  0%{transform:translateX(320px) rotateX(-540deg) rotateY(-720deg) scale(.4);opacity:0;}
+  35%{opacity:1;}
+  70%{transform:translateX(-18px) rotateX(-200deg) rotateY(-120deg) scale(1.12);}
+  85%{transform:translateX(10px) rotateX(-30deg) rotateY(-15deg) scale(.96);}
+  100%{transform:translateX(0) rotateX(0) rotateY(0) scale(1);}
+}
+
+/* Shake pri rolling */
+@keyframes diceRoll3D{
+  0%{transform:rotateX(0deg) rotateY(0deg) scale(1.02);}
+  25%{transform:rotateX(22deg) rotateY(-18deg) scale(1.07);}
+  50%{transform:rotateX(-18deg) rotateY(22deg) scale(1.04);}
+  75%{transform:rotateX(15deg) rotateY(-15deg) scale(1.06);}
+  100%{transform:rotateX(-12deg) rotateY(12deg) scale(1.03);}
+}
+
+/* Camera shake */
+@keyframes camShake{
+  0%,100%{transform:translate(0,0) rotate(0deg);}
+  10%{transform:translate(-6px,3px) rotate(-.5deg);}
+  20%{transform:translate(6px,-4px) rotate(.4deg);}
+  30%{transform:translate(-5px,5px) rotate(-.3deg);}
+  40%{transform:translate(5px,-3px) rotate(.3deg);}
+  50%{transform:translate(-4px,4px) rotate(-.2deg);}
+  60%{transform:translate(4px,-4px) rotate(.2deg);}
+  70%{transform:translate(-3px,3px) rotate(-.1deg);}
+  80%{transform:translate(3px,-3px) rotate(.1deg);}
+  90%{transform:translate(-2px,2px) rotate(0);}
+}
+.cam-shake{animation:camShake .55s cubic-bezier(.36,.07,.19,.97) both;}
+
+/* Lightning efekt kolem kostek */
+@keyframes lightningPulse{
+  0%,100%{box-shadow:0 0 20px rgba(245,200,66,.3),0 0 40px rgba(245,200,66,.1);}
+  50%{box-shadow:0 0 40px rgba(245,200,66,.9),0 0 80px rgba(245,200,66,.4),0 0 120px rgba(245,200,66,.15);}
+}
+
+/* Fire kostky pri streaku */
+@keyframes fireGlow{
+  0%{box-shadow:0 0 15px rgba(251,146,60,.6),0 0 30px rgba(251,146,60,.3);}
+  50%{box-shadow:0 0 30px rgba(251,146,60,1),0 0 60px rgba(251,146,60,.6),0 0 90px rgba(251,146,60,.2);}
+  100%{box-shadow:0 0 15px rgba(251,146,60,.6),0 0 30px rgba(251,146,60,.3);}
+}
+
+/* Legendary kostky */
+@keyframes legendaryGlow{
+  0%{box-shadow:0 0 20px rgba(168,85,247,.7),0 0 40px rgba(168,85,247,.4);}
+  50%{box-shadow:0 0 40px rgba(168,85,247,1),0 0 80px rgba(168,85,247,.6),0 0 120px rgba(168,85,247,.2);}
+  100%{box-shadow:0 0 20px rgba(168,85,247,.7),0 0 40px rgba(168,85,247,.4);}
+}
+.die.fire-die{animation:fireGlow .6s ease-in-out infinite!important;}
+.die.legendary-die{animation:legendaryGlow .4s ease-in-out infinite!important;}
+
+/* Sum slot machine efekt */
+@keyframes slotMachine{
+  0%{transform:translateY(-100%);opacity:0;}
+  20%{transform:translateY(5px);opacity:1;}
+  40%{transform:translateY(-3px);}
+  60%{transform:translateY(2px);}
+  80%{transform:translateY(-1px);}
+  100%{transform:translateY(0);}
+}
+.sum-reveal{animation:slotMachine .45s cubic-bezier(.17,.67,.45,1.27);}
+
+/* Dot reveal postupny */
+@keyframes dotReveal{
+  0%{transform:scale(0) rotate(180deg);opacity:0;}
+  60%{transform:scale(1.4) rotate(-10deg);opacity:1;}
+  80%{transform:scale(.9) rotate(5deg);}
+  100%{transform:scale(1) rotate(0);}
+}
+.die-dot.reveal{animation:dotReveal .22s ease forwards;}
+
+/* Win big banner */
+@keyframes bigWinDrop{
+  0%{transform:translateY(-60px) scale(.5);opacity:0;}
+  50%{transform:translateY(8px) scale(1.08);}
+  75%{transform:translateY(-4px) scale(.97);}
+  100%{transform:translateY(0) scale(1);opacity:1;}
+}
+.result-msg.win{animation:bigWinDrop .5s cubic-bezier(.17,.67,.45,1.27);}
+
+/* Electricity canvas overlay */
+
+
+/* Vignette behem rolling */
+.dice-area.rolling-state::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,.6) 100%);
+  pointer-events:none;z-index:3;
+}
+
+/* Die wrap perspective enhanced */
+.die-wrap{perspective:600px;transition:filter .3s;}
+.dice-area.rolling-state .die-wrap{
+  filter:drop-shadow(0 0 18px rgba(245,200,66,.8)) drop-shadow(0 0 35px rgba(245,200,66,.4));
+  animation:dieWrapPulse .35s ease-in-out infinite alternate;
+}
+@keyframes dieWrapPulse{
+  from{filter:drop-shadow(0 0 12px rgba(245,200,66,.6)) drop-shadow(0 0 25px rgba(245,200,66,.3));}
+  to{filter:drop-shadow(0 0 28px rgba(245,200,66,1)) drop-shadow(0 0 55px rgba(245,200,66,.6));}
+}
+
+/* Tension bar */
+.tension-bar{
+  position:absolute;bottom:0;left:0;right:0;height:3px;z-index:10;
+  background:linear-gradient(to right,var(--green),var(--gold),var(--red));
+  transform:scaleX(0);transform-origin:left;transition:transform 0s;
+  border-radius:0 0 20px 20px;
+}
+.dice-area.rolling-state .tension-bar{
+  transform:scaleX(1);transition:transform 1.2s ease-in;
+}
 </style>
 </head>
 <body>
@@ -402,7 +527,8 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
   <!-- DICE AREA -->
   <div class="dice-area" id="diceArea">
 
-    <!-- 3D DICE -->
+    <div class="tension-bar" id="tensionBar"></div>
+  <!-- 3D DICE -->
     <div class="dice-display">
       <div class="die-wrap">
         <div class="die" id="die1">
@@ -533,6 +659,7 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script>
 // ══ SUPABASE ══
 const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
@@ -541,16 +668,15 @@ let sb=null,currentUser=null,realBalance=0,RTP=.99;
 let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
-  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  // Demo mode OKAMZITE
   setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;sb=createClient(SB_URL,SB_KEY);
-    const {data:gs}=await sb.from('game_settings').select('*').eq('game_id','dice').single();
+    const {data:gs}=await sb.from('game_settings').select('*').eq('id','dice').single();
     if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     const {data:{session}}=await sb.auth.getSession();
     if(session){currentUser=session.user;const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}}
   }catch(e){console.warn('[Dice]',e.message);}
-  // demo jiz nastaveno vyse
   if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('dice');if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
 async function sbDeduct(sat){if(!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
@@ -560,8 +686,8 @@ async function sbLog(betSat,profitSat,mult,meta){
   if(!sb||!currentUser)return;
   try{
     await sb.from('bets').insert({user_id:currentUser.id,game:'dice',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat(mult)||0,meta,created_at:new Date().toISOString()});
-    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_sat,total_profit_sat').eq('game_id','dice').single();
-    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_sat:(parseInt(gs.total_wagered_sat)||0)+betSat,total_profit_sat:(parseInt(gs.total_profit_sat)||0)+(-profitSat),updated_at:new Date().toISOString()}).eq('game_id','dice');
+    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_sat,total_profit_sat').eq('id','dice').single();
+    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_btc:(parseFloat(gs.total_wagered_btc)||0)+betSat/1e8,total_paid_btc:(parseFloat(gs.total_paid_btc)||0)+Math.max(0,profitSat/1e8),updated_at:new Date().toISOString()}).eq('id','dice');
   }catch(e){console.warn('[Dice] log:',e.message);}
 }
 
@@ -620,8 +746,16 @@ function setDieFace(dieNum,val){
   const lit=DOT_PATTERNS[val]||[];
   letters.forEach(l=>{const el=document.getElementById('d'+dieNum+l);if(el){el.classList.toggle('show',lit.includes(l));}});
 }
-// Initialize both dice showing 3+4
-setDieFace(1,3);setDieFace(2,4);
+// Initialize both dice showing 3+4 s flight animaci
+function initDiceWithFlight(){
+  const d1=document.getElementById('die1');
+  const d2=document.getElementById('die2');
+  d1.style.animation='diceFlightLeft .8s cubic-bezier(.17,.67,.45,1.27) forwards';
+  d2.style.animation='diceFlightRight .8s cubic-bezier(.17,.67,.45,1.27) forwards';
+  setDieFace(1,3);setDieFace(2,4);
+  setTimeout(()=>{d1.style.animation='';d2.style.animation='';},900);
+}
+setTimeout(initDiceWithFlight,400);
 
 // ══ PF ══
 let ss=genSeed(),cs=genSeed(),pfNonce=0;
@@ -724,33 +858,207 @@ function maxBet(){setBet(Math.min(balance,.1));}
 
 function handleRoll(){rollDice();}
 
+// Electricity efekt nahrazen CSS glow na die-wrap (zadne canvas bugs)
+function animElectric(intensity=1){} // CSS glow se aktivuje pres rolling-state class
+function stopElectric(){}            // CSS glow zmizi automaticky s rolling-state
+
+// ══ SCREEN SHAKE ══
+function shakeScreen(intensity=1){
+  const area=document.getElementById('diceArea');
+  if(intensity>=2){document.body.classList.add('cam-shake');setTimeout(()=>document.body.classList.remove('cam-shake'),550);}
+  area.style.transform=`translate(${(Math.random()-.5)*8*intensity}px,${(Math.random()-.5)*6*intensity}px)`;
+  setTimeout(()=>area.style.transform='',100);
+}
+
+// ══ ZVUKY ROZSIRENE ══
+function playThud(){
+  try{
+    const o=AC.createOscillator(),g=AC.createGain(),dist=AC.createWaveShaper();
+    const curve=new Float32Array(256);for(let i=0;i<256;i++)curve[i]=i<128?-1:1;
+    dist.curve=curve;o.connect(dist);dist.connect(g);g.connect(AC.destination);
+    o.type='sawtooth';o.frequency.setValueAtTime(80,AC.currentTime);
+    o.frequency.exponentialRampToValueAtTime(20,AC.currentTime+.25);
+    g.gain.setValueAtTime(.35,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.28);
+    o.start();o.stop(AC.currentTime+.28);
+  }catch(e){}
+}
+function playTension(progress){
+  try{
+    const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+    o.type='sine';o.frequency.value=200+progress*400;
+    g.gain.setValueAtTime(.04,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.08);
+    o.start();o.stop(AC.currentTime+.08);
+  }catch(e){}
+}
+function playReveal(won){
+  try{
+    if(won){
+      // Fanfare
+      [523,659,784,659,784,1047].forEach((f,i)=>{
+        const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+        o.type='sine';o.frequency.value=f;
+        g.gain.setValueAtTime(.18,AC.currentTime+i*.07);
+        g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+i*.07+.18);
+        o.start(AC.currentTime+i*.07);o.stop(AC.currentTime+i*.07+.2);
+      });
+    }else{
+      // Lose groan
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sawtooth';o.frequency.setValueAtTime(220,AC.currentTime);
+      o.frequency.exponentialRampToValueAtTime(60,AC.currentTime+.5);
+      g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.5);
+      o.start();o.stop(AC.currentTime+.5);
+    }
+  }catch(e){}
+}
+
+// ══ DOTS REVEAL POSTUPNE ══
+function revealDotsFancy(dieNum,val,delay=0){
+  const letters=['a','b','c','d','e','f','g','h','i'];
+  const lit=DOT_PATTERNS[val]||[];
+  // Nejdriv skryj vse
+  letters.forEach(l=>{const el=document.getElementById('d'+dieNum+l);if(el){el.classList.remove('show','reveal');}});
+  // Pak postupne rozsvicej body
+  lit.forEach((l,i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById('d'+dieNum+l);
+      if(el){el.classList.add('show','reveal');
+        setTimeout(()=>el.classList.remove('reveal'),300);}
+    },delay+i*55);
+  });
+}
+
+// ══ SUM SLOT MACHINE ══
+function revealSumDrama(finalSum,won){
+  const sd=document.getElementById('sumDisplay');
+  let count=0,maxCount=14;
+  // Cifry bezi rychle
+  const slotInterval=setInterval(()=>{
+    const fake=Math.floor(Math.random()*11)+2;
+    sd.textContent=fake;sd.className='sum-display';
+    count++;
+    if(count>=maxCount){
+      clearInterval(slotInterval);
+      // Final reveal
+      setTimeout(()=>{
+        sd.textContent=finalSum;
+        sd.className='sum-display '+(won?'win-sum':'lose-sum')+' sum-reveal';
+        shakeScreen(won?1.5:.5);
+      },60);
+    }
+  },45);
+}
+
 async function rollDice(){
   if(rolling)return;
   const bet=parseFloat(document.getElementById('betInput').value);
-  if(!bet||bet<=0){alert('Set bet!');return;}if(bet>balance){alert('Insufficient balance!');return;}
+  if(!bet||bet<=0){alert('Set bet!');return;}
+  if(bet>balance){alert('Insufficient balance!');return;}
 
-  rolling=true;document.getElementById('rollBtn').disabled=true;document.getElementById('rollBtn').textContent='&#127922; Rolling...';
+  rolling=true;
+  const rollBtn=document.getElementById('rollBtn');
+  rollBtn.disabled=true;rollBtn.textContent='⚡ Rolling...';
+
   if(gameMode==='real'){sbDeduct(Math.round(bet*1e8));realBalance-=bet;}else demoBalance-=bet;
-  balance-=bet;totalWagered+=bet;totalRolls++;document.getElementById('totalRolls').textContent=totalRolls;
+  balance-=bet;totalWagered+=bet;totalRolls++;
+  document.getElementById('totalRolls').textContent=totalRolls;
   updateBal();
 
-  // Clear prev state
-  const area=document.getElementById('diceArea');area.classList.remove('win-state','lose-state');area.classList.add('rolling-state');
-  ['die1','die2'].forEach(id=>{const d=document.getElementById(id);d.className='die rolling';});
-  document.getElementById('sumDisplay').className='sum-display';document.getElementById('sumDisplay').textContent='—';
-  document.getElementById('resultMsg').className='result-msg';document.getElementById('resultMsg').textContent='';
-  document.getElementById('winAmtBadge').className='win-amount-badge';document.getElementById('winAmtBadge').textContent='';
-  document.getElementById('diceDetail').textContent='Rolling...';
+  const area=document.getElementById('diceArea');
+  area.classList.remove('win-state','lose-state');
+  area.classList.add('rolling-state');
+
+  // Reset vysledku
+  document.getElementById('sumDisplay').textContent='?';
+  document.getElementById('sumDisplay').className='sum-display';
+  document.getElementById('resultMsg').className='result-msg';
+  document.getElementById('resultMsg').textContent='';
+  document.getElementById('winAmtBadge').className='win-amount-badge';
+  document.getElementById('diceDetail').textContent='⚡ Rolling...';
+
+  // Die styly podle streaku
+  const dieClass=winStreak>=7?'die rolling legendary-die':winStreak>=4?'die rolling fire-die':'die rolling';
+  document.getElementById('die1').className=dieClass;
+  document.getElementById('die2').className=dieClass;
+
+  // Start electricity
+  animElectric(1.2);
   playSound('roll');
 
   const {d1,d2}=await getProvenRoll();
-  let ticks=0;
-  const interval=setInterval(()=>{
+  const finalSum=d1+d2;
+
+  // FAZE 1: Intenzivni rolling s narastajicim tempem
+  let ticks=0,speed=80;
+  function rollPhase(){
+    if(ticks>=20){
+      // FAZE 2: Zpomaleni a drama
+      dramaDrop(d1,d2,finalSum,bet);
+      return;
+    }
     const r1=Math.floor(Math.random()*6)+1,r2=Math.floor(Math.random()*6)+1;
-    setDieFace(1,r1);setDieFace(2,r2);ticks++;
+    setDieFace(1,r1);setDieFace(2,r2);
+    ticks++;
     if(ticks%3===0)playSound('tick');
-    if(ticks>14){clearInterval(interval);resolveRoll(bet,d1,d2);}
-  },68);
+    if(ticks%4===0)playTension(ticks/20);
+    speed=Math.max(40,speed-2); // zrychleni
+    setTimeout(rollPhase,speed);
+  }
+  rollPhase();
+}
+
+function dramaDrop(d1,d2,finalSum,betAmount){
+  // Krok 1: Kostky "nabijaji" - electricity maxima
+  animElectric(2.2);
+  document.getElementById('diceDetail').textContent='🎲 Revealing...';
+
+  // Krok 2: Freeze s maximalni elektrika
+  setTimeout(()=>{
+    // Kostky se na chvili zastaví s nekonecnym bleskem
+    document.getElementById('die1').className='die rolling';
+    document.getElementById('die2').className='die rolling';
+    playThud();
+    shakeScreen(1);
+  }, 150);
+
+  // Krok 3: ODHALENI - kostky pristane
+  setTimeout(()=>{
+    stopElectric();
+
+    // Urcime win
+    const won=(direction==='over'&&finalSum>target)||(direction==='under'&&finalSum<target);
+    const {multi}=calcOdds();
+    const payout=won?parseFloat((parseFloat(document.getElementById('betInput').value)*multi).toFixed(8)):0;
+
+    // Aplikuj die styly
+    const baseClass=winStreak>=7?'win-die legendary-die':winStreak>=4?'win-die fire-die':'win-die';
+    document.getElementById('die1').className='die '+(won?baseClass:'lose-die');
+    document.getElementById('die2').className='die '+(won?baseClass:'lose-die');
+
+    // Postupne odhal body
+    revealDotsFancy(1,d1,0);
+    revealDotsFancy(2,d2,100);
+
+    // Thud zvuk
+    setTimeout(()=>playThud(),80);
+
+    // Sum slot machine
+    setTimeout(()=>revealSumDrama(finalSum,won),200);
+
+    // Result po sum reveal
+    setTimeout(()=>{
+      playReveal(won);
+      document.getElementById('diceArea').classList.remove('rolling-state');
+      document.getElementById('diceArea').classList.add(won?'win-state':'lose-state');
+
+      const bet=betAmount||parseFloat(document.getElementById('betInput').value)||.001;
+      if(won&&payout>bet*3)shakeScreen(2.5);
+      else if(won)shakeScreen(1.2);
+
+      resolveRoll(bet,d1,d2);
+    },600);
+
+  },350);
 }
 
 function resolveRoll(bet,r1,r2){
@@ -761,17 +1069,18 @@ function resolveRoll(bet,r1,r2){
   const profit=won?payout-bet:-bet;
   const area=document.getElementById('diceArea');
 
-  // Show final dice
-  setDieFace(1,r1);setDieFace(2,r2);
-  ['die1','die2'].forEach(id=>{const d=document.getElementById(id);d.className='die '+(won?'win-die':'lose-die');});
+  // Show final dice s flight animaci
+  // (boty uz jsou nastavene v dramaDrop - tady jen updatujeme)
+  // setDieFace uz byl volan v revealDotsFancy
   area.classList.remove('rolling-state');area.classList.add(won?'win-state':'lose-state');
 
-  const sd=document.getElementById('sumDisplay');sd.textContent=sum;sd.className='sum-display '+(won?'win-sum':'lose-sum');
+  // sumDisplay a resultMsg jiz nastavuje dramaDrop - jen updatujeme detail
   document.getElementById('diceDetail').textContent=`${r1} + ${r2} = ${sum} │ ${direction.toUpperCase()} ${target} │ ${won?'✓ WIN':'✗ LOSE'}`;
 
+  // Result message s opravou emoji
   const rm=document.getElementById('resultMsg');
-  if(won){rm.className='result-msg win';rm.textContent=multi>=5?'&#127942; BIG WIN!':'&#127873; YOU WIN!';}
-  else{rm.className='result-msg lose';rm.textContent='&#128128; YOU LOSE';}
+  if(won){rm.className='result-msg win';rm.textContent=multi>=5?'🏆 BIG WIN!':'🎁 YOU WIN!';}
+  else{rm.className='result-msg lose';rm.textContent='💀 YOU LOSE';}
 
   const wab=document.getElementById('winAmtBadge');
   wab.textContent=(profit>=0?'+':'')+f5(profit)+' BTC';wab.className='win-amount-badge show '+(profit>=0?'positive':'negative');
@@ -793,9 +1102,18 @@ function resolveRoll(bet,r1,r2){
   document.getElementById('winRate').textContent=totalRolls>0?((wins/totalRolls)*100).toFixed(0)+'%':'0%';
   updateBal();
 
-  // Sound & particles
-  if(won){if(multi>=5){playSound('bigwin');spawnP(true,true);}else{playSound('win');spawnP(true,false);}}
-  else{playSound('lose');spawnP(false);}
+  // Sound & particles (zvuky jiz hraji z dramaDrop, particles podle streaku)
+  if(won){
+    const isEpic=multi>=5||winStreak>=5;
+    spawnP(true,isEpic||multi>=3);
+    // Extra fire particles pri streaku
+    if(winStreak>=4){
+      setTimeout(()=>spawnP(true,true),200);
+      if(winStreak>=7)setTimeout(()=>spawnP(true,true),400);
+    }
+  }else{
+    spawnP(false);
+  }
 
   // Streak
   updateStreak(won);
@@ -829,8 +1147,10 @@ function resolveRoll(bet,r1,r2){
     } else{autoCount=0;document.getElementById('autoToggle').checked=false;}
   }
 
+  // Extra cisteni electricity canvas
+  stopElectric();
   rolling=false;
-  document.getElementById('rollBtn').disabled=false;document.getElementById('rollBtn').textContent='&#127922; ROLL DICE';
+  document.getElementById('rollBtn').disabled=false;document.getElementById('rollBtn').textContent='🎲 ROLL DICE';
   setTimeout(()=>document.getElementById('diceArea').classList.remove('win-state','lose-state'),3000);
 }
 
@@ -853,10 +1173,10 @@ function updateStreak(won){
   // Badge
   const badge=document.getElementById('streakBadge');
   if(winStreak===0){badge.textContent='—';badge.className='streak-badge neutral';}
-  else if(winStreak<3){badge.textContent='&#128293; '+winStreak+' WIN';badge.className='streak-badge fire';}
-  else if(winStreak<6){badge.textContent='&#9889; '+winStreak+' HOT!';badge.className='streak-badge hot';}
-  else if(winStreak<9){badge.textContent='&#127796; '+winStreak+' BLAZING!';badge.className='streak-badge blazing';}
-  else{badge.textContent='&#128142; '+winStreak+' LEGENDARY!';badge.className='streak-badge legendary';}
+  else if(winStreak<3){badge.textContent='🔥 '+winStreak+' WIN';badge.className='streak-badge fire';}
+  else if(winStreak<6){badge.textContent='⚡ '+winStreak+' HOT!';badge.className='streak-badge hot';}
+  else if(winStreak<9){badge.textContent='🌴 '+winStreak+' BLAZING!';badge.className='streak-badge blazing';}
+  else{badge.textContent='💎 '+winStreak+' LEGENDARY!';badge.className='streak-badge legendary';}
 }
 
 // ══ CHARTS ══
@@ -880,7 +1200,9 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
 document.getElementById('onLose').addEventListener('change',updateOddsDisplay);
 document.getElementById('betInput').addEventListener('input',updateOddsDisplay);
 updateSlider(7);drawProbChart();updateBal();
+// Demo mode fallback
+document.addEventListener('DOMContentLoaded', function(){if(typeof setMode==='function')setMode('demo');},{once:true});
+if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
 </script>
-<script src="supabase.js"></script>
 </body>
 </html>
