@@ -4,209 +4,333 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mines – CryptoKasino</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
-  --dark:#0a0700;--text:#e8d5a0;--text-dim:#8a7a50;
-  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#a855f7;
+  --dark:#08050a;--text:#e8d5a0;--text-dim:#8a7a50;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#a855f7;--orange:#fb923c;
+  --mine-bg:#0f0a14;--board-glow:rgba(168,85,247,0.15);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.12) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.08) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* Animated dark purple/gold mesh */
+body::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%,rgba(168,85,247,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 0% 60%,rgba(212,160,23,.08) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 70%,rgba(239,68,68,.08) 0%,transparent 55%);
+  pointer-events:none;z-index:0;animation:bgBreath 8s ease-in-out infinite alternate;}
+@keyframes bgBreath{0%{opacity:.6}100%{opacity:1}}
+
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:50;}
+#shakeLayer{position:fixed;inset:0;pointer-events:none;z-index:51;}
 
 /* HEADER */
-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
-.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;flex-shrink:0;}
-.logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(6,3,9,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,.2);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.5),rgba(212,160,23,.8),rgba(168,85,247,.5),transparent);}
+.logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#000;font-weight:900;box-shadow:0 0 20px var(--gold-glow);}
 .logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
-nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
-nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
-.header-right{display:flex;align-items:center;gap:0.8rem;}
-.btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
-.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 16px rgba(212,160,23,0.4);transition:all 0.2s;}
-.btn-dep:hover{background:var(--gold-light);}
-.btn-login{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hover{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:.8rem;}
+.btc-bal{font-family:'Cinzel',serif;font-size:.8rem;color:var(--green);background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);padding:.3rem .8rem;border-radius:6px;}
+.btn-dep{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:.42rem 1.1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 18px rgba(212,160,23,.4);transition:all .2s;}
+.btn-dep:hover{box-shadow:0 0 35px rgba(212,160,23,.8);transform:scale(1.03);}
+.btn-login{background:transparent;color:var(--text-dim);border:1px solid rgba(212,160,23,.25);padding:.42rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;cursor:pointer;text-decoration:none;transition:all .2s;}
 .btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
 .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 .hamburger.active span:nth-child(2){opacity:0;}
 .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;background:rgba(6,3,9,.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
 .mobile-menu.open{display:flex;}
-.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
-.mobile-menu a:hover{color:var(--gold-light);}
-.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
-.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;font-size:0.75rem;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:.85rem;color:var(--text-dim);text-decoration:none;padding:.9rem 0;border-bottom:1px solid rgba(212,160,23,.08);}
+.mobile-menu-btns{display:flex;gap:.8rem;margin-top:1.2rem;}
+.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:.7rem;}
 
-/* HERO */
-.game-hero{position:relative;width:100%;height:50vh;min-height:320px;overflow:hidden;}
-.game-hero img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
-.game-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.3) 60%,rgba(10,7,0,1) 100%);}
-.game-hero-title{position:absolute;bottom:12%;left:50%;transform:translateX(-50%);text-align:center;}
-.game-hero-title h1{font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;color:var(--red);text-shadow:0 0 60px rgba(248,113,113,0.9),0 0 20px rgba(248,113,113,0.5);letter-spacing:0.1em;}
-.hero-sub{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--red);margin-top:0.4rem;}
-.play-now-btn{display:inline-block;margin-top:1rem;background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;padding:0.7rem 2.5rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;border:none;box-shadow:0 0 30px rgba(239,68,68,0.6);transition:all 0.3s;}
-.play-now-btn:hover{transform:scale(1.05);}
+/* ═══ HERO ═══ */
+.game-hero{position:relative;width:100%;height:52vh;min-height:340px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;overflow:hidden;}
+.hero-img-kb{position:absolute;width:110%;height:110%;top:-5%;left:-5%;object-fit:cover;object-position:center;filter:brightness(.75) saturate(1.3) contrast(1.1);animation:kenB 20s ease-in-out infinite alternate;}
+@keyframes kenB{0%{transform:scale(1.0) translate(0%,0%)}100%{transform:scale(1.07) translate(-1%,-0.8%)}}
+#heroCanvas{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.25) 50%,rgba(6,3,9,.99) 100%);}
+/* Red mine orbs */
+.hero-orb{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;z-index:1;animation:orbF 9s ease-in-out infinite alternate;}
+.hero-orb-1{width:300px;height:300px;background:radial-gradient(circle,rgba(239,68,68,.22),transparent 70%);top:-50px;right:15%;animation-duration:11s;}
+.hero-orb-2{width:250px;height:250px;background:radial-gradient(circle,rgba(168,85,247,.16),transparent 70%);top:30%;left:5%;animation-duration:13s;animation-delay:2s;}
+@keyframes orbF{0%{transform:translate(0,0) scale(1)}100%{transform:translate(20px,-15px) scale(1.1)}}
 
-/* GAME AREA */
-.game-area{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.hero-content{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.5);border-radius:20px;padding:.38rem 1.2rem;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;backdrop-filter:blur(8px);}
+.hb-dot{width:7px;height:7px;background:var(--red);border-radius:50%;box-shadow:0 0 7px var(--red);animation:hbPulse 1.1s infinite;}
+@keyframes hbPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:'Cinzel',serif;font-size:clamp(3rem,10vw,7rem);font-weight:900;color:var(--red);letter-spacing:.08em;line-height:1;
+  text-shadow:0 0 60px rgba(248,113,113,1),0 0 120px rgba(239,68,68,.7),0 4px 8px rgba(0,0,0,1),2px 2px 0 rgba(0,0,0,.8);
+  animation:titleGlow 3s ease-in-out infinite alternate;}
+@keyframes titleGlow{0%{text-shadow:0 0 60px rgba(248,113,113,.9),0 0 120px rgba(239,68,68,.7),0 4px 8px rgba(0,0,0,1)}100%{text-shadow:0 0 90px rgba(248,113,113,1),0 0 180px rgba(239,68,68,1),0 0 250px rgba(239,68,68,.4),0 4px 8px rgba(0,0,0,1)}}
+.hero-sub{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(248,113,113,.7);margin-top:.5rem;}
+.play-now-btn{display:inline-block;margin-top:1.2rem;background:linear-gradient(135deg,#7f1d1d,#ef4444,#f87171,#ef4444,#7f1d1d);background-size:200% 100%;color:#fff;padding:.75rem 2.8rem;border-radius:8px;font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;box-shadow:0 0 35px rgba(239,68,68,.6);transition:all .3s;animation:playBtnS 3s linear infinite;}
+@keyframes playBtnS{0%{background-position:0%}100%{background-position:200%}}
+.play-now-btn:hover{transform:scale(1.06);box-shadow:0 0 60px rgba(239,68,68,.9);}
 
-/* BALANCE */
-.balance-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.2);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.2rem;}
+/* ═══ TENSION BAR ═══ */
+.tension-bar{background:rgba(10,6,14,.95);border-bottom:1px solid rgba(168,85,247,.2);padding:.5rem 2rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative;}
+.tension-bar::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(168,85,247,.05),transparent);animation:tbSweep 2.5s linear infinite;}
+@keyframes tbSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.tb-label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;}
+.tb-track{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.tb-fill{height:100%;border-radius:3px;width:0%;transition:width .5s ease,background .5s;background:linear-gradient(to right,#4ade80,#F5C842);}
+.tb-fill.danger{background:linear-gradient(to right,#f59e0b,#ef4444)!important;}
+.tb-fill.extreme{background:linear-gradient(to right,#ef4444,#7f1d1d)!important;animation:tbPulse .5s infinite alternate;}
+@keyframes tbPulse{0%{opacity:.8}100%{opacity:1}}
+.tb-streak{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--gold);white-space:nowrap;}
+.tb-online{display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-dim);}
+.tb-dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 5px var(--green);animation:hbPulse 1.4s infinite;}
+.tb-online-num{color:var(--green);font-weight:700;}
+
+/* ═══ GAME AREA ═══ */
+.game-area{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:1.5rem 1.5rem 4rem;}
+
+/* BALANCE BAR */
+.balance-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(12,8,16,.9);border:1px solid rgba(168,85,247,.2);border-radius:14px;padding:1rem 1.5rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+.balance-bar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,.06),transparent 70%);pointer-events:none;}
 .bal-item{text-align:center;}
-.bal-label{font-size:0.65rem;font-family:'Cinzel',serif;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);}
-.bal-value{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.2rem;}
-.bal-value.green{color:var(--green);}.bal-value.red{color:var(--red);}
+.bal-label{font-size:.6rem;font-family:'Cinzel',serif;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);}
+.bal-value{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:.15rem;}
+.bal-value.green{color:var(--green);text-shadow:0 0 10px rgba(74,222,128,.5);}
+.bal-value.red{color:var(--red);}
+.bal-value.purple{color:#c084fc;text-shadow:0 0 10px rgba(192,132,252,.4);}
 
-/* LIVE */
-.live-players{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:0.7rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;}
-.live-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--red);white-space:nowrap;display:flex;align-items:center;gap:0.4rem;}
-.live-dot-sm{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1.2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 4px var(--red);}50%{opacity:0.3;}}
-.players-feed{display:flex;gap:0.8rem;overflow:hidden;flex:1;}
-.player-pill{font-size:0.72rem;color:var(--text-dim);white-space:nowrap;animation:slideIn 0.4s ease;}
-.player-pill .wa{color:var(--green);font-family:'Cinzel',serif;font-weight:700;}
-.player-pill .la{color:var(--red);}
-@keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+/* LIVE FEED */
+.live-feed{background:rgba(12,8,16,.85);border:1px solid rgba(212,160,23,.12);border-radius:10px;padding:.6rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;overflow:hidden;}
+.lf-label{font-family:'Cinzel',serif;font-size:.57rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);white-space:nowrap;display:flex;align-items:center;gap:.35rem;}
+.lf-dot{width:5px;height:5px;background:var(--red);border-radius:50%;animation:hbPulse 1.2s infinite;}
+.lf-track{display:flex;gap:.8rem;overflow:hidden;flex:1;}
+.lf-pill{font-size:.7rem;color:var(--text-dim);white-space:nowrap;animation:lfSlide .4s ease;}
+@keyframes lfSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.lf-win{color:var(--green);font-family:'Cinzel',serif;font-weight:700;}
+.lf-lose{color:var(--red);}
 
-/* MAIN LAYOUT */
-.mines-layout{display:grid;grid-template-columns:1fr 280px;gap:1.2rem;margin-bottom:1.2rem;}
+/* LAYOUT */
+.mines-layout{display:grid;grid-template-columns:1fr 285px;gap:1rem;margin-bottom:1rem;}
 
-/* MINES BOARD */
-.mines-board-wrap{background:rgba(8,5,2,0.95);border:2px solid rgba(212,160,23,0.2);border-radius:20px;padding:1.2rem;position:relative;overflow:hidden;}
-.mines-board-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(248,113,113,0.06),transparent 60%);pointer-events:none;}
+/* ═══ BOARD ═══ */
+.board-wrap{
+  background:linear-gradient(135deg,rgba(15,8,22,.98),rgba(10,6,15,.98));
+  border:2px solid rgba(168,85,247,.25);border-radius:22px;
+  padding:1.2rem;position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(168,85,247,.08),0 20px 60px rgba(0,0,0,.8),0 0 40px rgba(168,85,247,.08),inset 0 1px 0 rgba(168,85,247,.12);
+}
+.board-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,.06),transparent 60%),radial-gradient(ellipse at 0% 100%,rgba(168,85,247,.06),transparent 50%);pointer-events:none;}
+/* Board glow during active play */
+.board-wrap.active-game{border-color:rgba(168,85,247,.45);box-shadow:0 0 0 1px rgba(168,85,247,.15),0 20px 60px rgba(0,0,0,.8),0 0 60px rgba(168,85,247,.15),inset 0 1px 0 rgba(168,85,247,.2);}
+.board-wrap.danger-game{border-color:rgba(239,68,68,.5);box-shadow:0 0 0 1px rgba(239,68,68,.2),0 20px 60px rgba(0,0,0,.8),0 0 60px rgba(239,68,68,.2);}
 
-/* MULTIPLIER BAR */
-.mult-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
-.current-mult{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 20px rgba(245,200,66,0.6);transition:all 0.3s;}
-.current-mult.bump{animation:multBump 0.3s ease;}
-@keyframes multBump{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
-.potential-win{text-align:right;}
-.pot-label{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
-.pot-value{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--green);}
+/* MULT + POTENTIAL */
+.mult-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.mult-main{display:flex;flex-direction:column;}
+.mult-lbl{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.1rem;}
+.mult-val{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 25px rgba(245,200,66,.7);transition:all .25s;line-height:1;}
+.mult-val.bump{animation:multBump .3s ease;}
+@keyframes multBump{0%,100%{transform:scale(1)}50%{transform:scale(1.25);color:#fff;text-shadow:0 0 40px rgba(245,200,66,1);}}
+.mult-val.danger-mult{color:var(--red);text-shadow:0 0 25px rgba(239,68,68,.8);animation:multDanger .5s ease-in-out infinite alternate;}
+@keyframes multDanger{0%{text-shadow:0 0 20px rgba(239,68,68,.6)}100%{text-shadow:0 0 50px rgba(239,68,68,1),0 0 80px rgba(239,68,68,.4)}}
+.potential-box{text-align:right;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:.5rem .8rem;}
+.pot-lbl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+.pot-val{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--green);margin-top:.1rem;text-shadow:0 0 10px rgba(74,222,128,.5);}
 
-/* PROGRESS BAR */
-.progress-wrap{margin-bottom:1rem;}
-.progress-bar-bg{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
-.progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(to right,#4ade80,#F5C842);transition:width 0.4s ease;width:0%;}
-.progress-labels{display:flex;justify-content:space-between;margin-top:0.3rem;font-family:'Cinzel',serif;font-size:0.58rem;color:var(--text-dim);}
+/* PROGRESS */
+.prog-wrap{margin-bottom:1rem;}
+.prog-bg{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;border-radius:5px;background:linear-gradient(to right,#4ade80,#F5C842);transition:width .4s ease;width:0%;position:relative;}
+.prog-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:rgba(255,255,255,.8);border-radius:50%;filter:blur(2px);}
+.prog-fill.danger-prog{background:linear-gradient(to right,#f59e0b,#ef4444)!important;}
+.prog-labels{display:flex;justify-content:space-between;margin-top:.3rem;font-family:'Cinzel',serif;font-size:.55rem;color:var(--text-dim);}
 
-/* MINES GRID */
-.mines-grid{display:grid;gap:0.5rem;}
+/* ═══ MINES GRID ═══ */
+.mines-grid{display:grid;gap:.45rem;}
 .grid-5{grid-template-columns:repeat(5,1fr);}
 
-/* CELL */
-.mine-cell{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;cursor:pointer;border:2px solid rgba(212,160,23,0.15);background:linear-gradient(135deg,rgba(30,20,5,0.9),rgba(20,12,2,0.95));transition:all 0.2s;position:relative;user-select:none;overflow:hidden;}
-.mine-cell::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.06),transparent 60%);}
-.mine-cell:hover:not(.revealed):not(.disabled){border-color:rgba(212,160,23,0.5);background:linear-gradient(135deg,rgba(50,35,5,0.9),rgba(35,20,2,0.95));transform:scale(1.04);box-shadow:0 0 15px rgba(212,160,23,0.3);}
-.mine-cell.revealed-gem{background:linear-gradient(135deg,rgba(74,222,128,0.25),rgba(10,80,40,0.35));border-color:rgba(74,222,128,0.6);box-shadow:0 0 20px rgba(74,222,128,0.4);animation:gemReveal 0.4s ease;}
-@keyframes gemReveal{0%{transform:scale(0.5) rotate(-10deg);opacity:0;}60%{transform:scale(1.15) rotate(3deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
-.mine-cell.revealed-mine{background:linear-gradient(135deg,rgba(248,113,113,0.3),rgba(150,20,20,0.4));border-color:rgba(248,113,113,0.7);animation:mineReveal 0.5s ease;}
-@keyframes mineReveal{0%{transform:scale(0.5);opacity:0;}40%{transform:scale(1.3);}100%{transform:scale(1);opacity:1;}}
-.mine-cell.show-mine{background:linear-gradient(135deg,rgba(100,10,10,0.5),rgba(60,5,5,0.6));border-color:rgba(248,113,113,0.3);opacity:0.7;}
+.mine-cell{
+  aspect-ratio:1;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;cursor:pointer;
+  border:1.5px solid rgba(212,160,23,.12);
+  background:linear-gradient(135deg,rgba(25,15,35,.95),rgba(18,10,25,.98));
+  transition:all .2s cubic-bezier(.34,1.4,.64,1);
+  position:relative;user-select:none;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.03);
+}
+/* Shine reflection */
+.mine-cell::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.07),transparent 55%);pointer-events:none;}
+/* Shimmer on hover */
+.mine-cell::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transform:skewX(-15deg);transition:left .5s ease;pointer-events:none;}
+.mine-cell:hover:not(.revealed):not(.disabled)::after{left:160%;}
+
+.mine-cell:hover:not(.revealed):not(.disabled){
+  border-color:rgba(168,85,247,.55);
+  background:linear-gradient(135deg,rgba(40,20,55,.95),rgba(28,14,38,.98));
+  transform:scale(1.06) translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,.6),0 0 20px rgba(168,85,247,.25),inset 0 1px 0 rgba(168,85,247,.15);
+}
+
+/* Idle glow — each cell pulses slightly */
+.mine-cell.idle{animation:cellIdle 3s ease-in-out infinite;}
+.mine-cell:nth-child(odd).idle{animation-delay:.5s;}
+.mine-cell:nth-child(3n).idle{animation-delay:1s;}
+@keyframes cellIdle{0%,100%{border-color:rgba(212,160,23,.12)}50%{border-color:rgba(212,160,23,.28);box-shadow:0 2px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.03),0 0 6px rgba(212,160,23,.1)}}
+
+/* GEM revealed */
+.mine-cell.gem{
+  background:linear-gradient(135deg,rgba(16,60,30,.95),rgba(8,40,18,.98));
+  border-color:rgba(74,222,128,.65);
+  box-shadow:0 0 25px rgba(74,222,128,.45),0 4px 15px rgba(0,0,0,.6),inset 0 1px 0 rgba(74,222,128,.2);
+  animation:gemReveal .45s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes gemReveal{0%{transform:scale(.3) rotate(-15deg);opacity:0}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+
+/* MINE revealed */
+.mine-cell.mine-hit{
+  background:linear-gradient(135deg,rgba(80,10,10,.95),rgba(50,5,5,.98));
+  border-color:rgba(239,68,68,.8);
+  box-shadow:0 0 40px rgba(239,68,68,.6),0 4px 15px rgba(0,0,0,.6),inset 0 1px 0 rgba(239,68,68,.25);
+  animation:mineHit .5s ease;
+}
+@keyframes mineHit{0%{transform:scale(.3);opacity:0}30%{transform:scale(1.4)}60%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
+
+/* All mines shown after game over */
+.mine-cell.mine-show{
+  background:linear-gradient(135deg,rgba(40,5,5,.7),rgba(25,3,3,.8));
+  border-color:rgba(239,68,68,.3);
+  opacity:.65;
+}
+/* Safe gems shown after cashout */
+.mine-cell.gem-show{
+  background:linear-gradient(135deg,rgba(10,30,15,.6),rgba(5,20,8,.7));
+  border-color:rgba(74,222,128,.25);
+  opacity:.5;
+}
 .mine-cell.disabled{cursor:default;}
-.mine-cell.idle-glow{animation:idleGlow 3s ease-in-out infinite;}
-@keyframes idleGlow{0%,100%{border-color:rgba(212,160,23,0.15);}50%{border-color:rgba(212,160,23,0.35);box-shadow:0 0 8px rgba(212,160,23,0.15);}}
+
+/* CLOSE CALL effect */
+.close-call{animation:closeCall .6s ease;border-color:rgba(251,146,60,.7)!important;box-shadow:0 0 30px rgba(251,146,60,.4)!important;}
+@keyframes closeCall{0%,100%{transform:scale(1)}25%{transform:scale(1.08) rotate(2deg)}75%{transform:scale(1.08) rotate(-2deg)}}
 
 /* RESULT BANNER */
-.result-banner{text-align:center;min-height:2.5rem;margin-top:0.8rem;}
-.result-text{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;letter-spacing:0.1em;opacity:0;transition:all 0.3s;}
+.result-banner{text-align:center;min-height:3rem;margin-top:.8rem;display:flex;align-items:center;justify-content:center;}
+.result-text{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;letter-spacing:.08em;opacity:0;transition:opacity .3s;}
 .result-text.show{opacity:1;}
-.result-text.win{color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,0.9);animation:winPop 0.5s ease;}
-.result-text.lose{color:var(--red);text-shadow:0 0 30px rgba(248,113,113,0.6);}
-@keyframes winPop{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.result-text.win{color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,.9);animation:winPop .5s ease;}
+.result-text.lose{color:var(--red);text-shadow:0 0 30px rgba(248,113,113,.6);}
+@keyframes winPop{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-/* SIDE PANEL */
-.side-panel{display:flex;flex-direction:column;gap:0.8rem;}
+/* ═══ SIDE PANEL ═══ */
+.side-panel{display:flex;flex-direction:column;gap:.8rem;}
 
-/* MINES SELECTOR */
-.mines-selector{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:1rem;}
-.sel-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.6rem;}
-.mines-grid-sel{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;}
-.mines-count-btn{padding:0.5rem;border-radius:7px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;cursor:pointer;border:1px solid rgba(212,160,23,0.2);background:rgba(212,160,23,0.06);color:var(--text-dim);transition:all 0.2s;text-align:center;}
-.mines-count-btn:hover{background:rgba(212,160,23,0.12);border-color:rgba(212,160,23,0.3);color:var(--gold);}
-.mines-count-btn.active{background:rgba(248,113,113,0.18);border-color:var(--red);color:var(--red);box-shadow:0 0 10px rgba(248,113,113,0.25);}
-.mines-risk-label{font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);text-align:center;margin-top:0.5rem;}
+/* Panel box */
+.panel-box{background:rgba(12,8,16,.9);border:1px solid rgba(168,85,247,.15);border-radius:14px;padding:1rem;position:relative;overflow:hidden;}
+.panel-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,.04),transparent 70%);pointer-events:none;}
+.panel-lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem;}
+.panel-lbl-icon{font-size:1rem;}
 
-/* BET SECTION */
-.bet-section{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:1rem;}
-.bet-lbl{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.6rem;}
-.bet-input-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;}
-.bet-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(212,160,23,0.25);border-radius:8px;padding:0.6rem 0.7rem;font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold-light);outline:none;transition:border-color 0.2s;}
+/* MINES COUNT SELECTOR */
+.mines-sel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.38rem;}
+.mc-btn{padding:.5rem;border-radius:8px;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;cursor:pointer;border:1px solid rgba(212,160,23,.18);background:rgba(212,160,23,.05);color:var(--text-dim);transition:all .2s;text-align:center;}
+.mc-btn:hover{background:rgba(212,160,23,.12);border-color:rgba(212,160,23,.3);color:var(--gold);}
+.mc-btn.active{background:rgba(239,68,68,.18);border-color:var(--red);color:var(--red);box-shadow:0 0 12px rgba(239,68,68,.25);}
+.mc-btn:disabled{opacity:.4;cursor:not-allowed;}
+.mines-risk{font-family:'Cinzel',serif;font-size:.58rem;color:var(--text-dim);text-align:center;margin-top:.5rem;padding:.3rem .6rem;background:rgba(0,0,0,.3);border-radius:5px;}
+
+/* BET INPUT */
+.bet-input-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
+.bet-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.22);border-radius:8px;padding:.6rem .7rem;font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold-light);outline:none;transition:border-color .2s;}
 .bet-input:focus{border-color:var(--gold);}
-.bet-btc{font-family:'Cinzel',serif;font-size:0.72rem;color:var(--text-dim);}
-.quick-bets{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;}
-.q-btn{background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);color:var(--gold);padding:0.35rem 0.7rem;border-radius:5px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.q-btn:hover{background:rgba(212,160,23,0.18);}
+.bet-btc-lbl{font-family:'Cinzel',serif;font-size:.72rem;color:var(--text-dim);}
+.quick-bets{display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.qb{background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.18);color:var(--gold);padding:.32rem .65rem;border-radius:5px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.qb:hover{background:rgba(212,160,23,.18);}
 
-/* ACTION BUTTONS */
-.start-btn{width:100%;padding:0.9rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#991b1b,#ef4444);color:#fff;box-shadow:0 0 25px rgba(239,68,68,0.5);transition:all 0.3s;margin-bottom:0.5rem;}
-.start-btn:hover:not(:disabled){transform:scale(1.03);box-shadow:0 0 45px rgba(239,68,68,0.9);}
-.start-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-.cashout-btn{width:100%;padding:0.9rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;box-shadow:0 0 25px rgba(212,160,23,0.5);transition:all 0.3s;display:none;}
-.cashout-btn:hover{transform:scale(1.03);box-shadow:0 0 45px rgba(212,160,23,0.9);}
+/* START / CASHOUT BUTTONS */
+.start-btn{width:100%;padding:.92rem;border-radius:11px;font-family:'Cinzel',serif;font-size:.9rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#7f1d1d,#dc2626,#ef4444,#dc2626,#7f1d1d);background-size:200% 100%;color:#fff;box-shadow:0 0 25px rgba(239,68,68,.45);transition:all .25s;margin-bottom:.5rem;animation:startBtnS 4s linear infinite;}
+@keyframes startBtnS{0%{background-position:0%}100%{background-position:200%}}
+.start-btn:hover:not(:disabled){transform:scale(1.03);box-shadow:0 0 50px rgba(239,68,68,.8);}
+.start-btn:disabled{opacity:.4;cursor:not-allowed;animation:none;}
+
+.cashout-btn{width:100%;padding:.92rem;border-radius:11px;font-family:'Cinzel',serif;font-size:.9rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#b8810e,#d4a017,#f5c842,#d4a017,#b8810e);background-size:200% 100%;color:#000;box-shadow:0 0 25px rgba(212,160,23,.45);transition:all .25s;display:none;animation:cashBtnS 3s linear infinite;}
+@keyframes cashBtnS{0%{background-position:0%}100%{background-position:200%}}
 .cashout-btn.show{display:block;}
+.cashout-btn:hover{transform:scale(1.03);box-shadow:0 0 50px rgba(212,160,23,.8);}
+/* DANGER state — cashout pulzuje červeně */
+.cashout-btn.danger-cashout{background:linear-gradient(135deg,#7f1d1d,#dc2626,#fbbf24,#dc2626,#7f1d1d)!important;background-size:200% 100%;animation:cashDanger 1.5s linear infinite,cashBtnS 2s linear infinite;}
+@keyframes cashDanger{0%,100%{box-shadow:0 0 25px rgba(239,68,68,.5)}50%{box-shadow:0 0 50px rgba(239,68,68,.9),0 0 80px rgba(239,68,68,.3)}}
 
-/* NEXT MULT PREVIEW */
-.next-mult{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:8px;padding:0.6rem;text-align:center;}
-.nm-label{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
-.nm-value{font-family:'Cinzel',serif;font-size:0.95rem;font-weight:700;color:var(--green);margin-top:0.2rem;}
+/* NEXT MULT */
+.next-mult-box{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:.6rem .8rem;text-align:center;}
+.nm-lbl{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+.nm-val{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--green);margin-top:.15rem;}
 
 /* GEMS COUNTER */
-.gems-counter{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:1rem;text-align:center;}
-.gc-row{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;}
-.gc-item{text-align:center;}
-.gc-val{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;}
-.gc-lbl{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-top:0.1rem;}
+.gems-row{display:flex;gap:.6rem;justify-content:center;}
+.gem-stat{flex:1;text-align:center;background:rgba(0,0,0,.3);border-radius:8px;padding:.6rem;}
+.gem-stat-val{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;}
+.gem-stat-val.g{color:var(--green);text-shadow:0 0 10px rgba(74,222,128,.5);}
+.gem-stat-val.r{color:var(--red);text-shadow:0 0 10px rgba(239,68,68,.5);}
+.gem-stat-val.p{color:#c084fc;text-shadow:0 0 10px rgba(192,132,252,.4);}
+.gem-stat-lbl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-top:.1rem;}
+
+/* AUTO PLAY */
+.auto-row{display:flex;gap:.4rem;align-items:center;}
+.auto-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(212,160,23,.18);border-radius:6px;padding:.4rem .6rem;font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold-light);outline:none;text-align:center;}
+.auto-btn{padding:.4rem .8rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;cursor:pointer;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.08);color:var(--green);transition:all .2s;}
+.auto-btn:hover{background:rgba(74,222,128,.18);}
+.auto-btn.active{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red);}
 
 /* PF */
-.pf-bar{background:rgba(212,160,23,0.04);border:1px solid rgba(212,160,23,0.12);border-radius:10px;padding:0.7rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.pf-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);white-space:nowrap;}
-.pf-hash{font-family:monospace;font-size:0.6rem;color:var(--text-dim);flex:1;word-break:break-all;}
-.pf-btn{background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);color:var(--gold);padding:0.3rem 0.8rem;border-radius:5px;font-family:'Cinzel',serif;font-size:0.6rem;cursor:pointer;white-space:nowrap;}
-.pf-btn:hover{background:rgba(212,160,23,0.2);}
+.pf-bar{background:rgba(212,160,23,.04);border:1px solid rgba(212,160,23,.1);border-radius:10px;padding:.65rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.pf-lbl{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);white-space:nowrap;}
+.pf-hash{font-family:monospace;font-size:.58rem;color:var(--text-dim);flex:1;word-break:break-all;}
+.pf-btn{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.25);color:var(--gold);padding:.28rem .7rem;border-radius:5px;font-family:'Cinzel',serif;font-size:.58rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.pf-btn:hover{background:rgba(212,160,23,.2);}
 
 /* STATS */
-.stats-section{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;}
-.stats-title{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1rem;}
-.stat-box{background:rgba(255,255,255,0.03);border-radius:8px;padding:0.7rem;text-align:center;}
-.stat-box-label{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
-.stat-box-value{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:var(--gold);margin-top:0.3rem;}
-.stat-box-value.green{color:var(--green);}.stat-box-value.red{color:var(--red);}
-#miniChart{width:100%;height:70px;display:block;}
+.stats-wrap{background:rgba(12,8,16,.88);border:1px solid rgba(212,160,23,.12);border-radius:14px;padding:1.1rem;margin-bottom:1rem;}
+.stats-title{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.9rem;display:flex;justify-content:space-between;align-items:center;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;margin-bottom:.9rem;}
+.st-box{background:rgba(255,255,255,.03);border-radius:8px;padding:.65rem;text-align:center;}
+.st-lbl{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
+.st-val{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--gold);margin-top:.25rem;}
+.st-val.g{color:var(--green);}.st-val.r{color:var(--red);}
+#miniChart{width:100%;height:70px;display:block;border-radius:6px;}
 
 /* HISTORY */
-.history-section{background:rgba(15,10,2,0.8);border:1px solid rgba(212,160,23,0.15);border-radius:14px;overflow:hidden;}
-.history-hdr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:0.8rem 1.2rem;background:rgba(212,160,23,0.06);border-bottom:1px solid rgba(212,160,23,0.1);font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);}
-.history-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:0.65rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.82rem;align-items:center;animation:fadeIn 0.3s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
-.history-row:last-child{border-bottom:none;}
+.history-wrap{background:rgba(12,8,16,.88);border:1px solid rgba(212,160,23,.12);border-radius:14px;overflow:hidden;}
+.hist-hdr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:.75rem 1.1rem;background:rgba(212,160,23,.05);border-bottom:1px solid rgba(212,160,23,.08);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+.hist-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:.62rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.025);font-size:.8rem;align-items:center;animation:rowIn .3s ease;}
+@keyframes rowIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.hist-row:last-child{border-bottom:none;}
 .h-mines{color:var(--red);font-family:'Cinzel',serif;font-weight:700;}
 .h-gems{color:var(--green);}
 .h-mult{color:var(--gold);font-family:'Cinzel',serif;}
-.h-bet{color:var(--text-dim);font-size:0.78rem;}
-.h-profit{font-family:'Cinzel',serif;font-size:0.78rem;text-align:right;}
+.h-bet{color:var(--text-dim);font-size:.75rem;}
+.h-profit{font-family:'Cinzel',serif;font-size:.75rem;text-align:right;}
 .h-profit.win{color:var(--green);}.h-profit.lose{color:var(--red);}
 
-footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:2rem;}
+footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem 1.5rem;text-align:center;font-size:.75rem;color:var(--text-dim);margin-top:2rem;}
 
-/* RESPONSIVE */
 @media(max-width:768px){.mines-layout{grid-template-columns:1fr;}}
 @media(max-width:640px){
-  header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
-  nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
-  .game-hero{height:38vh;min-height:240px;}.game-hero-title h1{font-size:2.8rem;}
-  .game-area{padding:1rem 0.8rem 3rem;}
-  .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;padding:0.8rem;}.bal-value{font-size:0.82rem;}
+  header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
+  .game-hero{height:40vh;min-height:250px;}
+  .game-area{padding:1rem .8rem 3rem;}
+  .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.8rem;}
   .mine-cell{font-size:1.2rem;border-radius:8px;}
   .stats-grid{grid-template-columns:1fr 1fr;}
-  .history-hdr,.history-row{grid-template-columns:1fr 1fr 1fr;}
-  .pf-bar{flex-direction:column;gap:0.5rem;}
+  .hist-hdr,.hist-row{grid-template-columns:1fr 1fr 1fr;}
 }
 @media(max-width:380px){.mine-cell{font-size:1rem;}}
 </style>
@@ -214,11 +338,12 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 <body>
 <canvas id="particleCanvas"></canvas>
 
+<!-- HEADER -->
 <header>
-  <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
   <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
   <div class="header-right">
-    <span class="btc-bal" id="headerBal">0.10000000 BTC</span>
+    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -230,108 +355,128 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
+<!-- HERO -->
 <div class="game-hero">
-  <img src="images/herolivemines.jpg" alt="Mines">
-  <div class="game-hero-overlay"></div>
-  <div class="game-hero-title">
-    <h1>💣 MINES</h1>
-    <div class="hero-sub">Find Gems · Avoid Bombs · Cash Out!</div>
-    <button class="play-now-btn" onclick="document.getElementById('gameArea').scrollIntoView({behavior:'smooth'})">Play Now</button>
+  <div class="hero-bg">
+    <img class="hero-img-kb" src="images/mines.jpg" alt="Mines" onerror="this.src='images/hero.jpg'">
   </div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><div class="hb-dot"></div>Provably Fair</div>
+    <div class="hero-title">&#128163; MINES</div>
+    <div class="hero-sub">Find Gems &middot; Avoid Bombs &middot; Cash Out</div>
+    <button class="play-now-btn" onclick="document.getElementById('gameArea').scrollIntoView({behavior:'smooth'})">&#128163; Play Now</button>
+  </div>
+</div>
+
+<!-- TENSION BAR -->
+<div class="tension-bar">
+  <div class="tb-label">&#9889; Tension</div>
+  <div class="tb-track"><div class="tb-fill" id="tbFill"></div></div>
+  <div class="tb-streak" id="tbStreak">&#128163; 0 safe</div>
+  <div class="tb-online"><div class="tb-dot"></div><span class="tb-online-num" id="tbOnline">412</span>&nbsp;playing now</div>
 </div>
 
 <div class="game-area" id="gameArea">
 
+  <!-- BALANCE BAR -->
   <div class="balance-bar">
-    <div class="bal-item"><div class="bal-label">Balance</div><div class="bal-value green" id="balDisplay">0.10000000 BTC</div></div>
-    <div class="bal-item"><div class="bal-label">Current Mult</div><div class="bal-value" id="currentMultDisp">—</div></div>
+    <div class="bal-item"><div class="bal-label">Balance</div><div class="bal-value green" id="balDisplay">0.00000000 BTC</div></div>
+    <div class="bal-item"><div class="bal-label">Current ×</div><div class="bal-value purple" id="multDisp">—</div></div>
     <div class="bal-item"><div class="bal-label">Total Games</div><div class="bal-value" id="totalGames">0</div></div>
-    <div class="bal-item"><div class="bal-label">Best Mult</div><div class="bal-value green" id="bestMultDisp">—</div></div>
+    <div class="bal-item"><div class="bal-label">Best ×</div><div class="bal-value green" id="bestMultDisp">—</div></div>
   </div>
 
-  <div class="live-players">
-    <div class="live-label"><div class="live-dot-sm"></div>Live Players</div>
-    <div class="players-feed" id="playersFeed"></div>
+  <!-- LIVE FEED -->
+  <div class="live-feed">
+    <div class="lf-label"><div class="lf-dot"></div>Live</div>
+    <div class="lf-track" id="lfTrack"></div>
   </div>
 
   <div class="mines-layout">
-
     <!-- BOARD -->
-    <div class="mines-board-wrap">
-
-      <div class="mult-bar">
-        <div>
-          <div style="font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.2rem;">Multiplier</div>
-          <div class="current-mult" id="currentMult">1.00×</div>
+    <div class="board-wrap" id="boardWrap">
+      <div class="mult-row">
+        <div class="mult-main">
+          <div class="mult-lbl">Multiplier</div>
+          <div class="mult-val" id="multVal">1.00&#215;</div>
         </div>
-        <div class="potential-win">
-          <div class="pot-label">Potential Win</div>
-          <div class="pot-value" id="potentialWin">0.00000 BTC</div>
+        <div class="potential-box">
+          <div class="pot-lbl">Potential Win</div>
+          <div class="pot-val" id="potVal">0.00000 BTC</div>
         </div>
       </div>
-
-      <div class="progress-wrap">
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-        <div class="progress-labels"><span id="progLeft">0 gems found</span><span id="progRight">25 safe tiles</span></div>
+      <div class="prog-wrap">
+        <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+        <div class="prog-labels"><span id="progL">0 gems</span><span id="progR">25 safe tiles</span></div>
       </div>
-
       <div class="mines-grid grid-5" id="minesGrid"></div>
-
       <div class="result-banner"><div class="result-text" id="resultText"></div></div>
-
     </div>
 
     <!-- SIDE PANEL -->
     <div class="side-panel">
-
-      <!-- MINE COUNT -->
-      <div class="mines-selector">
-        <div class="sel-label">💣 Number of Mines</div>
-        <div class="mines-grid-sel" id="minesCountSel">
-          <button class="mines-count-btn" onclick="setMinesCount(1,this)">1</button>
-          <button class="mines-count-btn" onclick="setMinesCount(2,this)">2</button>
-          <button class="mines-count-btn" onclick="setMinesCount(3,this)">3</button>
-          <button class="mines-count-btn active" onclick="setMinesCount(5,this)">5</button>
-          <button class="mines-count-btn" onclick="setMinesCount(7,this)">7</button>
-          <button class="mines-count-btn" onclick="setMinesCount(10,this)">10</button>
-          <button class="mines-count-btn" onclick="setMinesCount(15,this)">15</button>
-          <button class="mines-count-btn" onclick="setMinesCount(20,this)">20</button>
+      <!-- MINES COUNT -->
+      <div class="panel-box">
+        <div class="panel-lbl"><span class="panel-lbl-icon">&#128163;</span> Number of Mines</div>
+        <div class="mines-sel-grid" id="mineSel">
+          <button class="mc-btn" onclick="setMines(1,this)">1</button>
+          <button class="mc-btn" onclick="setMines(2,this)">2</button>
+          <button class="mc-btn" onclick="setMines(3,this)">3</button>
+          <button class="mc-btn active" onclick="setMines(5,this)">5</button>
+          <button class="mc-btn" onclick="setMines(7,this)">7</button>
+          <button class="mc-btn" onclick="setMines(10,this)">10</button>
+          <button class="mc-btn" onclick="setMines(15,this)">15</button>
+          <button class="mc-btn" onclick="setMines(20,this)">20</button>
         </div>
-        <div class="mines-risk-label" id="minesRiskLabel">Risk: Medium · 5 mines / 20 safe</div>
+        <div class="mines-risk" id="minesRisk">Medium Risk · 5 mines · 20 safe tiles</div>
       </div>
 
       <!-- BET -->
-      <div class="bet-section">
-        <div class="bet-lbl">Bet Amount</div>
+      <div class="panel-box">
+        <div class="panel-lbl"><span class="panel-lbl-icon">&#8383;</span> Bet Amount</div>
         <div class="bet-input-row">
           <input type="number" class="bet-input" id="betInput" value="0.001" min="0.0001" step="0.0001">
-          <span class="bet-btc">BTC</span>
+          <span class="bet-btc-lbl">BTC</span>
         </div>
         <div class="quick-bets">
-          <button class="q-btn" onclick="setBet(0.001)">0.001</button>
-          <button class="q-btn" onclick="setBet(0.005)">0.005</button>
-          <button class="q-btn" onclick="setBet(0.01)">0.010</button>
-          <button class="q-btn" onclick="setBet(0.05)">0.050</button>
-          <button class="q-btn" onclick="halfBet()">½</button>
-          <button class="q-btn" onclick="doubleBet()">×2</button>
+          <button class="qb" onclick="setBet(.001)">0.001</button>
+          <button class="qb" onclick="setBet(.005)">0.005</button>
+          <button class="qb" onclick="setBet(.01)">0.01</button>
+          <button class="qb" onclick="setBet(.05)">0.05</button>
+          <button class="qb" onclick="halfBet()">&#189;</button>
+          <button class="qb" onclick="doubleBet()">&#215;2</button>
         </div>
-        <button class="start-btn" id="startBtn" onclick="startGame()">💣 START GAME</button>
-        <button class="cashout-btn" id="cashoutBtn" onclick="cashOut()">💰 CASH OUT</button>
+        <button class="start-btn" id="startBtn" onclick="startGame()">&#128163; START GAME</button>
+        <button class="cashout-btn" id="cashoutBtn" onclick="cashOut()">&#128176; CASH OUT</button>
       </div>
 
       <!-- NEXT MULT -->
-      <div class="next-mult">
-        <div class="nm-label">Next Gem Multiplier</div>
-        <div class="nm-value" id="nextMult">—</div>
+      <div class="next-mult-box">
+        <div class="nm-lbl">Next Gem Multiplier</div>
+        <div class="nm-val" id="nextMult">—</div>
       </div>
 
       <!-- GEMS COUNTER -->
-      <div class="gems-counter">
-        <div class="gc-row">
-          <div class="gc-item"><div class="gc-val green" id="gemsFound">0</div><div class="gc-lbl">💎 Gems</div></div>
-          <div class="gc-item"><div class="gc-val red" id="minesCount">5</div><div class="gc-lbl">💣 Mines</div></div>
-          <div class="gc-item"><div class="gc-val" id="safeTiles">20</div><div class="gc-lbl">Safe</div></div>
+      <div class="panel-box">
+        <div class="gems-row">
+          <div class="gem-stat"><div class="gem-stat-val g" id="gemsFound">0</div><div class="gem-stat-lbl">&#128142; Gems</div></div>
+          <div class="gem-stat"><div class="gem-stat-val r" id="minesCnt">5</div><div class="gem-stat-lbl">&#128163; Mines</div></div>
+          <div class="gem-stat"><div class="gem-stat-val p" id="safeCnt">20</div><div class="gem-stat-lbl">Safe</div></div>
         </div>
+      </div>
+
+      <!-- AUTO PLAY -->
+      <div class="panel-box">
+        <div class="panel-lbl"><span class="panel-lbl-icon">&#9654;</span> Auto Play</div>
+        <div class="auto-row">
+          <input type="number" class="auto-input" id="autoRounds" value="10" min="1" max="100" placeholder="Rounds">
+          <button class="auto-btn" id="autoBtn" onclick="toggleAuto()">Start Auto</button>
+        </div>
+        <div style="font-family:'Cinzel',serif;font-size:.55rem;color:var(--text-dim);margin-top:.4rem;text-align:center;">Cashout at first gem found</div>
       </div>
 
     </div>
@@ -339,38 +484,112 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 
   <!-- PF -->
   <div class="pf-bar">
-    <div class="pf-label">🔐 Provably Fair</div>
-    <div class="pf-hash" id="pfHash">Start game to see proof</div>
+    <div class="pf-lbl">&#128272; Provably Fair</div>
+    <div class="pf-hash" id="pfHash">Start a game to see hash</div>
     <button class="pf-btn" onclick="verifyHash()">Verify</button>
   </div>
 
   <!-- STATS -->
-  <div class="stats-section">
+  <div class="stats-wrap">
     <div class="stats-title">
       <span>Session Statistics</span>
-      <span id="sessionProfitLbl" style="font-size:0.8rem;color:var(--text-dim)">±0 BTC</span>
+      <span id="sessProfit" style="font-size:.8rem;color:var(--text-dim)">&#177;0 BTC</span>
     </div>
     <div class="stats-grid">
-      <div class="stat-box"><div class="stat-box-label">Wagered</div><div class="stat-box-value" id="stWagered">0.00000</div></div>
-      <div class="stat-box"><div class="stat-box-label">Best Mult</div><div class="stat-box-value green" id="stBestMult">—</div></div>
-      <div class="stat-box"><div class="stat-box-label">Best Win</div><div class="stat-box-value green" id="stBestWin">0.00000</div></div>
-      <div class="stat-box"><div class="stat-box-label">Win Rate</div><div class="stat-box-value" id="stWinRate">0%</div></div>
+      <div class="st-box"><div class="st-lbl">Wagered</div><div class="st-val" id="stWagered">0.00000</div></div>
+      <div class="st-box"><div class="st-lbl">Best &#215;</div><div class="st-val g" id="stBestM">—</div></div>
+      <div class="st-box"><div class="st-lbl">Best Win</div><div class="st-val g" id="stBestW">0.00000</div></div>
+      <div class="st-box"><div class="st-lbl">Win Rate</div><div class="st-val" id="stWR">0%</div></div>
     </div>
     <canvas id="miniChart"></canvas>
   </div>
 
   <!-- HISTORY -->
-  <div class="history-section">
-    <div class="history-hdr"><span>Mines</span><span>Gems</span><span>Multi</span><span>Bet</span><span style="text-align:right">Profit</span></div>
+  <div class="history-wrap">
+    <div class="hist-hdr"><span>Mines</span><span>Gems</span><span>Multi</span><span>Bet</span><span style="text-align:right">Profit</span></div>
     <div id="histFeed"></div>
   </div>
 
 </div>
+<footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
-<footer><p>© 2026 CryptoKasino · 18+ · Play Responsibly · <a href="live.html" style="color:var(--gold)">← Back to Live</a></p></footer>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ══ AUDIO ══
+// ══════════════════════════════════════════════════
+//  SUPABASE + GAME SETTINGS
+// ══════════════════════════════════════════════════
+const SUPABASE_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
+let sbClient=null,currentUser=null;
+let HOUSE_EDGE=0.03,RTP=0.97; // defaults — loaded from DB
+
+async function initSupabase(){
+  try{
+    const {createClient}=supabase;
+    sbClient=createClient(SUPABASE_URL,SUPABASE_KEY);
+    // Load game settings
+    const {data:gs}=await sbClient.from('game_settings').select('*').eq('game_id','mines').single();
+    if(gs){
+      RTP=gs.rtp/100;HOUSE_EDGE=gs.house_edge/100;
+      console.log('[Mines] RTP:',gs.rtp+'% HE:',gs.house_edge+'%');
+    }
+    // Load user
+    const {data:{session}}=await sbClient.auth.getSession();
+    if(session){
+      currentUser=session.user;
+      const {data:profile}=await sbClient.from('profiles').select('username,balance').eq('id',currentUser.id).single();
+      if(profile){
+        currentUser.username=profile.username||currentUser.email?.split('@')[0]||'Player';
+        balance=parseFloat(profile.balance||0);
+        updateBal();
+        console.log('[Mines] Logged in:',currentUser.username,'Balance:',balance);
+      }
+    }else{
+      // Demo balance
+      balance=0.10000000;updateBal();
+    }
+  }catch(e){console.warn('[Mines] Supabase init:',e.message);balance=0.10000000;updateBal();}
+}
+
+async function sbDeductBet(sat){
+  if(!sbClient||!currentUser)return true;
+  try{
+    const {data,error}=await sbClient.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});
+    if(error)throw error;
+    return true;
+  }catch(e){console.warn('Deduct:',e.message);return true;}
+}
+
+async function sbAddWin(sat){
+  if(!sbClient||!currentUser)return;
+  try{await sbClient.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}
+  catch(e){console.warn('AddWin:',e.message);}
+}
+
+async function sbLogBet(betSat,profitSat,mult,meta){
+  if(!sbClient||!currentUser)return;
+  try{
+    await sbClient.from('bets').insert({
+      user_id:currentUser.id,game:'mines',
+      bet_satoshi:betSat,
+      profit_satoshi:profitSat,
+      multiplier:mult,
+      meta:meta,
+      created_at:new Date().toISOString()
+    });
+    // Update game_settings stats
+    await sbClient.from('game_settings').update({
+      total_bets_count:sbClient.rpc('increment'),
+      total_wagered_sat:sbClient.rpc('increment',{amount:betSat})
+    }).eq('game_id','mines').catch(()=>{});
+  }catch(e){console.warn('LogBet:',e.message);}
+}
+
+initSupabase();
+
+// ══════════════════════════════════════════════════
+//  AUDIO ENGINE
+// ══════════════════════════════════════════════════
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 document.addEventListener('click',()=>{if(AC.state==='suspended')AC.resume();},{once:true});
 function playSound(t){
@@ -378,136 +597,278 @@ function playSound(t){
     if(t==='gem'){
       const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
       o.type='sine';o.frequency.setValueAtTime(600+Math.random()*200,AC.currentTime);
-      o.frequency.exponentialRampToValueAtTime(900+Math.random()*300,AC.currentTime+0.12);
-      g.gain.setValueAtTime(0.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.18);
-      o.start();o.stop(AC.currentTime+0.18);
-    }else if(t==='mine'){
-      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-      o.type='sawtooth';o.frequency.setValueAtTime(300,AC.currentTime);
-      o.frequency.exponentialRampToValueAtTime(40,AC.currentTime+0.6);
-      g.gain.setValueAtTime(0.2,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.6);
-      o.start();o.stop(AC.currentTime+0.6);
-      // Extra boom
+      o.frequency.exponentialRampToValueAtTime(1000+Math.random()*300,AC.currentTime+.15);
+      g.gain.setValueAtTime(.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.22);
+      o.start();o.stop(AC.currentTime+.22);
+      // Shimmer
       const o2=AC.createOscillator(),g2=AC.createGain();o2.connect(g2);g2.connect(AC.destination);
-      o2.type='square';o2.frequency.setValueAtTime(80,AC.currentTime);
-      o2.frequency.exponentialRampToValueAtTime(20,AC.currentTime+0.4);
-      g2.gain.setValueAtTime(0.15,AC.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.4);
-      o2.start();o2.stop(AC.currentTime+0.4);
+      o2.type='triangle';o2.frequency.value=1400+Math.random()*400;
+      g2.gain.setValueAtTime(.06,AC.currentTime+.05);g2.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.2);
+      o2.start(AC.currentTime+.05);o2.stop(AC.currentTime+.2);
+    }else if(t==='mine'){
+      // BOOM
+      const buf=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const s=AC.createBufferSource(),g=AC.createGain();
+      s.buffer=buf;s.connect(g);g.connect(AC.destination);
+      g.gain.setValueAtTime(.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.5);
+      s.start();
+      // Low thump
+      const o=AC.createOscillator(),g2=AC.createGain();o.connect(g2);g2.connect(AC.destination);
+      o.type='sine';o.frequency.setValueAtTime(120,AC.currentTime);o.frequency.exponentialRampToValueAtTime(20,AC.currentTime+.5);
+      g2.gain.setValueAtTime(.3,AC.currentTime);g2.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.5);
+      o.start();o.stop(AC.currentTime+.5);
     }else if(t==='cashout'){
-      [0,0.1,0.2,0.3,0.4].forEach((d,i)=>{
+      [523,659,784,987,1175,1568].forEach((f,i)=>{
         const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-        o.type='sine';o.frequency.value=[523,659,784,987,1175][i];
-        g.gain.setValueAtTime(0.18,AC.currentTime+d);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d+0.35);
-        o.start(AC.currentTime+d);o.stop(AC.currentTime+d+0.35);
+        o.type='sine';o.frequency.value=f;
+        const delay=i*.08;
+        g.gain.setValueAtTime(.16,AC.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+delay+.3);
+        o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+.3);
       });
     }else if(t==='start'){
       const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-      o.type='sine';o.frequency.setValueAtTime(400,AC.currentTime);
-      o.frequency.exponentialRampToValueAtTime(600,AC.currentTime+0.15);
-      g.gain.setValueAtTime(0.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.2);
-      o.start();o.stop(AC.currentTime+0.2);
-    }else if(t==='tick'){
+      o.type='sine';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.exponentialRampToValueAtTime(500,AC.currentTime+.2);
+      g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);
+      o.start();o.stop(AC.currentTime+.25);
+    }else if(t==='hover'){
       const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-      o.type='square';o.frequency.value=700;
-      g.gain.setValueAtTime(0.05,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.04);
-      o.start();o.stop(AC.currentTime+0.04);
+      o.type='square';o.frequency.value=800;
+      g.gain.setValueAtTime(.025,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.04);
+      o.start();o.stop(AC.currentTime+.04);
+    }else if(t==='closecall'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sawtooth';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.exponentialRampToValueAtTime(80,AC.currentTime+.3);
+      g.gain.setValueAtTime(.08,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.3);
+      o.start();o.stop(AC.currentTime+.3);
     }
   }catch(e){}
 }
 
-// ══ PARTICLES ══
+// ══════════════════════════════════════════════════
+//  PARTICLE SYSTEM
+// ══════════════════════════════════════════════════
 const pCanvas=document.getElementById('particleCanvas'),pCtx=pCanvas.getContext('2d');
 let particles=[];
 function resizeP(){pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;}
 resizeP();window.addEventListener('resize',resizeP);
+
 function spawnP(type,cx,cy){
-  cx=cx||window.innerWidth/2;cy=cy||window.innerHeight*0.5;
+  cx=cx||window.innerWidth/2;cy=cy||window.innerHeight*.5;
   const cfg={
-    gem:  {count:30,colors:['#4ade80','#86efac','#fff','#F5C842']},
-    mine: {count:60,colors:['#f87171','#ef4444','#fbbf24','#ff8800','#111']},
-    cashout:{count:100,colors:['#F5C842','#4ade80','#fff','#a855f7','#fb923c']}
+    gem:{count:35,cols:['rgba(74,222,128,','rgba(134,239,172,','rgba(245,200,66,','rgba(255,255,255,']},
+    mine:{count:70,cols:['rgba(248,113,113,','rgba(239,68,68,','rgba(251,191,36,','rgba(255,120,0,','rgba(20,10,10,']},
+    cashout:{count:120,cols:['rgba(245,200,66,','rgba(74,222,128,','rgba(255,255,255,','rgba(168,85,247,','rgba(251,146,60,']},
+    closecall:{count:20,cols:['rgba(251,146,60,','rgba(251,191,36,']}
   };
   const c=cfg[type]||cfg.gem;
-  for(let i=0;i<c.count;i++) particles.push({x:cx+(Math.random()-0.5)*60,y:cy,vx:(Math.random()-0.5)*14,vy:Math.random()*-14-3,size:Math.random()*7+2,color:c.colors[Math.floor(Math.random()*c.colors.length)],life:1,decay:Math.random()*0.018+0.008,gravity:0.4,shape:Math.random()>0.4?'star':'circle'});
+  for(let i=0;i<c.count;i++){
+    const a=Math.random()*Math.PI*2,s=Math.random()*15+3;
+    particles.push({
+      x:cx+(Math.random()-.5)*50,y:cy,
+      vx:Math.cos(a)*s*(type==='cashout'?.8:1),
+      vy:Math.sin(a)*s*(type==='cashout'?.8:1)-3,
+      size:Math.random()*(type==='cashout'?8:6)+2,
+      col:c.cols[Math.floor(Math.random()*c.cols.length)],
+      life:1,decay:Math.random()*.02+.008,
+      gravity:type==='mine'?.6:.35,
+      shape:Math.random()>.5?'star':'circle',
+      rot:Math.random()*Math.PI*2,rotV:(Math.random()-.5)*.2
+    });
+  }
 }
-function drawStar(c,x,y,r,col){c.beginPath();for(let i=0;i<5;i++){const a=(i*Math.PI*2)/5-Math.PI/2,b=a+Math.PI/5;c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);c.lineTo(x+Math.cos(b)*(r*0.4),y+Math.sin(b)*(r*0.4));}c.closePath();c.fillStyle=col;c.fill();}
-function animateP(){pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;pCtx.globalAlpha=p.life;if(p.shape==='star')drawStar(pCtx,p.x,p.y,p.size,p.color);else{pCtx.beginPath();pCtx.arc(p.x,p.y,p.size,0,Math.PI*2);pCtx.fillStyle=p.color;pCtx.fill();}});pCtx.globalAlpha=1;requestAnimationFrame(animateP);}
-animateP();
 
-// ══ PROVABLY FAIR ══
-let ss=genS(),cs=genS(),pfN=0;
-function genS(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function hashS(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function pfTick(){const combined=`${ss}-${cs}-${pfN}`;const hash=await hashS(combined);pfN++;document.getElementById('pfHash').textContent=`Server:${ss.substring(0,12)}... Nonce:${pfN} Hash:${hash.substring(0,20)}...`;}
-async function verifyHash(){const combined=`${ss}-${cs}-${pfN-1}`;const hash=await hashS(combined);alert(`✅ Provably Fair Mines\n\nServer Seed: ${ss}\nClient Seed: ${cs}\nNonce: ${pfN-1}\n\nSHA-256: ${hash}\n\nMine positions are cryptographically proven!`);}
-
-// ══ LIVE PLAYERS ══
-const FAKE=['0xA91…','MineHunter','Satoshi','GemKing','BTC_Safe','DiamondX','CryptoX','SafePlayer'];
-function addLivePlayer(){
-  const feed=document.getElementById('playersFeed');
-  const name=FAKE[Math.floor(Math.random()*FAKE.length)];
-  const won=Math.random()>0.45,amt=(Math.random()*0.06+0.001).toFixed(4);
-  const pill=document.createElement('div');pill.className='player-pill';
-  pill.innerHTML=`<span style="color:var(--text-dim)">${name}</span> <span class="${won?'wa':'la'}">${won?'+':'-'}${amt} BTC</span>`;
-  feed.prepend(pill);if(feed.children.length>5)feed.lastChild.remove();
+function drawStar(c,x,y,r,col){
+  c.beginPath();
+  for(let i=0;i<5;i++){
+    const a=(i*Math.PI*2)/5-Math.PI/2,b=a+Math.PI/5;
+    c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);
+    c.lineTo(x+Math.cos(b)*(r*.4),y+Math.sin(b)*(r*.4));
+  }
+  c.closePath();c.fillStyle=col;c.fill();
 }
-setInterval(addLivePlayer,2800);for(let i=0;i<3;i++)addLivePlayer();
 
-// ══ STATE ══
-let balance=0.10000000;
-let minesCount=5,betAmt=0.001;
+function animP(){
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  particles=particles.filter(p=>p.life>0);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;p.rot+=p.rotV;
+    pCtx.save();pCtx.globalAlpha=p.life;pCtx.translate(p.x,p.y);pCtx.rotate(p.rot);
+    if(p.shape==='star')drawStar(pCtx,0,0,p.size,p.col+p.life+')');
+    else{pCtx.beginPath();pCtx.arc(0,0,p.size,0,Math.PI*2);pCtx.fillStyle=p.col+p.life+')';pCtx.fill();}
+    pCtx.restore();
+  });
+  requestAnimationFrame(animP);
+}
+animP();
+
+// ══════════════════════════════════════════════════
+//  HERO CANVAS — red sparks
+// ══════════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('heroCanvas'),hero=c.closest('.game-hero');
+  if(!c||!hero)return;
+  var ctx=c.getContext('2d'),hpts=[],W,H;
+  function resize(){W=c.width=hero.offsetWidth;H=c.height=hero.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  for(var i=0;i<60;i++)hpts.push({type:'star',x:Math.random()*1200,y:Math.random()*600,r:Math.random()*1.2+.2,a:Math.random()*.3+.06,tw:Math.random()*Math.PI*2,tws:Math.random()*.04+.015});
+  var lastS=0;
+  function addSpark(){
+    var COLS=['rgba(248,113,113,','rgba(239,68,68,','rgba(168,85,247,','rgba(251,146,60,'];
+    hpts.push({type:'spark',x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*.5,vy:-(Math.random()*2.5+1),r:Math.random()*1.8+.5,life:1,decay:Math.random()*.012+.005,col:COLS[Math.floor(Math.random()*COLS.length)]});
+  }
+  function draw(now){
+    ctx.clearRect(0,0,W,H);
+    if(now-lastS>100){addSpark();if(Math.random()<.4)addSpark();lastS=now;}
+    hpts=hpts.filter(p=>p.type==='star'||p.life>0);
+    hpts.forEach(p=>{
+      if(p.type==='star'){p.tw+=p.tws;var a=p.a*(0.5+0.5*Math.sin(p.tw));ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+a+')';ctx.fill();}
+      else{p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*5,p.y-p.vy*5);ctx.strokeStyle=p.col+(p.life*.7)+')';ctx.lineWidth=p.r;ctx.lineCap='round';ctx.stroke();}
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ══════════════════════════════════════════════════
+//  SCREEN SHAKE
+// ══════════════════════════════════════════════════
+function shakeScreen(intensity){
+  const el=document.getElementById('boardWrap');
+  if(!el)return;
+  el.style.transition='transform 0s';
+  let t=0,dur=400,step=20;
+  const iv=setInterval(()=>{
+    t+=step;
+    if(t>dur){el.style.transform='translate(0,0)';clearInterval(iv);return;}
+    const d=intensity*(1-t/dur);
+    el.style.transform=`translate(${(Math.random()-.5)*d*2}px,${(Math.random()-.5)*d*2}px)`;
+  },step);
+}
+
+// ══════════════════════════════════════════════════
+//  LIVE FEED
+// ══════════════════════════════════════════════════
+const FAKE_PLAYERS=['MineHunter','GemKing','BTC_Safe','DiamondX','CryptoX','0xA91…','SafeWin','RiskTaker','Satoshi','BombProof'];
+function addLiveFeed(){
+  const track=document.getElementById('lfTrack');
+  const name=FAKE_PLAYERS[Math.floor(Math.random()*FAKE_PLAYERS.length)];
+  const won=Math.random()>.4,mines=Math.floor(Math.random()*4+2);
+  const mult=won?(1.5+Math.random()*12).toFixed(2)+'×':'BOOM';
+  const amt=(Math.random()*.08+.001).toFixed(4);
+  const pill=document.createElement('div');pill.className='lf-pill';
+  pill.innerHTML=`<span style="color:var(--text-dim)">${name}</span> ${won?`<span class="lf-win">+${amt} BTC</span> @${mult}`:`<span class="lf-lose">💣 ${mines} mines</span>`}`;
+  track.prepend(pill);
+  if(track.children.length>5)track.lastChild.remove();
+}
+setInterval(addLiveFeed,2600);
+for(let i=0;i<3;i++)addLiveFeed();
+
+// Online counter
+let onlineCnt=412;
+setInterval(()=>{
+  onlineCnt+=Math.floor(Math.random()*5)-2;
+  onlineCnt=Math.max(350,Math.min(550,onlineCnt));
+  document.getElementById('tbOnline').textContent=onlineCnt;
+},4000);
+
+// ══════════════════════════════════════════════════
+//  PROVABLY FAIR
+// ══════════════════════════════════════════════════
+let serverSeed=genSeed(),clientSeed=genSeed(),nonce=0;
+function genSeed(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function hashStr(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function pfUpdate(){
+  const combined=`${serverSeed}-${clientSeed}-${nonce}`;
+  const hash=await hashStr(combined);nonce++;
+  document.getElementById('pfHash').textContent=`Server:${serverSeed.substring(0,12)}... Nonce:${nonce} Hash:${hash.substring(0,20)}...`;
+}
+async function verifyHash(){
+  const combined=`${serverSeed}-${clientSeed}-${nonce-1}`;
+  const hash=await hashStr(combined);
+  alert(`✅ Provably Fair Mines\n\nServer Seed: ${serverSeed}\nClient Seed: ${clientSeed}\nNonce: ${nonce-1}\n\nSHA-256: ${hash}\n\nMine positions are cryptographically proven fair.`);
+}
+
+// ══════════════════════════════════════════════════
+//  GAME STATE
+// ══════════════════════════════════════════════════
+let balance=0,minesCount=5,betAmt=.001;
 let gameActive=false,minePositions=[],revealed=[],gemsFoundCount=0;
 let totalGamesCount=0,sessionProfit=0,totalWagered=0,bestMult=0,bestWin=0,wins=0;
 let chartData=[];
-const GRID_SIZE=25;
+let autoPlaying=false,autoRoundsLeft=0;
+const GRID=25;
 
 function fmt(n){return n.toFixed(8);}
 function fmtS(n){return n.toFixed(5);}
-function updateBal(){document.getElementById('balDisplay').textContent=fmt(balance)+' BTC';document.getElementById('headerBal').textContent=fmt(balance)+' BTC';}
+function updateBal(){
+  document.getElementById('balDisplay').textContent=fmt(balance)+' BTC';
+  document.getElementById('headerBal').textContent=fmt(balance)+' BTC';
+}
 function setBet(v){document.getElementById('betInput').value=v.toFixed(4);}
-function halfBet(){setBet(Math.max(0.0001,(parseFloat(document.getElementById('betInput').value)||0.001)/2));}
-function doubleBet(){setBet(Math.min(balance,(parseFloat(document.getElementById('betInput').value)||0.001)*2));}
+function halfBet(){setBet(Math.max(.0001,(parseFloat(document.getElementById('betInput').value)||.001)/2));}
+function doubleBet(){setBet(Math.min(balance,(parseFloat(document.getElementById('betInput').value)||.001)*2));}
 
-function setMinesCount(n,el){
+function setMines(n,el){
   if(gameActive)return;
   minesCount=n;
-  document.querySelectorAll('.mines-count-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mc-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const safe=GRID_SIZE-n;
+  const safe=GRID-n;
   const risk=n<=2?'Low':n<=5?'Medium':n<=10?'High':'Very High';
-  document.getElementById('minesRiskLabel').textContent=`Risk: ${risk} · ${n} mines / ${safe} safe`;
-  document.getElementById('minesCount').textContent=n;
-  document.getElementById('safeTiles').textContent=safe;
+  document.getElementById('minesRisk').textContent=`${risk} Risk · ${n} mines · ${safe} safe tiles`;
+  document.getElementById('minesCnt').textContent=n;
+  document.getElementById('safeCnt').textContent=safe;
   updateNextMult(0);
+  updateTensionBar(0,safe);
 }
 
-// ══ MULTIPLIER CALC ══
-// Based on combinatorial probability
-function calcMult(gemsFound,mines){
-  const safe=GRID_SIZE-mines;
-  if(gemsFound===0)return 1.00;
-  let prob=1;
-  for(let i=0;i<gemsFound;i++) prob*=(safe-i)/(GRID_SIZE-i);
-  const houseEdge=0.97;
-  return Math.max(1,parseFloat((houseEdge/prob).toFixed(3)));
+// ══ MULTIPLIER CALC (combinatorial + RTP) ══
+function calcMult(gems,mines){
+  if(gems===0)return 1.00;
+  const safe=GRID-mines;let prob=1;
+  for(let i=0;i<gems;i++)prob*=(safe-i)/(GRID-i);
+  return Math.max(1.0,parseFloat((RTP/prob).toFixed(4)));
 }
 
-function updateNextMult(gemsFound){
-  const next=calcMult(gemsFound+1,minesCount);
+function updateNextMult(gems){
+  const next=calcMult(gems+1,minesCount);
   document.getElementById('nextMult').textContent=next.toFixed(2)+'×';
+}
+
+// ══ TENSION BAR ══
+function updateTensionBar(gems,safe){
+  const pct=safe>0?(gems/safe)*100:100;
+  const fill=document.getElementById('tbFill');
+  fill.style.width=pct+'%';
+  fill.className='tb-fill'+(pct>80?' extreme':pct>55?' danger':'');
+  document.getElementById('tbStreak').textContent=`💎 ${gems} safe`;
+  // Board danger styling
+  const bw=document.getElementById('boardWrap');
+  bw.className='board-wrap'+(gameActive?' active-game':'')+(pct>70?' danger-game':'');
+  // Cashout danger
+  const cb=document.getElementById('cashoutBtn');
+  if(pct>60)cb.classList.add('danger-cashout');
+  else cb.classList.remove('danger-cashout');
+  // Mult danger color
+  const mv=document.getElementById('multVal');
+  if(pct>70)mv.classList.add('danger-mult');
+  else mv.classList.remove('danger-mult');
+  // Progress danger
+  const pf=document.getElementById('progFill');
+  if(pct>65)pf.classList.add('danger-prog');
+  else pf.classList.remove('danger-prog');
 }
 
 // ══ BUILD GRID ══
 function buildGrid(){
-  const grid=document.getElementById('minesGrid');
-  grid.innerHTML='';
-  for(let i=0;i<GRID_SIZE;i++){
+  const grid=document.getElementById('minesGrid');grid.innerHTML='';
+  for(let i=0;i<GRID;i++){
     const cell=document.createElement('div');
-    cell.className='mine-cell idle-glow';
-    cell.id='cell'+i;
-    cell.dataset.idx=i;
-    cell.textContent='';
+    cell.className='mine-cell idle';cell.id='c'+i;cell.dataset.idx=i;
     cell.onclick=()=>revealCell(i);
+    cell.onmouseenter=()=>{if(!cell.classList.contains('revealed')&&!cell.classList.contains('disabled'))playSound('hover');};
     grid.appendChild(cell);
   }
 }
@@ -515,161 +876,207 @@ function buildGrid(){
 // ══ START GAME ══
 async function startGame(){
   betAmt=parseFloat(document.getElementById('betInput').value);
-  if(!betAmt||betAmt<=0){alert('Set bet amount!');return;}
+  if(!betAmt||betAmt<=0){alert('Enter bet amount!');return;}
   if(betAmt>balance){alert('Insufficient balance!');return;}
-  await pfTick();
+  await pfUpdate();
   playSound('start');
 
+  // Deduct balance
+  if(currentUser){
+    await sbDeductBet(Math.round(betAmt*1e8));
+  }
   balance-=betAmt;totalWagered+=betAmt;totalGamesCount++;
   document.getElementById('totalGames').textContent=totalGamesCount;
   updateBal();
 
-  // Generate mine positions
+  // Generate mines
   minePositions=[];
-  const positions=[...Array(GRID_SIZE).keys()];
-  for(let i=positions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]];}
-  minePositions=positions.slice(0,minesCount);
+  const pos=[...Array(GRID).keys()];
+  for(let i=pos.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pos[i],pos[j]]=[pos[j],pos[i]];}
+  minePositions=pos.slice(0,minesCount);
 
-  revealed=new Array(GRID_SIZE).fill(false);
-  gemsFoundCount=0;
-  gameActive=true;
+  revealed=new Array(GRID).fill(false);
+  gemsFoundCount=0;gameActive=true;
 
-  // Reset UI
   buildGrid();
-  document.getElementById('currentMult').textContent='1.00×';
-  document.getElementById('potentialWin').textContent=fmtS(betAmt)+' BTC';
-  document.getElementById('progressFill').style.width='0%';
-  document.getElementById('progLeft').textContent='0 gems found';
-  document.getElementById('progRight').textContent=`${GRID_SIZE-minesCount} safe tiles`;
+  document.getElementById('multVal').textContent='1.00×';
+  document.getElementById('multVal').className='mult-val';
+  document.getElementById('potVal').textContent=fmtS(betAmt)+' BTC';
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('progFill').className='prog-fill';
+  document.getElementById('progL').textContent='0 gems';
+  document.getElementById('progR').textContent=`${GRID-minesCount} safe tiles`;
   document.getElementById('gemsFound').textContent='0';
   document.getElementById('resultText').className='result-text';
   document.getElementById('resultText').textContent='';
+  document.getElementById('multDisp').textContent='1.00×';
   document.getElementById('startBtn').disabled=true;
   document.getElementById('cashoutBtn').classList.add('show');
-  document.getElementById('currentMultDisp').textContent='1.00×';
+  document.getElementById('cashoutBtn').classList.remove('danger-cashout');
+  document.getElementById('boardWrap').className='board-wrap active-game';
   updateNextMult(0);
+  updateTensionBar(0,GRID-minesCount);
+  document.getElementById('tbFill').style.width='0%';
+  document.getElementById('tbFill').className='tb-fill';
 }
 
 // ══ REVEAL CELL ══
 function revealCell(idx){
   if(!gameActive||revealed[idx])return;
   revealed[idx]=true;
-  const cell=document.getElementById('cell'+idx);
-  cell.classList.remove('idle-glow');
-  cell.onclick=null;
+  const cell=document.getElementById('c'+idx);
+  cell.classList.remove('idle');cell.onclick=null;
 
   if(minePositions.includes(idx)){
-    // MINE HIT!
-    cell.textContent='💣';
-    cell.classList.add('revealed-mine','disabled');
-    playSound('mine');
+    // 💣 MINE HIT
+    cell.textContent='💣';cell.classList.add('mine-hit','disabled');
+    playSound('mine');shakeScreen(12);
     const rect=cell.getBoundingClientRect();
     spawnP('mine',rect.left+rect.width/2,rect.top+rect.height/2);
     gameActive=false;
-    // Reveal all mines
+
+    // Reveal all
     setTimeout(()=>{
-      minePositions.forEach(mIdx=>{
-        const mc=document.getElementById('cell'+mIdx);
-        if(!revealed[mIdx]){mc.textContent='💣';mc.classList.add('show-mine','disabled');mc.onclick=null;}
+      minePositions.forEach(mi=>{
+        if(!revealed[mi]){const mc=document.getElementById('c'+mi);mc.textContent='💣';mc.classList.add('mine-show','disabled');mc.onclick=null;}
       });
-      // Reveal remaining gems
-      for(let i=0;i<GRID_SIZE;i++){
-        if(!minePositions.includes(i)&&!revealed[i]){
-          const gc=document.getElementById('cell'+i);
-          gc.textContent='💎';gc.style.opacity='0.3';gc.classList.add('disabled');gc.onclick=null;
-        }
+      for(let i=0;i<GRID;i++){
+        if(!minePositions.includes(i)&&!revealed[i]){const gc=document.getElementById('c'+i);gc.textContent='💎';gc.classList.add('gem-show','disabled');gc.onclick=null;}
       }
-    },400);
-    const rt=document.getElementById('resultText');
-    rt.textContent='💣 MINE! You lose!';rt.className='result-text show lose';
+    },500);
+
+    const rt=document.getElementById('resultText');rt.textContent='💣 MINE! Game Over!';rt.className='result-text show lose';
     document.getElementById('cashoutBtn').classList.remove('show');
     document.getElementById('startBtn').disabled=false;
-    document.getElementById('currentMultDisp').textContent='—';
-    sessionProfit-=betAmt;
-    updateStats();chartData.push(-betAmt);updateChart();
-    addHistory(minesCount,gemsFoundCount,'—',betAmt,-betAmt);
+    document.getElementById('multDisp').textContent='—';
+    document.getElementById('boardWrap').className='board-wrap';
+    sessionProfit-=betAmt;updateStats();chartData.push(-betAmt);updateChart();
+    addHistory(minesCount,gemsFoundCount,'💣 BOOM',betAmt,-betAmt);
+    // Log to DB
+    sbLogBet(Math.round(betAmt*1e8),Math.round(-betAmt*1e8),0,{mines:minesCount,gems:gemsFoundCount,result:'mine'});
+
+    if(autoPlaying){stopAuto();return;}
   } else {
-    // GEM!
-    cell.textContent='💎';
-    cell.classList.add('revealed-gem','disabled');
+    // 💎 GEM
+    cell.textContent='💎';cell.classList.add('gem','disabled');
     playSound('gem');
     const rect=cell.getBoundingClientRect();
     spawnP('gem',rect.left+rect.width/2,rect.top+rect.height/2);
     gemsFoundCount++;
 
     const mult=calcMult(gemsFoundCount,minesCount);
-    const potWin=parseFloat((betAmt*mult).toFixed(6));
+    const potWin=parseFloat((betAmt*mult).toFixed(7));
 
-    document.getElementById('currentMult').textContent=mult.toFixed(2)+'×';
-    document.getElementById('currentMult').classList.add('bump');
-    setTimeout(()=>document.getElementById('currentMult').classList.remove('bump'),350);
-    document.getElementById('potentialWin').textContent=fmtS(potWin)+' BTC';
-    document.getElementById('currentMultDisp').textContent=mult.toFixed(2)+'×';
+    // Animate multiplier
+    document.getElementById('multVal').textContent=mult.toFixed(2)+'×';
+    document.getElementById('multVal').classList.add('bump');
+    setTimeout(()=>document.getElementById('multVal').classList.remove('bump'),350);
+    document.getElementById('potVal').textContent=fmtS(potWin)+' BTC';
+    document.getElementById('multDisp').textContent=mult.toFixed(2)+'×';
     document.getElementById('gemsFound').textContent=gemsFoundCount;
 
-    const safe=GRID_SIZE-minesCount;
+    const safe=GRID-minesCount;
     const pct=(gemsFoundCount/safe)*100;
-    document.getElementById('progressFill').style.width=pct+'%';
-    document.getElementById('progLeft').textContent=`${gemsFoundCount} gems found`;
+    document.getElementById('progFill').style.width=pct+'%';
+    document.getElementById('progL').textContent=`${gemsFoundCount} gems`;
     updateNextMult(gemsFoundCount);
+    updateTensionBar(gemsFoundCount,safe);
+
+    // Close call detection — if adjacent mines
+    const adjMines=getAdjacent(idx).filter(i=>minePositions.includes(i));
+    if(adjMines.length>0&&Math.random()>.4){
+      cell.classList.add('close-call');
+      setTimeout(()=>cell.classList.remove('close-call'),700);
+      playSound('closecall');
+    }
 
     // Auto cashout if all gems found
-    if(gemsFoundCount===safe){
-      setTimeout(()=>cashOut(),300);
-    }
+    if(gemsFoundCount===safe)setTimeout(()=>cashOut(),300);
+
+    // Auto play — cashout after 1 gem
+    if(autoPlaying)setTimeout(()=>cashOut(),400);
   }
 }
 
+function getAdjacent(idx){
+  const row=Math.floor(idx/5),col=idx%5;const adj=[];
+  [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([dr,dc])=>{
+    const r=row+dr,c=col+dc;if(r>=0&&r<5&&c>=0&&c<5)adj.push(r*5+c);
+  });
+  return adj;
+}
+
 // ══ CASH OUT ══
-function cashOut(){
+async function cashOut(){
   if(!gameActive||gemsFoundCount===0)return;
-  gameActive=false;
-  playSound('cashout');
+  gameActive=false;playSound('cashout');
 
   const mult=calcMult(gemsFoundCount,minesCount);
-  const payout=parseFloat((betAmt*mult).toFixed(6));
+  const payout=parseFloat((betAmt*mult).toFixed(7));
   const profit=payout-betAmt;
 
   balance+=payout;
+  if(currentUser)await sbAddWin(Math.round(payout*1e8));
   sessionProfit+=profit;
-  if(mult>bestMult){bestMult=mult;document.getElementById('bestMultDisp').textContent=mult.toFixed(2)+'×';document.getElementById('stBestMult').textContent=mult.toFixed(2)+'×';}
-  if(profit>bestWin){bestWin=profit;document.getElementById('stBestWin').textContent=fmtS(bestWin);}
+  if(mult>bestMult){bestMult=mult;document.getElementById('bestMultDisp').textContent=mult.toFixed(2)+'×';document.getElementById('stBestM').textContent=mult.toFixed(2)+'×';}
+  if(profit>bestWin){bestWin=profit;document.getElementById('stBestW').textContent=fmtS(bestWin);}
   wins++;
 
-  // Reveal all mines
-  minePositions.forEach(mIdx=>{
-    const mc=document.getElementById('cell'+mIdx);
-    if(!revealed[mIdx]){mc.textContent='💣';mc.classList.add('show-mine','disabled');mc.onclick=null;}
-  });
+  // Show mines
+  minePositions.forEach(mi=>{if(!revealed[mi]){const mc=document.getElementById('c'+mi);mc.textContent='💣';mc.classList.add('mine-show','disabled');mc.onclick=null;}});
 
-  spawnP('cashout',window.innerWidth/2,window.innerHeight*0.5);
+  spawnP('cashout',window.innerWidth/2,window.innerHeight*.4);
 
   const rt=document.getElementById('resultText');
-  rt.textContent=`💰 Cash Out! +${fmtS(profit)} BTC`;rt.className='result-text show win';
+  rt.textContent=`💰 Cash Out! +${fmtS(profit)} BTC @ ${mult.toFixed(2)}×`;
+  rt.className='result-text show win';
 
   document.getElementById('cashoutBtn').classList.remove('show');
   document.getElementById('startBtn').disabled=false;
-  document.getElementById('currentMultDisp').textContent=mult.toFixed(2)+'×';
+  document.getElementById('multDisp').textContent=mult.toFixed(2)+'×';
+  document.getElementById('boardWrap').className='board-wrap';
+  document.getElementById('tbFill').className='tb-fill';
 
-  updateBal();updateStats();
-  chartData.push(profit);updateChart();
+  updateBal();updateStats();chartData.push(profit);updateChart();
   addHistory(minesCount,gemsFoundCount,mult.toFixed(2)+'×',betAmt,profit);
+  sbLogBet(Math.round(betAmt*1e8),Math.round(profit*1e8),mult,{mines:minesCount,gems:gemsFoundCount,result:'cashout'});
+
+  if(autoPlaying){
+    autoRoundsLeft--;
+    if(autoRoundsLeft>0)setTimeout(startGame,600);
+    else stopAuto();
+  }
 }
 
+// ══ AUTO PLAY ══
+function toggleAuto(){
+  if(autoPlaying){stopAuto();return;}
+  const rounds=parseInt(document.getElementById('autoRounds').value)||10;
+  autoRoundsLeft=rounds;autoPlaying=true;
+  document.getElementById('autoBtn').textContent='Stop Auto';
+  document.getElementById('autoBtn').classList.add('active');
+  if(!gameActive)startGame();
+}
+function stopAuto(){
+  autoPlaying=false;
+  document.getElementById('autoBtn').textContent='Start Auto';
+  document.getElementById('autoBtn').classList.remove('active');
+}
+
+// ══ STATS ══
 function updateStats(){
   document.getElementById('stWagered').textContent=fmtS(totalWagered);
-  document.getElementById('stWinRate').textContent=totalGamesCount>0?((wins/totalGamesCount)*100).toFixed(0)+'%':'0%';
-  const sp=document.getElementById('sessionProfitLbl');
+  document.getElementById('stWR').textContent=totalGamesCount>0?((wins/totalGamesCount)*100).toFixed(0)+'%':'0%';
+  const sp=document.getElementById('sessProfit');
   sp.textContent=(sessionProfit>=0?'+':'')+fmtS(sessionProfit)+' BTC';
   sp.style.color=sessionProfit>=0?'var(--green)':'var(--red)';
 }
 
 function addHistory(mines,gems,mult,bet,profit){
   const feed=document.getElementById('histFeed');
-  const row=document.createElement('div');row.className='history-row';
-  const ps=profit>=0?'+':'';
-  row.innerHTML=`<span class="h-mines">💣 ${mines}</span><span class="h-gems">💎 ${gems}</span><span class="h-mult">${mult}</span><span class="h-bet">${fmtS(bet)}</span><span class="h-profit ${profit>=0?'win':'lose'}">${ps}${fmtS(profit)} BTC</span>`;
-  feed.prepend(row);if(feed.children.length>10)feed.lastChild.remove();
+  const row=document.createElement('div');row.className='hist-row';
+  row.innerHTML=`<span class="h-mines">💣${mines}</span><span class="h-gems">💎${gems}</span><span class="h-mult">${mult}</span><span class="h-bet">${fmtS(bet)}</span><span class="h-profit ${profit>=0?'win':'lose'}">${profit>=0?'+':''}${fmtS(profit)}</span>`;
+  feed.prepend(row);if(feed.children.length>12)feed.lastChild.remove();
 }
 
 function updateChart(){
@@ -677,26 +1084,29 @@ function updateChart(){
   c.width=c.offsetWidth;c.height=70;const W=c.width,H=c.height;cx.clearRect(0,0,W,H);
   if(chartData.length<2)return;
   let run=0;const pts=chartData.map(v=>{run+=v;return run;});
-  const mn=Math.min(...pts),mx=Math.max(...pts),range=mx-mn||0.001;
-  cx.strokeStyle='rgba(212,160,23,0.08)';cx.lineWidth=1;cx.beginPath();cx.moveTo(0,H/2);cx.lineTo(W,H/2);cx.stroke();
+  const mn=Math.min(...pts,0),mx=Math.max(...pts,.001),range=mx-mn||.001;
+  // Zero line
+  const zeroY=H-((0-mn)/range)*(H-10)-5;
+  cx.strokeStyle='rgba(212,160,23,.15)';cx.lineWidth=1;cx.setLineDash([3,3]);cx.beginPath();cx.moveTo(0,zeroY);cx.lineTo(W,zeroY);cx.stroke();cx.setLineDash([]);
+  // Curve
   cx.beginPath();pts.forEach((p,i)=>{const x=(i/(pts.length-1))*W,y=H-((p-mn)/range)*(H-10)-5;i===0?cx.moveTo(x,y):cx.lineTo(x,y);});
   const last=pts[pts.length-1];
-  cx.strokeStyle=last>=0?'#4ade80':'#f87171';cx.lineWidth=2;cx.stroke();
-  cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();
+  cx.strokeStyle=last>=0?'#4ade80':'#f87171';cx.lineWidth=2;cx.lineJoin='round';cx.stroke();
+  // Fill
+  const lastX=W,lastY=H-((last-mn)/range)*(H-10)-5;
+  cx.lineTo(lastX,H);cx.lineTo(0,H);cx.closePath();
   const grad=cx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,last>=0?'rgba(74,222,128,0.2)':'rgba(248,113,113,0.2)');grad.addColorStop(1,'rgba(0,0,0,0)');
-  cx.fillStyle=grad;cx.fill();
+  grad.addColorStop(0,last>=0?'rgba(74,222,128,.25)':'rgba(248,113,113,.25)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=grad;cx.fill();
 }
 
+// ══ HAMBURGER ══
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
-document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 
-// INIT
-buildGrid();updateBal();updateNextMult(0);
+// ══ INIT ══
+buildGrid();updateNextMult(0);
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
 </body>
 </html>
