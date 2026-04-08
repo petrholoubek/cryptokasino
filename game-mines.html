@@ -609,6 +609,7 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem 1.5rem;text-align:c
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script>
 // ══════════════════════════════════════════════════
 //  SUPABASE + GAME SETTINGS
@@ -625,7 +626,7 @@ async function initSupabase(){
     const {createClient}=supabase;
     sbClient=createClient(SUPABASE_URL,SUPABASE_KEY);
     // Load game settings
-    const {data:gs}=await sbClient.from('game_settings').select('*').eq('game_id','mines').single();
+    const {data:gs}=await sbClient.from('game_settings').select('*').eq('id','mines').single();
     if(gs){
       RTP=gs.rtp/100;HOUSE_EDGE=gs.house_edge/100;
       console.log('[Mines] RTP:',gs.rtp+'% HE:',gs.house_edge+'%');
@@ -649,6 +650,7 @@ async function initSupabase(){
 }
 
 async function sbDeductBet(sat){
+  if(gameMode!=='real'||!sb||!currentUser)return;
   if(!sbClient||!currentUser)return true;
   try{
     const {data,error}=await sbClient.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});
@@ -658,12 +660,14 @@ async function sbDeductBet(sat){
 }
 
 async function sbAddWin(sat){
+  if(gameMode!=='real'||!sb||!currentUser)return;
   if(!sbClient||!currentUser)return;
   try{await sbClient.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}
   catch(e){console.warn('AddWin:',e.message);}
 }
 
 async function sbLogBet(betSat,profitSat,mult,meta){
+  if(gameMode!=='real')return; // FIREWALL demo
   // Pokud je CK wrapper dostupný, použij ho
   if(window.CK && currentUser){
     try{
@@ -687,15 +691,15 @@ async function sbLogBet(betSat,profitSat,mult,meta){
     // Aktualizuj game_settings statistiky (pro game-logic.html admin panel)
     const {data:gs} = await sbClient
       .from('game_settings')
-      .select('total_bets_count,total_wagered_sat,total_profit_sat')
-      .eq('game_id','mines').single();
+      .select('total_bets_count,total_wagered_btc,total_paid_btc')
+      .eq('id','mines').single();
     if(gs){
       await sbClient.from('game_settings').update({
         total_bets_count: (parseInt(gs.total_bets_count)||0) + 1,
-        total_wagered_sat: (parseInt(gs.total_wagered_sat)||0) + betSat,
-        total_profit_sat: (parseInt(gs.total_profit_sat)||0) + (-profitSat), // casino profit = -player profit
+        total_wagered_btc: (parseInt(gs.total_wagered_btc)||0) + betSat,
+        total_paid_btc: (parseInt(gs.total_paid_btc)||0) + (-profitSat), // casino profit = -player profit
         updated_at: new Date().toISOString()
-      }).eq('game_id','mines');
+      }).eq('id','mines');
     }
 
     console.log('[Mines] Bet logged:', {betSat, profitSat, mult, meta});
@@ -1320,7 +1324,9 @@ setTimeout(function(){
   balance = demoBalance;
   updateBal();
 }, 100);
+// Demo mode fallback
+document.addEventListener('DOMContentLoaded', function(){if(typeof setMode==='function')setMode('demo');},{once:true});
+if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
 </script>
-<script src="supabase.js"></script>
 </body>
 </html>
