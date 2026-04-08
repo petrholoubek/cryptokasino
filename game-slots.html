@@ -556,6 +556,8 @@ const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
+  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sb=createClient(SB_URL,SB_KEY);
@@ -568,7 +570,7 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
       if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}
     }
   }catch(e){console.warn('[Slots]',e.message);}
-  setTimeout(()=>setMode('demo'),80);
+  // demo jiz nastaveno vyse
   if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('slots');if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
 
@@ -586,7 +588,9 @@ async function sbLog(betSat,profitSat,mult,meta){
 
 // ══ MODE ══
 function setMode(mode){
-  gameMode=mode;const isDemo=mode==='demo';
+  gameMode=mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
+  const isDemo=mode==='demo';
   document.getElementById('modeDemo').classList.toggle('active',isDemo);
   document.getElementById('modeReal').classList.toggle('active',!isDemo);
   document.getElementById('demoBadge').style.display=isDemo?'':'none';
