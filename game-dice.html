@@ -433,6 +433,13 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
 .dice-area.rolling-state .tension-bar{
   transform:scaleX(1);transition:transform 1.2s ease-in;
 }
+
+@media(max-width:768px){
+  .show-layout,.game-layout,.main-layout{grid-template-columns:1fr!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .bh-main{grid-template-columns:1fr!important;}
+  .bh-divider{display:none!important;}
+}
 </style>
 </head>
 <body>
@@ -673,20 +680,21 @@ let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL
   try{
     const {createClient}=supabase;sb=createClient(SB_URL,SB_KEY);
     const {data:gs}=await sb.from('game_settings').select('*').eq('id','dice').single();
-    if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
+    if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     const {data:{session}}=await sb.auth.getSession();
     if(session){currentUser=session.user;const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}}
   }catch(e){console.warn('[Dice]',e.message);}
-  if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('dice');if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
+  if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('dice');if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
-async function sbDeduct(sat){if(!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
-async function sbAddWin(sat){if(!sb||!currentUser)return;try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
+async function sbDeduct(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
+async function sbAddWin(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
 async function sbLog(betSat,profitSat,mult,meta){
+  if(gameMode!=='real')return;
   if(window.CK&&currentUser){try{await CK.logBet('dice',betSat,profitSat,mult,meta);return;}catch(e){}}
   if(!sb||!currentUser)return;
   try{
     await sb.from('bets').insert({user_id:currentUser.id,game:'dice',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat(mult)||0,meta,created_at:new Date().toISOString()});
-    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_sat,total_profit_sat').eq('id','dice').single();
+    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_btc,total_paid_btc').eq('id','dice').single();
     if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_btc:(parseFloat(gs.total_wagered_btc)||0)+betSat/1e8,total_paid_btc:(parseFloat(gs.total_paid_btc)||0)+Math.max(0,profitSat/1e8),updated_at:new Date().toISOString()}).eq('id','dice');
   }catch(e){console.warn('[Dice] log:',e.message);}
 }
