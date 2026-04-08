@@ -567,25 +567,58 @@ async function sbAddWin(sat){
 }
 
 async function sbLogBet(betSat,profitSat,mult,meta){
+  // Pokud je CK wrapper dostupný, použij ho
+  if(window.CK && currentUser){
+    try{
+      await CK.logBet('mines', betSat, profitSat, mult, meta);
+      return;
+    }catch(e){}
+  }
   if(!sbClient||!currentUser)return;
   try{
-    await sbClient.from('bets').insert({
-      user_id:currentUser.id,game:'mines',
+    // Vlož do bets tabulky
+    const {data:bet} = await sbClient.from('bets').insert({
+      user_id:currentUser.id,
+      game:'mines',
       bet_satoshi:betSat,
       profit_satoshi:profitSat,
-      multiplier:mult,
+      multiplier:parseFloat(mult)||0,
       meta:meta,
       created_at:new Date().toISOString()
-    });
-    // Update game_settings stats
-    await sbClient.from('game_settings').update({
-      total_bets_count:sbClient.rpc('increment'),
-      total_wagered_sat:sbClient.rpc('increment',{amount:betSat})
-    }).eq('game_id','mines').catch(()=>{});
-  }catch(e){console.warn('LogBet:',e.message);}
+    }).select().single();
+
+    // Aktualizuj game_settings statistiky (pro game-logic.html admin panel)
+    const {data:gs} = await sbClient
+      .from('game_settings')
+      .select('total_bets_count,total_wagered_sat,total_profit_sat')
+      .eq('game_id','mines').single();
+    if(gs){
+      await sbClient.from('game_settings').update({
+        total_bets_count: (parseInt(gs.total_bets_count)||0) + 1,
+        total_wagered_sat: (parseInt(gs.total_wagered_sat)||0) + betSat,
+        total_profit_sat: (parseInt(gs.total_profit_sat)||0) + (-profitSat), // casino profit = -player profit
+        updated_at: new Date().toISOString()
+      }).eq('game_id','mines');
+    }
+
+    console.log('[Mines] Bet logged:', {betSat, profitSat, mult, meta});
+  }catch(e){console.warn('[Mines] LogBet error:',e.message);}
 }
 
 initSupabase();
+
+// ── Fallback: pokud je k dispozici CK wrapper z supabase.js ──
+window.addEventListener('load', async function(){
+  if(window.CK){
+    // CK wrapper je dostupný - sync balance
+    const bal = await CK.getBalance();
+    if(bal > 0){ balance = bal; updateBal(); }
+    // Načti game settings přes CK cache
+    const gs = await CK.getGameSettings('mines');
+    if(gs){ RTP = gs.rtp/100; HOUSE_EDGE = gs.house_edge/100; }
+    console.log('[Mines] CK wrapper active, RTP:', (RTP*100).toFixed(1)+'%');
+  }
+});
 
 // ══════════════════════════════════════════════════
 //  AUDIO ENGINE
@@ -911,6 +944,15 @@ async function startGame(){
   document.getElementById('resultText').textContent='';
   document.getElementById('multDisp').textContent='1.00×';
   document.getElementById('startBtn').disabled=true;
+  // Zapiš do game_sessions
+  if(sbClient&&currentUser){
+    sbClient.from('game_sessions').insert({
+      user_id:currentUser.id, game:'mines',
+      bet_satoshi:Math.round(betAmt*1e8),
+      started_at:new Date().toISOString(),
+      meta:{mines_count:minesCount,grid_size:GRID}
+    }).then(()=>{}).catch(()=>{});
+  }
   document.getElementById('cashoutBtn').classList.add('show');
   document.getElementById('cashoutBtn').classList.remove('danger-cashout');
   document.getElementById('boardWrap').className='board-wrap active-game';
@@ -953,7 +995,7 @@ function revealCell(idx){
     sessionProfit-=betAmt;updateStats();chartData.push(-betAmt);updateChart();
     addHistory(minesCount,gemsFoundCount,'💣 BOOM',betAmt,-betAmt);
     // Log to DB
-    sbLogBet(Math.round(betAmt*1e8),Math.round(-betAmt*1e8),0,{mines:minesCount,gems:gemsFoundCount,result:'mine'});
+    sbLogBet(Math.round(betAmt*1e8),Math.round(-betAmt*1e8),0,{mines_count:minesCount,gems_found:gemsFoundCount,result:'mine',grid_size:GRID});
 
     if(autoPlaying){stopAuto();return;}
   } else {
@@ -1039,7 +1081,7 @@ async function cashOut(){
 
   updateBal();updateStats();chartData.push(profit);updateChart();
   addHistory(minesCount,gemsFoundCount,mult.toFixed(2)+'×',betAmt,profit);
-  sbLogBet(Math.round(betAmt*1e8),Math.round(profit*1e8),mult,{mines:minesCount,gems:gemsFoundCount,result:'cashout'});
+  sbLogBet(Math.round(betAmt*1e8),Math.round(profit*1e8),mult,{mines_count:minesCount,gems_found:gemsFoundCount,result:'cashout',grid_size:GRID,payout_btc:payout});
 
   if(autoPlaying){
     autoRoundsLeft--;
@@ -1108,5 +1150,6 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
 // ══ INIT ══
 buildGrid();updateNextMult(0);
 </script>
+<script src="supabase.js"></script>
 </body>
 </html>
