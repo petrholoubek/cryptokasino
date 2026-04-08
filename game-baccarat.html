@@ -566,6 +566,8 @@ let balance=DEMO_BAL;
 
 // ══ SUPABASE INIT ══
 (async function(){
+  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sb=createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -602,6 +604,7 @@ async function sbLogBet(betSat,profitSat,mult,meta){
 // ══ MODE TOGGLE ══
 function setMode(mode){
   gameMode=mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
   const isDemo=mode==='demo';
   document.getElementById('modeDemo').classList.toggle('active',isDemo);
   document.getElementById('modeReal').classList.toggle('active',!isDemo);
