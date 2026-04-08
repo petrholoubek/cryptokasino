@@ -776,7 +776,6 @@ async function animComm(card){
 
 // ══ DEAL ══
 async function dealHand(){
-  if(gameMode!=='real'||!sb||!currentUser)return;
   if(dealing)return;
   ante=parseFloat(document.getElementById('anteInput').value);
   if(!ante||ante<=0){alert('Set ante amount!');return;}
