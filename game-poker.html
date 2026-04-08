@@ -441,6 +441,12 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
         <div class="card c-placeholder">?</div>
       </div>
       <div class="hand-rank-lbl" id="handRank"></div>
+      <div class="hand-strength-wrap" id="handStrengthWrap" style="display:none;margin-top:.5rem;">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);text-align:center;margin-bottom:.3rem;">Hand Strength</div>
+        <div style="background:rgba(255,255,255,.05);border-radius:4px;height:8px;overflow:hidden;width:200px;margin:0 auto;">
+          <div id="handStrengthBar" style="height:100%;border-radius:4px;background:linear-gradient(to right,#4ade80,#F5C842);width:0%;transition:width .5s ease,background .5s;"></div>
+        </div>
+      </div>
     </div>
 
     <!-- RESULT -->
@@ -454,6 +460,14 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
     <div class="pf-lbl">&#128272; Provably Fair</div>
     <div class="pf-hash" id="pfHash">Deal a hand to see hash</div>
     <button class="pf-btn" onclick="verifyHash()">Verify</button>
+  </div>
+
+  <!-- KEYBOARD HINTS -->
+  <div style="background:rgba(212,160,23,.04);border:1px solid rgba(212,160,23,.08);border-radius:8px;padding:.45rem 1rem;margin-bottom:.6rem;display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;">
+    <span style="font-family:'Cinzel',serif;font-size:.52rem;color:var(--text-dim)">&#9251; SPACE = Deal</span>
+    <span style="font-family:'Cinzel',serif;font-size:.52rem;color:var(--text-dim)">F = Fold</span>
+    <span style="font-family:'Cinzel',serif;font-size:.52rem;color:var(--text-dim)">C = Check</span>
+    <span style="font-family:'Cinzel',serif;font-size:.52rem;color:var(--text-dim)">R = Raise</span>
   </div>
 
   <!-- ACTION PANEL -->
@@ -470,6 +484,10 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
       <button class="qb" onclick="setAnte(.05)">0.05</button>
       <button class="qb" onclick="halfAnte()">&#189;</button>
       <button class="qb" onclick="doubleAnte()">&#215;2</button>
+      <button class="qb" id="autoRebetBtn" onclick="toggleAutoRebet()" style="border-color:rgba(168,85,247,.3);color:var(--purple);">&#9654; Auto</button>
+    </div>
+    <div id="autoRebetInfo" style="display:none;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;color:var(--purple);text-align:center;margin-bottom:.4rem;padding:.25rem .6rem;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:5px;">
+      &#9654; Auto Rebet ON — hraje automaticky po každé ruce
     </div>
     <div class="action-btns">
       <button class="act-btn btn-fold" id="btnFold" onclick="doFold()" disabled>FOLD</button>
@@ -532,6 +550,8 @@ const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
+  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sb=createClient(SB_URL,SB_KEY);
@@ -549,6 +569,10 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 })();
 
 async function sbLog(betSat,profitSat,mult,meta){
+  // CK wrapper fallback
+  if(window.CK&&currentUser){
+    try{ await CK.logBet('poker',betSat,profitSat,mult,meta); return; }catch(e){}
+  }
   if(!sb||!currentUser)return;
   try{
     await sb.from('bets').insert({user_id:currentUser.id,game:'poker',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat(mult)||0,meta,created_at:new Date().toISOString()});
@@ -559,7 +583,9 @@ async function sbLog(betSat,profitSat,mult,meta){
 
 // ══ MODE ══
 function setMode(mode){
-  gameMode=mode;const isDemo=mode==='demo';
+  gameMode=mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
+  const isDemo=mode==='demo';
   document.getElementById('modeDemo').classList.toggle('active',isDemo);
   document.getElementById('modeReal').classList.toggle('active',!isDemo);
   document.getElementById('demoBadge').style.display=isDemo?'':'none';
@@ -752,6 +778,8 @@ async function dealHand(){
   if(gameMode==='real'){
     try{await sb?.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:Math.round(ante*1e8)});}catch(e){}
     balance-=ante;realBalance-=ante;
+    // Track game session start
+    try{await sb?.from('game_sessions').insert({user_id:currentUser.id,game:'poker',bet_satoshi:Math.round(ante*1e8),started_at:new Date().toISOString(),meta:{phase:'preflop'}});}catch(e){}
   } else {balance-=ante;demoBalance-=ante;}
   pot+=ante*2;wagered+=ante;updateBal();updatePotUI();
 
@@ -779,6 +807,7 @@ async function dealHand(){
   const rank=handName(pCards);
   document.getElementById('handRank').textContent=rank;
   highlightPaytable(rank);
+  updateHandStrength(rank);
 
   phase='preflop';setPhase('deal');
   setBtns(false,true,true,true);
@@ -798,6 +827,8 @@ function doFold(){
   if(gameMode==='real')sbLog(Math.round(ante*1e8),Math.round(profit*1e8),0,{hand:'Fold',phase,result:'fold'});
   addHist('Fold',ante,'lose',profit);updateStats();revealDealer();
   phase='idle';setBtns(true,false,false,false);pot=0;updatePotUI();
+  updateHandStrength('');
+  if(autoRebet){ setTimeout(()=>{if(phase==='idle'&&!dealing)dealHand();},800); }
   document.getElementById('pokerTable').classList.remove('game-active');
   spawnP('lose');
 }
@@ -850,6 +881,8 @@ function updateHandRank(){
       document.getElementById('handRank').textContent=b.name;
       document.getElementById('handRank').className='hand-rank-lbl'+(b.isRoyal?' royal':'');
       highlightPaytable(b.name);
+      updateHandStrength(b.name);
+      checkCloseCalls(pCards, comm);
     }
   }
 }
@@ -921,7 +954,14 @@ async function showdown(){
   updateStats();updateChart();pot=0;updatePotUI();
   document.getElementById('pokerTable').classList.remove('game-active');
 
-  setTimeout(()=>{setBtns(true,false,false,false);phase='idle';},700);
+  setTimeout(()=>{
+    setBtns(true,false,false,false);phase='idle';
+    updateHandStrength('');
+    // Auto rebet
+    if(autoRebet){
+      setTimeout(()=>{if(phase==='idle'&&!dealing)dealHand();},800);
+    }
+  },700);
 }
 
 function updateStats(){
@@ -949,6 +989,104 @@ function updateChart(){
   const last=pts[pts.length-1];cx.strokeStyle=last>=0?'#4ade80':'#f87171';cx.lineWidth=2;cx.lineJoin='round';cx.stroke();
   cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();
   const grad=cx.createLinearGradient(0,0,0,H);grad.addColorStop(0,last>=0?'rgba(74,222,128,.22)':'rgba(248,113,113,.22)');grad.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=grad;cx.fill();
+}
+
+
+// ══ KEYBOARD SHORTCUTS ══
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName === 'INPUT') return;
+  if(e.code === 'Space' || e.code === 'Enter'){
+    e.preventDefault();
+    if(!document.getElementById('btnDeal').disabled) dealHand();
+  }
+  if(e.code === 'KeyF') { if(!document.getElementById('btnFold').disabled) doFold(); }
+  if(e.code === 'KeyC') { if(!document.getElementById('btnCheck').disabled) doCheck(); }
+  if(e.code === 'KeyR') { if(!document.getElementById('btnRaise').disabled) doRaise(); }
+});
+
+
+// ══ HAND STRENGTH ══
+const HAND_STRENGTH = {
+  'Royal Flush':100,'Straight Flush':90,'Four of a Kind':80,'Full House':70,
+  'Flush':60,'Straight':50,'Three of a Kind':40,'Two Pair':30,'One Pair':18,'High Card':5
+};
+function updateHandStrength(handName){
+  const wrap = document.getElementById('handStrengthWrap');
+  const bar = document.getElementById('handStrengthBar');
+  if(!handName || handName === '—'){wrap.style.display='none';return;}
+  const strength = HAND_STRENGTH[handName] || 5;
+  wrap.style.display = '';
+  bar.style.width = strength + '%';
+  if(strength >= 70) bar.style.background = 'linear-gradient(to right,#a855f7,#F5C842)';
+  else if(strength >= 40) bar.style.background = 'linear-gradient(to right,#4ade80,#F5C842)';
+  else bar.style.background = 'linear-gradient(to right,#f87171,#F5C842)';
+}
+
+// ══ AUTO REBET ══
+let autoRebet = false;
+function toggleAutoRebet(){
+  autoRebet = !autoRebet;
+  const btn = document.getElementById('autoRebetBtn');
+  const info = document.getElementById('autoRebetInfo');
+  if(autoRebet){
+    btn.style.background = 'rgba(168,85,247,.25)';
+    btn.style.borderColor = 'rgba(168,85,247,.6)';
+    btn.textContent = '⏹ Auto ON';
+    info.style.display = '';
+  } else {
+    btn.style.background = '';
+    btn.style.borderColor = 'rgba(168,85,247,.3)';
+    btn.textContent = '▶ Auto';
+    info.style.display = 'none';
+  }
+}
+
+// ══ CLOSE CALL DETECTION ══
+function checkCloseCalls(playerCards, comm){
+  if(!comm || comm.length < 3) return;
+  const all = [...playerCards, ...comm];
+  const best = getBest(all);
+  if(!best) return;
+  // Zkontroluj jestli jsme 1 kartu od Royal Flush nebo Straight Flush
+  const suits = {};
+  all.forEach(c => { suits[c.s] = (suits[c.s]||[]); suits[c.s].push(RV[c.r]); });
+  Object.values(suits).forEach(ranks => {
+    if(ranks.length >= 4){
+      ranks.sort((a,b)=>a-b);
+      // 4 karty ke Straight Flush
+      for(let i=0; i<=ranks.length-4; i++){
+        if(ranks[i+3]-ranks[i] <= 4 && new Set(ranks.slice(i,i+4)).size >= 4){
+          if(best.name === 'Flush' || best.name === 'Straight'){
+            showCloseCall('🔥 One card to Straight Flush!');
+          }
+        }
+      }
+      // 4 karty k Royal Flush (10,J,Q,K,A)
+      const royal = [10,11,12,13,14];
+      const hasRoyal = royal.filter(v => ranks.includes(v));
+      if(hasRoyal.length >= 4) showCloseCall('👑 One card to Royal Flush!');
+    }
+  });
+}
+
+let closeCallTimeout = null;
+function showCloseCall(msg){
+  const rt = document.getElementById('resultTxt');
+  const prev = rt.textContent;
+  const prevClass = rt.className;
+  rt.textContent = msg;
+  rt.className = 'result-txt show';
+  rt.style.color = '#a855f7';
+  rt.style.fontSize = '1.1rem';
+  rt.style.textShadow = '0 0 30px rgba(168,85,247,.8)';
+  clearTimeout(closeCallTimeout);
+  closeCallTimeout = setTimeout(()=>{
+    rt.textContent = prev;
+    rt.className = prevClass;
+    rt.style.color = '';
+    rt.style.fontSize = '';
+    rt.style.textShadow = '';
+  }, 2500);
 }
 
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
