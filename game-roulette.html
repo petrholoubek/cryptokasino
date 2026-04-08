@@ -262,6 +262,13 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
   .stats-grid{grid-template-columns:1fr 1fr;}
   .roulette-layout{grid-template-columns:1fr;}
 }
+
+@media(max-width:768px){
+  .show-layout,.game-layout,.main-layout{grid-template-columns:1fr!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .bh-main{grid-template-columns:1fr!important;}
+  .bh-divider{display:none!important;}
+}
 </style>
 </head>
 <body>
@@ -447,6 +454,7 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script>
 // ══ SUPABASE ══
 const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
@@ -458,13 +466,13 @@ const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
-  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  // Demo mode OKAMZITE — hra hratelna bez prihlaseni
   setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sb=createClient(SB_URL,SB_KEY);
-    const {data:gs}=await sb.from('game_settings').select('*').eq('game_id','roulette').single();
-    if(gs){RTP=gs.rtp/100;HOUSE_EDGE=gs.house_edge/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
+    const {data:gs}=await sb.from('game_settings').select('*').eq('id','roulette').single();
+    if(gs){RTP=gs.rtp_pct/100;HOUSE_EDGE=gs.house_edge/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     const {data:{session}}=await sb.auth.getSession();
     if(session){
       currentUser=session.user;
@@ -472,30 +480,32 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
       if(prof){currentUser.username=prof.username||prof.email?.split('@')[0]||'Player';realBalance=parseFloat(prof.balance||0);}
     }
   }catch(e){console.warn('[Roulette]',e.message);}
-  // demo jiz nastaveno vyse
   if(window.CK){
     const b=await CK.getBalance();if(b>0)realBalance=b;
     const gs=await CK.getGameSettings('roulette');
-    if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
+    if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});
   }
 })();
 
 async function sbDeduct(sat){
+  if(gameMode!=='real'||!sb||!currentUser)return;
   if(!sb||!currentUser)return;
   try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}
 }
 async function sbAddWin(sat){
+  if(gameMode!=='real'||!sb||!currentUser)return;
   if(!sb||!currentUser)return;
   try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}
 }
 async function sbLogBet(betSat,profitSat,result,bets){
+  if(gameMode!=='real')return; // FIREWALL demo
   if(window.CK&&currentUser){try{await CK.logBet('roulette',betSat,profitSat,result/37,{result,bets:bets.map(b=>b.type)});return;}catch(e){}}
   if(!sb||!currentUser)return;
   try{
     await sb.from('bets').insert({user_id:currentUser.id,game:'roulette',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat((result/37).toFixed(3)),meta:{result_number:result,bet_types:bets.map(b=>b.type)},created_at:new Date().toISOString()});
-    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_sat,total_profit_sat').eq('game_id','roulette').single();
-    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_sat:(parseInt(gs.total_wagered_sat)||0)+betSat,total_profit_sat:(parseInt(gs.total_profit_sat)||0)+(-profitSat),updated_at:new Date().toISOString()}).eq('game_id','roulette');
+    const {data:gs}=await sb.from('game_settings').select('total_bets_count,total_wagered_btc,total_paid_btc').eq('id','roulette').single();
+    if(gs)await sb.from('game_settings').update({total_bets_count:(parseInt(gs.total_bets_count)||0)+1,total_wagered_btc:(parseFloat(gs.total_wagered_btc)||0)+betSat/1e8,total_paid_btc:(parseFloat(gs.total_paid_btc)||0)+Math.max(0,profitSat/1e8),updated_at:new Date().toISOString()}).eq('id','roulette');
   }catch(e){console.warn('[Roulette] log:',e.message);}
 }
 
@@ -961,7 +971,9 @@ document.addEventListener('keydown',function(e){
   if(e.code==='KeyD')doubleBets();
 });
 updateBal();
+// Demo mode fallback
+document.addEventListener('DOMContentLoaded', function(){if(typeof setMode==='function')setMode('demo');},{once:true});
+if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
 </script>
-<script src="supabase.js"></script>
 </body>
 </html>
