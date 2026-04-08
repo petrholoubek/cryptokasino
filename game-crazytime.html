@@ -512,6 +512,8 @@ let sb=null,currentUser=null,realBalance=0,RTP=0.961;
 let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
+  // Demo mode se spusti OKAMZITE - hra je hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;sb=createClient(SB_URL,SB_KEY);
     const {data:gs}=await sb.from('game_settings').select('*').eq('game_id','crazytime').single();
@@ -519,7 +521,7 @@ let gameMode='demo';const DEMO_BAL=1.0;let demoBalance=DEMO_BAL,balance=DEMO_BAL
     const {data:{session}}=await sb.auth.getSession();
     if(session){currentUser=session.user;const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}}
   }catch(e){console.warn('[CT]',e.message);}
-  setTimeout(()=>setMode('demo'),80);
+  // demo jiz nastaveno vyse
   if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('crazytime');if(gs){RTP=gs.rtp/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
 async function sbDeduct(sat){if(!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
@@ -536,7 +538,9 @@ async function sbLog(betSat,profitSat,mult,meta){
 
 // ══ MODE ══
 function setMode(mode){
-  gameMode=mode;const isDemo=mode==='demo';
+  gameMode=mode;
+  if(window.CK)CK.setGameMode(mode); // FIREWALL: sync to supabase.js
+  const isDemo=mode==='demo';
   document.getElementById('modeDemo').classList.toggle('active',isDemo);
   document.getElementById('modeReal').classList.toggle('active',!isDemo);
   document.getElementById('demoBadge').style.display=isDemo?'':'none';
