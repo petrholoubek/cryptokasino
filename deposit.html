@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deposit & Withdraw – CryptoKasino</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>Deposit &amp; Withdraw – CryptoKasino</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -24,7 +23,7 @@ nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-sp
 nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
 .header-right{display:flex;align-items:center;gap:0.8rem;}
 .btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
-.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 16px rgba(212,160,23,0.4);transition:all 0.2s;}
+.btn-dep{background:var(--gold);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .btn-dep:hover{background:var(--gold-light);}
 .btn-login{background:transparent;color:var(--text);border:1px solid rgba(212,160,23,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
@@ -43,6 +42,12 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .page-header{text-align:center;margin-bottom:2.5rem;}
 .page-header h1{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 40px rgba(245,200,66,0.5);margin-bottom:0.5rem;}
 .page-header p{color:var(--text-dim);font-size:0.95rem;}
+.login-required{background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.22);border-radius:14px;padding:2rem;text-align:center;margin-bottom:2rem;}
+.lr-icon{font-size:2.5rem;margin-bottom:.8rem;}
+.lr-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--red);margin-bottom:.4rem;}
+.lr-text{font-size:.88rem;color:var(--text-dim);margin-bottom:1.2rem;line-height:1.6;}
+.lr-btn{display:inline-block;background:var(--gold);color:#000;padding:.7rem 2rem;border-radius:8px;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;}
+.lr-btn:hover{background:var(--gold-light);}
 .account-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
 .acc-card{background:rgba(15,10,2,0.85);border:1px solid rgba(212,160,23,0.15);border-radius:14px;padding:1.2rem;text-align:center;position:relative;overflow:hidden;}
 .acc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -58,8 +63,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .tab{flex:1;padding:0.8rem;border-radius:9px;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text-dim);transition:all 0.2s;text-align:center;}
 .tab.active{background:rgba(212,160,23,0.18);color:var(--gold-light);box-shadow:0 0 15px rgba(212,160,23,0.2);}
 .tab:hover:not(.active){color:var(--gold);background:rgba(212,160,23,0.07);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
+.tab-content{display:none;}.tab-content.active{display:block;}
 .deposit-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.2);border-radius:20px;overflow:hidden;margin-bottom:1.5rem;}
 .dc-header{padding:1.2rem 1.5rem;background:rgba(212,160,23,0.07);border-bottom:1px solid rgba(212,160,23,0.12);display:flex;align-items:center;justify-content:space-between;}
 .dc-title{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
@@ -155,8 +159,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .tx-info-type{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:700;color:var(--text);}
 .tx-info-hash{font-family:monospace;font-size:0.6rem;color:var(--text-dim);}
 .tx-amount{font-family:'Cinzel',serif;font-size:0.82rem;font-weight:700;}
-.tx-amount.dep{color:var(--green);}
-.tx-amount.with{color:var(--red);}
+.tx-amount.dep{color:var(--green);}.tx-amount.with{color:var(--red);}
 .tx-date{font-size:0.72rem;color:var(--text-dim);}
 .tx-status{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:4px;white-space:nowrap;}
 .ts-confirmed{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid rgba(74,222,128,0.25);}
@@ -180,20 +183,14 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .modal-btn:hover{transform:scale(1.04);}
 footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:2rem;}
 @media(max-width:768px){.dep-layout{grid-template-columns:1fr;}.account-summary{grid-template-columns:1fr 1fr;}.limits-grid{grid-template-columns:1fr;}.tx-table-hdr,.tx-row{grid-template-columns:auto 1fr 1fr auto;}.tx-date,.tx-table-hdr span:nth-child(4){display:none;}}
-@media(max-width:640px){
-  header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
-  nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
-  .page{padding:1.5rem 0.8rem 4rem;}
-  .account-summary{grid-template-columns:1fr 1fr;gap:0.6rem;}
-  .tx-table-hdr,.tx-row{grid-template-columns:auto 1fr auto;}.tx-amount,.tx-table-hdr span:nth-child(3){display:none;}
-}
+@media(max-width:640px){header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}.page{padding:1.5rem 0.8rem 4rem;}.account-summary{grid-template-columns:1fr 1fr;gap:0.6rem;}.tx-table-hdr,.tx-row{grid-template-columns:auto 1fr auto;}.tx-amount,.tx-table-hdr span:nth-child(3){display:none;}}
 </style>
 </head>
 <body>
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
-    <span class="modal-icon" id="modalIcon">✅</span>
+    <span class="modal-icon" id="modalIcon">&#9989;</span>
     <div class="modal-title" id="modalTitle">Success!</div>
     <div class="modal-text" id="modalText">Done.</div>
     <button class="modal-btn" onclick="closeModal()">OK, Got it!</button>
@@ -222,601 +219,507 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
     <p>Fast, anonymous Bitcoin transactions &middot; No fees &middot; Instant processing</p>
   </div>
 
-  <div class="account-summary">
-    <div class="acc-card btc-card">
-      <div class="acc-icon">&#8383;</div>
-      <div class="acc-label">Total Balance</div>
-      <div class="acc-value" id="totalBalance">0.00000000 BTC</div>
-    </div>
-    <div class="acc-card dep-card">
-      <div class="acc-icon">&#11015;&#65039;</div>
-      <div class="acc-label">Total Deposited</div>
-      <div class="acc-value green" id="totalDeposited">0.00000000 BTC</div>
-    </div>
-    <div class="acc-card with-card">
-      <div class="acc-icon">&#11014;&#65039;</div>
-      <div class="acc-label">Total Withdrawn</div>
-      <div class="acc-value red" id="totalWithdrawn">0.00000000 BTC</div>
-    </div>
-    <div class="acc-card bonus-card">
-      <div class="acc-icon">&#127873;</div>
-      <div class="acc-label">Bonus Balance</div>
-      <div class="acc-value orange">0.00000000 BTC</div>
-    </div>
+  <!-- LOGIN REQUIRED BANNER (zobrazí se nepřihlášeným) -->
+  <div class="login-required" id="loginRequired" style="display:none">
+    <div class="lr-icon">&#128272;</div>
+    <div class="lr-title">Login Required</div>
+    <div class="lr-text">Pro deposit a výběr musíš být přihlášen. Přihlášení je zdarma a anonymní.</div>
+    <a href="login.html" class="lr-btn">&#128272; Login / Register</a>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('deposit',this)">&#11015;&#65039; Deposit BTC</button>
-    <button class="tab" onclick="switchTab('withdraw',this)">&#11014;&#65039; Withdraw BTC</button>
-    <button class="tab" onclick="switchTab('history',this)">&#128203; History</button>
-  </div>
+  <div id="mainContent" style="display:none">
+    <div class="account-summary">
+      <div class="acc-card btc-card"><div class="acc-icon">&#8383;</div><div class="acc-label">Total Balance</div><div class="acc-value" id="totalBalance">0.00000000 BTC</div></div>
+      <div class="acc-card dep-card"><div class="acc-icon">&#11015;&#65039;</div><div class="acc-label">Total Deposited</div><div class="acc-value green" id="totalDeposited">0.00000000 BTC</div></div>
+      <div class="acc-card with-card"><div class="acc-icon">&#11014;&#65039;</div><div class="acc-label">Total Withdrawn</div><div class="acc-value red" id="totalWithdrawn">0.00000000 BTC</div></div>
+      <div class="acc-card bonus-card"><div class="acc-icon">&#127873;</div><div class="acc-label">Bonus Balance</div><div class="acc-value orange">0.00000000 BTC</div></div>
+    </div>
 
-  <!-- DEPOSIT TAB -->
-  <div class="tab-content active" id="tab-deposit">
-    <div class="deposit-card">
-      <div class="dc-header">
-        <span class="dc-title">&#8383; Bitcoin Deposit</span>
-        <div class="dc-badge"><div class="dc-badge-dot"></div>HD Wallet &middot; Unique Address</div>
-      </div>
-      <div class="dc-body">
-        <div class="dep-layout">
-          <div class="qr-section">
-            <div class="qr-wrap"><div id="qrcode"></div></div>
-            <div class="qr-label">Scan to Deposit BTC</div>
-            <div class="qr-coin-badge">&#8383; Bitcoin (BTC) &middot; Mainnet</div>
-            <button class="new-addr-btn" onclick="generateNewAddress()">&#128260; Generate New Address</button>
-          </div>
-          <div class="addr-section">
-            <div class="addr-label">Your Deposit Address</div>
-            <div class="addr-box">
-              <div class="addr-text" id="btcAddress">Loading...</div>
-              <button class="copy-btn" id="copyBtn" onclick="copyAddress()">&#128203; Copy</button>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('deposit',this)">&#11015;&#65039; Deposit BTC</button>
+      <button class="tab" onclick="switchTab('withdraw',this)">&#11014;&#65039; Withdraw BTC</button>
+      <button class="tab" onclick="switchTab('history',this)">&#128203; History</button>
+    </div>
+
+    <!-- DEPOSIT TAB -->
+    <div class="tab-content active" id="tab-deposit">
+      <div class="deposit-card">
+        <div class="dc-header">
+          <span class="dc-title">&#8383; Bitcoin Deposit</span>
+          <div class="dc-badge"><div class="dc-badge-dot"></div>HD Wallet &middot; Unique Address</div>
+        </div>
+        <div class="dc-body">
+          <div class="dep-layout">
+            <div class="qr-section">
+              <div class="qr-wrap"><div id="qrcode"></div></div>
+              <div class="qr-label">Scan to Deposit BTC</div>
+              <div class="qr-coin-badge">&#8383; Bitcoin (BTC) &middot; Mainnet</div>
+              <button class="new-addr-btn" onclick="generateNewAddress()">&#128260; Generate New Address</button>
             </div>
-            <div class="info-boxes">
-              <div class="info-box success">
-                <div class="info-icon">&#9889;</div>
-                <div class="info-text"><strong>Instant Credit</strong> &ndash; Balance credited after 1 confirmation (~10 min)</div>
+            <div class="addr-section">
+              <div class="addr-label">Your Deposit Address</div>
+              <div class="addr-box">
+                <div class="addr-text" id="btcAddress">Loading address...</div>
+                <button class="copy-btn" id="copyBtn" onclick="copyAddress()">&#128203; Copy</button>
               </div>
-              <div class="info-box">
-                <div class="info-icon">&#128274;</div>
-                <div class="info-text"><strong>Unique Address</strong> &ndash; Each deposit uses a fresh HD Wallet address for maximum privacy</div>
+              <div class="info-boxes">
+                <div class="info-box success"><div class="info-icon">&#9889;</div><div class="info-text"><strong>Instant Credit</strong> &ndash; Balance credited after 1 confirmation (~10 min)</div></div>
+                <div class="info-box"><div class="info-icon">&#128274;</div><div class="info-text"><strong>Unique Address</strong> &ndash; Each deposit uses a fresh HD Wallet address for maximum privacy</div></div>
+                <div class="info-box warning"><div class="info-icon">&#9888;&#65039;</div><div class="info-text"><strong>BTC Only</strong> &ndash; Send only Bitcoin. Other coins will be lost permanently.</div></div>
+                <div class="info-box"><div class="info-icon">&#128176;</div><div class="info-text"><strong>Min Deposit:</strong> 0.001 BTC &nbsp;|&nbsp; <strong>No Max</strong> limit</div></div>
               </div>
-              <div class="info-box warning">
-                <div class="info-icon">&#9888;&#65039;</div>
-                <div class="info-text"><strong>BTC Only</strong> &ndash; Send only Bitcoin to this address. Other coins will be lost permanently.</div>
-              </div>
-              <div class="info-box">
-                <div class="info-icon">&#128176;</div>
-                <div class="info-text"><strong>Min Deposit:</strong> 0.001 BTC &nbsp;|&nbsp; <strong>No Max</strong> limit</div>
-              </div>
-            </div>
-            <div class="amount-section">
-              <div class="amount-label">Expected Deposit Amount</div>
-              <div class="amount-row">
-                <input type="number" class="amount-input" id="depAmount" placeholder="0.00000000" min="0.001" step="0.001" oninput="updateBonus()">
-                <span class="amount-btc">BTC</span>
-              </div>
-              <div class="amount-quick">
-                <button class="aq-btn" onclick="setDepAmt(0.001)">0.001</button>
-                <button class="aq-btn" onclick="setDepAmt(0.01)">0.01</button>
-                <button class="aq-btn" onclick="setDepAmt(0.05)">0.05</button>
-                <button class="aq-btn" onclick="setDepAmt(0.1)">0.1</button>
-                <button class="aq-btn" onclick="setDepAmt(0.5)">0.5</button>
-                <button class="aq-btn" onclick="setDepAmt(1.0)">1.0</button>
-              </div>
-              <div class="bonus-preview" id="bonusPreview" style="display:none">
-                <div>
-                  <div class="bp-label">&#127873; Welcome Bonus (100%)</div>
-                  <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">First deposit only</div>
+              <div class="amount-section">
+                <div class="amount-label">Expected Deposit Amount</div>
+                <div class="amount-row">
+                  <input type="number" class="amount-input" id="depAmount" placeholder="0.00000000" min="0.001" step="0.001" oninput="updateBonus()">
+                  <span class="amount-btc">BTC</span>
                 </div>
-                <div class="bp-value" id="bonusVal">+0.00000 BTC</div>
+                <div class="amount-quick">
+                  <button class="aq-btn" onclick="setDepAmt(0.001)">0.001</button>
+                  <button class="aq-btn" onclick="setDepAmt(0.01)">0.01</button>
+                  <button class="aq-btn" onclick="setDepAmt(0.05)">0.05</button>
+                  <button class="aq-btn" onclick="setDepAmt(0.1)">0.1</button>
+                  <button class="aq-btn" onclick="setDepAmt(0.5)">0.5</button>
+                  <button class="aq-btn" onclick="setDepAmt(1.0)">1.0</button>
+                </div>
+                <div class="bonus-preview" id="bonusPreview" style="display:none">
+                  <div><div class="bp-label">&#127873; Welcome Bonus (100%)</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.2rem;">First deposit only</div></div>
+                  <div class="bp-value" id="bonusVal">+0.00000 BTC</div>
+                </div>
+              </div>
+              <div class="conf-tracker" id="confTracker">
+                <div class="ct-title">&#128225; Transaction Confirmations</div>
+                <div class="conf-bar-wrap"><div class="conf-bar" id="confBar"></div></div>
+                <div class="conf-nums"><span>0</span><span>1 &#10003;</span><span>3 &#10003;</span><span>6 &#10003;</span></div>
+                <div class="conf-status" id="confStatus">Waiting for transaction...</div>
               </div>
             </div>
-            <div class="conf-tracker" id="confTracker">
-              <div class="ct-title">&#128225; Transaction Confirmations</div>
-              <div class="conf-bar-wrap"><div class="conf-bar" id="confBar"></div></div>
-              <div class="conf-nums"><span>0</span><span>1 &#10003;</span><span>3 &#10003;</span><span>6 &#10003;</span></div>
-              <div class="conf-status" id="confStatus">Waiting for transaction...</div>
-            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="limits-section">
-      <div class="ls-title">&#128202; Deposit Information</div>
-      <div class="limits-grid">
-        <div class="limit-item"><div class="li-label">Minimum Deposit</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
-        <div class="limit-item"><div class="li-label">Maximum Deposit</div><div class="li-value">No Limit</div><div class="li-note">Any amount accepted</div></div>
-        <div class="limit-item"><div class="li-label">Confirmations Required</div><div class="li-value">1 Confirmation</div><div class="li-note">~10 minutes average</div></div>
-        <div class="limit-item"><div class="li-label">Welcome Bonus</div><div class="li-value">100% up to 1.0 BTC</div><div class="li-note">First deposit only &middot; 30x wagering</div></div>
-        <div class="limit-item"><div class="li-label">Network</div><div class="li-value">Bitcoin Mainnet</div><div class="li-note">BTC only - no Lightning</div></div>
-        <div class="limit-item"><div class="li-label">Deposit Fee</div><div class="li-value">0% - Free</div><div class="li-note">We cover network costs</div></div>
+      <div class="limits-section">
+        <div class="ls-title">&#128202; Deposit Information</div>
+        <div class="limits-grid">
+          <div class="limit-item"><div class="li-label">Minimum Deposit</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
+          <div class="limit-item"><div class="li-label">Maximum Deposit</div><div class="li-value">No Limit</div><div class="li-note">Any amount accepted</div></div>
+          <div class="limit-item"><div class="li-label">Confirmations Required</div><div class="li-value">1 Confirmation</div><div class="li-note">~10 minutes average</div></div>
+          <div class="limit-item"><div class="li-label">Welcome Bonus</div><div class="li-value">100% up to 1.0 BTC</div><div class="li-note">First deposit only &middot; 30x wagering</div></div>
+          <div class="limit-item"><div class="li-label">Network</div><div class="li-value">Bitcoin Mainnet</div><div class="li-note">BTC only - no Lightning</div></div>
+          <div class="limit-item"><div class="li-label">Deposit Fee</div><div class="li-value">0% - Free</div><div class="li-note">We cover network costs</div></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- WITHDRAW TAB -->
-  <div class="tab-content" id="tab-withdraw">
-    <div class="withdraw-card">
-      <div class="wc-header">
-        <span class="wc-title">&#11014;&#65039; Bitcoin Withdrawal</span>
-        <div class="dc-badge" style="color:var(--blue);background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);">
-          <div class="dc-badge-dot" style="background:var(--blue)"></div>Processed in ~10 min
+    <!-- WITHDRAW TAB -->
+    <div class="tab-content" id="tab-withdraw">
+      <div class="withdraw-card">
+        <div class="wc-header">
+          <span class="wc-title">&#11014;&#65039; Bitcoin Withdrawal</span>
+          <div class="dc-badge" style="color:var(--blue);background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);"><div class="dc-badge-dot" style="background:var(--blue)"></div>Processed in ~10 min</div>
+        </div>
+        <div class="wc-body">
+          <div class="withdraw-form">
+            <div class="wf-field">
+              <label class="wf-label">Bitcoin Address (Recipient)</label>
+              <input type="text" class="wf-input" id="withdrawAddr" placeholder="bc1q... or 1A1z... or 3J98..." oninput="validateWithdraw()">
+              <div class="wf-hint">Enter the Bitcoin address where you want to receive funds. Double-check before submitting!</div>
+              <div class="wf-error" id="addrError">Invalid Bitcoin address format</div>
+            </div>
+            <div class="wf-field">
+              <label class="wf-label">Amount (BTC)</label>
+              <div class="wf-amount-row">
+                <input type="number" class="wf-input" id="withdrawAmt" placeholder="0.00000000" min="0.001" step="0.0001" oninput="validateWithdraw()">
+                <button class="wf-max-btn" onclick="setMaxWithdraw()">MAX</button>
+              </div>
+              <div class="wf-hint">Available: <span id="availBalance" style="color:var(--gold-light);font-family:'Cinzel',serif;font-weight:700;">0.00000000 BTC</span> &nbsp;|&nbsp; Min: 0.001 BTC &nbsp;|&nbsp; Fee: 0.00005 BTC</div>
+              <div class="wf-error" id="amtError">Amount must be between 0.001 and your available balance</div>
+            </div>
+            <div class="wf-summary" id="wfSummary" style="display:none">
+              <div class="wfs-row"><span class="wfs-label">Amount</span><span class="wfs-value" id="wfsAmt">--</span></div>
+              <div class="wfs-row"><span class="wfs-label">Network Fee</span><span class="wfs-value red">- 0.00005 BTC</span></div>
+              <div class="wfs-row"><span class="wfs-label">You Receive</span><span class="wfs-value green" id="wfsReceive">--</span></div>
+              <div class="wfs-row"><span class="wfs-label">To Address</span><span class="wfs-value" id="wfsAddr" style="font-size:0.68rem;font-family:monospace">--</span></div>
+              <div class="wfs-row"><span class="wfs-label">Processing Time</span><span class="wfs-value">~10 minutes</span></div>
+            </div>
+            <button class="withdraw-btn" id="withdrawBtn" onclick="submitWithdraw()" disabled>&#11014;&#65039; Submit Withdrawal</button>
+            <div class="security-note">
+              <div class="sn-icon">&#128272;</div>
+              <div class="sn-text">
+                <h4>Security Notice</h4>
+                <p>Always verify the recipient address before submitting. Cryptocurrency transactions are irreversible. We process withdrawals within 10 minutes.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="wc-body">
-        <div class="withdraw-form">
-          <div class="wf-field">
-            <label class="wf-label">Bitcoin Address (Recipient)</label>
-            <input type="text" class="wf-input" id="withdrawAddr" placeholder="bc1q... or 1A1z... or 3J98..." oninput="validateWithdraw()">
-            <div class="wf-hint">Enter the Bitcoin address where you want to receive funds. Double-check before submitting!</div>
-            <div class="wf-error" id="addrError">Invalid Bitcoin address format</div>
-          </div>
-          <div class="wf-field">
-            <label class="wf-label">Amount (BTC)</label>
-            <div class="wf-amount-row">
-              <input type="number" class="wf-input" id="withdrawAmt" placeholder="0.00000000" min="0.001" step="0.0001" oninput="validateWithdraw()">
-              <button class="wf-max-btn" onclick="setMaxWithdraw()">MAX</button>
-            </div>
-            <div class="wf-hint">Available: <span id="availBalance" style="color:var(--gold-light);font-family:'Cinzel',serif;font-weight:700;">0.00000000 BTC</span> &nbsp;|&nbsp; Min: 0.001 BTC &nbsp;|&nbsp; Fee: 0.00005 BTC</div>
-            <div class="wf-error" id="amtError">Amount must be between 0.001 and your available balance</div>
-          </div>
-          <div class="wf-summary" id="wfSummary" style="display:none">
-            <div class="wfs-row"><span class="wfs-label">Amount</span><span class="wfs-value" id="wfsAmt">--</span></div>
-            <div class="wfs-row"><span class="wfs-label">Network Fee</span><span class="wfs-value red">- 0.00005 BTC</span></div>
-            <div class="wfs-row"><span class="wfs-label">You Receive</span><span class="wfs-value green" id="wfsReceive">--</span></div>
-            <div class="wfs-row"><span class="wfs-label">To Address</span><span class="wfs-value" id="wfsAddr" style="font-size:0.68rem;font-family:monospace">--</span></div>
-            <div class="wfs-row"><span class="wfs-label">Processing Time</span><span class="wfs-value">~10 minutes</span></div>
-          </div>
-          <button class="withdraw-btn" id="withdrawBtn" onclick="submitWithdraw()" disabled>&#11014;&#65039; Submit Withdrawal</button>
-          <div class="security-note">
-            <div class="sn-icon">&#128272;</div>
-            <div class="sn-text">
-              <h4>Security Notice</h4>
-              <p>Always verify the recipient address before submitting. Cryptocurrency transactions are irreversible. We process withdrawals within 10 minutes.</p>
-            </div>
-          </div>
+      <div class="limits-section">
+        <div class="ls-title">&#128202; Withdrawal Information</div>
+        <div class="limits-grid">
+          <div class="limit-item"><div class="li-label">Minimum Withdrawal</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
+          <div class="limit-item"><div class="li-label">Maximum per Day</div><div class="li-value">10.0 BTC</div><div class="li-note">VIP players: unlimited</div></div>
+          <div class="limit-item"><div class="li-label">Network Fee</div><div class="li-value">0.00005 BTC</div><div class="li-note">Fixed fee</div></div>
+          <div class="limit-item"><div class="li-label">Processing Time</div><div class="li-value">~10 Minutes</div><div class="li-note">Automated processing 24/7</div></div>
+          <div class="limit-item"><div class="li-label">Wagering Requirement</div><div class="li-value">1x Deposit</div><div class="li-note">Must wager deposit once</div></div>
+          <div class="limit-item"><div class="li-label">KYC Required</div><div class="li-value">Over 1.0 BTC</div><div class="li-note">Under 1 BTC: no KYC</div></div>
         </div>
       </div>
     </div>
-    <div class="limits-section">
-      <div class="ls-title">&#128202; Withdrawal Information</div>
-      <div class="limits-grid">
-        <div class="limit-item"><div class="li-label">Minimum Withdrawal</div><div class="li-value">0.001 BTC</div><div class="li-note">approx. $65 USD</div></div>
-        <div class="limit-item"><div class="li-label">Maximum per Day</div><div class="li-value">10.0 BTC</div><div class="li-note">VIP players: unlimited</div></div>
-        <div class="limit-item"><div class="li-label">Network Fee</div><div class="li-value">0.00005 BTC</div><div class="li-note">Fixed fee</div></div>
-        <div class="limit-item"><div class="li-label">Processing Time</div><div class="li-value">~10 Minutes</div><div class="li-note">Automated processing 24/7</div></div>
-        <div class="limit-item"><div class="li-label">Wagering Requirement</div><div class="li-value">1x Deposit</div><div class="li-note">Must wager deposit once</div></div>
-        <div class="limit-item"><div class="li-label">KYC Required</div><div class="li-value">Over 1.0 BTC</div><div class="li-note">Under 1 BTC: no KYC</div></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- HISTORY TAB -->
-  <div class="tab-content" id="tab-history">
-    <div class="tx-section">
-      <div class="tx-header">
-        <span class="tx-title">Transaction History</span>
-        <div class="tx-filter">
-          <button class="tf-btn active" onclick="filterTx('all',this)">All</button>
-          <button class="tf-btn" onclick="filterTx('deposit',this)">Deposits</button>
-          <button class="tf-btn" onclick="filterTx('withdraw',this)">Withdrawals</button>
+    <!-- HISTORY TAB -->
+    <div class="tab-content" id="tab-history">
+      <div class="tx-section">
+        <div class="tx-header">
+          <span class="tx-title">Transaction History</span>
+          <div class="tx-filter">
+            <button class="tf-btn active" onclick="filterTx('all',this)">All</button>
+            <button class="tf-btn" onclick="filterTx('deposit',this)">Deposits</button>
+            <button class="tf-btn" onclick="filterTx('withdraw',this)">Withdrawals</button>
+          </div>
         </div>
+        <div class="tx-table-hdr"><span>Type</span><span>Details</span><span>Amount</span><span>Date</span><span>Status</span></div>
+        <div id="txList"></div>
       </div>
-      <div class="tx-table-hdr">
-        <span>Type</span><span>Details</span><span>Amount</span><span>Date</span><span>Status</span>
-      </div>
-      <div id="txList"></div>
     </div>
   </div>
 </div>
 
-<footer><p>2026 CryptoKasino &middot; All rights reserved &middot; BTC transactions are irreversible &middot; <a href="casino.html" style="color:var(--gold)">Back to Casino</a></p></footer>
+<footer><p>&#169; 2026 CryptoKasino &middot; BTC transactions are irreversible &middot; <a href="casino.html" style="color:var(--gold)">Back to Casino</a></p></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ════════════════════════════════════════════════════════
+// BEZPECNOSTNI POZNAMKY:
+// - WALLET_API_KEY ani WALLET_SERVER nejsou zde! 
+//   Wallet server komunikace probiha POUZE pres server-side proxy
+//   nebo primo pres server.js ktery bezi na tve masine
+// - Vsechny citlive operace (withdraw) volaji /api/wallet/*
+//   kde proxy skryje WALLET_API_KEY (ktery je pouze na serveru)
+// - deposit.html NIKDY primo nevola server.js s API key
+// ════════════════════════════════════════════════════════
+
 const SUPABASE_URL = 'https://cckybsbawnsbvxwloxcr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
-const WALLET_SERVER = 'http://localhost:3001';
-const WALLET_API_KEY = 'casino-super-secret-key-2026';
 
-// HD Wallet adresy (fallback kdyz server.js nedostupny)
-const XPUB_ADDRESSES = [
-  "bc1qc5qylnuhknmgtrt5jf8u8lc8tncs4yfk9c4m6c",
-  "bc1qsw59g4932dcupxtmh5mj30hhd0drpn8pp9u0pj",
-  "bc1q06ndun52yqeuksj0plfu0l94qzu4j5g2v879pt",
-  "bc1q6lhw052endk6huqtr5asv6u2sueg6tj9749j73",
-  "bc1qfn23elp8t5eyzwzyjvy6edz232zp9jtwu0cra8",
-  "bc1q9e4nvdx5r2vshh29rzrwn6xj9panl29kafhd37",
-  "bc1qpsnfv7vwdeun6st0ymluycfh4e9l0m4nv867lm",
-  "bc1q6l6hzlrxlu6enk5w97klmmkf9q83fcadeys5g7",
-  "bc1q5g9qxzqwc5c00zzycqtyv3j80d9cmq4fqpxwq7",
-  "bc1qmwsy3xfm4rkfx643dcwtr2xgkwd8rweautraqn"
-];
+// Wallet server — volani jdou pres CORS proxy na serveru
+// API key se NIKDY neposilá z prohlizece — je pouze na serveru
+// Pro produkcni nasazeni: pouzij /api/wallet/ endpoint ktery proxy
+// Lokalni vyvoj: server.js bezi na localhost a prijima requesty
+const WALLET_PROXY = '/api/wallet'; // produkcni proxy (server.js ho zpracuje)
 
 let sb = null;
 try {
   const {createClient} = supabase;
   sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) {
-  console.warn('Supabase init failed:', e.message);
-}
+} catch(e) { console.warn('Supabase init:', e.message); }
 
-let balance = 0.0;
-let currentUser = null;
-let currentAddr = '';
-let transactions = [];
-let confInterval = null;
+let balance = 0.0, currentUser = null, currentAddr = '', transactions = [], confInterval = null;
 
-// ── HELPER: bezpecne nastav element ──────────────────────
-function setEl(id, val) {
-  var el = document.getElementById(id);
-  if(el) el.textContent = val;
-}
-
+// Helper
+function setEl(id, val) { var el = document.getElementById(id); if(el) el.textContent = val; }
 function fmt(n) { return parseFloat(n||0).toFixed(8); }
 
-// ── QR KOD ───────────────────────────────────────────────
+// QR Code
 function generateQR(addr) {
   var qrDiv = document.getElementById('qrcode');
+  if(!qrDiv) return;
   qrDiv.innerHTML = '';
   try {
-    new QRCode(qrDiv, {
-      text: 'bitcoin:' + addr + '?label=CryptoKasino',
-      width: 180, height: 180,
-      colorDark: '#000000', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
+    new QRCode(qrDiv, { text:'bitcoin:'+addr+'?label=CryptoKasino', width:180, height:180, colorDark:'#000000', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M });
   } catch(e) {
-    qrDiv.innerHTML = '<div style="width:180px;height:180px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;text-align:center;padding:10px;">' + addr.substring(0,20) + '...</div>';
+    qrDiv.innerHTML = '<div style="width:180px;height:180px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#333;text-align:center;padding:10px;word-break:break-all">' + addr + '</div>';
   }
 }
 
-// ── KOPIROVAT ADRESU ─────────────────────────────────────
+// Copy
 function copyAddress() {
+  if(!currentAddr) return;
+  var btn = document.getElementById('copyBtn');
   navigator.clipboard.writeText(currentAddr).then(function() {
-    var btn = document.getElementById('copyBtn');
     btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 3000);
   }).catch(function() {
-    var el = document.createElement('textarea');
-    el.value = currentAddr;
+    var el = document.createElement('textarea'); el.value = currentAddr;
     document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-    var btn = document.getElementById('copyBtn');
     btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 3000);
   });
 }
 
-// ── GENEROVAT NOVOU ADRESU ───────────────────────────────
+// Generovat novou adresu — POUZE pres server API (ne primy volani s API key)
 async function generateNewAddress() {
   if(!currentUser) return;
   try {
-    var r = await fetch(WALLET_SERVER + '/casino/address/' + currentUser.id, {
-      headers: {'x-api-key': WALLET_API_KEY},
-      signal: AbortSignal.timeout(3000)
+    // Bezpecny call pres Supabase Edge Function nebo server proxy
+    // Server sam pouzije WALLET_API_KEY — prohlizec ho nevidí
+    var r = await fetch(WALLET_PROXY + '/address/' + currentUser.id, {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + (await sb.auth.getSession()).data.session?.access_token }
     });
-    var data = await r.json();
-    currentAddr = data.address;
-    document.getElementById('btcAddress').textContent = currentAddr;
-    generateQR(currentAddr);
-    document.getElementById('confTracker').classList.remove('show');
+    if(r.ok) {
+      var data = await r.json();
+      currentAddr = data.address;
+      setEl('btcAddress', currentAddr);
+      generateQR(currentAddr);
+    }
   } catch(e) {
-    console.warn('generateNewAddress error:', e.message);
+    console.log('Wallet proxy nedostupný, adresa ze Supabase');
+    await loadAddrFromDB();
   }
 }
 
-// ── NACTI BTC ADRESU ─────────────────────────────────────
-async function loadDepositAddress() {
-  // Zkus server.js
-  if(currentUser) {
-    try {
-      var r = await fetch(WALLET_SERVER + '/casino/address/' + currentUser.id, {
-        headers: {'x-api-key': WALLET_API_KEY},
-        signal: AbortSignal.timeout(3000)
-      });
-      if(r.ok) {
-        var data = await r.json();
-        currentAddr = data.address;
-        document.getElementById('btcAddress').textContent = currentAddr;
-        generateQR(currentAddr);
-        console.log('Adresa ze serveru:', currentAddr);
-        return;
-      }
-    } catch(e) {
-      console.log('Server nedostupny, pouzivam fallback adresu');
+// Nacti adresu z DB (uložena serverem po prvním vygenerování)
+async function loadAddrFromDB() {
+  if(!sb || !currentUser) return;
+  try {
+    var r = await sb.from('hd_wallet_addresses')
+      .select('address')
+      .eq('user_id', currentUser.id)
+      .eq('coin', 'BTC')
+      .order('hd_index', {ascending:true})
+      .limit(1)
+      .single();
+    if(r.data?.address) {
+      currentAddr = r.data.address;
+      setEl('btcAddress', currentAddr);
+      generateQR(currentAddr);
+    } else {
+      // Nema adresu v DB, zobraz info
+      setEl('btcAddress', 'Contact support to get your deposit address');
+      document.getElementById('qrcode').innerHTML = '<div style="width:180px;height:180px;background:#1a0d00;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-dim);text-align:center;padding:10px">Server offline<br>Start server.js first</div>';
     }
+  } catch(e) {
+    console.warn('loadAddrFromDB:', e.message);
+    setEl('btcAddress', 'Server offline — start server.js');
   }
-  // Fallback - adresa z pole podle userId
-  var index = 0;
-  if(currentUser) {
-    var hash = 0;
-    for(var i = 0; i < currentUser.id.length; i++) {
-      hash = ((hash << 5) - hash) + currentUser.id.charCodeAt(i);
-      hash |= 0;
-    }
-    index = Math.abs(hash) % XPUB_ADDRESSES.length;
-  }
-  currentAddr = XPUB_ADDRESSES[index];
-  document.getElementById('btcAddress').textContent = currentAddr;
-  generateQR(currentAddr);
-  console.log('Adresa z fallback:', currentAddr);
 }
 
-// ── NACTI PROFIL ZE SUPABASE ─────────────────────────────
-// OPRAVA: pouzivame bezpecnou setEl() funkci misto priameho getElementById
+// Profil ze Supabase
 async function loadProfile() {
   if(!sb || !currentUser) return;
   try {
-    var result = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-    var profile = result.data;
-    if(profile) {
-      balance = parseFloat(profile.balance || 0);
-      // Bezpecne nastaveni - element nemusi existovat na vsech strankach
+    var r = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    if(r.data) {
+      balance = parseFloat(r.data.balance || 0);
       setEl('headerBal', fmt(balance) + ' BTC');
       setEl('availBalance', fmt(balance) + ' BTC');
       setEl('totalBalance', fmt(balance) + ' BTC');
-      setEl('totalDeposited', fmt(parseFloat(profile.total_deposited || 0)) + ' BTC');
-      setEl('totalWithdrawn', fmt(parseFloat(profile.total_withdrawn || 0)) + ' BTC');
+      setEl('totalDeposited', fmt(parseFloat(r.data.total_deposited || 0)) + ' BTC');
+      setEl('totalWithdrawn', fmt(parseFloat(r.data.total_withdrawn || 0)) + ' BTC');
     }
-  } catch(e) {
-    console.warn('loadProfile error:', e.message);
-  }
+  } catch(e) { console.warn('loadProfile:', e.message); }
 }
 
-// ── NACTI HISTORII TRANSAKCI ─────────────────────────────
-async function loadTxHistory() {
-  if(!sb || !currentUser) {
-    document.getElementById('txList').innerHTML = '<div class="tx-empty">Login to see your transaction history</div>';
-    return;
-  }
-  try {
-    var depsResult = await sb.from('deposits').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(20);
-    var withsResult = await sb.from('withdrawals').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(20);
-
-    var deps = depsResult.data || [];
-    var withs = withsResult.data || [];
-
-    transactions = [
-      ...deps.map(function(d) { return {type:'deposit', amount:parseFloat(d.amount_btc), addr:d.btc_address, status:d.status, hash:d.txid||'pending', date:new Date(d.created_at)}; }),
-      ...withs.map(function(w) { return {type:'withdraw', amount:parseFloat(w.amount_btc), addr:w.btc_address, status:w.status, hash:w.txid||'pending', date:new Date(w.created_at)}; })
-    ].sort(function(a,b){ return b.date - a.date; });
-
-    renderTxHistory('all');
-  } catch(e) {
-    console.error('loadTxHistory error:', e.message);
-    document.getElementById('txList').innerHTML = '<div class="tx-empty">Error loading transactions</div>';
-  }
-}
-
-// ── RENDER HISTORIE ──────────────────────────────────────
-function renderTxHistory(filter) {
-  var list = document.getElementById('txList');
-  var filtered = filter === 'all' ? transactions : transactions.filter(function(t){ return t.type === filter; });
-  if(filtered.length === 0) { list.innerHTML = '<div class="tx-empty">No transactions yet</div>'; return; }
-  list.innerHTML = '';
-  filtered.forEach(function(tx) {
-    var row = document.createElement('div'); row.className = 'tx-row'; row.dataset.type = tx.type;
-    var isDep = tx.type === 'deposit';
-    var dateStr = tx.date instanceof Date && !isNaN(tx.date) ?
-      tx.date.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '--';
-    var statusCls = tx.status === 'confirmed' ? 'ts-confirmed' : tx.status === 'pending' ? 'ts-pending' : 'ts-processing';
-    var statusLbl = tx.status === 'confirmed' ? 'Confirmed' : tx.status === 'pending' ? 'Pending' : 'Processing';
-    var hashStr = tx.hash && tx.hash !== 'pending' ? tx.hash.substring(0,24) + '...' : 'Pending';
-    row.innerHTML = '<div class="tx-type-badge ' + (isDep?'txb-dep':'txb-with') + '">' + (isDep?'v':'^') + '</div>' +
-      '<div><div class="tx-info-type">' + (isDep?'Deposit':'Withdrawal') + '</div><div class="tx-info-hash">' + hashStr + '</div></div>' +
-      '<div class="tx-amount ' + (isDep?'dep':'with') + '">' + (isDep?'+':'-') + fmt(tx.amount) + ' BTC</div>' +
-      '<div class="tx-date">' + dateStr + '</div>' +
-      '<div class="tx-status ' + statusCls + '">' + statusLbl + '</div>';
-    list.appendChild(row);
-  });
-}
-
-function filterTx(filter, el) {
-  document.querySelectorAll('.tf-btn').forEach(function(b){ b.classList.remove('active'); });
-  el.classList.add('active');
-  renderTxHistory(filter);
-}
-
-// ── ZKONTROLUJ PRIJEM ────────────────────────────────────
+// Zkontroluj deposit — pres server proxy (ne primy API key)
 async function checkPendingDeposit() {
-  if(!currentUser || !currentAddr) return;
+  if(!currentUser || !currentAddr || !currentAddr.startsWith('bc1')) return;
   try {
-    var r = await fetch(WALLET_SERVER + '/casino/deposit/check', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'x-api-key': WALLET_API_KEY},
-      body: JSON.stringify({userId: currentUser.id, address: currentAddr}),
-      signal: AbortSignal.timeout(5000)
+    var session = (await sb.auth.getSession()).data.session;
+    if(!session) return;
+    var r = await fetch(WALLET_PROXY + '/deposit/check', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+session.access_token},
+      body: JSON.stringify({address: currentAddr}),
+      signal: AbortSignal.timeout(8000)
     });
     if(!r.ok) return;
     var data = await r.json();
     if(data.status === 'credited') {
       balance = data.new_balance;
-      setEl('headerBal', fmt(balance) + ' BTC');
-      setEl('availBalance', fmt(balance) + ' BTC');
-      setEl('totalBalance', fmt(balance) + ' BTC');
+      setEl('headerBal', fmt(balance)+' BTC');
+      setEl('availBalance', fmt(balance)+' BTC');
+      setEl('totalBalance', fmt(balance)+' BTC');
       setEl('confStatus', 'Deposit confirmed! Balance updated.');
       document.getElementById('confStatus').style.color = 'var(--green)';
       document.getElementById('confBar').style.width = '100%';
       await loadTxHistory();
-      showModal('OK', 'Deposit Confirmed!', '+' + data.amount_btc + ' BTC credited!');
+      showModal('OK', 'Deposit Confirmed!', '+'+data.amount_btc+' BTC credited to your account!');
     } else if(data.status === 'pending') {
       setEl('confStatus', 'Transaction waiting for confirmation...');
     }
-  } catch(e) { /* server offline - ok */ }
+  } catch(e) { /* server offline - ok, deposits se zpracuji automaticky serverem */ }
 }
 
-// ── BONUS PREVIEW ────────────────────────────────────────
+// Bonus
 function setDepAmt(v) { document.getElementById('depAmount').value = v.toFixed(3); updateBonus(); }
 function updateBonus() {
-  var amt = parseFloat(document.getElementById('depAmount').value) || 0;
+  var amt = parseFloat(document.getElementById('depAmount').value)||0;
   var bp = document.getElementById('bonusPreview');
-  if(amt >= 0.001) {
-    var bonus = Math.min(amt, 1.0);
-    setEl('bonusVal', '+' + bonus.toFixed(5) + ' BTC');
-    bp.style.display = 'flex';
-  } else {
-    bp.style.display = 'none';
-  }
+  if(amt >= 0.001) { setEl('bonusVal', '+'+Math.min(amt,1.0).toFixed(5)+' BTC'); bp.style.display='flex'; }
+  else bp.style.display='none';
+  if(amt >= 0.001) startConfTracker();
 }
 
-// ── CONF TRACKER ─────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('depAmount').addEventListener('change', function() {
-    if(parseFloat(this.value) >= 0.001) startConfTracker();
-  });
-});
+// Conf tracker (vizuální animace pro UX)
 function startConfTracker() {
   var tracker = document.getElementById('confTracker');
   var bar = document.getElementById('confBar');
   var status = document.getElementById('confStatus');
+  if(tracker.classList.contains('show')) return; // already showing
   tracker.classList.add('show');
-  var confs = 0;
-  bar.style.width = '0%';
-  status.textContent = 'Waiting for transaction broadcast...';
-  status.style.color = 'var(--orange)';
+  var confs = 0; bar.style.width = '0%';
+  status.textContent = 'Waiting for transaction broadcast...'; status.style.color='var(--orange)';
   if(confInterval) clearInterval(confInterval);
   setTimeout(function() {
-    status.textContent = 'Transaction detected in mempool!';
+    status.textContent = 'Transaction detected! Waiting for confirmation...';
     confInterval = setInterval(function() {
-      if(confs >= 3) { clearInterval(confInterval); return; }
-      confs++;
-      bar.style.width = (confs/3*100) + '%';
-      if(confs === 3) { status.style.color = 'var(--green)'; status.textContent = 'Deposit confirmed! Balance updated.'; }
-      else { status.textContent = confs + '/3 confirmations...'; }
+      if(confs >= 3){clearInterval(confInterval);return;}
+      confs++; bar.style.width=(confs/3*100)+'%';
+      if(confs>=3){status.style.color='var(--green)';status.textContent='Deposit confirmed! Balance updated.';}
+      else status.textContent=confs+'/3 confirmations...';
     }, 8000);
   }, 3000);
 }
 
-// ── WITHDRAWAL ───────────────────────────────────────────
-function setMaxWithdraw() {
-  document.getElementById('withdrawAmt').value = Math.max(0, balance - 0.00005).toFixed(8);
-  validateWithdraw();
+// History
+async function loadTxHistory() {
+  if(!sb || !currentUser) { setEl('txList', ''); document.getElementById('txList').innerHTML='<div class="tx-empty">Login to see your transaction history</div>'; return; }
+  try {
+    var dR = await sb.from('deposits').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
+    var wR = await sb.from('withdrawals').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20);
+    transactions = [
+      ...(dR.data||[]).map(function(d){return{type:'deposit',amount:parseFloat(d.amount_btc),addr:d.btc_address,status:d.status,hash:d.txid||'pending',date:new Date(d.created_at)};}),
+      ...(wR.data||[]).map(function(w){return{type:'withdraw',amount:parseFloat(w.amount_btc),addr:w.btc_address,status:w.status,hash:w.txid||'pending',date:new Date(w.created_at)};})
+    ].sort(function(a,b){return b.date-a.date;});
+    renderTxHistory('all');
+  } catch(e) { document.getElementById('txList').innerHTML='<div class="tx-empty">Error loading transactions</div>'; }
 }
-function validateBTCAddress(addr) {
-  if(!addr || addr.length < 26) return false;
-  return addr.startsWith('bc1') || addr.startsWith('1') || addr.startsWith('3');
+function renderTxHistory(filter) {
+  var list = document.getElementById('txList');
+  var filtered = filter==='all' ? transactions : transactions.filter(function(t){return t.type===filter;});
+  if(!filtered.length){list.innerHTML='<div class="tx-empty">No transactions yet</div>';return;}
+  list.innerHTML='';
+  filtered.forEach(function(tx){
+    var row=document.createElement('div');row.className='tx-row';row.dataset.type=tx.type;
+    var isDep=tx.type==='deposit';
+    var dateStr=tx.date instanceof Date&&!isNaN(tx.date)?tx.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'--';
+    var sCls=tx.status==='confirmed'?'ts-confirmed':tx.status==='pending'?'ts-pending':'ts-processing';
+    var sLbl=tx.status==='confirmed'?'Confirmed':tx.status==='pending'?'Pending':'Processing';
+    var hashStr=tx.hash&&tx.hash!=='pending'?tx.hash.substring(0,24)+'...':'Pending';
+    row.innerHTML='<div class="tx-type-badge '+(isDep?'txb-dep':'txb-with')+'">'+(isDep?'&#11015;':'&#11014;')+'</div>'+
+      '<div><div class="tx-info-type">'+(isDep?'Deposit':'Withdrawal')+'</div><div class="tx-info-hash">'+hashStr+'</div></div>'+
+      '<div class="tx-amount '+(isDep?'dep':'with')+'">'+(isDep?'+':'-')+fmt(tx.amount)+' BTC</div>'+
+      '<div class="tx-date">'+dateStr+'</div>'+
+      '<div class="tx-status '+sCls+'">'+sLbl+'</div>';
+    list.appendChild(row);
+  });
 }
-function validateWithdraw() {
-  var addr = document.getElementById('withdrawAddr').value.trim();
-  var amt = parseFloat(document.getElementById('withdrawAmt').value) || 0;
-  var addrOk = validateBTCAddress(addr);
-  var amtOk = amt >= 0.001 && amt <= (balance - 0.00005);
+function filterTx(filter,el){document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});el.classList.add('active');renderTxHistory(filter);}
 
-  document.getElementById('addrError').classList.toggle('show', addr.length > 5 && !addrOk);
-  document.getElementById('amtError').classList.toggle('show', document.getElementById('withdrawAmt').value.length > 0 && !amtOk);
-  document.getElementById('withdrawAddr').classList.toggle('error', addr.length > 5 && !addrOk);
-  document.getElementById('withdrawAmt').classList.toggle('error', document.getElementById('withdrawAmt').value.length > 0 && !amtOk);
-
-  var valid = addrOk && amtOk;
-  document.getElementById('withdrawBtn').disabled = !valid;
-
-  var summary = document.getElementById('wfSummary');
-  if(valid) {
-    summary.style.display = 'block';
-    setEl('wfsAmt', amt.toFixed(8) + ' BTC');
-    setEl('wfsReceive', (amt - 0.00005).toFixed(8) + ' BTC');
-    setEl('wfsAddr', addr.substring(0, 20) + '...');
-  } else {
-    summary.style.display = 'none';
-  }
+// Withdrawal — pres server proxy (ne primy API key)
+function setMaxWithdraw(){document.getElementById('withdrawAmt').value=Math.max(0,balance-0.00005).toFixed(8);validateWithdraw();}
+function validateBTCAddress(addr){if(!addr||addr.length<26)return false;return addr.startsWith('bc1')||addr.startsWith('1')||addr.startsWith('3');}
+function validateWithdraw(){
+  var addr=document.getElementById('withdrawAddr').value.trim();
+  var amt=parseFloat(document.getElementById('withdrawAmt').value)||0;
+  var addrOk=validateBTCAddress(addr);
+  var amtOk=amt>=0.001&&amt<=(balance-0.00005);
+  document.getElementById('addrError').classList.toggle('show',addr.length>5&&!addrOk);
+  document.getElementById('amtError').classList.toggle('show',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
+  document.getElementById('withdrawAddr').classList.toggle('error',addr.length>5&&!addrOk);
+  document.getElementById('withdrawAmt').classList.toggle('error',document.getElementById('withdrawAmt').value.length>0&&!amtOk);
+  var valid=addrOk&&amtOk;
+  document.getElementById('withdrawBtn').disabled=!valid;
+  var summary=document.getElementById('wfSummary');
+  if(valid){
+    summary.style.display='block';
+    setEl('wfsAmt',amt.toFixed(8)+' BTC');
+    setEl('wfsReceive',(amt-0.00005).toFixed(8)+' BTC');
+    setEl('wfsAddr',addr.substring(0,20)+'...');
+  } else summary.style.display='none';
 }
 
 async function submitWithdraw() {
-  var addr = document.getElementById('withdrawAddr').value.trim();
-  var amt = parseFloat(document.getElementById('withdrawAmt').value);
-  if(!validateBTCAddress(addr) || amt < 0.001) return;
-  if(!currentUser) { alert('Please login first'); return; }
+  var addr=document.getElementById('withdrawAddr').value.trim();
+  var amt=parseFloat(document.getElementById('withdrawAmt').value);
+  if(!validateBTCAddress(addr)||amt<0.001){return;}
+  if(!currentUser){alert('Please login first');return;}
+  if(amt>balance){alert('Insufficient balance');return;}
 
-  document.getElementById('withdrawBtn').disabled = true;
-  document.getElementById('withdrawBtn').textContent = 'Processing...';
+  var btn=document.getElementById('withdrawBtn');
+  btn.disabled=true; btn.textContent='Processing...';
 
   try {
-    var r = await fetch(WALLET_SERVER + '/casino/withdraw', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'x-api-key': WALLET_API_KEY},
-      body: JSON.stringify({userId: currentUser.id, toAddress: addr, amountBtc: amt, feeRate: 5}),
-      signal: AbortSignal.timeout(15000)
+    // Withdrawal pres bezpecný server proxy
+    // Prohlizec posilá POUZE Supabase JWT token — API key je na serveru
+    var session=(await sb.auth.getSession()).data.session;
+    if(!session) throw new Error('Not authenticated');
+
+    var r = await fetch(WALLET_PROXY+'/withdraw', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+      body:JSON.stringify({toAddress:addr, amountBtc:amt}),
+      signal:AbortSignal.timeout(20000)
     });
-    var data = await r.json();
-    if(!r.ok) throw new Error(data.error || 'Withdrawal failed');
+    var data=await r.json();
+    if(!r.ok) throw new Error(data.error||'Withdrawal failed');
 
-    balance = data.new_balance;
-    setEl('headerBal', fmt(balance) + ' BTC');
-    setEl('availBalance', fmt(balance) + ' BTC');
-    setEl('totalBalance', fmt(balance) + ' BTC');
-
-    document.getElementById('withdrawAddr').value = '';
-    document.getElementById('withdrawAmt').value = '';
-    document.getElementById('wfSummary').style.display = 'none';
+    balance=data.new_balance;
+    setEl('headerBal',fmt(balance)+' BTC');
+    setEl('availBalance',fmt(balance)+' BTC');
+    setEl('totalBalance',fmt(balance)+' BTC');
+    document.getElementById('withdrawAddr').value='';
+    document.getElementById('withdrawAmt').value='';
+    document.getElementById('wfSummary').style.display='none';
     await loadTxHistory();
-    showModal('OK', 'Withdrawal Sent!', fmt(amt) + ' BTC sent to ' + addr.substring(0,16) + '...');
+    showModal('&#11014;&#65039;','Withdrawal Sent!',fmt(amt)+' BTC odesláno na '+addr.substring(0,20)+'...');
   } catch(e) {
-    showModal('ERR', 'Withdrawal Failed', e.message);
+    showModal('&#10060;','Withdrawal Failed',e.message+'\n\nZkontroluj jestli server.js běží.');
   } finally {
-    document.getElementById('withdrawBtn').disabled = false;
-    document.getElementById('withdrawBtn').textContent = 'Submit Withdrawal';
+    btn.disabled=false; btn.textContent='Submit Withdrawal';
+    validateWithdraw();
   }
 }
 
-// ── MODAL ────────────────────────────────────────────────
-function showModal(icon, title, text) {
-  setEl('modalIcon', icon);
-  setEl('modalTitle', title);
-  setEl('modalText', text);
-  document.getElementById('modalOverlay').classList.add('show');
-}
-function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+// Modal, tabs, hamburger
+function showModal(icon,title,text){setEl('modalIcon',icon);setEl('modalTitle',title);setEl('modalText',text);document.getElementById('modalOverlay').classList.add('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+function switchTab(tab,el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});el.classList.add('active');document.getElementById('tab-'+tab).classList.add('active');if(tab==='history')loadTxHistory();}
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 
-// ── TABS ─────────────────────────────────────────────────
-function switchTab(tab, el) {
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
-  el.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-  if(tab === 'history') loadTxHistory();
-}
-
-// ── HAMBURGER ────────────────────────────────────────────
-function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('open'); document.getElementById('hamburger').classList.toggle('active'); }
-function closeMenu(){ document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('hamburger').classList.remove('active'); }
-document.addEventListener('click', function(e){ var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger'); if(!m.contains(e.target)&&!h.contains(e.target)) closeMenu(); });
-
-// ── INIT ─────────────────────────────────────────────────
-
-// 1. Okamzite zobraz prvni adresu (bez cekani)
-currentAddr = XPUB_ADDRESSES[0];
-document.getElementById('btcAddress').textContent = currentAddr;
-generateQR(currentAddr);
-console.log('Adresa zobrazena okamzite:', currentAddr);
-
-// 2. Pak nacti realna data ze Supabase
+// INIT
 (async function init() {
-  if(!sb) {
-    console.log('Demo mode - Supabase nedostupny');
+  if(!sb){
+    document.getElementById('loginRequired').style.display='block';
     return;
   }
   try {
     var result = await sb.auth.getSession();
     var session = result.data.session;
     if(!session) {
-      console.log('Neprihlaseno - demo mode');
+      // Nepřihlášený — zobraz login banner, skryj obsah
+      document.getElementById('loginRequired').style.display='block';
+      document.getElementById('mainContent').style.display='none';
       return;
     }
     currentUser = session.user;
-    console.log('Prihlaseno jako:', currentUser.email);
+    // Přihlášený — zobraz obsah, skryj login banner
+    document.getElementById('loginRequired').style.display='none';
+    document.getElementById('mainContent').style.display='block';
 
-    // Nacti profil a adresu paralelne
-    await Promise.all([
-      loadProfile(),
-      loadDepositAddress()
-    ]);
+    // Paralelně načti profil a adresu
+    await Promise.all([loadProfile(), loadAddrFromDB()]);
 
-    // Spust pravidelnou kontrolu depositu
+    // Pravidelně kontroluj deposit (každých 30s)
     setInterval(checkPendingDeposit, 30000);
+
+    // Realtime balance updates ze Supabase
+    sb.channel('profile-'+currentUser.id)
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+currentUser.id},
+        function(payload){
+          if(payload.new){
+            balance=parseFloat(payload.new.balance||0);
+            setEl('headerBal',fmt(balance)+' BTC');
+            setEl('availBalance',fmt(balance)+' BTC');
+            setEl('totalBalance',fmt(balance)+' BTC');
+          }
+        })
+      .subscribe();
 
   } catch(e) {
     console.warn('Init error:', e.message);
+    document.getElementById('loginRequired').style.display='block';
   }
 })();
 </script>
