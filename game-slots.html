@@ -335,6 +335,13 @@ footer{border-top:1px solid rgba(212,160,23,.1);padding:2rem;text-align:center;f
   .stats-grid{grid-template-columns:1fr 1fr;}
   .pt-grid{grid-template-columns:1fr 1fr;}
 }
+
+@media(max-width:768px){
+  .show-layout,.game-layout,.main-layout{grid-template-columns:1fr!important;}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .bh-main{grid-template-columns:1fr!important;}
+  .bh-divider{display:none!important;}
+}
 </style>
 </head>
 <body>
@@ -557,6 +564,8 @@ const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 (async function(){
+  // Demo mode OKAMZITE — hra hratelna bez prihlaseni
+  setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
     const {createClient}=supabase;
     sb=createClient(SB_URL,SB_KEY);
@@ -572,9 +581,10 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
   if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('slots');if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}CK.subscribeBalance(b2=>{if(gameMode==='real'){realBalance=b2;balance=b2;updateBal();}});}
 })();
 
-async function sbDeduct(sat){if(!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
-async function sbAddWin(sat){if(!sb||!currentUser)return;try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
+async function sbDeduct(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
+async function sbAddWin(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
 async function sbLog(betSat,profitSat,mult,meta){
+  if(gameMode!=='real')return;
   if(window.CK&&currentUser){try{await CK.logBet('slots',betSat,profitSat,mult,meta);return;}catch(e){}}
   if(!sb||!currentUser)return;
   try{
