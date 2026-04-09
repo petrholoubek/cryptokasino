@@ -105,7 +105,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">₿</div><span>Crypto</span><span>Kasino</span></a>
-  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a></nav>
   <div class="header-right">
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
@@ -114,7 +114,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
 </header>
 <div class="mobile-menu" id="mobileMenu">
   <a href="casino.html" onclick="closeMenu()">Casino</a><a href="live.html" onclick="closeMenu()">Live</a>
-  <a href="sports.html" onclick="closeMenu()">Sports</a><a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a><a href="vip.html" onclick="closeMenu()">&#127942; VIP</a><a href="promotions.html" onclick="closeMenu()">Promotions</a>
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
@@ -208,7 +208,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
           <li><strong>Portability:</strong> Receive your data in machine-readable format</li>
           <li><strong>Objection:</strong> Object to certain processing activities</li>
         </ul>
-        <p>To exercise any right, contact <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="38484a514e595b41785b4a41484c5753594b515657165157">[email&#160;protected]</a></strong>. We respond within 30 days.</p>
+        <p>To exercise any right, contact <strong>privacy@cryptokasino.io</strong>. We respond within 30 days.</p>
 
         <h2 id="retention">8. Data Retention</h2>
         <p>Active account data is retained for the lifetime of the account plus 5 years (AML requirements). Closed account data is deleted after 5 years. Anonymized gaming logs may be retained indefinitely for statistical purposes.</p>
@@ -217,7 +217,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
         <p>Our Platform is strictly for adults aged 18+. If we discover a minor has created an account, it will be immediately closed and all data deleted. Please contact us if you believe a minor is using the Platform.</p>
 
         <h2 id="contact">10. Contact &amp; DPO</h2>
-        <p>Data Protection Officer: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbcbc9d2cddad8c2fbd8c9c2cbcfd4d0dac8d2d5d495d2d4">[email&#160;protected]</a></strong><br>
+        <p>Data Protection Officer: <strong>privacy@cryptokasino.io</strong><br>
         General Support: <a href="support.html">support.html →</a><br>
         Address: CryptoKasino Ltd, Willemstad, Curaçao</p>
 
@@ -227,8 +227,12 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
   </div>
 </div>
 
-<footer><p>© 2026 CryptoKasino · All rights reserved · 18+ · Play Responsibly · <a href="casino.html">← Back to Casino</a></p></footer>
+<footer><p>&#169; 2026 CryptoKasino &middot; All rights reserved &middot; 18+ &middot; <a href="responsible.html" style="color:#93c5fd;">Responsible Gambling</a> &middot; <a href="terms.html" style="color:#93c5fd;">Terms</a> &middot; <a href="support.html" style="color:#93c5fd;">Support</a> &middot; <a href="casino.html" style="color:var(--gold);">&#8592; Back to Casino</a></p></footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
-function closeMen
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(m&&h&&!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+</script>
+</body>
+</html>
