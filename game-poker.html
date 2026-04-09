@@ -906,7 +906,6 @@ async function revealDealer(){
 }
 
 async function showdown(){
-  if(gameMode!=='real'||!sb||!currentUser)return;
   phase='showdown';setPhase('showdown');setBtns(false,false,false,false);
   await revealDealer();await sleep(300);
   const pb=getBest([...pCards,...comm]);
