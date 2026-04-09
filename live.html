@@ -136,14 +136,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .hero-title .line2{color:var(--gold-light);display:block;text-shadow:0 0 60px rgba(245,200,66,1),0 0 120px rgba(212,160,23,0.8),0 4px 8px rgba(0,0,0,1);animation:heroGoldGlow 3s ease-in-out infinite alternate;}
 @keyframes heroGoldGlow{0%{text-shadow:0 0 60px rgba(245,200,66,0.9),0 0 120px rgba(212,160,23,0.7),0 4px 8px rgba(0,0,0,1);}100%{text-shadow:0 0 90px rgba(245,200,66,1),0 0 180px rgba(212,160,23,1),0 4px 8px rgba(0,0,0,1);}}
 .hero-sub{margin-top:0.8rem;font-size:1rem;color:rgba(150,180,255,0.7);letter-spacing:0.18em;text-transform:uppercase;animation:heroFadeUp 1s ease 0.7s both;}
-.hero-stats-bar{display:inline-flex;align-items:center;gap:2rem;margin-top:1.5rem;background:rgba(5,15,55,0.7);backdrop-filter:blur(15px);border:1px solid rgba(60,120,255,0.3);border-radius:16px;padding:0.9rem 2.5rem;animation:heroFadeUp 1s ease 1.0s both;}
-.hsb-item{text-align:center;}
-.hsb-val{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:#fff;}
-.hsb-val.green{color:var(--green);text-shadow:0 0 12px rgba(74,222,128,0.6);}
-.hsb-val.gold{color:var(--gold-light);text-shadow:0 0 12px var(--gold-glow);}
-.hsb-val.red{color:var(--red);text-shadow:0 0 12px rgba(220,38,38,0.6);}
-.hsb-lbl{font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(150,180,255,0.5);margin-top:0.15rem;}
-.hsb-sep{width:1px;height:40px;background:rgba(60,120,255,0.25);}
+
 
 /* TICKER */
 .live-ticker{position:relative;z-index:2;background:rgba(3,10,40,0.95);border-bottom:1px solid rgba(60,120,255,0.2);padding:0.6rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;}
@@ -359,6 +352,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 @media(max-width:1024px){.games-grid{grid-template-columns:repeat(2,1fr);}.tables-grid{grid-template-columns:repeat(2,1fr);}.footer-inner{grid-template-columns:1fr 1fr;}.lobby-stats{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){.poker-seats{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:640px){
+  body::after{opacity:0.55;}
   header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
   .hero{height:72vh;min-height:440px;}
   .main{padding:1.5rem 0.8rem 4rem;}
@@ -406,10 +400,12 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
     <a href="casino.html">Casino</a>
     <a href="live.html" class="active">Live</a>
     <a href="sports.html">Sports</a>
+    <a href="vip.html">VIP</a>
     <a href="promotions.html">Promotions</a>
   </nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <span id="headerVip"></span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -419,6 +415,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   <a href="casino.html" onclick="closeMenu()">Casino</a>
   <a href="live.html" onclick="closeMenu()">Live</a>
   <a href="sports.html" onclick="closeMenu()">Sports</a>
+  <a href="vip.html" onclick="closeMenu()">&#127942; VIP</a>
   <a href="promotions.html" onclick="closeMenu()">Promotions</a>
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
@@ -470,15 +467,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
       <span class="line2">REAL MONEY.</span>
     </h1>
     <p class="hero-sub">Play with BTC &middot; Instant Payouts &middot; 24/7</p>
-    <div class="hero-stats-bar">
-      <div class="hsb-item"><div class="hsb-val green" id="heroPlayers">1,247</div><div class="hsb-lbl">Live Players</div></div>
-      <div class="hsb-sep"></div>
-      <div class="hsb-item"><div class="hsb-val red" id="heroTables">8</div><div class="hsb-lbl">Live Tables</div></div>
-      <div class="hsb-sep"></div>
-      <div class="hsb-item"><div class="hsb-val gold" id="heroBigWin">2.841 BTC</div><div class="hsb-lbl">Biggest Win</div></div>
-      <div class="hsb-sep"></div>
-      <div class="hsb-item"><div class="hsb-val">96.8%</div><div class="hsb-lbl">Avg RTP</div></div>
-    </div>
+
   </div>
 </div>
 
@@ -589,12 +578,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
       <div class="lstat"><div class="lstat-val" id="ls-pot">—</div><div class="lstat-lbl">Biggest Pot</div></div>
       <div class="lstat"><div class="lstat-val red" id="ls-won">—</div><div class="lstat-lbl">Biggest Win Today</div></div>
     </div>
-    <div class="lobby-tabs">
-      <button class="ltab active" onclick="switchTab('all',this)">&#127918; All <span class="ltab-count" id="tc-all">0</span></button>
-      <button class="ltab" onclick="switchTab('poker',this)">&#127183; Poker <span class="ltab-count" id="tc-poker">0</span></button>
-      <button class="ltab" onclick="switchTab('blackjack',this)">&#9824;&#65039; Blackjack <span class="ltab-count" id="tc-bj">0</span></button>
-      <button class="ltab" onclick="switchTab('craps',this)">&#127922; Craps <span class="ltab-count" id="tc-craps">0</span></button>
-    </div>
+
     <div class="tables-grid" id="tablesGrid"></div>
     <div class="game-table-view" id="gameView">
       <div class="poker-table-wrap">
