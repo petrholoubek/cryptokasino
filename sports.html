@@ -3,46 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sports Betting – CryptoKasino</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
-
 <!-- Favicon -->
 <link rel="icon" href="/favicon.ico">
-
 <!-- PNG fallback -->
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-
 <!-- Apple (iPhone) -->
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-
 <!-- PWA manifest -->
 <link rel="manifest" href="/site.webmanifest">
-
 <!-- Theme color (mobilní horní lišta) -->
-<meta name="theme-color" content="#7a0000">
+<meta name="theme-color" content="#000d33">
+<title>Sports Betting – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
-  --dark:#060408;--text:#e8d5a0;--text-dim:#8a7a50;
+  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
   --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#c084fc;
   --sport-green:#16a34a;--sport-dark:#030c04;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;
-  background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(22,163,74,0.1) 0%,transparent 60%),
-    radial-gradient(ellipse 40% 30% at 5% 50%,rgba(212,160,23,0.06) 0%,transparent 55%),
-    radial-gradient(ellipse 40% 30% at 95% 70%,rgba(96,165,250,0.06) 0%,transparent 55%);
-  pointer-events:none;z-index:0;animation:bgBreath 9s ease-in-out infinite alternate;}
-@keyframes bgBreath{0%{opacity:.7}100%{opacity:1}}
+  background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);
+  pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 45% 42% at 50% 48%, rgba(30,80,220,0.55) 0%, rgba(10,40,130,0.3) 40%, transparent 70%),
+    radial-gradient(ellipse 22% 20% at 50% 47%, rgba(100,160,255,0.3) 0%, transparent 55%),
+    conic-gradient(from 0deg at 50% 48%,
+      transparent 0deg, rgba(40,90,200,0.07) 15deg, transparent 30deg,
+      transparent 60deg, rgba(40,90,200,0.05) 75deg, transparent 90deg,
+      transparent 120deg, rgba(40,90,200,0.07) 135deg, transparent 150deg,
+      transparent 180deg, rgba(40,90,200,0.05) 195deg, transparent 210deg,
+      transparent 240deg, rgba(40,90,200,0.07) 255deg, transparent 270deg,
+      transparent 300deg, rgba(40,90,200,0.05) 315deg, transparent 330deg,
+      transparent 360deg);
+  pointer-events:none;z-index:0;animation:bgRays 25s linear infinite;}
+@keyframes bgBreath{0%{opacity:.8}100%{opacity:1}}
+@keyframes bgRays{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 
 #particles{position:fixed;inset:0;pointer-events:none;z-index:1;}
 #winCanvas{position:fixed;inset:0;pointer-events:none;z-index:60;}
 
 /* ═══ HEADER ═══ */
-header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(4,3,6,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(22,163,74,0.2);}
-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(22,163,74,0.6),rgba(74,222,128,0.8),rgba(22,163,74,0.6),transparent);}
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(2,6,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,0.2);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(60,120,255,0.5),rgba(212,160,23,0.6),rgba(60,120,255,0.5),transparent);}
 .logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
 .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#000;font-weight:900;box-shadow:0 0 20px var(--gold-glow);}
 .logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
@@ -61,7 +68,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 .hamburger.active span:nth-child(2){opacity:0;}
 .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;background:rgba(4,3,6,.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(22,163,74,.18);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;background:rgba(2,6,20,.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
 .mobile-menu.open{display:flex;}
 .mobile-menu a{font-family:'Cinzel',serif;font-size:.85rem;color:var(--text-dim);text-decoration:none;padding:.9rem 0;border-bottom:1px solid rgba(212,160,23,.08);}
 .mobile-menu-btns{display:flex;gap:.8rem;margin-top:1.2rem;}
@@ -83,12 +90,12 @@ nav a.active{border-bottom:2px solid var(--gold);}
 
 /* ═══ SPORT JACKPOT BAR ═══ */
 .sport-bar{
-  background:linear-gradient(90deg,rgba(3,12,4,.99),rgba(8,20,8,.99),rgba(3,12,4,.99));
-  border-bottom:2px solid rgba(22,163,74,.3);
+  background:linear-gradient(90deg,rgba(2,8,30,0.99),rgba(5,15,55,0.99),rgba(2,8,30,0.99));
+  border-bottom:1px solid rgba(60,120,255,.25);position:relative;z-index:2;
   padding:.65rem 2.5rem;
   display:flex;align-items:center;justify-content:center;gap:2.2rem;
   position:relative;overflow:hidden;
-  box-shadow:0 4px 30px rgba(22,163,74,.1);
+  box-shadow:0 4px 30px rgba(40,100,255,.1);
 }
 .sport-bar::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(22,163,74,.07),transparent);animation:sbSweep 2.2s linear infinite;}
 .sport-bar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(22,163,74,.8),rgba(74,222,128,.6),rgba(22,163,74,.8),transparent);}
@@ -145,7 +152,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 @keyframes greenGlow{0%{text-shadow:0 0 60px rgba(74,222,128,.9),0 0 120px rgba(22,163,74,.7),0 4px 8px rgba(0,0,0,1)}100%{text-shadow:0 0 90px rgba(74,222,128,1),0 0 180px rgba(22,163,74,1),0 0 250px rgba(22,163,74,.5),0 4px 8px rgba(0,0,0,1)}}
 .hero-sub{margin-top:.8rem;font-size:.95rem;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:uppercase;animation:hFadeUp 1s ease .7s both;}
 
-.hero-stats-bar{display:inline-flex;align-items:center;gap:2rem;margin-top:1.4rem;background:rgba(0,0,0,.4);backdrop-filter:blur(15px);border:1px solid rgba(22,163,74,.2);border-radius:16px;padding:.9rem 2.2rem;animation:hFadeUp 1s ease 1s both;}
+.hero-stats-bar{display:inline-flex;align-items:center;gap:2rem;margin-top:1.4rem;background:rgba(0,0,0,.4);backdrop-filter:blur(15px);border:1px solid rgba(60,120,255,.2);border-radius:16px;padding:.9rem 2.2rem;animation:hFadeUp 1s ease 1s both;}
 .hsb-item{text-align:center;}
 .hsb-val{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:900;color:#fff;}
 .hsb-val.green{color:var(--green);text-shadow:0 0 12px rgba(74,222,128,.6);}
@@ -154,7 +161,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .hsb-sep{width:1px;height:38px;background:rgba(22,163,74,.2);}
 
 /* ═══ TICKER ═══ */
-.live-ticker{background:rgba(3,12,4,.98);border-bottom:1px solid rgba(22,163,74,.2);padding:.6rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;position:relative;z-index:2;}
+.live-ticker{background:rgba(3,10,40,.98);border-bottom:1px solid rgba(60,120,255,.2);padding:.6rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;position:relative;z-index:2;}
 .ticker-live{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:#4ade80;white-space:nowrap;display:flex;align-items:center;gap:.4rem;}
 .t-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;box-shadow:0 0 5px #4ade80;animation:dotP 1.2s infinite;}
 .ticker-track{display:flex;gap:2.5rem;animation:tickerS 35s linear infinite;white-space:nowrap;font-size:.78rem;color:var(--text-dim);}
@@ -166,7 +173,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .main{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:2rem 1.5rem 5rem;display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
 .main-left{min-width:0;}
 
-.sec-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(212,160,23,.4);}
+.sec-title{position:relative;z-index:2;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(212,160,23,.4);}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,160,23,.45),transparent);}
 
 /* ═══ SPORT FILTER TABS ═══ */
@@ -182,8 +189,8 @@ nav a.active{border-bottom:2px solid var(--gold);}
 
 /* LIVE Match Card */
 .match-card{
-  background:rgba(8,14,9,.95);
-  border:1px solid rgba(22,163,74,.2);
+  background:rgba(5,15,50,.85);
+  border:1px solid rgba(60,120,255,.2);
   border-radius:16px;overflow:hidden;
   transition:all .3s;position:relative;
   animation:cardIn .4s ease both;
@@ -264,8 +271,8 @@ nav a.active{border-bottom:2px solid var(--gold);}
 
 /* ═══ BET SLIP ═══ */
 .betslip{
-  background:rgba(8,14,9,.98);
-  border:1px solid rgba(22,163,74,.2);
+  background:rgba(5,15,50,.95);
+  border:1px solid rgba(60,120,255,.2);
   border-radius:18px;overflow:hidden;
   position:sticky;top:80px;
   box-shadow:0 8px 40px rgba(0,0,0,.6);
@@ -292,10 +299,10 @@ nav a.active{border-bottom:2px solid var(--gold);}
 
 .bs-stake{padding:.8rem 1.2rem;border-top:1px solid rgba(255,255,255,.04);}
 .bs-stake-lbl{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;}
-.bs-stake-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(22,163,74,.2);border-radius:8px;padding:.65rem .8rem;font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold-light);outline:none;transition:border-color .2s;text-align:right;}
+.bs-stake-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(60,120,255,.2);border-radius:8px;padding:.65rem .8rem;font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold-light);outline:none;transition:border-color .2s;text-align:right;}
 .bs-stake-input:focus{border-color:var(--green);}
 .bs-quick-stakes{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap;}
-.qs{padding:.3rem .7rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.58rem;font-weight:700;cursor:pointer;border:1px solid rgba(22,163,74,.2);background:rgba(22,163,74,.06);color:var(--text-dim);transition:all .2s;}
+.qs{padding:.3rem .7rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.58rem;font-weight:700;cursor:pointer;border:1px solid rgba(60,120,255,.2);background:rgba(22,163,74,.06);color:var(--text-dim);transition:all .2s;}
 .qs:hover{border-color:var(--green);color:var(--green);}
 
 .bs-summary{padding:.8rem 1.2rem;border-top:1px solid rgba(255,255,255,.04);}
@@ -310,16 +317,16 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .bs-place-btn:disabled{opacity:.35;cursor:not-allowed;}
 
 /* ═══ QUICK BETS BAR ═══ */
-.quickbets-bar{display:flex;gap:.6rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.2rem;}
+.quickbets-bar{position:relative;z-index:2;display:flex;gap:.6rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.2rem;}
 .quickbets-bar::-webkit-scrollbar{height:2px;}
 .quickbets-bar::-webkit-scrollbar-thumb{background:rgba(22,163,74,.2);}
-.qb{background:rgba(8,14,9,.9);border:1px solid rgba(22,163,74,.18);border-radius:10px;padding:.55rem 1rem;font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;color:var(--text-dim);transition:all .2s;display:flex;align-items:center;gap:.4rem;}
+.qb{background:rgba(5,15,50,.8);border:1px solid rgba(22,163,74,.18);border-radius:10px;padding:.55rem 1rem;font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;color:var(--text-dim);transition:all .2s;display:flex;align-items:center;gap:.4rem;}
 .qb:hover,.qb.active-qb{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.4);color:#4ade80;}
 .qb-odds{color:var(--gold-light);font-size:.7rem;}
 
 /* ═══ STATS CARDS ═══ */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem;}
-.stat-card{background:rgba(8,14,9,.9);border:1px solid rgba(22,163,74,.12);border-radius:12px;padding:.9rem;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
+.stats-row{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem;}
+.stat-card{background:rgba(5,15,50,.8);border:1px solid rgba(22,163,74,.12);border-radius:12px;padding:.9rem;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
 .stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(22,163,74,.05),transparent 70%);pointer-events:none;}
 .stat-card:hover{border-color:rgba(22,163,74,.3);transform:translateY(-2px);}
 .sc-val{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 12px rgba(212,160,23,.5);}
@@ -328,7 +335,7 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .sc-lbl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:.2rem;}
 
 /* Footer */
-footer{border-top:1px solid rgba(22,163,74,.1);padding:2.5rem 1.5rem;margin-top:2rem;}
+footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);padding:2.5rem 1.5rem;margin-top:2rem;}
 .footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
 .footer-brand h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:900;color:var(--gold-light);margin-bottom:.7rem;}
 .footer-brand p{font-size:.85rem;color:var(--text-dim);line-height:1.7;}
@@ -351,6 +358,8 @@ footer{border-top:1px solid rgba(22,163,74,.1);padding:2.5rem 1.5rem;margin-top:
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 
 <canvas id="particles"></canvas>
 <canvas id="winCanvas"></canvas>
@@ -409,7 +418,7 @@ footer{border-top:1px solid rgba(22,163,74,.1);padding:2.5rem 1.5rem;margin-top:
 <!-- HERO -->
 <div class="hero">
   <div class="hero-bg">
-    <img src="images/sports.jpg" alt="Sports Betting" class="hero-img-kb" onerror="this.src='images/hero.jpg'">
+    <img src="images/herosports.jpg" alt="Sports Betting" class="hero-img-kb" >
   </div>
   <canvas id="heroCanvas"></canvas>
   <div class="hero-overlay"></div>
@@ -830,20 +839,16 @@ function nextToast(){tQ[tqi%tQ.length]();tqi++;setTimeout(nextToast,Math.random(
 setTimeout(function(){showToast('sport','⚽ LIVE NOW!','<b>15 matches</b> live — place your bets!');},1200);
 setTimeout(nextToast,4000);
 
-// ══ SUPABASE balance ══
-(function(){
-  var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-  s.onload=function(){
-    var sc=document.createElement('script');sc.src='supabase.js';
-    sc.onload=async function(){
-      var tries=0;while(!window.CK&&tries<20){await new Promise(function(r){setTimeout(r,100);});tries++;}
-      if(!window.CK)return;
-      var bal=await CK.getBalance();
-      if(bal>0)document.getElementById('headerBal').textContent=bal.toFixed(8)+' BTC';
-    };
-    document.head.appendChild(sc);
-  };
-  document.head.appendChild(s);
+// Supabase balance
+(async function(){
+  var tries=0;
+  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  if(!window.CK)return;
+  try{
+    var bal=await CK.getBalance();
+    if(bal>0)document.getElementById('headerBal').textContent=bal.toFixed(8)+' BTC';
+    CK.subscribeBalance&&CK.subscribeBalance(function(b){document.getElementById('headerBal').textContent=b.toFixed(8)+' BTC';});
+  }catch(e){console.warn('[Sports]',e.message);}
 })();
 
 // Hamburger
@@ -856,6 +861,5 @@ renderMatches();
 renderQuickBets();
 renderSlip();
 </script>
-<script src="supabase.js"></script>
 </body>
 </html>
