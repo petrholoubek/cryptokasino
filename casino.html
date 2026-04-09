@@ -13,7 +13,7 @@
 <!-- PWA manifest -->
 <link rel="manifest" href="/site.webmanifest">
 <!-- Theme color (mobilní horní lišta) -->
-<meta name="theme-color" content="#7a0000">
+<meta name="theme-color" content="#000d33">
 <title>Casino – CryptoKasino</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -611,6 +611,10 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-to
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+
 
 <canvas id="particles"></canvas>
 
@@ -1628,8 +1632,8 @@ async function demoVerify(){
 }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+
+
 <script>
 (async function(){
   var tries=0;
