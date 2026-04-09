@@ -3,35 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy – CryptoKasino</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
-
 <!-- Favicon -->
 <link rel="icon" href="/favicon.ico">
-
 <!-- PNG fallback -->
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-
 <!-- Apple (iPhone) -->
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-
 <!-- PWA manifest -->
 <link rel="manifest" href="/site.webmanifest">
-
 <!-- Theme color (mobilní horní lišta) -->
-<meta name="theme-color" content="#7a0000">
+<meta name="theme-color" content="#000d33">
+<title>Privacy Policy – CryptoKasino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
-  --dark:#0a0700;--text:#e8d5a0;--text-dim:#8a7a50;
+  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
   --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(180,120,10,0.15) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(120,60,5,0.10) 0%,transparent 60%);pointer-events:none;z-index:0;}
-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(8,6,1,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,160,23,0.2);}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);
+  pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 45% 42% at 50% 48%, rgba(30,80,220,0.4) 0%, rgba(10,40,130,0.2) 40%, transparent 70%);
+  pointer-events:none;z-index:0;animation:bgRays 30s linear infinite;}
+@keyframes bgRays{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(2,6,20,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,.2);}
 .logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
 .logo-icon{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;box-shadow:0 0 14px var(--gold-glow);}
 .logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
@@ -47,7 +48,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 .hamburger.active span:nth-child(2){opacity:0;}
 .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,4,1,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,160,23,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(2,6,20,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.2);z-index:99;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
 .mobile-menu.open{display:flex;}
 .mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(212,160,23,0.08);}
 .mobile-menu a:hover{color:var(--gold-light);}
@@ -61,15 +62,15 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:ho
 .page-header p{color:var(--text-dim);font-size:0.9rem;}
 .privacy-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:20px;padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-top:0.75rem;}
 .layout{display:grid;grid-template-columns:220px 1fr;gap:1.5rem;align-items:start;}
-.toc-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.18);border-radius:16px;overflow:hidden;position:sticky;top:76px;}
-.toc-hdr{padding:0.9rem 1.2rem;background:rgba(212,160,23,0.07);border-bottom:1px solid rgba(212,160,23,0.12);}
+.toc-card{background:rgba(5,15,50,0.9);border:1px solid rgba(60,120,255,0.15);border-radius:16px;overflow:hidden;position:sticky;top:76px;}
+.toc-hdr{padding:0.9rem 1.2rem;background:rgba(30,60,140,0.15);border-bottom:1px solid rgba(60,120,255,0.12);}
 .toc-title{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);}
 .toc-body{padding:0.8rem 0;}
 .toc-link{display:block;padding:0.4rem 1.2rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:all 0.2s;border-left:2px solid transparent;}
-.toc-link:hover{color:var(--gold-light);border-left-color:var(--gold);background:rgba(212,160,23,0.05);}
-.content-card{background:rgba(10,7,0,0.9);border:1px solid rgba(212,160,23,0.18);border-radius:20px;overflow:hidden;}
+.toc-link:hover{color:#93c5fd;border-left-color:var(--blue);background:rgba(60,120,255,0.07);}
+.content-card{background:rgba(5,15,50,0.9);border:1px solid rgba(60,120,255,0.15);border-radius:20px;overflow:hidden;}
 .content-body{padding:2rem;}
-h2{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin:2rem 0 0.75rem;padding-top:2rem;border-top:1px solid rgba(212,160,23,0.08);}
+h2{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin:2rem 0 0.75rem;padding-top:2rem;border-top:1px solid rgba(60,120,255,0.08);}
 h2:first-of-type{border-top:none;margin-top:0;padding-top:0;}
 p{font-size:0.95rem;color:var(--text-dim);line-height:1.85;margin-bottom:0.75rem;}
 ul{list-style:none;padding:0;margin:0 0 1rem;}
@@ -80,17 +81,18 @@ a{color:var(--gold);text-decoration:none;}a:hover{color:var(--gold-light);}
 
 /* DATA TABLE */
 .data-table{width:100%;border-collapse:collapse;margin:1rem 0;}
-.data-table th{background:rgba(212,160,23,0.1);color:var(--gold);font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.7rem 1rem;text-align:left;border:1px solid rgba(212,160,23,0.15);}
-.data-table td{padding:0.7rem 1rem;border:1px solid rgba(212,160,23,0.08);color:var(--text-dim);font-size:0.88rem;line-height:1.5;}
-.data-table tr:hover td{background:rgba(212,160,23,0.03);}
+.data-table th{background:rgba(30,60,140,0.2);color:#93c5fd;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.7rem 1rem;text-align:left;border:1px solid rgba(60,120,255,0.15);}
+.data-table td{padding:0.7rem 1rem;border:1px solid rgba(60,120,255,0.07);color:var(--text-dim);font-size:0.88rem;line-height:1.5;}
+.data-table tr:hover td{background:rgba(60,120,255,0.05);}
 
 .badge-green{display:inline-block;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.25);border-radius:4px;padding:0.1rem 0.5rem;font-family:'Cinzel',serif;font-size:0.58rem;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;}
 .badge-orange{display:inline-block;background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.25);border-radius:4px;padding:0.1rem 0.5rem;font-family:'Cinzel',serif;font-size:0.58rem;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;}
 
-footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
 
 @media(max-width:768px){.layout{grid-template-columns:1fr;}.toc-card{position:static;}}
 @media(max-width:640px){
+  body::after{opacity:0.5;}
   header{padding:0 1rem;height:52px;}.logo{font-size:0.95rem;}.logo-icon{width:26px;height:26px;font-size:0.8rem;}
   nav,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
   .page{padding:1.5rem 0.8rem 4rem;}
@@ -206,7 +208,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
           <li><strong>Portability:</strong> Receive your data in machine-readable format</li>
           <li><strong>Objection:</strong> Object to certain processing activities</li>
         </ul>
-        <p>To exercise any right, contact <strong>privacy@cryptokasino.io</strong>. We respond within 30 days.</p>
+        <p>To exercise any right, contact <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="38484a514e595b41785b4a41484c5753594b515657165157">[email&#160;protected]</a></strong>. We respond within 30 days.</p>
 
         <h2 id="retention">8. Data Retention</h2>
         <p>Active account data is retained for the lifetime of the account plus 5 years (AML requirements). Closed account data is deleted after 5 years. Anonymized gaming logs may be retained indefinitely for statistical purposes.</p>
@@ -215,7 +217,7 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
         <p>Our Platform is strictly for adults aged 18+. If we discover a minor has created an account, it will be immediately closed and all data deleted. Please contact us if you believe a minor is using the Platform.</p>
 
         <h2 id="contact">10. Contact &amp; DPO</h2>
-        <p>Data Protection Officer: <strong>privacy@cryptokasino.io</strong><br>
+        <p>Data Protection Officer: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbcbc9d2cddad8c2fbd8c9c2cbcfd4d0dac8d2d5d495d2d4">[email&#160;protected]</a></strong><br>
         General Support: <a href="support.html">support.html →</a><br>
         Address: CryptoKasino Ltd, Willemstad, Curaçao</p>
 
@@ -227,10 +229,6 @@ footer{border-top:1px solid rgba(212,160,23,0.1);padding:2rem 1.5rem;text-align:
 
 <footer><p>© 2026 CryptoKasino · All rights reserved · 18+ · Play Responsibly · <a href="casino.html">← Back to Casino</a></p></footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
-function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
-document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(m&&h&&!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
-</script>
-</body>
-</html>
+function closeMen
