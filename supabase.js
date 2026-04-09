@@ -1,13 +1,14 @@
 // ════════════════════════════════════════════════════════
-// CRYPTOKASINO — supabase.js  v2.2
+// CRYPTOKASINO — supabase.js  v2.3
 // DEMO/REAL SEPARATION — demo nikdy nejde do DB
 // NOVA FUNKCE: initHeader() — automaticky upravuje header
+// NOVA FUNKCE: VIP system — badge, level, progress
 //
-// OPRAVY v2.2:
-//  - initHeader() — po prihlaseni zmeni [Login] na [👤 Jméno]
-//  - getGameSettings: eq('id') — spravny sloupec
-//  - logBet: rtp_pct, total_wagered_btc — spravne nazvy
-//  - Demo mode: neprihlaseni hraci mohou hrat bez omezeni
+// OPRAVY v2.3:
+//  - renderVipBadge() — zobrazí VIP badge v headeru
+//  - getVipInfo() — vrátí kompletní VIP data hráče
+//  - initHeader() — zobrazuje VIP badge vedle username
+//  - logBet() — automaticky update total_wagered_btc pro VIP
 // ════════════════════════════════════════════════════════
 
 (async function () {
@@ -21,10 +22,46 @@
   let _profile = null;
 
   // ════════════════════════════════════════════════════
+  // VIP DEFINICE
+  // ════════════════════════════════════════════════════
+  const VIP_LEVELS = {
+    none:     { order: 0, min: 0,    label: 'Member',   icon: '&#128100;', color: '#8898cc', cashback: 0,  maxWith: 0.5,  reload: 0  },
+    bronze:   { order: 1, min: 0.01, label: 'Bronze',   icon: '&#129350;', color: '#cd7f32', cashback: 1,  maxWith: 0.5,  reload: 0  },
+    silver:   { order: 2, min: 0.05, label: 'Silver',   icon: '&#129352;', color: '#adb5bd', cashback: 2,  maxWith: 1.0,  reload: 5  },
+    gold:     { order: 3, min: 0.20, label: 'Gold',     icon: '&#129351;', color: '#D4A017', cashback: 3,  maxWith: 2.0,  reload: 10 },
+    platinum: { order: 4, min: 0.50, label: 'Platinum', icon: '&#128142;', color: '#e5e4e2', cashback: 5,  maxWith: 5.0,  reload: 15 },
+    diamond:  { order: 5, min: 1.00, label: 'Diamond',  icon: '&#128306;', color: '#60a5fa', cashback: 8,  maxWith: null, reload: 20 },
+  };
+
+  function _calculateVipLevel(wageredBtc) {
+    const w = parseFloat(wageredBtc || 0);
+    if (w >= 1.00) return 'diamond';
+    if (w >= 0.50) return 'platinum';
+    if (w >= 0.20) return 'gold';
+    if (w >= 0.05) return 'silver';
+    if (w >= 0.01) return 'bronze';
+    return 'none';
+  }
+
+  function _getNextVipLevel(currentLevel) {
+    const order = ['none','bronze','silver','gold','platinum','diamond'];
+    const idx = order.indexOf(currentLevel);
+    if (idx === -1 || idx >= order.length - 1) return null;
+    return order[idx + 1];
+  }
+
+  function _hexToRgb(hex) {
+    if (!hex || hex.length < 7) return '136,152,204';
+    try {
+      const r = parseInt(hex.slice(1,3), 16);
+      const g = parseInt(hex.slice(3,5), 16);
+      const b = parseInt(hex.slice(5,7), 16);
+      return `${r},${g},${b}`;
+    } catch(e) { return '136,152,204'; }
+  }
+
+  // ════════════════════════════════════════════════════
   // DEMO MODE FIREWALL
-  //  Neprihlaseny hrac          → VZDY demo (hraje zdarma)
-  //  Prihlaseny + mode='demo'   → demo (zadne DB operace)
-  //  Prihlaseny + mode='real'   → real (DB operace povoleny)
   // ════════════════════════════════════════════════════
   function isDemoMode() {
     if (!_session)                       return true;
@@ -50,7 +87,7 @@
     try {
       const { data } = await sb
         .from('profiles')
-        .select('id, username, balance, vip_level, total_wagered, total_deposited')
+        .select('id, username, balance, vip_level, total_wagered_btc, total_deposited, cashback_earned_btc')
         .eq('id', _session.user.id)
         .single();
       _profile = data;
@@ -62,28 +99,71 @@
   }
 
   // ════════════════════════════════════════════════════
-  // INIT HEADER — automaticky upravi header na kazde strance
-  // Vola se automaticky po nacteni supabase.js
-  // Pokud je hrac prihlasen → zmeni [Login] na [👤 Jméno ▾]
+  // VIP BADGE RENDER
+  // Zobrazí VIP badge v headeru vedle username
+  // ════════════════════════════════════════════════════
+  function _renderVipBadge(vipLevel) {
+    const vipEl = document.getElementById('headerVip');
+    if (!vipEl) return;
+    const vd = VIP_LEVELS[vipLevel] || VIP_LEVELS.none;
+    if (!vipLevel || vipLevel === 'none') {
+      vipEl.style.display = 'none';
+      return;
+    }
+    const col = vd.color;
+    const rgb = _hexToRgb(col);
+    vipEl.innerHTML = vd.icon + ' ' + vd.label.toUpperCase();
+    vipEl.style.cssText = `
+      background: rgba(${rgb}, 0.12);
+      border: 1px solid rgba(${rgb}, 0.35);
+      color: ${col};
+      padding: 0.28rem 0.7rem;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+      text-decoration: none;
+    `;
+    vipEl.onclick = () => { window.location.href = 'vip.html'; };
+  }
+
+  // ════════════════════════════════════════════════════
+  // INIT HEADER
   // ════════════════════════════════════════════════════
   async function initHeader() {
-    const loginBtn  = document.querySelector('a.btn-login, .btn-login');
-    const headerBal = document.getElementById('headerBal');
+    const loginBtn   = document.querySelector('a.btn-login, .btn-login');
+    const headerBal  = document.getElementById('headerBal');
     const mobileMenu = document.getElementById('mobileMenu');
 
     if (!loginBtn) return;
 
     if (!_session) {
-      // Neprihlaseny — nechej Login button jak je
-      return;
+      return; // Neprihlaseny — nechej Login button
     }
 
     // Prihlaseny — nacti profil
     const p = await _getProfile();
     const username = p?.username || _session.user.email?.split('@')[0] || 'Player';
     const balance  = parseFloat(p?.balance || 0);
+    const vipLevel = p?.vip_level || 'none';
+    const vd = VIP_LEVELS[vipLevel] || VIP_LEVELS.none;
 
-    // Zmen [Login] na [👤 Jméno ▾] s dropdownem
+    // VIP badge text pro dropdown
+    const vipBadgeHtml = vipLevel !== 'none'
+      ? `<div style="padding:.3rem .75rem .4rem;border-bottom:1px solid rgba(60,120,255,0.1);margin-bottom:.2rem;">
+           <span style="font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.18rem 0.55rem;border-radius:10px;font-weight:700;background:rgba(${_hexToRgb(vd.color)},0.12);color:${vd.color};border:1px solid rgba(${_hexToRgb(vd.color)},0.3);">
+             ${vd.icon} ${vd.label.toUpperCase()}
+           </span>
+         </div>`
+      : '';
+
+    // Zmen [Login] na [👤 Jméno ▾]
     loginBtn.outerHTML = `
       <div class="user-menu-wrap" style="position:relative;">
         <button class="user-menu-btn" onclick="toggleUserMenu()" style="
@@ -93,32 +173,36 @@
           font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;cursor:pointer;
           transition:all .2s;white-space:nowrap;
         ">
-          <span>👤</span>
+          <span>${vipLevel !== 'none' ? vd.icon : '&#128100;'}</span>
           <span id="ckUsername">${username}</span>
-          <span style="font-size:.55rem;opacity:.7;">▾</span>
+          <span style="font-size:.55rem;opacity:.7;">&#9660;</span>
         </button>
         <div id="userDropdown" style="
           display:none;position:absolute;right:0;top:calc(100% + 6px);
-          background:rgba(8,5,12,.99);border:1px solid rgba(212,160,23,.25);
-          border-radius:12px;padding:.5rem;min-width:180px;z-index:300;
+          background:rgba(2,6,20,.99);border:1px solid rgba(60,120,255,0.25);
+          border-radius:12px;padding:.5rem;min-width:195px;z-index:300;
           box-shadow:0 8px 32px rgba(0,0,0,.8);
         ">
-          <div style="padding:.5rem .75rem .4rem;border-bottom:1px solid rgba(212,160,23,.1);margin-bottom:.3rem;">
-            <div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--text-dim,#8a7a50);letter-spacing:.1em;text-transform:uppercase;">Balance</div>
-            <div style="font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#4ade80;">${balance.toFixed(8)} BTC</div>
+          ${vipBadgeHtml}
+          <div style="padding:.5rem .75rem .4rem;border-bottom:1px solid rgba(60,120,255,0.1);margin-bottom:.3rem;">
+            <div style="font-family:'Cinzel',serif;font-size:.58rem;color:#8898cc;letter-spacing:.1em;text-transform:uppercase;">Balance</div>
+            <div id="dropdownBal" style="font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:#4ade80;">${balance.toFixed(8)} BTC</div>
           </div>
-          <a href="profile.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:var(--text-dim,#8a7a50);text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(212,160,23,.08)';this.style.color='#F5C842'" onmouseout="this.style.background='';this.style.color=''">
-            👤 My Profile
+          <a href="profile.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:#8898cc;text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(60,120,255,.08)';this.style.color='#93c5fd'" onmouseout="this.style.background='';this.style.color=''">
+            &#128100; My Profile
           </a>
-          <a href="deposit.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:var(--text-dim,#8a7a50);text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(212,160,23,.08)';this.style.color='#F5C842'" onmouseout="this.style.background='';this.style.color=''">
-            ₿ Deposit BTC
+          <a href="vip.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:#8898cc;text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(212,160,23,.08)';this.style.color='#F5C842'" onmouseout="this.style.background='';this.style.color=''">
+            &#127942; VIP Program
           </a>
-          <a href="casino.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:var(--text-dim,#8a7a50);text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(212,160,23,.08)';this.style.color='#F5C842'" onmouseout="this.style.background='';this.style.color=''">
-            🎰 Casino
+          <a href="deposit.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:#8898cc;text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(60,120,255,.08)';this.style.color='#93c5fd'" onmouseout="this.style.background='';this.style.color=''">
+            &#8383; Deposit BTC
           </a>
-          <div style="border-top:1px solid rgba(212,160,23,.1);margin-top:.3rem;padding-top:.3rem;">
+          <a href="casino.html" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:#8898cc;text-decoration:none;font-family:'Cinzel',serif;font-size:.68rem;transition:all .2s;" onmouseover="this.style.background='rgba(60,120,255,.08)';this.style.color='#93c5fd'" onmouseout="this.style.background='';this.style.color=''">
+            &#127918; Casino
+          </a>
+          <div style="border-top:1px solid rgba(60,120,255,0.1);margin-top:.3rem;padding-top:.3rem;">
             <button onclick="window.CK&&window.CK.logout()" style="display:flex;align-items:center;gap:.5rem;padding:.52rem .75rem;border-radius:7px;color:#f87171;background:none;border:none;font-family:'Cinzel',serif;font-size:.68rem;cursor:pointer;width:100%;transition:all .2s;" onmouseover="this.style.background='rgba(248,113,113,.08)'" onmouseout="this.style.background=''">
-              🚪 Logout
+              &#128682; Logout
             </button>
           </div>
         </div>
@@ -128,17 +212,19 @@
     // Aktualizuj balance v headeru
     if (headerBal) {
       headerBal.textContent = balance.toFixed(8) + ' BTC';
-      headerBal.style.color = '#4ade80';
     }
 
-    // Pridej do mobile menu
+    // VIP badge v headeru (pokud existuje #headerVip)
+    _renderVipBadge(vipLevel);
+
+    // Mobile menu update
     if (mobileMenu) {
-      // Odstran stary login link z mobile menu
       const mobileLogin = mobileMenu.querySelector('a[href="login.html"]');
       if (mobileLogin) {
         mobileLogin.outerHTML = `
-          <a href="profile.html">👤 ${username}</a>
-          <a href="deposit.html">₿ Deposit</a>
+          <a href="profile.html">&#128100; ${username}</a>
+          <a href="vip.html">&#127942; VIP Program</a>
+          <a href="deposit.html">&#8383; Deposit</a>
         `;
       }
     }
@@ -159,13 +245,15 @@
       }
     });
 
-    console.log('[CK] Header initialized for:', username);
+    console.log('[CK] Header initialized for:', username, '| VIP:', vipLevel);
   }
 
   // ════════════════════════════════════════════════════
   // PUBLIC API — window.CK
   // ════════════════════════════════════════════════════
   window.CK = {
+
+    sb, // expose for advanced use
 
     setGameMode(mode) {
       window._ckGameMode = mode;
@@ -195,6 +283,55 @@
     async refreshBalance() {
       _profile = null;
       return await this.getBalance();
+    },
+
+    // ── VIP funkce ────────────────────────────────────
+
+    async getVipLevel() {
+      const p = await _getProfile();
+      return p?.vip_level || 'none';
+    },
+
+    async getVipInfo() {
+      const p = await _getProfile();
+      const level = p?.vip_level || 'none';
+      const wagered = parseFloat(p?.total_wagered_btc || 0);
+      const vd = VIP_LEVELS[level] || VIP_LEVELS.none;
+      const nextLevel = _getNextVipLevel(level);
+      const nextVd = nextLevel ? VIP_LEVELS[nextLevel] : null;
+
+      let progress = 100;
+      let toNextLevel = 0;
+      if (nextVd) {
+        const currMin = vd.min;
+        const nextMin = nextVd.min;
+        progress = Math.min(Math.round(((wagered - currMin) / (nextMin - currMin)) * 100), 100);
+        toNextLevel = Math.max(0, nextMin - wagered);
+      }
+
+      return {
+        level,
+        label: vd.label,
+        icon: vd.icon,
+        color: vd.color,
+        cashback: vd.cashback,
+        maxWithdrawal: vd.maxWith,
+        reloadBonus: vd.reload,
+        totalWagered: wagered,
+        nextLevel,
+        nextLabel: nextVd?.label || null,
+        progress,
+        toNextLevel: parseFloat(toNextLevel.toFixed(5)),
+        isMaxLevel: !nextLevel,
+      };
+    },
+
+    renderVipBadge(vipLevel) {
+      _renderVipBadge(vipLevel);
+    },
+
+    getVipLevels() {
+      return VIP_LEVELS;
     },
 
     // ── Odecti sazku — POUZE v real mode ─────────────
@@ -245,7 +382,8 @@
           meta,
           created_at:     new Date().toISOString()
         });
-        // game_settings update — spravne nazvy sloupcu
+
+        // Update game_settings statistiky
         try {
           const betBtc    = Math.floor(betSatoshi)    / 1e8;
           const profitBtc = Math.floor(profitSatoshi) / 1e8;
@@ -264,6 +402,36 @@
             }).eq('id', game);
           }
         } catch (e2) { /* neni kriticke */ }
+
+        // VIP: update total_wagered_btc v profiles
+        // Trigger v DB to udela automaticky, ale pro jistotu taky tady
+        try {
+          const betBtc = Math.floor(betSatoshi) / 1e8;
+          const { data: prof } = await sb
+            .from('profiles')
+            .select('total_wagered_btc, vip_level')
+            .eq('id', _session.user.id)
+            .single();
+          if (prof) {
+            const newWagered = (parseFloat(prof.total_wagered_btc) || 0) + betBtc;
+            const newVipLevel = _calculateVipLevel(newWagered);
+            const updateData = { total_wagered_btc: newWagered };
+            // Povys VIP pokud je cas
+            if (newVipLevel !== prof.vip_level &&
+                (VIP_LEVELS[newVipLevel]?.order || 0) > (VIP_LEVELS[prof.vip_level]?.order || 0)) {
+              updateData.vip_level = newVipLevel;
+              updateData.vip_upgraded_at = new Date().toISOString();
+              console.log('[CK] VIP upgrade:', prof.vip_level, '→', newVipLevel);
+              // Refresh profilu po upgrade
+              _profile = null;
+              // Zobraz notifikaci hráči
+              _showVipUpgradeNotification(newVipLevel);
+            }
+            await sb.from('profiles').update(updateData).eq('id', _session.user.id);
+            if (updateData.vip_level) _profile = null;
+          }
+        } catch (e3) { /* VIP update neni kriticke */ }
+
       } catch (e) {
         console.warn('[CK] logBet error:', e.message);
       }
@@ -308,11 +476,6 @@
       }
     },
 
-    async getVipLevel() {
-      const p = await _getProfile();
-      return p?.vip_level || 'none';
-    },
-
     async getBetHistory(game = null, limit = 20) {
       if (!sb || !_session) return [];
       try {
@@ -351,6 +514,8 @@
       if (!el || isDemoMode()) return 0;
       const bal = await this.getBalance();
       el.textContent = bal.toFixed(8) + ' BTC';
+      const dbBal = document.getElementById('dropdownBal');
+      if (dbBal) dbBal.textContent = bal.toFixed(8) + ' BTC';
       return bal;
     },
 
@@ -377,11 +542,14 @@
         }, (payload) => {
           _profile = payload.new;
           const bal = parseFloat(payload.new.balance || 0);
+          // Update VIP pokud se zmenil
+          if (payload.new.vip_level !== payload.old?.vip_level) {
+            _renderVipBadge(payload.new.vip_level);
+          }
           if (!isDemoMode()) {
             const el = document.getElementById('headerBal');
             if (el) el.textContent = bal.toFixed(8) + ' BTC';
-            // Aktualizuj i dropdown balance
-            const dbBal = document.querySelector('#userDropdown .green-bal');
+            const dbBal = document.getElementById('dropdownBal');
             if (dbBal) dbBal.textContent = bal.toFixed(8) + ' BTC';
           }
           if (callback) callback(bal);
@@ -445,15 +613,52 @@
     getClient() { return sb; }
   };
 
-  // ── AUTO INIT ─────────────────────────────────────
-  // Inicializuj header automaticky po nacteni stranky
+  // ── VIP Upgrade notifikace ────────────────────────
+  function _showVipUpgradeNotification(newLevel) {
+    const vd = VIP_LEVELS[newLevel];
+    if (!vd) return;
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+      position:fixed;top:80px;right:1.5rem;z-index:9999;
+      background:rgba(2,6,20,0.99);border:2px solid ${vd.color};
+      border-radius:16px;padding:1.2rem 1.5rem;max-width:320px;
+      box-shadow:0 0 40px rgba(${_hexToRgb(vd.color)},0.4);
+      font-family:'Crimson Text',serif;animation:vipSlideIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    `;
+    notif.innerHTML = `
+      <div style="font-size:2rem;text-align:center;margin-bottom:0.5rem">${vd.icon}</div>
+      <div style="font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:${vd.color};text-align:center;margin-bottom:0.3rem">VIP Upgrade!</div>
+      <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:${vd.color};text-align:center;margin-bottom:0.5rem">${vd.label.toUpperCase()}</div>
+      <div style="font-size:0.82rem;color:#8898cc;text-align:center;line-height:1.5">Gratulujeme! Byl jsi povýšen<br>na ${vd.label} úroveň! 🎉</div>
+      <div style="text-align:center;margin-top:0.8rem">
+        <a href="vip.html" style="font-family:'Cinzel',serif;font-size:0.65rem;color:${vd.color};text-decoration:none;border:1px solid ${vd.color};padding:0.25rem 0.8rem;border-radius:6px;">Zobrazit výhody</a>
+      </div>
+    `;
+    // CSS animace
+    if (!document.getElementById('vipNotifStyle')) {
+      const style = document.createElement('style');
+      style.id = 'vipNotifStyle';
+      style.textContent = '@keyframes vipSlideIn{from{opacity:0;transform:translateX(40px) scale(0.9);}to{opacity:1;transform:translateX(0) scale(1);}}';
+      document.head.appendChild(style);
+    }
+    document.body.appendChild(notif);
+    // Auto-remove po 6s
+    setTimeout(() => {
+      notif.style.animation = 'vipSlideIn 0.3s ease reverse';
+      setTimeout(() => { if (notif.parentNode) notif.parentNode.removeChild(notif); }, 300);
+    }, 6000);
+    // Klik pro zavření
+    notif.onclick = () => { if (notif.parentNode) notif.parentNode.removeChild(notif); };
+  }
+
+  // ── AUTO INIT HEADER ──────────────────────────────
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initHeader);
   } else {
     initHeader();
   }
 
-  console.log('[CK] supabase.js v2.2 loaded | Session:', !!_session, '| Mode: DEMO (safe default)');
+  console.log('[CK] supabase.js v2.3 loaded | Session:', !!_session, '| VIP: enabled');
   if (_session) console.log('[CK] User:', _session.user.email);
 
 })();
