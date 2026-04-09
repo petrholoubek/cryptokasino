@@ -348,6 +348,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 
 @media(max-width:1100px){.main{grid-template-columns:1fr;}.betslip{position:static;}.stats-row{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:640px){
+  body::after{opacity:0.55;}
   header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
   .hero{height:70vh;min-height:430px;}
   .sport-bar{flex-wrap:wrap;gap:.6rem;justify-content:center;padding:.6rem 1rem;}
@@ -372,10 +373,12 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
     <a href="casino.html">Casino</a>
     <a href="live.html">Live</a>
     <a href="sports.html" class="active">Sports</a>
+    <a href="vip.html">VIP</a>
     <a href="promotions.html">Promotions</a>
   </nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <span id="headerVip"></span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -385,6 +388,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   <a href="casino.html" onclick="closeMenu()">Casino</a>
   <a href="live.html" onclick="closeMenu()">Live</a>
   <a href="sports.html" onclick="closeMenu()">Sports</a>
+  <a href="vip.html" onclick="closeMenu()">&#127942; VIP</a>
   <a href="promotions.html" onclick="closeMenu()">Promotions</a>
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
