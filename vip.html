@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Program – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#000d33">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<style>
+:root{
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#c084fc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 45% 42% at 50% 48%, rgba(30,80,220,0.45) 0%, rgba(10,40,130,0.25) 40%, transparent 70%);pointer-events:none;z-index:0;animation:bgRays 30s linear infinite;}
+@keyframes bgRays{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(2,6,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,0.2);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(60,120,255,0.5),rgba(212,160,23,0.6),rgba(60,120,255,0.5),transparent);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
+nav a.active{color:var(--gold-light);border-bottom:2px solid var(--gold);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
+.vip-badge-header{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:20px;font-weight:700;}
+.btn-dep{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.42rem 1.1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;}
+.btn-login{background:transparent;color:var(--text-dim);border:1px solid rgba(60,120,255,0.3);padding:0.42rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--blue);color:var(--blue);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.mobile-menu{display:none;position:fixed;top:62px;left:0;right:0;background:rgba(2,6,20,0.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(60,120,255,0.08);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+
+/* PAGE */
+.page{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+
+/* HERO */
+.vip-hero{text-align:center;padding:3rem 0 2.5rem;position:relative;}
+.vip-hero-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);border-radius:20px;padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.vip-hero h1{font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;color:var(--gold-light);text-shadow:0 0 60px rgba(245,200,66,0.5);margin-bottom:0.8rem;}
+.vip-hero p{font-size:1rem;color:var(--text-dim);max-width:600px;margin:0 auto;line-height:1.7;}
+
+/* PLAYER STATUS CARD */
+.player-status{background:linear-gradient(135deg,rgba(30,80,200,0.15),rgba(10,40,120,0.2));border:1px solid rgba(60,120,255,0.3);border-radius:20px;padding:2rem;margin-bottom:2.5rem;position:relative;overflow:hidden;}
+.player-status::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,transparent,rgba(60,120,255,0.7),rgba(212,160,23,0.6),transparent);}
+.ps-not-logged{text-align:center;padding:2rem;}
+.ps-not-logged-icon{font-size:3rem;margin-bottom:1rem;}
+.ps-not-logged-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:var(--gold-light);margin-bottom:0.5rem;}
+.ps-not-logged-sub{font-size:0.9rem;color:var(--text-dim);margin-bottom:1.5rem;}
+.ps-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.ps-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#c8920a,#f5c842);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;box-shadow:0 0 25px rgba(212,160,23,0.4);}
+.ps-info{flex:1;}
+.ps-name{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:var(--gold-light);}
+.ps-level-badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.25rem 0.8rem;border-radius:20px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-top:0.4rem;}
+.ps-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.ps-stat{background:rgba(5,15,50,0.6);border:1px solid rgba(60,120,255,0.15);border-radius:12px;padding:1rem;text-align:center;}
+.ps-stat-lbl{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
+.ps-stat-val{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);}
+
+/* PROGRESS */
+.ps-progress{margin-top:0.5rem;}
+.ps-progress-header{display:flex;justify-content:space-between;margin-bottom:0.5rem;}
+.ps-progress-label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
+.ps-progress-pct{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;color:var(--gold-light);}
+.ps-progress-track{height:10px;background:rgba(60,120,255,0.1);border-radius:5px;overflow:hidden;position:relative;}
+.ps-progress-fill{height:100%;border-radius:5px;transition:width 1s ease;background:linear-gradient(to right,#1a4fd4,#f5c842);}
+.ps-next-level{display:flex;justify-content:space-between;margin-top:0.4rem;}
+.ps-next-lbl{font-family:'Cinzel',serif;font-size:0.55rem;color:var(--text-dim);}
+
+/* VIP LEVELS */
+.levels-title{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(60,120,255,0.5);}
+.levels-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(60,120,255,0.4),transparent);}
+.levels-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:2.5rem;}
+.level-card{border-radius:18px;overflow:hidden;border:1px solid rgba(60,120,255,0.2);transition:all 0.3s;position:relative;cursor:default;}
+.level-card.current{border-width:2px;transform:scale(1.03);}
+.level-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.lc-bronze::before{background:linear-gradient(90deg,transparent,#cd7f32,transparent);}
+.lc-silver::before{background:linear-gradient(90deg,transparent,#adb5bd,transparent);}
+.lc-gold::before{background:linear-gradient(90deg,transparent,#D4A017,transparent);}
+.lc-platinum::before{background:linear-gradient(90deg,transparent,#e5e4e2,transparent);}
+.lc-diamond::before{background:linear-gradient(90deg,transparent,#60a5fa,transparent);}
+.lc-bronze{background:linear-gradient(145deg,rgba(205,127,50,0.12),rgba(5,15,50,0.9));border-color:rgba(205,127,50,0.3);}
+.lc-silver{background:linear-gradient(145deg,rgba(173,181,189,0.12),rgba(5,15,50,0.9));border-color:rgba(173,181,189,0.3);}
+.lc-gold{background:linear-gradient(145deg,rgba(212,160,23,0.15),rgba(5,15,50,0.9));border-color:rgba(212,160,23,0.4);}
+.lc-platinum{background:linear-gradient(145deg,rgba(229,228,226,0.12),rgba(5,15,50,0.9));border-color:rgba(229,228,226,0.3);}
+.lc-diamond{background:linear-gradient(145deg,rgba(96,165,250,0.15),rgba(5,15,50,0.9));border-color:rgba(96,165,250,0.4);}
+.lc-bronze.current{border-color:#cd7f32;box-shadow:0 0 30px rgba(205,127,50,0.3);}
+.lc-silver.current{border-color:#adb5bd;box-shadow:0 0 30px rgba(173,181,189,0.3);}
+.lc-gold.current{border-color:#D4A017;box-shadow:0 0 30px rgba(212,160,23,0.4);}
+.lc-platinum.current{border-color:#e5e4e2;box-shadow:0 0 30px rgba(229,228,226,0.3);}
+.lc-diamond.current{border-color:#60a5fa;box-shadow:0 0 30px rgba(96,165,250,0.4);}
+.lc-header{padding:1.2rem 1rem;text-align:center;border-bottom:1px solid rgba(60,120,255,0.1);}
+.lc-icon{font-size:2.2rem;margin-bottom:0.5rem;}
+.lc-name{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;}
+.lc-bronze .lc-name{color:#cd7f32;}
+.lc-silver .lc-name{color:#adb5bd;}
+.lc-gold .lc-name{color:#D4A017;}
+.lc-platinum .lc-name{color:#e5e4e2;}
+.lc-diamond .lc-name{color:#60a5fa;}
+.lc-req{font-family:'Cinzel',serif;font-size:0.55rem;color:var(--text-dim);margin-top:0.2rem;}
+.lc-current-tag{display:inline-block;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);border-radius:10px;padding:0.12rem 0.5rem;font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-top:0.4rem;}
+.lc-body{padding:1rem;}
+.lc-benefit{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.55rem;font-size:0.78rem;color:var(--text-dim);}
+.lc-benefit-icon{font-size:0.8rem;flex-shrink:0;}
+.lc-benefit strong{color:var(--text);}
+
+/* BENEFITS TABLE */
+.benefits-section{margin-bottom:2.5rem;}
+.benefits-table{width:100%;border-collapse:collapse;background:rgba(5,15,50,0.7);border:1px solid rgba(60,120,255,0.2);border-radius:16px;overflow:hidden;}
+.benefits-table th{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.9rem 1rem;text-align:center;border-bottom:1px solid rgba(60,120,255,0.15);background:rgba(30,60,140,0.15);}
+.benefits-table th:first-child{text-align:left;}
+.benefits-table td{padding:0.75rem 1rem;border-bottom:1px solid rgba(60,120,255,0.06);font-size:0.85rem;text-align:center;color:var(--text-dim);}
+.benefits-table td:first-child{font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;color:var(--text);text-align:left;}
+.benefits-table tr:last-child td{border-bottom:none;}
+.benefits-table tr:hover td{background:rgba(60,120,255,0.04);}
+.bt-check{color:var(--green);font-size:1rem;}
+.bt-cross{color:var(--text-dim);opacity:0.3;font-size:1rem;}
+.bt-val{font-family:'Cinzel',serif;font-weight:700;}
+.bt-gold{color:var(--gold-light);}
+.bt-green{color:var(--green);}
+.bt-blue{color:var(--blue);}
+.bt-diamond{color:#60a5fa;}
+
+/* HOW IT WORKS */
+.how-section{margin-bottom:2.5rem;}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.how-step{background:rgba(5,15,50,0.7);border:1px solid rgba(60,120,255,0.15);border-radius:16px;padding:1.5rem;text-align:center;position:relative;overflow:hidden;}
+.how-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,rgba(60,120,255,0.5),transparent);}
+.how-step-num{font-family:'Cinzel',serif;font-size:2.5rem;font-weight:900;color:rgba(60,120,255,0.15);margin-bottom:0.5rem;}
+.how-step-icon{font-size:2rem;margin-bottom:0.8rem;}
+.how-step-title{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#93c5fd;margin-bottom:0.5rem;}
+.how-step-desc{font-size:0.88rem;color:var(--text-dim);line-height:1.6;}
+
+/* CTA */
+.vip-cta{background:linear-gradient(135deg,rgba(30,80,200,0.15),rgba(10,40,120,0.2));border:1px solid rgba(60,120,255,0.3);border-radius:20px;padding:2.5rem;text-align:center;}
+.vip-cta h2{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;color:var(--gold-light);margin-bottom:0.8rem;}
+.vip-cta p{font-size:0.95rem;color:var(--text-dim);margin-bottom:1.5rem;}
+.cta-btns{display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,#1a4fd4,#3b82f6);color:#fff;border:none;padding:0.85rem 2rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 30px rgba(59,130,246,0.4);transition:all 0.3s;}
+.btn-primary:hover{transform:scale(1.04);box-shadow:0 0 50px rgba(59,130,246,0.7);}
+.btn-gold{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.85rem 2rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 20px rgba(212,160,23,0.4);transition:all 0.3s;}
+.btn-gold:hover{transform:scale(1.04);}
+
+/* FOOTER */
+footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+
+@media(max-width:900px){.levels-grid{grid-template-columns:1fr 1fr;}.how-steps{grid-template-columns:1fr;}}
+@media(max-width:640px){
+  header{padding:0 1rem;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
+  .levels-grid{grid-template-columns:1fr 1fr;}.ps-stats{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
+  <nav>
+    <a href="casino.html">Casino</a>
+    <a href="live.html">Live</a>
+    <a href="sports.html">Sports</a>
+    <a href="vip.html" class="active">VIP</a>
+    <a href="promotions.html">Promotions</a>
+  </nav>
+  <div class="header-right">
+    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <span class="vip-badge-header" id="headerVip" style="display:none"></span>
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login" id="loginBtn">Login</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html" onclick="closeMenu()">Casino</a>
+  <a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="vip.html" onclick="closeMenu()">VIP</a>
+  <a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <div class="mobile-menu-btns">
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="vip-hero">
+    <div class="vip-hero-tag">&#127942; Exclusive VIP Program</div>
+    <h1>Play More. Earn More.</h1>
+    <p>Čím více hraješ, tím vyšší VIP level získáš — automaticky. Žádné přihlášky, žádné podmínky. Prostě hraj a sbírej výhody.</p>
+  </div>
+
+  <!-- PLAYER STATUS -->
+  <div class="player-status" id="playerStatus">
+    <div class="ps-not-logged" id="psNotLogged">
+      <div class="ps-not-logged-icon">&#127942;</div>
+      <div class="ps-not-logged-title">Přihlas se a zjisti svůj VIP level</div>
+      <div class="ps-not-logged-sub">Tvůj VIP status se počítá automaticky podle objemu sázek.</div>
+      <a href="login.html" class="btn-primary">&#128272; Přihlásit se</a>
+    </div>
+    <div id="psLogged" style="display:none">
+      <div class="ps-header">
+        <div class="ps-avatar" id="psAvatar">&#128100;</div>
+        <div class="ps-info">
+          <div class="ps-name" id="psName">—</div>
+          <div>
+            <span class="ps-level-badge" id="psLevelBadge">—</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem">Balance</div>
+          <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--green)" id="psBal">—</div>
+        </div>
+      </div>
+      <div class="ps-stats">
+        <div class="ps-stat">
+          <div class="ps-stat-lbl">Celkem vsazeno</div>
+          <div class="ps-stat-val" id="psTotalWagered">—</div>
+        </div>
+        <div class="ps-stat">
+          <div class="ps-stat-lbl">Cashback %</div>
+          <div class="ps-stat-val" id="psCashback" style="color:var(--gold-light)">—</div>
+        </div>
+        <div class="ps-stat">
+          <div class="ps-stat-lbl">Max výběr/den</div>
+          <div class="ps-stat-val" id="psMaxWith" style="color:var(--blue)">—</div>
+        </div>
+      </div>
+      <!-- PROGRESS BAR -->
+      <div class="ps-progress" id="psProgress">
+        <div class="ps-progress-header">
+          <span class="ps-progress-label" id="psProgressLabel">Pokrok do dalšího levelu</span>
+          <span class="ps-progress-pct" id="psProgressPct">0%</span>
+        </div>
+        <div class="ps-progress-track">
+          <div class="ps-progress-fill" id="psProgressFill" style="width:0%"></div>
+        </div>
+        <div class="ps-next-level">
+          <span class="ps-next-lbl" id="psCurrentLevelLabel">—</span>
+          <span class="ps-next-lbl" id="psNextLevelLabel">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIP LEVELS -->
+  <div class="levels-title">&#127942; VIP Úrovně</div>
+  <div class="levels-grid" id="levelsGrid">
+    <!-- Renderováno JS -->
+  </div>
+
+  <!-- BENEFITS TABLE -->
+  <div class="benefits-section">
+    <div class="levels-title">&#127381; Porovnání výhod</div>
+    <table class="benefits-table">
+      <thead>
+        <tr>
+          <th>Výhoda</th>
+          <th style="color:#cd7f32">&#129350; Bronze</th>
+          <th style="color:#adb5bd">&#129352; Silver</th>
+          <th style="color:#D4A017">&#129351; Gold</th>
+          <th style="color:#e5e4e2">&#128142; Platinum</th>
+          <th style="color:#60a5fa">&#128306; Diamond</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cashback</td>
+          <td><span class="bt-val bt-gold">1%</span></td>
+          <td><span class="bt-val bt-gold">2%</span></td>
+          <td><span class="bt-val bt-gold">3%</span></td>
+          <td><span class="bt-val bt-gold">5%</span></td>
+          <td><span class="bt-val bt-gold">8%</span></td>
+        </tr>
+        <tr>
+          <td>Max výběr / den</td>
+          <td><span class="bt-val">0.5 BTC</span></td>
+          <td><span class="bt-val">1 BTC</span></td>
+          <td><span class="bt-val">2 BTC</span></td>
+          <td><span class="bt-val">5 BTC</span></td>
+          <td><span class="bt-val bt-diamond">Neomezeno</span></td>
+        </tr>
+        <tr>
+          <td>Reload bonus</td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-val bt-green">5%</span></td>
+          <td><span class="bt-val bt-green">10%</span></td>
+          <td><span class="bt-val bt-green">15%</span></td>
+          <td><span class="bt-val bt-green">20%</span></td>
+        </tr>
+        <tr>
+          <td>Rychlejší výběry</td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-check">✓</span></td>
+          <td><span class="bt-check">✓</span></td>
+          <td><span class="bt-check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Osobní manager</td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-check">✓</span></td>
+          <td><span class="bt-check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Exkluzivní turnaje</td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-check">✓</span></td>
+          <td><span class="bt-check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Speciální dárky</td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-cross">✕</span></td>
+          <td><span class="bt-check">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-section">
+    <div class="levels-title">&#9889; Jak to funguje</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-icon">&#127918;</div>
+        <div class="how-step-title">Hraj hry</div>
+        <div class="how-step-desc">Každá sázka se počítá do tvého celkového objemu. Nezáleží na výhře nebo prohře — každá hra tě posouvá výš.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-icon">&#128200;</div>
+        <div class="how-step-title">Automatické povýšení</div>
+        <div class="how-step-desc">Jakmile dosáhneš potřebného objemu sázek, systém tě automaticky povýší. Žádné formuláře, žádné čekání.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-icon">&#127942;</div>
+        <div class="how-step-title">Užívej výhody</div>
+        <div class="how-step-desc">Cashback, bonusy, vyšší limity — vše se aktivuje okamžitě po povýšení. Diamond hráči mají přístup k osobnímu managerovi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="vip-cta" id="ctaSection">
+    <h2>&#127942; Začni sbírat VIP body dnes</h2>
+    <p>Přihlas se a začni hrát. Tvůj VIP progress se počítá od první sázky.</p>
+    <div class="cta-btns">
+      <a href="casino.html" class="btn-primary">&#127918; Hrát hry</a>
+      <a href="deposit.html" class="btn-gold">&#8383; Deposit BTC</a>
+    </div>
+  </div>
+
+</div>
+
+<footer><p>&#169; 2026 CryptoKasino &middot; All rights reserved &middot; 18+ &middot; Play Responsibly</p></footer>
+
+<script>
+const VIP_LEVELS = [
+  {id:'bronze',  name:'Bronze',  icon:'&#129350;', color:'#cd7f32', minBtc:0.01, cashback:1,  maxWith:0.5,  reload:0,  benefits:['1% cashback na každou sázku','Přístup k Bronze turnajům','Priority support']},
+  {id:'silver',  name:'Silver',  icon:'&#129352;', color:'#adb5bd', minBtc:0.05, cashback:2,  maxWith:1.0,  reload:5,  benefits:['2% cashback','5% weekly reload bonus','Výběry do 12h','Exkluzivní Silver hry']},
+  {id:'gold',    name:'Gold',    icon:'&#129351;', color:'#D4A017', minBtc:0.20, cashback:3,  maxWith:2.0,  reload:10, benefits:['3% cashback','10% weekly reload','Výběry do 6h','Speciální Gold turnaje']},
+  {id:'platinum',name:'Platinum',icon:'&#128142;', color:'#e5e4e2', minBtc:0.50, cashback:5,  maxWith:5.0,  reload:15, benefits:['5% cashback','15% reload bonus','Výběry do 1h','Osobní account manager','Platinum lounge']},
+  {id:'diamond', name:'Diamond', icon:'&#128306;', color:'#60a5fa', minBtc:1.00, cashback:8,  maxWith:null, reload:20, benefits:['8% cashback','20% reload bonus','Okamžité výběry','Neomezené výběry','VIP manager 24/7','Exkluzivní dárky a bonusy']},
+];
+
+const VIP_ORDER = ['none','bronze','silver','gold','platinum','diamond'];
+
+function getLevelData(levelId){
+  return VIP_LEVELS.find(l=>l.id===levelId) || null;
+}
+
+function getNextLevel(currentId){
+  const idx = VIP_ORDER.indexOf(currentId);
+  if(idx === -1 || idx >= VIP_ORDER.length-1) return null;
+  return VIP_ORDER[idx+1];
+}
+
+function getLevelColor(levelId){
+  const colors = {none:'#8898cc',bronze:'#cd7f32',silver:'#adb5bd',gold:'#D4A017',platinum:'#e5e4e2',diamond:'#60a5fa'};
+  return colors[levelId]||'#8898cc';
+}
+
+function getLevelIcon(levelId){
+  const icons = {none:'&#128100;',bronze:'&#129350;',silver:'&#129352;',gold:'&#129351;',platinum:'&#128142;',diamond:'&#128306;'};
+  return icons[levelId]||'&#128100;';
+}
+
+// Render VIP level cards
+function renderLevels(currentLevel){
+  const grid = document.getElementById('levelsGrid');
+  grid.innerHTML = '';
+  VIP_LEVELS.forEach(lv=>{
+    const isCurrent = lv.id === currentLevel;
+    const card = document.createElement('div');
+    card.className = `level-card lc-${lv.id}${isCurrent?' current':''}`;
+    card.innerHTML = `
+      <div class="lc-header">
+        <div class="lc-icon">${lv.icon}</div>
+        <div class="lc-name">${lv.name}</div>
+        <div class="lc-req">od ${lv.minBtc} BTC vsazeno</div>
+        ${isCurrent?'<div class="lc-current-tag">&#9989; Tvůj level</div>':''}
+      </div>
+      <div class="lc-body">
+        ${lv.benefits.map(b=>`<div class="lc-benefit"><span class="lc-benefit-icon">&#10003;</span><span>${b}</span></div>`).join('')}
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// Load player data
+async function loadPlayer(){
+  let user = null, prof = null;
+  let tries = 0;
+  while(!window.CK && tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+
+  if(window.CK){
+    try{
+      const bal = await CK.getBalance();
+      if(bal>0) document.getElementById('headerBal').textContent = bal.toFixed(8)+' BTC';
+      if(CK.sb){
+        const {data:{session}} = await CK.sb.auth.getSession();
+        if(session){
+          user = session.user;
+          const {data:p} = await CK.sb.from('profiles').select('*').eq('id',user.id).single();
+          if(p) prof = p;
+        }
+      }
+    }catch(e){console.warn('[VIP]',e.message);}
+  }
+
+  renderLevels(prof?.vip_level||'none');
+
+  if(!prof){
+    document.getElementById('psNotLogged').style.display='block';
+    document.getElementById('psLogged').style.display='none';
+    return;
+  }
+
+  // Zobraz player status
+  document.getElementById('psNotLogged').style.display='none';
+  document.getElementById('psLogged').style.display='block';
+
+  const vipId = prof.vip_level||'none';
+  const vipData = getLevelData(vipId);
+  const nextId = getNextLevel(vipId);
+  const nextData = getLevelData(nextId);
+
+  // Avatar + name
+  document.getElementById('psAvatar').innerHTML = getLevelIcon(vipId);
+  document.getElementById('psName').textContent = prof.username||user?.email||'Player';
+
+  // Level badge
+  const badge = document.getElementById('psLevelBadge');
+  badge.innerHTML = getLevelIcon(vipId)+' '+(vipData?.name||'Member');
+  badge.style.background = `rgba(${hexToRgb(getLevelColor(vipId))},0.15)`;
+  badge.style.border = `1px solid rgba(${hexToRgb(getLevelColor(vipId))},0.4)`;
+  badge.style.color = getLevelColor(vipId);
+
+  // Header VIP badge
+  const hVip = document.getElementById('headerVip');
+  if(vipId!=='none'){
+    hVip.innerHTML = getLevelIcon(vipId)+' '+vipData.name;
+    hVip.style.cssText = `background:rgba(${hexToRgb(getLevelColor(vipId))},0.12);border:1px solid rgba(${hexToRgb(getLevelColor(vipId))},0.3);color:${getLevelColor(vipId)};padding:0.28rem 0.7rem;border-radius:20px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;`;
+    hVip.style.display='inline-flex';
+  }
+
+  // Balance
+  document.getElementById('psBal').textContent = parseFloat(prof.balance||0).toFixed(8)+' BTC';
+
+  // Stats
+  const wagered = parseFloat(prof.total_wagered_btc||0);
+  document.getElementById('psTotalWagered').textContent = wagered.toFixed(5)+' BTC';
+  document.getElementById('psCashback').textContent = (vipData?.cashback||0)+'%';
+  document.getElementById('psMaxWith').textContent = vipData?.maxWith ? vipData.maxWith+' BTC/den' : 'Neomezeno';
+
+  // Progress bar
+  if(nextData){
+    const currMin = vipData?.minBtc||0;
+    const nextMin = nextData.minBtc;
+    const progress = Math.min(((wagered-currMin)/(nextMin-currMin))*100, 100);
+    document.getElementById('psProgressFill').style.width = progress+'%';
+    document.getElementById('psProgressPct').textContent = Math.round(progress)+'%';
+    document.getElementById('psProgressLabel').textContent = 'Pokrok do '+nextData.name;
+    document.getElementById('psCurrentLevelLabel').textContent = (vipData?.name||'Member')+' ('+wagered.toFixed(4)+' BTC)';
+    document.getElementById('psNextLevelLabel').textContent = nextData.name+' ('+nextData.minBtc+' BTC)';
+    // Potřeba vsadit ještě
+    const need = Math.max(0, nextMin - wagered);
+    if(need > 0){
+      document.getElementById('psProgressLabel').textContent = 'Ještě '+need.toFixed(4)+' BTC do '+nextData.name;
+    }
+  } else {
+    // Diamond — max level
+    document.getElementById('psProgressFill').style.width='100%';
+    document.getElementById('psProgressFill').style.background='linear-gradient(to right,#1a4fd4,#60a5fa)';
+    document.getElementById('psProgressPct').textContent='MAX';
+    document.getElementById('psProgressLabel').textContent='Dosáhl jsi nejvyššího VIP levelu!';
+    document.getElementById('psCurrentLevelLabel').textContent='&#128306; Diamond — Nejvyšší level';
+    document.getElementById('psNextLevelLabel').textContent='';
+  }
+
+  // CTA — pokud je přihlášen, změň text
+  document.getElementById('ctaSection').querySelector('h2').textContent = '&#127918; Pokračuj a povýš se na '+((nextData?.name)||'Diamond')+'!';
+}
+
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
+document.addEventListener('click',function(e){const m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+
+// Init
+renderLevels('none');
+loadPlayer();
+</script>
+</body>
+</html>
