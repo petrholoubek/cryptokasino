@@ -629,18 +629,48 @@ function startConfTracker() {
   var status = document.getElementById('confStatus');
   if(tracker.classList.contains('show')) return;
   tracker.classList.add('show');
-  var confs = 0; bar.style.width = '0%';
-  status.textContent = 'Waiting for transaction broadcast...'; status.style.color='var(--orange)';
+  bar.style.width = '0%';
+  status.textContent = 'Waiting for transaction on blockchain...';
+  status.style.color = 'var(--orange)';
   if(confInterval) clearInterval(confInterval);
-  setTimeout(function() {
-    status.textContent = 'Transaction detected! Waiting for confirmation...';
-    confInterval = setInterval(function() {
-      if(confs >= 3){clearInterval(confInterval);return;}
-      confs++; bar.style.width=(confs/3*100)+'%';
-      if(confs>=3){status.style.color='var(--green)';status.textContent='Deposit confirmed! Balance updated.';}
-      else status.textContent=confs+'/3 confirmations...';
-    }, 8000);
-  }, 3000);
+
+  var lastBalance = 0;
+  if(sb && currentUser) {
+    sb.from('profiles').select('balance').eq('id', currentUser.id).single().then(function(r){
+      if(r.data) lastBalance = parseFloat(r.data.balance || 0);
+    });
+  }
+
+  // Skutecny polling - kontroluje Supabase kazdych 15 sekund
+  confInterval = setInterval(function() {
+    if(!sb || !currentUser) return;
+    sb.from('deposits')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', {ascending: false})
+      .limit(1)
+      .then(function(r) {
+        var dep = r.data && r.data[0];
+        if(!dep) return;
+        var confs = parseInt(dep.confirmations || 0);
+        var pct = Math.min(confs / 3 * 100, 100);
+        bar.style.width = pct + '%';
+        if(dep.status === 'confirmed' || confs >= 1) {
+          clearInterval(confInterval);
+          status.style.color = 'var(--green)';
+          status.textContent = 'Deposit confirmed! Balance updated.';
+          bar.style.width = '100%';
+          // Obnov balance v headeru
+          if(window.CK) window.CK.updateHeaderBalance();
+          loadTxHistory();
+        } else if(confs > 0) {
+          status.textContent = confs + '/3 confirmations...';
+          status.style.color = 'var(--orange)';
+        } else {
+          status.textContent = 'Transaction detected! Waiting for confirmation...';
+        }
+      });
+  }, 15000);
 }
 
 // History
