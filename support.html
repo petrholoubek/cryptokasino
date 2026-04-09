@@ -294,7 +294,7 @@ footer a{color:#93c5fd;text-decoration:none;}
       <div class="ch-title">Email Support</div>
       <div class="ch-desc">For account issues, disputes, and detailed inquiries requiring investigation.</div>
       <div class="ch-time">Response: &lt; 2 hours</div>
-      <a href="mailto:support@cryptokasino.io" class="ch-btn">support@cryptokasino.io</a>
+      <a href="/cdn-cgi/l/email-protection#c9babcb9b9a6bbbd89aabbb0b9bda6a2a8baa0a7a6e7a0a6" class="ch-btn"><span class="__cf_email__" data-cfemail="bac9cfcacad5c8cefad9c8c3caced5d1dbc9d3d4d594d3d5">[email&#160;protected]</span></a>
     </div>
     <div class="channel-card telegram">
       <div class="ch-icon">&#128241;</div>
@@ -339,11 +339,11 @@ footer a{color:#93c5fd;text-decoration:none;}
       </div>
       <div class="faq-item" data-tags="forgot password reset locked access email">
         <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">I forgot my password. How do I reset it?</span><span class="faq-arrow">&#9662;</span></div>
-        <div class="faq-a">Click "Forgot Password" on the login page. Enter your registered email. You'll receive a reset link within 2 minutes. Check your spam folder if you don't see it. Lost email access? Contact support@cryptokasino.io directly.</div>
+        <div class="faq-a">Click "Forgot Password" on the login page. Enter your registered email. You'll receive a reset link within 2 minutes. Check your spam folder if you don't see it. Lost email access? Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="04777174746b76704467767d74706b6f65776d6a6b2a6d6b">[email&#160;protected]</a> directly.</div>
       </div>
       <div class="faq-item" data-tags="responsible gambling self exclusion limit deposit problem help">
         <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How can I set limits or self-exclude?</span><span class="faq-arrow">&#9662;</span></div>
-        <div class="faq-a">In Account Settings you can set daily, weekly, or monthly deposit limits and session time limits. For permanent self-exclusion, email support@cryptokasino.io with subject "Self-Exclusion Request." We process these within 24 hours and take this very seriously.</div>
+        <div class="faq-a">In Account Settings you can set daily, weekly, or monthly deposit limits and session time limits. For permanent self-exclusion, email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c2f292c2c332e281c3f2e252c2833373d2f353233723533">[email&#160;protected]</a> with subject "Self-Exclusion Request." We process these within 24 hours and take this very seriously.</div>
       </div>
     </div>
     <div id="faqNoResults" style="display:none;padding:2rem;text-align:center;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--text-dim);">No articles found. Try different keywords or ask our AI chat directly.</div>
@@ -437,7 +437,7 @@ footer a{color:#93c5fd;text-decoration:none;}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── MENU ────────────────────────────────────────────
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
@@ -593,12 +593,10 @@ async function sendMessage(){
   showTyping();
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.cryptokasino.io/api/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
         system: SYSTEM_PROMPT,
         messages: chatHistory
       })
@@ -612,23 +610,4 @@ async function sendMessage(){
       chatHistory.push({role:'assistant', content: reply});
       addMessage('ai', reply);
     } else {
-      addMessage('ai','Sorry, I had trouble responding. Please try again or email us at support@cryptokasino.io 📧');
-    }
-  } catch(e) {
-    removeTyping();
-    addMessage('ai','Connection issue. Please try again or contact us at support@cryptokasino.io 📧');
-    console.warn('[Chat] Error:', e.message);
-  }
-
-  isTyping = false;
-  document.getElementById('chatSend').disabled = false;
-  document.getElementById('chatInput').focus();
-}
-
-function quickSend(text){
-  document.getElementById('chatInput').value = text;
-  sendMessage();
-}
-</script>
-</body>
-</html>
+      addMessage('ai','Sorry, I had trouble responding. Please tr
