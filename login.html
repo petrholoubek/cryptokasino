@@ -638,6 +638,49 @@ async function submitMagicLink() {
   if (error) showAlert('magicAlert', 'magicAlertMsg', 'error', error.message);
   else showAlert('magicAlert', 'magicAlertMsg', 'success', '✨ Magic link sent! Check your email and click the link.');
 }
+
+// ══ AFFILIATE REF TRACKING ══
+(function(){
+  // Uloz ?ref= kod z URL do localStorage (platí 30 dní)
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if(ref){
+    localStorage.setItem('ck_ref', ref);
+    localStorage.setItem('ck_ref_ts', Date.now().toString());
+    console.log('[Affiliate] Ref code saved:', ref);
+  }
+})();
+
+// Po prihlaseni/registraci - napoj hrace na affiliate
+async function trackAffiliateIfNeeded(userId){
+  try{
+    const ref = localStorage.getItem('ck_ref');
+    const ts = parseInt(localStorage.getItem('ck_ref_ts')||'0');
+    if(!ref) return;
+    if(Date.now() - ts > 30*24*60*60*1000){
+      localStorage.removeItem('ck_ref');
+      localStorage.removeItem('ck_ref_ts');
+      return;
+    }
+    if(window.sb){
+      await window.sb.rpc('track_affiliate_conversion',{
+        p_player_id: userId,
+        p_ref_code: ref
+      });
+      localStorage.removeItem('ck_ref');
+      localStorage.removeItem('ck_ref_ts');
+      console.log('[Affiliate] Conversion tracked for ref:', ref);
+    }
+  }catch(e){ console.warn('[Affiliate] Tracking error:', e.message); }
+}
+
+// Spust tracking po nacteni stranky (pokud je uzivatel prihlasen)
+document.addEventListener('DOMContentLoaded', async function(){
+  if(window.sb){
+    const {data:{session}} = await window.sb.auth.getSession();
+    if(session) trackAffiliateIfNeeded(session.user.id);
+  }
+});
 </script>
 </body>
 </html>
