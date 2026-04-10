@@ -573,6 +573,12 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
       <div class="lstat"><div class="lstat-val red" id="ls-won">—</div><div class="lstat-lbl">Biggest Win Today</div></div>
     </div>
 
+    <div class="lobby-tabs" style="display:flex;gap:.4rem;background:rgba(5,15,55,.7);border:1px solid rgba(60,120,255,.2);border-radius:12px;padding:.35rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <button class="ltab active" onclick="switchTab('all',this)">&#127183; All <span class="ltab-count" id="tc-all">0</span></button>
+      <button class="ltab" onclick="switchTab('poker',this)">&#127183; Poker <span class="ltab-count" id="tc-poker">0</span></button>
+      <button class="ltab" onclick="switchTab('blackjack',this)">&#9824;&#65039; Blackjack <span class="ltab-count" id="tc-bj">0</span></button>
+      <button class="ltab" onclick="switchTab('craps',this)">&#127922; Craps <span class="ltab-count" id="tc-craps">0</span></button>
+    </div>
     <div class="tables-grid" id="tablesGrid"></div>
     <div class="game-table-view" id="gameView">
       <div class="poker-table-wrap">
@@ -767,15 +773,16 @@ function getDemoTables(){
 }
 
 function updateLobbyStats(tables){
-  document.getElementById('ls-tables').textContent=tables.length;
-  document.getElementById('ls-players').textContent=tables.reduce(function(s,t){return s+parseInt(t.current_players||0);},0);
+  function setTxt(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
+  setTxt('ls-tables',tables.length);
+  setTxt('ls-players',tables.reduce(function(s,t){return s+parseInt(t.current_players||0);},0));
   var mp=Math.max.apply(null,tables.map(function(t){return parseFloat(t.pot||0);}));
-  document.getElementById('ls-pot').textContent=mp>0?mp.toFixed(4)+' BTC':'—';
-  document.getElementById('ls-won').textContent='0.14200 BTC';
-  document.getElementById('tc-all').textContent=tables.length;
-  document.getElementById('tc-poker').textContent=tables.filter(function(t){return t.game==='poker';}).length;
-  document.getElementById('tc-bj').textContent=tables.filter(function(t){return t.game==='blackjack';}).length;
-  document.getElementById('tc-craps').textContent=tables.filter(function(t){return t.game==='craps';}).length;
+  setTxt('ls-pot',mp>0?mp.toFixed(4)+' BTC':'—');
+  setTxt('ls-won','0.14200 BTC');
+  setTxt('tc-all',tables.length);
+  setTxt('tc-poker',tables.filter(function(t){return t.game==='poker';}).length);
+  setTxt('tc-bj',tables.filter(function(t){return t.game==='blackjack';}).length);
+  setTxt('tc-craps',tables.filter(function(t){return t.game==='craps';}).length);
 }
 
 function renderTables(tables){
