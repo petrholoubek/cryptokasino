@@ -1130,9 +1130,9 @@ function closeMenu(){document.getElementById('mobileMenu').classList.remove('ope
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 
 // ══ JACKPOT COUNTER — rychleji roste ══
-var jp=0.00105894;
+var jp=21.48250894;
 setInterval(function(){
-  jp+=0.00000015+Math.random()*0.0000002;
+  jp+=0.0000085+Math.random()*0.0000002;
   var el=document.getElementById('jbAmt');
   if(el)el.textContent=jp.toFixed(8);
 },1000);
