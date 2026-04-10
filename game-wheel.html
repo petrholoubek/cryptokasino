@@ -624,11 +624,11 @@ setInterval(addLive,2800);for(let i=0;i<3;i++)addLive();
 // ══ WHEEL TYPES ══
 const WHEEL_TYPES={
   classic:{name:'Classic',label:'&#128309; Classic',ptLabel:'Classic Paytable',
-    segments:[{label:'0',mult:0,color:'#7f1d1d',count:10},{label:'1×',mult:1,color:'#1d4ed8',count:12},{label:'2×',mult:2,color:'#15803d',count:10},{label:'3×',mult:3,color:'#b45309',count:7},{label:'5×',mult:5,color:'#7e22ce',count:5},{label:'10×',mult:10,color:'#be185d',count:3},{label:'20×',mult:20,color:'#c8920a',count:1}]},
+    segments:[{label:'0',mult:0,color:'#7f1d1d',count:12},{label:'0',mult:0,color:'#7f1d1d',count:10},{label:'2×',mult:2,color:'#15803d',count:8},{label:'3×',mult:3,color:'#b45309',count:6},{label:'4×',mult:4,color:'#7e22ce',count:4},{label:'6×',mult:6,color:'#be185d',count:2}]},
   gold:{name:'Gold',label:'&#127870; Gold',ptLabel:'Gold Paytable',
-    segments:[{label:'0',mult:0,color:'#7f1d1d',count:8},{label:'2×',mult:2,color:'#1d4ed8',count:10},{label:'5×',mult:5,color:'#15803d',count:8},{label:'10×',mult:10,color:'#b45309',count:5},{label:'15×',mult:15,color:'#7e22ce',count:3},{label:'25×',mult:25,color:'#be185d',count:2},{label:'50×',mult:50,color:'#c8920a',count:1}]},
+    segments:[{label:'0',mult:0,color:'#7f1d1d',count:10},{label:'0',mult:0,color:'#7f1d1d',count:8},{label:'2×',mult:2,color:'#1d4ed8',count:8},{label:'3×',mult:3,color:'#15803d',count:6},{label:'5×',mult:5,color:'#b45309',count:4},{label:'8×',mult:8,color:'#7e22ce',count:2},{label:'🥇10×',mult:10,color:'#be185d',count:1}]},
   diamond:{name:'Diamond',label:'&#128142; Diamond',ptLabel:'Diamond Paytable',
-    segments:[{label:'0',mult:0,color:'#7f1d1d',count:12},{label:'2×',mult:2,color:'#1d4ed8',count:8},{label:'5×',mult:5,color:'#15803d',count:6},{label:'20×',mult:20,color:'#b45309',count:4},{label:'50×',mult:50,color:'#7e22ce',count:2},{label:'100×',mult:100,color:'#be185d',count:1},{label:'💎500×',mult:500,color:'#c8920a',count:1}]}
+    segments:[{label:'0',mult:0,color:'#7f1d1d',count:12},{label:'0',mult:0,color:'#7f1d1d',count:10},{label:'2×',mult:2,color:'#1d4ed8',count:6},{label:'5×',mult:5,color:'#15803d',count:5},{label:'10×',mult:10,color:'#b45309',count:3},{label:'15×',mult:15,color:'#7e22ce',count:2},{label:'💎20×',mult:20,color:'#c8920a',count:2}]}
 };
 
 // ══ DRY STREAK (psychologie) ══
@@ -786,7 +786,15 @@ async function spinWheel(){
   const ws=document.getElementById('wheelSection');
   ws.className='wheel-section wt-'+currentWheelType+' spinning-state';
 
-  const resultIdx=Math.floor(Math.random()*wheelSegments.length);
+  // Vazeny vyber - house edge 5%
+  const HOUSE_WEIGHTS={0:120,1:95,2:65,3:50,4:40,5:35,6:28,8:20,10:15,15:10,20:8};
+  const wTotal=wheelSegments.reduce((s,seg)=>s+(HOUSE_WEIGHTS[seg.mult]??1),0);
+  let rnd=Math.random()*wTotal,cumW=0;
+  let resultIdx=0;
+  for(let wi=0;wi<wheelSegments.length;wi++){
+    cumW+=(HOUSE_WEIGHTS[wheelSegments[wi].mult]??1);
+    if(rnd<=cumW){resultIdx=wi;break;}
+  }
   const result=wheelSegments[resultIdx];
   const sa=(Math.PI*2)/wheelSegments.length;
   const targetAngle=-(resultIdx*sa)+(Math.PI*2*(6+Math.random()*2));
