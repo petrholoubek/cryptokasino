@@ -369,13 +369,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <!-- HEADER -->
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav>
-    <a href="casino.html">Casino</a>
-    <a href="live.html">Live</a>
-    <a href="sports.html" class="active">Sports</a>
-    <a href="vip.html">VIP</a>
-    <a href="promotions.html">Promotions</a>
-  </nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <span id="headerVip"></span>
@@ -390,6 +384,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   <a href="sports.html" onclick="closeMenu()">Sports</a>
   <a href="vip.html" onclick="closeMenu()">&#127942; VIP</a>
   <a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <a href="affiliate.html" onclick="closeMenu()">&#129309; Affiliate</a>
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
@@ -471,11 +466,15 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 
     <!-- SPORT FILTER -->
     <div class="sport-tabs" id="sportTabs">
-      <button class="stab active" onclick="filterSport('all',this)"><span class="stab-icon">&#127919;</span>All <span class="stab-count" id="tc-all">19</span></button>
+      <button class="stab active" onclick="filterSport('all',this)"><span class="stab-icon">&#127919;</span>All <span class="stab-count" id="tc-all">27</span></button>
       <button class="stab" onclick="filterSport('soccer',this)"><span class="stab-icon">&#9917;</span>Soccer <span class="stab-count">8</span></button>
       <button class="stab" onclick="filterSport('basketball',this)"><span class="stab-icon">&#127944;</span>Basketball <span class="stab-count">4</span></button>
       <button class="stab" onclick="filterSport('tennis',this)"><span class="stab-icon">&#127934;</span>Tennis <span class="stab-count">3</span></button>
       <button class="stab" onclick="filterSport('hockey',this)"><span class="stab-icon">&#127944;</span>Hockey <span class="stab-count">2</span></button>
+      <button class="stab" onclick="filterSport('mma',this)"><span class="stab-icon">&#129354;</span>MMA <span class="stab-count">3</span></button>
+      <button class="stab" onclick="filterSport('boxing',this)"><span class="stab-icon">&#129354;</span>Boxing <span class="stab-count">2</span></button>
+      <button class="stab" onclick="filterSport('baseball',this)"><span class="stab-icon">&#9918;</span>Baseball <span class="stab-count">2</span></button>
+      <button class="stab" onclick="filterSport('formula1',this)"><span class="stab-icon">&#127955;</span>F1 <span class="stab-count">1</span></button>
       <button class="stab" onclick="filterSport('esports',this)"><span class="stab-icon">&#127918;</span>Esports <span class="stab-count">2</span></button>
     </div>
 
@@ -520,12 +519,14 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 // ══ DATA ══
 var MATCHES = {
   live: [
-    { id:1, sport:'soccer', league:'Premier League', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', home:{name:'Manchester City',logo:'🔵',form:['W','W','D','W','W']}, away:{name:'Arsenal',logo:'🔴',form:['W','W','W','D','W']}, score:'2:1', minute:67, odds:{home:1.55,draw:3.80,away:5.20}, extra:{corners:'6-4',shots:'14-9'} },
+    { id:1, sport:'soccer', league:'Premier League', flag:'🏴', home:{name:'Manchester City',logo:'🔵',form:['W','W','D','W','W']}, away:{name:'Arsenal',logo:'🔴',form:['W','W','W','D','W']}, score:'2:1', minute:67, odds:{home:1.55,draw:3.80,away:5.20}, extra:{corners:'6-4',shots:'14-9'} },
     { id:2, sport:'soccer', league:'La Liga', flag:'🇪🇸', home:{name:'Real Madrid',logo:'⚪',form:['W','W','W','W','D']}, away:{name:'Barcelona',logo:'🔵',form:['W','W','D','W','W']}, score:'1:1', minute:34, odds:{home:2.10,draw:3.40,away:3.20}, extra:{corners:'4-3',shots:'8-7'} },
     { id:3, sport:'basketball', league:'NBA', flag:'🇺🇸', home:{name:'Lakers',logo:'🟡',form:['W','L','W','W','L']}, away:{name:'Celtics',logo:'🟢',form:['W','W','W','D','W']}, score:'87:92', minute:3, isBasket:true, odds:{home:1.95,away:1.88}, extra:{quarter:'Q4',timeLeft:'3:42'} },
     { id:4, sport:'tennis', league:'ATP Masters', flag:'🌍', home:{name:'Djokovic',logo:'🎾',form:['W','W','W','W','W']}, away:{name:'Alcaraz',logo:'🎾',form:['W','W','D','W','W']}, score:'6:4 4:3', minute:null, isTennis:true, odds:{home:1.65,away:2.25}, extra:{sets:'1-0',serve:'Djokovic'} },
     { id:5, sport:'hockey', league:'NHL', flag:'🇺🇸', home:{name:'Rangers',logo:'🔵',form:['W','W','D','W','L']}, away:{name:'Bruins',logo:'⚫',form:['W','L','W','W','W']}, score:'2:1', minute:38, isHockey:true, odds:{home:1.72,draw:4.50,away:2.15}, extra:{period:'P2',puck:'Rangers'} },
     { id:6, sport:'esports', league:'CS2 Major', flag:'🌐', home:{name:'NaVi',logo:'💛',form:['W','W','W','D','W']}, away:{name:'Faze Clan',logo:'💀',form:['W','D','W','W','L']}, score:'12:8', minute:null, isEsport:true, odds:{home:1.45,away:2.60}, extra:{map:'Mirage',round:'Round 20'} },
+    { id:21, sport:'mma', league:'UFC Fight Night', flag:'🥊', home:{name:'Sean OMalley',logo:'🦩',form:['W','W','W','D','W']}, away:{name:'Merab Dvalishvili',logo:'🇬🇪',form:['W','W','W','W','W']}, score:'Rd 2', minute:null, isMma:true, odds:{home:2.20,away:1.65}, extra:{round:'Round 2',method:'Live'} },
+    { id:22, sport:'boxing', league:'WBC Title Fight', flag:'🥊', home:{name:'Oleksandr Usyk',logo:'🇺🇦',form:['W','W','W','W','W']}, away:{name:'Daniel Dubois',logo:'🇬🇧',form:['W','W','W','L','W']}, score:'Rd 5', minute:null, isBoxing:true, odds:{home:1.35,away:3.10}, extra:{round:'Round 5',method:'Live'} },
   ],
   upcoming: [
     { id:7, sport:'soccer', league:'Champions League', flag:'⭐', home:{name:'Bayern Munich',logo:'🔴',form:['W','W','W','W','W']}, away:{name:'PSG',logo:'🔵',form:['W','W','D','W','W']}, score:'0:0', time:'Today 20:45', odds:{home:1.90,draw:3.60,away:3.90} },
@@ -535,6 +536,13 @@ var MATCHES = {
     { id:11, sport:'tennis', league:'WTA Finals', flag:'🌍', home:{name:'Swiatek',logo:'🎾',form:['W','W','W','W','W']}, away:{name:'Sabalenka',logo:'🎾',form:['W','W','D','W','W']}, score:'0:0', time:'Today 16:00', isTennis:true, odds:{home:1.55,away:2.45} },
     { id:12, sport:'esports', league:'VALORANT Champions', flag:'🌐', home:{name:'Sentinels',logo:'🟠',form:['W','W','L','W','D']}, away:{name:'Loud',logo:'🟢',form:['W','W','W','D','W']}, score:'0:0', time:'Today 19:00', isEsport:true, odds:{home:1.80,away:2.00} },
     { id:13, sport:'hockey', league:'NHL Playoffs', flag:'🇺🇸', home:{name:'Avalanche',logo:'🔵',form:['W','W','W','D','W']}, away:{name:'Panthers',logo:'🔴',form:['W','L','W','W','W']}, score:'0:0', time:'Tomorrow 19:00', isHockey:true, odds:{home:1.65,draw:4.80,away:2.30} },
+    { id:14, sport:'mma', league:'UFC 305', flag:'🥊', home:{name:'Islam Makhachev',logo:'🦅',form:['W','W','W','W','W']}, away:{name:'Charles Oliveira',logo:'🇧🇷',form:['W','W','L','W','W']}, score:'0:0', time:'Saturday 23:00', isMma:true, odds:{home:1.55,away:2.40} },
+    { id:15, sport:'mma', league:'Bellator MMA', flag:'🥊', home:{name:'Patricio Pitbull',logo:'🦁',form:['W','W','D','W','L']}, away:{name:'AJ McKee',logo:'🦊',form:['W','W','W','D','W']}, score:'0:0', time:'Friday 22:00', isMma:true, odds:{home:1.75,away:2.05} },
+    { id:16, sport:'boxing', league:'WBC Heavyweight', flag:'🥊', home:{name:'Tyson Fury',logo:'👑',form:['W','W','D','W','W']}, away:{name:'Anthony Joshua',logo:'🦁',form:['W','L','W','W','W']}, score:'0:0', time:'Saturday 22:00', isBoxing:true, odds:{home:1.62,away:2.30} },
+    { id:17, sport:'boxing', league:'WBA Super Welterweight', flag:'🥊', home:{name:'Canelo Alvarez',logo:'🌹',form:['W','W','W','W','W']}, away:{name:'Jermell Charlo',logo:'🐆',form:['W','W','L','W','D']}, score:'0:0', time:'Sunday 21:00', isBoxing:true, odds:{home:1.40,away:2.80} },
+    { id:18, sport:'baseball', league:'MLB', flag:'🇺🇸', home:{name:'NY Yankees',logo:'⚾',form:['W','W','D','W','L']}, away:{name:'LA Dodgers',logo:'🔵',form:['W','W','W','D','W']}, score:'0:0', time:'Today 19:00', isBaseball:true, odds:{home:2.10,away:1.75} },
+    { id:19, sport:'formula1', league:'Formula 1 GP', flag:'🏎', home:{name:'Max Verstappen',logo:'🔵',form:['W','W','W','W','W']}, away:{name:'Lewis Hamilton',logo:'🖤',form:['W','D','W','L','W']}, score:'0:0', time:'Sunday 14:00', isF1:true, odds:{home:1.45,away:3.20} },
+    { id:20, sport:'mma', league:'ONE Championship', flag:'🇸🇬', home:{name:'Demetrious Johnson',logo:'🦋',form:['W','W','W','W','D']}, away:{name:'Adriano Moraes',logo:'🇧🇷',form:['W','L','W','W','W']}, score:'0:0', time:'Friday 14:00', isMma:true, odds:{home:1.70,away:2.15} },
   ]
 };
 
@@ -654,7 +662,7 @@ setInterval(function(){
 
 // ══ RENDER MATCH ══
 function renderMatch(m, isLive){
-  var hasDraw = !m.isBasket&&!m.isTennis&&!m.isEsport;
+  var hasDraw = !m.isBasket&&!m.isTennis&&!m.isEsport&&!m.isMma&&!m.isBoxing&&!m.isBaseball&&!m.isF1&&m.odds&&m.odds.draw!=null&&m.odds.draw!=undefined;
   var statusHtml = isLive
     ? '<div class="live-badge-sm"><div class="live-dot-sm"></div>LIVE</div><span class="match-minute" id="min-'+m.id+'">'+(m.minute?m.minute+"'":(m.extra?m.extra.round||m.extra.timeLeft||m.extra.sets:''))+' </span>'
     : '<span class="match-time-badge">'+m.time+'</span>';
@@ -667,12 +675,12 @@ function renderMatch(m, isLive){
 
   var oddsHtml = '<div class="odds-row">';
   if(hasDraw){
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">1</div><div class="odds-val" id="odds-'+m.id+'-home">'+m.odds.home.toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'draw\',\'Draw\','+m.odds.draw+',this)"><div class="odds-label">X</div><div class="odds-val" id="odds-'+m.id+'-draw">'+m.odds.draw.toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">2</div><div class="odds-val" id="odds-'+m.id+'-away">'+m.odds.away.toFixed(2)+'</div></div>';
+    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">1</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
+    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'draw\',\'Draw\','+m.odds.draw+',this)"><div class="odds-label">X</div><div class="odds-val" id="odds-'+m.id+'-draw">'+(m.odds.draw||0).toFixed(2)+'</div></div>';
+    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">2</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
   } else {
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">Home Win</div><div class="odds-val" id="odds-'+m.id+'-home">'+m.odds.home.toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">Away Win</div><div class="odds-val" id="odds-'+m.id+'-away">'+m.odds.away.toFixed(2)+'</div></div>';
+    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">Home Win</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
+    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">Away Win</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
   }
   if(m.extra&&m.extra.corners){oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'o25\',\'Over 2.5 Goals\',1.88,this)"><div class="odds-label">Over 2.5</div><div class="odds-val">1.88</div></div>';}
   oddsHtml += '</div><div class="more-markets" onclick="showToast(\'gold\',\'500+ Markets\',\'Full market list coming soon!\')">+48 more markets ›</div>';
@@ -734,6 +742,9 @@ function renderQuickBets(){
     {label:'Both Teams Score',odds:1.72,icon:'⚽'},
     {label:'NaVi Win Map 1',odds:1.45,icon:'🎮'},
     {label:'Bayern Asian -1',odds:1.85,icon:'⚽'},
+    {label:'Fury by KO',odds:2.15,icon:'🥊'},
+    {label:'Makhachev Sub Win',odds:2.40,icon:'🥋'},
+    {label:'Verstappen Pole',odds:1.55,icon:'🏎'},
   ];
   qb.innerHTML = picks.map(function(p,i){
     return '<div class="qb" onclick="addQuickBet(\''+p.label+'\','+p.odds+',this)"><span>'+p.icon+'</span> '+p.label+' <span class="qb-odds">'+p.odds+'</span></div>';
