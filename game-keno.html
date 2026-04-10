@@ -532,8 +532,7 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
   // Demo mode OKAMZITE — hra hratelna bez prihlaseni
   setTimeout(()=>{ if(typeof setMode==='function') setMode('demo'); },50);
   try{
-    const {createClient}=supabase;
-    sb=createClient(SB_URL,SB_KEY);
+    sb=window.CK&&window.CK.sb?window.CK.sb:(()=>{const {createClient}=supabase;return createClient(SB_URL,SB_KEY);})();
     const {data:gs}=await sb.from('game_settings').select('*').eq('id','keno').single();
     if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
     const {data:{session}}=await sb.auth.getSession();
@@ -685,7 +684,7 @@ async function playKeno(){
   document.getElementById('kenoPanel').classList.remove('win-active');
 
   // Deduct
-  if(gameMode==='real'){sbDeduct(Math.round(bet*1e8));realBalance-=bet;}else demoBalance-=bet;
+  if(gameMode==='real'){callGameServer('keno', parseFloat(typeof bet!=='undefined'?bet:0)||0, {}).then(function(s){if(s){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});sbDeduct(Math.round(bet*1e8));realBalance-=bet;}else demoBalance-=bet;
   balance-=bet;totalWagered+=bet;gamesPlayed++;
   updateBal();updateStats();
 
@@ -884,38 +883,10 @@ async function loadGameSettings(gameId){
 // SERVER GAME ENDPOINT - volá /api/game/play
 // ═══════════════════════════════════════════════════════
 async function callGameServer(gameId, betBtc, options) {
-  try {
-    // Cekej na JWT token
-    var token = null;
-    var tries = 0;
-    while(!token && tries < 20) {
-      if(window.CK && window.CK.session && window.CK.session.access_token) {
-        token = window.CK.session.access_token;
-      }
-      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
-    }
-    if(!token) throw new Error('No JWT token');
-
-    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
-    });
-
-    if(!resp.ok) throw new Error('Server error: ' + resp.status);
-    var data = await resp.json();
-    if(!data.ok) throw new Error(data.error || 'Unknown error');
-
-    console.log('[SERVER] ' + gameId + ' result:', data);
-    return data; // { ok, result, mult, payout, profit, new_balance }
-
-  } catch(e) {
-    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
-    return null; // null = pouzij lokalni vypocet
+  if (window.CK && window.CK.callGameServer) {
+    return await window.CK.callGameServer(gameId, betBtc, options);
   }
+  return null;
 }
 
 </script>
