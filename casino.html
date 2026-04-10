@@ -658,7 +658,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
   <div class="jb-center">
     <div class="jb-amount-row">
       <span class="jb-btc-sym">&#8383;</span>
-      <span class="jb-amount" id="jbAmt">0.00105894</span>
+      <span class="jb-amount" id="jbAmt">21.48250894</span>
       <span class="jb-btc-tag">BTC</span>
     </div>
     <div class="jb-usd" id="jbUsd">&#8776; $68.40 USD</div>
@@ -1137,16 +1137,26 @@ setInterval(function(){
   if(el)el.textContent=jp.toFixed(8);
 },1000);
 
-// ══ ONLINE COUNTER — 10k+ ══
-// Online counter — 10k+ realny pocet
-var onl=10284+Math.floor(Math.random()*800);
+// ══ ONLINE COUNTER 10k-40k ══
+var onl = (function(){
+  var h = new Date().getHours();
+  var base = h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;
+  return base + Math.floor(Math.random()*3000);
+})();
+var onlTarget = onl;
 function updateOnline(){
-  onl+=Math.floor(Math.random()*15)-6;
-  onl=Math.max(10100,Math.min(12800,onl));
-  var el=document.getElementById('jbOnline');
-  if(el)el.textContent=onl.toLocaleString();
+  var diff = onlTarget - onl;
+  onl += Math.floor(diff*0.05) + Math.floor(Math.random()*120) - 50;
+  if(Math.random()<0.03){
+    var h = new Date().getHours();
+    var b = h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;
+    onlTarget = b + Math.floor(Math.random()*8000);
+  }
+  onl = Math.max(10000, Math.min(40000, onl));
+  var el = document.getElementById('jbOnline');
+  if(el) el.textContent = onl.toLocaleString();
 }
-setInterval(updateOnline,3500);
+setInterval(updateOnline, 2800);
 updateOnline();
 
 // JP USD estimate
