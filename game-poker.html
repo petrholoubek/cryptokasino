@@ -943,7 +943,10 @@ async function showdown(){
   if(pb.score>db.score){
     payout=ante*(1+mult);profit=payout-ante;
     resultKey='win';handsWon++;
-    if(gameMode==='real'){try{await sb?.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:Math.round(payout*1e8)});}catch(e){}realBalance+=payout;}
+    if(gameMode==='real'){try{await sb?.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:Math.round(payout*1e8)});}catch(e){}var _pk_he=(window._houseEdge_poker||0.03);
+  var _pk_max=window._maxWin_poker||1.0;
+  var _pk_win=Math.min(payout*(1-_pk_he), payout*0.97+_pk_max);
+  realBalance+=_pk_win;}
     else demoBalance+=payout;
     balance+=payout;
   } else if(pb.score<db.score){
@@ -1166,6 +1169,45 @@ async function loadGameSettings(gameId){
   }catch(e){
     console.warn('[GS] Fallback defaults:',e.message);
     return null;
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SERVER GAME ENDPOINT - volá /api/game/play
+// ═══════════════════════════════════════════════════════
+async function callGameServer(gameId, betBtc, options) {
+  try {
+    // Cekej na JWT token
+    var token = null;
+    var tries = 0;
+    while(!token && tries < 20) {
+      if(window.CK && window.CK.session && window.CK.session.access_token) {
+        token = window.CK.session.access_token;
+      }
+      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
+    }
+    if(!token) throw new Error('No JWT token');
+
+    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
+    });
+
+    if(!resp.ok) throw new Error('Server error: ' + resp.status);
+    var data = await resp.json();
+    if(!data.ok) throw new Error(data.error || 'Unknown error');
+
+    console.log('[SERVER] ' + gameId + ' result:', data);
+    return data; // { ok, result, mult, payout, profit, new_balance }
+
+  } catch(e) {
+    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
+    return null; // null = pouzij lokalni vypocet
   }
 }
 
