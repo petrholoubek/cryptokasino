@@ -23,16 +23,22 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
 .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#000;font-weight:900;}
 .logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hover{color:var(--gold-light);}
 .header-right{display:flex;align-items:center;gap:.8rem;}
 .btn-dep{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:.42rem 1.1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;cursor:pointer;text-decoration:none;}
 .btn-login{background:transparent;color:var(--text-dim);border:1px solid rgba(60,120,255,.25);padding:.42rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;cursor:pointer;text-decoration:none;}
 .btc-bal{font-family:'Cinzel',serif;font-size:.8rem;color:var(--green);background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.22);padding:.3rem .8rem;border-radius:6px;}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
 .hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 .mobile-menu{display:none;position:fixed;top:62px;left:0;right:0;background:rgba(2,6,20,.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
 .mobile-menu.open{display:flex;}
 .mobile-menu a{font-family:'Cinzel',serif;font-size:.85rem;color:var(--text-dim);text-decoration:none;padding:.9rem 0;border-bottom:1px solid rgba(60,120,255,.08);}
 .mobile-menu-btns{display:flex;gap:.8rem;margin-top:1.2rem;}
+.mobile-menu-btns a{flex:1;text-align:center;padding:.7rem;}
 .page{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem;}
 .profile-hero{background:linear-gradient(135deg,rgba(30,80,200,.15),rgba(10,40,120,.2));border:1px solid rgba(60,120,255,.25);border-radius:20px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.8rem;position:relative;overflow:hidden;}
 .profile-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,transparent,rgba(60,120,255,.7),rgba(212,160,23,.6),transparent);}
@@ -76,8 +82,13 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .not-logged-icon{font-size:4rem;margin-bottom:1rem;}
 .not-logged-title{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold-light);margin-bottom:.6rem;}
 .not-logged-sub{font-size:.88rem;color:var(--text-dim);margin-bottom:2rem;}
+/* VIP Progress */
+.vip-progress-wrap{padding:1.2rem 1.3rem;}
+.vip-bar-bg{background:rgba(255,255,255,.06);border-radius:20px;height:8px;margin:.6rem 0 .3rem;overflow:hidden;}
+.vip-bar{height:100%;border-radius:20px;transition:width 1s ease;}
+.vip-bar-labels{display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:.55rem;color:var(--text-dim);margin-top:.2rem;}
 footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);padding:2rem;text-align:center;font-size:.75rem;color:var(--text-dim);}
-@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr;}.profile-hero{flex-direction:column;text-align:center;}.profile-actions{justify-content:center;}}
+@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr;}.profile-hero{flex-direction:column;text-align:center;}.profile-actions{justify-content:center;}nav{display:none;}}
 @media(max-width:640px){
   body::after{opacity:0.5;}
   header{padding:0 1rem;}.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
@@ -85,54 +96,214 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 </style>
 </head>
 <body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
+  <nav>
+    <a href="casino.html">Casino</a>
+    <a href="live.html">Live</a>
+    <a href="sports.html">Sports</a>
+    <a href="vip.html">VIP</a>
+    <a href="promotions.html">Promotions</a>
+    <a href="affiliate.html">Affiliate</a>
+  </nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <span id="headerVip"></span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
-    <a href="login.html" class="btn-login">Login</a>
-    <div class="hamburger" id="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')"><span></span><span></span><span></span></div>
+    <a href="login.html" class="btn-login" id="loginBtn">Login</a>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
   <a href="casino.html">&#127918; Casino</a>
+  <a href="live.html">&#128247; Live</a>
+  <a href="sports.html">&#9917; Sports</a>
+  <a href="vip.html">&#127942; VIP</a>
+  <a href="promotions.html">&#127873; Promotions</a>
+  <a href="affiliate.html">&#129309; Affiliate</a>
   <a href="deposit.html">&#8383; Deposit</a>
-  <a href="login.html">&#128272; Login</a>
-  <div class="mobile-menu-btns"><a href="casino.html" class="btn-primary">Play Now</a></div>
+  <div class="mobile-menu-btns">
+    <a href="casino.html" class="btn-primary">Play Now</a>
+  </div>
 </div>
+
 <div class="page" id="pageContent">
   <div class="loading"><div class="spinner"></div>Loading profile...</div>
 </div>
+
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Casino</a></p></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+
 <script>
 const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
+
 function f8(n){return parseFloat(n||0).toFixed(8);}
 function f5(n){return parseFloat(n||0).toFixed(5);}
 function timeAgo(ts){const d=Math.floor((Date.now()-new Date(ts))/1000);if(d<60)return d+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
+
+const VIP_LEVELS={none:0,bronze:0.01,silver:0.05,gold:0.20,platinum:0.50,diamond:1.00};
+const VIP_NEXT={none:'bronze',bronze:'silver',silver:'gold',gold:'platinum',platinum:'diamond',diamond:null};
+const VIP_COLORS={none:'#8898cc',bronze:'#cd7f32',silver:'#adb5bd',gold:'#D4A017',platinum:'#e5e4e2',diamond:'#60a5fa'};
+const VIP_ICONS={none:'&#128100;',bronze:'&#129350;',silver:'&#129352;',gold:'&#129351;',platinum:'&#128142;',diamond:'&#128306;'};
+const VIP_CASHBACK={none:0,bronze:1,silver:2,gold:3,platinum:5,diamond:8};
+
 async function loadProfile(){
-  const {createClient}=supabase;const sb=createClient(SB_URL,SB_KEY);
-  const {data:{session}}=await sb.auth.getSession();const page=document.getElementById('pageContent');
-  if(!session){page.innerHTML='<div class="not-logged"><div class="not-logged-icon">&#128272;</div><div class="not-logged-title">Please Sign In</div><div class="not-logged-sub">You need to be logged in to view your profile.</div><a href="login.html" class="btn-primary" style="display:inline-block">Sign In / Register</a></div>';return;}
+  const {createClient}=supabase;
+  const sb=createClient(SB_URL,SB_KEY);
+  const {data:{session}}=await sb.auth.getSession();
+  const page=document.getElementById('pageContent');
+
+  if(!session){
+    page.innerHTML='<div class="not-logged"><div class="not-logged-icon">&#128272;</div><div class="not-logged-title">Please Sign In</div><div class="not-logged-sub">You need to be logged in to view your profile.</div><a href="login.html" class="btn-primary" style="display:inline-block">Sign In / Register</a></div>';
+    return;
+  }
+
   const {data:prof}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
   if(!prof){page.innerHTML='<div class="empty-state">Profile not found.</div>';return;}
+
   const {data:bets}=await sb.from('bets').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(15);
   const {data:deps}=await sb.from('deposits').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(10);
-  const totalBets=bets?.length||0,totalWins=bets?.filter(b=>parseInt(b.profit_satoshi)>0).length||0;
+
+  const totalBets=bets?.length||0;
+  const totalWins=bets?.filter(b=>parseInt(b.profit_satoshi)>0).length||0;
   const winRate=totalBets>0?Math.round(totalWins/totalBets*100):0;
   const totalProfit=bets?.reduce((s,b)=>s+parseInt(b.profit_satoshi||0),0)||0;
-  const vipIcons={none:'&#128100;',bronze:'&#129350;',silver:'&#129352;',gold:'&#129351;',platinum:'&#128142;',diamond:'&#128306;'};
-  const vipIcon=vipIcons[prof.vip_level]||'&#128100;';
-  let betsHtml='<div class="empty-state">No bets yet. Start playing!</div>';
-  if(totalBets>0){betsHtml='<div class="bet-hdr"><span>Game</span><span>Bet</span><span>Multi</span><span>Profit</span><span>Time</span></div><div>';(bets||[]).forEach(b=>{const profit=parseInt(b.profit_satoshi||0),win=profit>0;betsHtml+=`<div class="bet-row"><span class="bet-game">${b.game}</span><span class="bet-amount">${f5(b.bet_satoshi/1e8)}</span><span class="bet-multi">${parseFloat(b.multiplier||0).toFixed(2)}x</span><span class="bet-profit ${win?'win':'lose'}">${win?'+':''}${f5(profit/1e8)}</span><span class="bet-time">${timeAgo(b.created_at)}</span></div>`;});betsHtml+='</div>';}
+
+  const vipLevel=prof.vip_level||'none';
+  const vipColor=VIP_COLORS[vipLevel];
+  const vipIcon=VIP_ICONS[vipLevel];
+  const nextLevel=VIP_NEXT[vipLevel];
+  const wagered=parseFloat(prof.total_wagered_btc||0);
+  const cashback=VIP_CASHBACK[vipLevel]||0;
+  const cashbackEarned=parseFloat(prof.cashback_earned_btc||0);
+
+  // VIP Progress
+  let vipPct=100,toNext=0,vipProgressHtml='';
+  if(nextLevel){
+    const cm=VIP_LEVELS[vipLevel]||0,nm=VIP_LEVELS[nextLevel];
+    vipPct=Math.min(Math.round((wagered-cm)/(nm-cm)*100),100);
+    toNext=Math.max(0,nm-wagered);
+  }
+  vipProgressHtml=`
+    <div class="vip-progress-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+        <div style="display:flex;align-items:center;gap:.7rem;">
+          <span style="font-size:2rem">${vipIcon}</span>
+          <div>
+            <div style="font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:${vipColor}">${vipLevel.toUpperCase()}</div>
+            <div style="font-size:.72rem;color:var(--text-dim)">${cashback}% cashback &middot; ${f5(wagered)} BTC wagered</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)">Cashback Earned</div>
+          <div style="font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--green)">+${f5(cashbackEarned)} BTC</div>
+        </div>
+      </div>
+      ${nextLevel?`
+      <div class="vip-bar-bg">
+        <div class="vip-bar" style="width:${vipPct}%;background:linear-gradient(to right,${vipColor},${VIP_COLORS[nextLevel]})"></div>
+      </div>
+      <div class="vip-bar-labels">
+        <span>${vipLevel.toUpperCase()} ${vipIcon}</span>
+        <span style="color:${vipColor};font-size:.6rem">${vipPct}% complete</span>
+        <span>${nextLevel.toUpperCase()} ${VIP_ICONS[nextLevel]}</span>
+      </div>
+      <div style="text-align:center;margin-top:.7rem;font-size:.78rem;color:var(--text-dim)">
+        Wager <strong style="color:${VIP_COLORS[nextLevel]}">${f5(toNext)} BTC</strong> more to reach ${nextLevel.charAt(0).toUpperCase()+nextLevel.slice(1)}
+      </div>`
+      :`<div style="text-align:center;font-family:'Cinzel',serif;font-size:.78rem;color:var(--blue)">&#128306; Maximum VIP Level Achieved! Congratulations!</div>`}
+    </div>`;
+
+  // Bets
+  let betsHtml='<div class="empty-state">No bets yet. <a href="casino.html" style="color:var(--gold)">Start playing!</a></div>';
+  if(totalBets>0){
+    betsHtml='<div class="bet-hdr"><span>Game</span><span>Bet</span><span>Multi</span><span>Profit</span><span>Time</span></div><div>';
+    (bets||[]).forEach(b=>{
+      const profit=parseInt(b.profit_satoshi||0),win=profit>0;
+      betsHtml+=`<div class="bet-row"><span class="bet-game">${b.game}</span><span class="bet-amount">${f5(b.bet_satoshi/1e8)}</span><span class="bet-multi">${parseFloat(b.multiplier||0).toFixed(2)}x</span><span class="bet-profit ${win?'win':'lose'}">${win?'+':''}${f5(profit/1e8)}</span><span class="bet-time">${timeAgo(b.created_at)}</span></div>`;
+    });
+    betsHtml+='</div>';
+  }
+
+  // Deposits
   let depsHtml='<div class="empty-state">No deposits yet. <a href="deposit.html" style="color:var(--gold)">Make your first deposit &#8594;</a></div>';
-  if(deps&&deps.length>0){depsHtml='<div class="dep-hdr"><span>Amount</span><span>Status</span><span>TX</span><span>Date</span></div><div>';deps.forEach(d=>{depsHtml+=`<div class="dep-row"><span style="font-family:'Cinzel',serif;font-size:.75rem;color:var(--green);">+${f8(d.amount_btc)} BTC</span><span><span class="dep-status ${d.status}">${d.status}</span></span><span style="font-family:monospace;font-size:.62rem;color:var(--text-dim);">${d.txid?d.txid.substring(0,12)+'...':'&#8212;'}</span><span style="font-size:.65rem;color:var(--text-dim);">${timeAgo(d.created_at)}</span></div>`;});depsHtml+='</div>';}
-  page.innerHTML=`<div class="profile-hero"><div class="avatar">${vipIcon}</div><div class="profile-info"><div class="profile-name">${prof.username||'Player'}</div><div class="profile-email">${session.user.email}</div><div class="profile-vip">&#11088; ${(prof.vip_level||'none').toUpperCase()} MEMBER</div></div><div class="profile-actions"><a href="deposit.html" class="btn-primary">&#8383; Deposit</a><a href="casino.html" class="btn-secondary">&#127918; Play</a><button class="btn-danger" onclick="window.CK&&window.CK.logout()">&#128682; Logout</button></div></div><div class="stats-grid"><div class="stat-card"><div class="stat-icon">&#8383;</div><div class="stat-lbl">Balance</div><div class="stat-val green">${f8(prof.balance)} BTC</div></div><div class="stat-card"><div class="stat-icon">&#128229;</div><div class="stat-lbl">Total Deposited</div><div class="stat-val">${f8(prof.total_deposited)} BTC</div></div><div class="stat-card"><div class="stat-icon">&#127922;</div><div class="stat-lbl">Win Rate</div><div class="stat-val ${winRate>=50?'green':'red'}">${winRate}%</div></div><div class="stat-card"><div class="stat-icon">&#128202;</div><div class="stat-lbl">P/L All Time</div><div class="stat-val ${totalProfit>=0?'green':'red'}">${totalProfit>=0?'+':''}${f5(totalProfit/1e8)} BTC</div></div></div><div class="section"><div class="section-hdr"><div class="section-title">&#127919; Recent Bets</div><div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-dim);">Last 15 real bets</div></div>${betsHtml}</div><div class="section"><div class="section-hdr"><div class="section-title">&#128229; Deposit History</div><a href="deposit.html" style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-decoration:none;">+ New Deposit</a></div>${depsHtml}</div>`;
-  const hb=document.getElementById('headerBal');if(hb)hb.textContent=f8(prof.balance)+' BTC';
+  if(deps&&deps.length>0){
+    depsHtml='<div class="dep-hdr"><span>Amount</span><span>Status</span><span>TX</span><span>Date</span></div><div>';
+    deps.forEach(d=>{
+      depsHtml+=`<div class="dep-row"><span style="font-family:'Cinzel',serif;font-size:.75rem;color:var(--green)">+${f8(d.amount_btc)} BTC</span><span><span class="dep-status ${d.status}">${d.status}</span></span><span style="font-family:monospace;font-size:.62rem;color:var(--text-dim)">${d.txid?d.txid.substring(0,12)+'...':'&#8212;'}</span><span style="font-size:.65rem;color:var(--text-dim)">${timeAgo(d.created_at)}</span></div>`;
+    });
+    depsHtml+='</div>';
+  }
+
+  page.innerHTML=`
+    <div class="profile-hero">
+      <div class="avatar">${vipIcon}</div>
+      <div class="profile-info">
+        <div class="profile-name">${prof.username||'Player'}</div>
+        <div class="profile-email">${session.user.email}</div>
+        <div class="profile-vip">&#11088; ${vipLevel.toUpperCase()} MEMBER</div>
+      </div>
+      <div class="profile-actions">
+        <a href="deposit.html" class="btn-primary">&#8383; Deposit</a>
+        <a href="casino.html" class="btn-secondary">&#127918; Play</a>
+        <button class="btn-danger" onclick="window.CK&&window.CK.logout()">&#128682; Logout</button>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">&#8383;</div><div class="stat-lbl">Balance</div><div class="stat-val green">${f8(prof.balance)} BTC</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128229;</div><div class="stat-lbl">Total Deposited</div><div class="stat-val">${f8(prof.total_deposited)} BTC</div></div>
+      <div class="stat-card"><div class="stat-icon">&#127922;</div><div class="stat-lbl">Win Rate</div><div class="stat-val ${winRate>=50?'green':'red'}">${winRate}%</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128202;</div><div class="stat-lbl">P/L All Time</div><div class="stat-val ${totalProfit>=0?'green':'red'}">${totalProfit>=0?'+':''}${f5(totalProfit/1e8)} BTC</div></div>
+    </div>
+    <div class="section">
+      <div class="section-hdr">
+        <div class="section-title">&#127942; VIP Progress</div>
+        <a href="vip.html" style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-decoration:none;">View Benefits &#8594;</a>
+      </div>
+      ${vipProgressHtml}
+    </div>
+    <div class="section">
+      <div class="section-hdr">
+        <div class="section-title">&#127919; Recent Bets</div>
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-dim)">Last 15 real bets</div>
+      </div>
+      ${betsHtml}
+    </div>
+    <div class="section">
+      <div class="section-hdr">
+        <div class="section-title">&#128229; Deposit History</div>
+        <a href="deposit.html" style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-decoration:none;">+ New Deposit</a>
+      </div>
+      ${depsHtml}
+    </div>`;
+
+  // Header balance
+  const hb=document.getElementById('headerBal');
+  if(hb) hb.textContent=f8(prof.balance)+' BTC';
+  // Hide login btn
+  const lb=document.getElementById('loginBtn');
+  if(lb) lb.style.display='none';
 }
+
 loadProfile();
+
+// Hamburger
+document.addEventListener('DOMContentLoaded',function(){
+  var h=document.getElementById('hamburger');
+  if(h) h.addEventListener('click',function(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    h.classList.toggle('active');
+  });
+  document.querySelectorAll('.mobile-menu a').forEach(function(a){
+    a.addEventListener('click',function(){
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('active');
+    });
+  });
+});
 </script>
 </body>
 </html>
