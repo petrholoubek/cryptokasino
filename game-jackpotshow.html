@@ -758,7 +758,10 @@ function resolveResult(result,totalBet){
     const tiers=['grand','major','minor','mini'],weights=[1,5,15,30];let r=Math.random()*51;let tier='mini';
     for(let i=0;i<tiers.length;i++){r-=weights[i];if(r<=0){tier=tiers[i];break;}}
     const jpAmt=jackpots[tier];
-    if(gameMode==='real'){balance+=jpAmt;realBalance+=jpAmt;sbAddWin(Math.round(jpAmt*1e8));}else{balance+=jpAmt;demoBalance+=jpAmt;}
+    if(gameMode==='real'){balance+=jpAmt;var _js_he=(window._houseEdge_jackpotshow||0.035);
+  var _js_max=window._maxWin_jackpotshow||2.0;
+  var _js_win=Math.min(jpAmt*(1-_js_he), jpAmt*0.97+_js_max);
+  realBalance+=_js_win;sbAddWin(Math.round(jpAmt*1e8));}else{balance+=jpAmt;demoBalance+=jpAmt;}
     jackpots[tier]={grand:.2,major:.05,minor:.01,mini:.002}[tier];
     jpHitsCount++;document.getElementById('jpHitsDisp').textContent=jpHitsCount;
     ['stJpHits','stJp2'].forEach(id=>document.getElementById(id).textContent=jpHitsCount);
@@ -894,6 +897,45 @@ async function loadGameSettings(gameId){
   }catch(e){
     console.warn('[GS] Fallback defaults:',e.message);
     return null;
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SERVER GAME ENDPOINT - volá /api/game/play
+// ═══════════════════════════════════════════════════════
+async function callGameServer(gameId, betBtc, options) {
+  try {
+    // Cekej na JWT token
+    var token = null;
+    var tries = 0;
+    while(!token && tries < 20) {
+      if(window.CK && window.CK.session && window.CK.session.access_token) {
+        token = window.CK.session.access_token;
+      }
+      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
+    }
+    if(!token) throw new Error('No JWT token');
+
+    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
+    });
+
+    if(!resp.ok) throw new Error('Server error: ' + resp.status);
+    var data = await resp.json();
+    if(!data.ok) throw new Error(data.error || 'Unknown error');
+
+    console.log('[SERVER] ' + gameId + ' result:', data);
+    return data; // { ok, result, mult, payout, profit, new_balance }
+
+  } catch(e) {
+    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
+    return null; // null = pouzij lokalni vypocet
   }
 }
 
