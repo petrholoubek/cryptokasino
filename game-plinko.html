@@ -737,7 +737,14 @@ function animateBalls(){
       if(litTimer)clearTimeout(litTimer);
       litTimer=setTimeout(()=>{activeBucketIdx=-1;},900);
 
-      const m=mults[idx];const payout=parseFloat((ball.bet*m).toFixed(8));const profit=payout-ball.bet;
+      const m=mults[idx];// Aplikuj house edge z DB - sniz efektivni multiplier
+      var _he=window._houseEdge_plinko!==undefined?window._houseEdge_plinko:0.06;
+      var _effMult=m>1?1+((m-1)*(1-_he)):m;
+      var _rawPayout=parseFloat((ball.bet*_effMult).toFixed(8));
+      // Aplikuj max win z DB
+      var _maxW=window._maxWin_plinko||0.5;
+      const payout=Math.min(_rawPayout, ball.bet+_maxW);
+      const profit=payout-ball.bet;
 
       if(gameMode==='real'){balance+=payout;realBalance+=payout;if(payout>0)sbAddWin(Math.round(payout*1e8));}
       else{balance+=payout;demoBalance+=payout;}
