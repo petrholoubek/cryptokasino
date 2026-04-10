@@ -778,7 +778,10 @@ function startRound(){
 function doCashout(){
   if(!betPlaced||cashedOut||gameState!=='running')return;
   cashedOut=true;var cashoutMult=currentMulti;
-  var payout=parseFloat((betAmount*cashoutMult).toFixed(7));
+  var _cr_he=(window._houseEdge_crash||0.04);
+  var _cr_raw=parseFloat((betAmount*cashoutMult*(1-_cr_he)).toFixed(7));
+  var _cr_max=window._maxWin_crash||1.0;
+  var payout=Math.min(_cr_raw,betAmount+_cr_max);
   var profit=parseFloat((payout-betAmount).toFixed(7));
   // Balance update
   if(gameMode==='real'){balance+=payout;realBalance+=payout;sbAddWin(Math.round(payout*1e8));}
