@@ -937,8 +937,8 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
   }catch(e){console.warn('[Index]',e.message);}
 })();
 
-var jp=0.00105894;
-setInterval(function(){jp+=0.00000018+Math.random()*0.00000022;document.getElementById('jpAmt').textContent=jp.toFixed(8);},1200);
+var jp=21.48250894;
+setInterval(function(){jp+=0.0000085+Math.random()*0.000002;document.getElementById('jpAmt').textContent=jp.toFixed(8);},1200);
 setInterval(function(){var usd=document.getElementById('jpUsd');if(usd)usd.textContent='&#8776; $'+(jp*65000).toFixed(2)+' USD';},2000);
 
 var jpSecs=4*60+58;
