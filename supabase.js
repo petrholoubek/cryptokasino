@@ -74,6 +74,9 @@
   try {
     const { createClient } = supabase;
     sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Nastav window.CK.sb HNED - pred await - aby ostatni stranky nenecekaly
+    if (!window.CK) window.CK = { sb, getBalance: async()=>0, subscribeBalance:()=>{}, logout:()=>{}, logBet:()=>{}, getJackpot:async()=>0, setGameMode:()=>{}, isRealMode:()=>false };
+    else window.CK.sb = sb;
     const { data } = await sb.auth.getSession();
     _session = data?.session || null;
   } catch (e) {
