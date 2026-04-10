@@ -770,7 +770,10 @@ async function resolveHand(){
 
   // Insurance
   if(insurance>0){
-    if(dBJ){const iWin=insurance*3;if(gameMode==='real'){balance+=iWin;realBalance+=iWin;sbAddWin(Math.round(iWin*1e8));}else{balance+=iWin;demoBalance+=iWin;}}
+    if(dBJ){const iWin=insurance*3;if(gameMode==='real'){balance+=iWin;var _bj_he=(window._houseEdge_blackjack||0.02);
+  var _bj_max=window._maxWin_blackjack||1.0;
+  var _bj_win=Math.min(iWin*(1-_bj_he), iWin*0.98+_bj_max);
+  realBalance+=_bj_win;sbAddWin(Math.round(iWin*1e8));}else{balance+=iWin;demoBalance+=iWin;}}
   }
 
   if(pv>21){
@@ -891,6 +894,45 @@ async function loadGameSettings(gameId){
   }catch(e){
     console.warn('[GS] Fallback defaults:',e.message);
     return null;
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SERVER GAME ENDPOINT - volá /api/game/play
+// ═══════════════════════════════════════════════════════
+async function callGameServer(gameId, betBtc, options) {
+  try {
+    // Cekej na JWT token
+    var token = null;
+    var tries = 0;
+    while(!token && tries < 20) {
+      if(window.CK && window.CK.session && window.CK.session.access_token) {
+        token = window.CK.session.access_token;
+      }
+      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
+    }
+    if(!token) throw new Error('No JWT token');
+
+    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
+    });
+
+    if(!resp.ok) throw new Error('Server error: ' + resp.status);
+    var data = await resp.json();
+    if(!data.ok) throw new Error(data.error || 'Unknown error');
+
+    console.log('[SERVER] ' + gameId + ' result:', data);
+    return data; // { ok, result, mult, payout, profit, new_balance }
+
+  } catch(e) {
+    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
+    return null; // null = pouzij lokalni vypocet
   }
 }
 
