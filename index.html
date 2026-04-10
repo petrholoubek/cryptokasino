@@ -926,7 +926,7 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
 
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK)return;
   try{
     var bal=await CK.getBalance();
@@ -944,8 +944,26 @@ setInterval(function(){var usd=document.getElementById('jpUsd');if(usd)usd.textC
 var jpSecs=4*60+58;
 setInterval(function(){jpSecs--;if(jpSecs<0)jpSecs=5*60+Math.floor(Math.random()*120);var m=Math.floor(jpSecs/60),s=jpSecs%60;var el=document.getElementById('jpTimer');if(el)el.textContent=m+':'+String(s).padStart(2,'0');},1000);
 
-var onl=10284+Math.floor(Math.random()*500);
-setInterval(function(){onl+=Math.floor(Math.random()*12)-5;onl=Math.max(10100,Math.min(12500,onl));var el=document.getElementById('onlinePlayers');if(el)el.textContent=onl.toLocaleString();var pe=document.getElementById('hlsPlayers');if(pe)pe.textContent=onl.toLocaleString();},3000);
+var onl=(function(){
+  var h=new Date().getHours();
+  var b=h>=20?38000:h>=16?28000:h>=10?20000:h>=7?13000:10000;
+  return b+Math.floor(Math.random()*5000);
+})();
+var onlTarget=onl;
+setInterval(function(){
+  var diff=onlTarget-onl;
+  onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*150)-60;
+  if(Math.random()<0.03){
+    var h=new Date().getHours();
+    var b=h>=20?38000:h>=16?28000:h>=10?20000:h>=7?13000:10000;
+    onlTarget=b+Math.floor(Math.random()*10000);
+  }
+  onl=Math.max(10000,Math.min(50000,onl));
+  var el=document.getElementById('onlinePlayers');
+  if(el)el.textContent=onl.toLocaleString();
+  var pe=document.getElementById('hlsPlayers');
+  if(pe)pe.textContent=onl.toLocaleString();
+},3000);
 
 var games=['Crash','Roulette','Poker','Slots','Dice','Blackjack','Baccarat','Wheel','Mines'];
 var users=['0xA91\u2026','CryptoX','Player77','Satoshi','Lucky7','0xF3B\u2026','VegasKing','RouletteK','BTC_Pro'];
@@ -993,7 +1011,7 @@ var fakeInt=setInterval(addFakeBet,2000);
 
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK||!window.CK.sb)return;
   var sb=window.CK.sb;
   try{
