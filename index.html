@@ -1080,6 +1080,17 @@ var fakeInt=setInterval(addFakeBet,2000);
   function draw(){ctx.clearRect(0,0,W,H);pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.alpha+')';ctx.fill();});requestAnimationFrame(draw);}
   draw();
 })();
+
+// ══ AFFILIATE REF TRACKING ══
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var ref = params.get('ref');
+  if(ref){
+    localStorage.setItem('ck_ref', ref);
+    localStorage.setItem('ck_ref_ts', Date.now().toString());
+    console.log('[Affiliate] Ref saved:', ref);
+  }
+})();
 </script>
 </body>
 </html>
