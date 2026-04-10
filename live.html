@@ -680,8 +680,8 @@ function showToast(type,title,msg,burst){
 }
 
 // COUNTERS
-var jp=0.00105894;
-setInterval(function(){jp+=0.00000015+Math.random()*.0000002;var el=document.getElementById('jpAmount');if(el)el.textContent=jp.toFixed(8);var ud=document.getElementById('jpUsd');if(ud)ud.textContent='≈ $'+(jp*65000).toFixed(2)+' USD';},1200);
+var jp=21.48250894;
+setInterval(function(){jp+=0.0000085+Math.random()*.000002;var el=document.getElementById('jpAmount');if(el)el.textContent=jp.toFixed(8);var ud=document.getElementById('jpUsd');if(ud)ud.textContent='≈ $'+(jp*65000).toFixed(2)+' USD';},1200);
 var onl=10284;
 setInterval(function(){onl+=Math.floor(Math.random()*12)-5;onl=Math.max(10100,Math.min(12500,onl));var el=document.getElementById('onlineNum');if(el)el.textContent=onl.toLocaleString();var he=document.getElementById('heroPlayers');if(he)he.textContent=Math.floor(onl*.12).toLocaleString();},2800);
 setInterval(function(){var el=document.getElementById('heroBigWin');if(el)el.textContent=(Math.random()*3+0.5).toFixed(3)+' BTC';},9000);
