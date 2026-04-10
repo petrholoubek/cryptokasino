@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Program – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<style>
+:root{
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#c084fc;
+  --card:rgba(5,15,50,0.92);--border:rgba(60,120,255,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,#0a2a6e 0%,#061440 35%,#020818 65%,#000510 100%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 45% 42% at 50% 48%,rgba(30,80,220,0.45) 0%,rgba(10,40,130,0.25) 40%,transparent 70%);pointer-events:none;z-index:0;animation:bgRays 30s linear infinite;}
+@keyframes bgRays{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(2,6,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,0.2);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(60,120,255,0.5),rgba(212,160,23,0.6),rgba(60,120,255,0.5),transparent);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900;}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}nav a:hover{color:var(--gold-light);}
+nav a.active{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:0.8rem;}
+.btc-bal{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:0.3rem 0.8rem;border-radius:6px;}
+.btn-dep{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;cursor:pointer;text-decoration:none;}
+.btn-login{background:transparent;color:var(--text-dim);border:1px solid rgba(60,120,255,0.3);padding:0.4rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.68rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--blue);color:var(--blue);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.mobile-menu{display:none;position:fixed;top:62px;left:0;right:0;background:rgba(2,6,20,0.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(60,120,255,0.08);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:0.7rem;}
+
+/* PAGE */
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+
+/* HERO */
+.hero{text-align:center;padding:2.5rem 0 3rem;}
+.hero-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);border-radius:20px;padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:var(--gold-light);text-shadow:0 0 60px rgba(245,200,66,0.5);margin-bottom:0.8rem;}
+.hero p{font-size:1rem;color:var(--text-dim);max-width:600px;margin:0 auto;line-height:1.7;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;text-align:center;position:relative;overflow:hidden;}
+.stat-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sb-gold::before{background:linear-gradient(to right,transparent,var(--gold-light),transparent);}
+.sb-green::before{background:linear-gradient(to right,transparent,var(--green),transparent);}
+.sb-blue::before{background:linear-gradient(to right,transparent,var(--blue),transparent);}
+.sb-purple::before{background:linear-gradient(to right,transparent,var(--purple),transparent);}
+.stat-icon{font-size:1.5rem;margin-bottom:0.4rem;}
+.stat-lbl{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
+.stat-val{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;}
+.sb-gold .stat-val{color:var(--gold-light);}
+.sb-green .stat-val{color:var(--green);}
+.sb-blue .stat-val{color:var(--blue);}
+.sb-purple .stat-val{color:var(--purple);}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+.card-hdr{padding:1rem 1.5rem;background:rgba(30,60,140,0.15);border-bottom:1px solid rgba(60,120,255,0.15);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:#93c5fd;}
+.card-body{padding:1.5rem;}
+
+/* TIER CARDS */
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
+.tier-card{border-radius:16px;padding:1.5rem;text-align:center;border:1px solid;position:relative;overflow:hidden;}
+.tier-standard{background:linear-gradient(145deg,rgba(96,165,250,0.1),rgba(5,15,50,0.9));border-color:rgba(96,165,250,0.3);}
+.tier-silver{background:linear-gradient(145deg,rgba(173,181,189,0.12),rgba(5,15,50,0.9));border-color:rgba(173,181,189,0.35);}
+.tier-gold{background:linear-gradient(145deg,rgba(212,160,23,0.15),rgba(5,15,50,0.9));border-color:rgba(212,160,23,0.4);}
+.tier-icon{font-size:2.5rem;margin-bottom:0.6rem;}
+.tier-name{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;}
+.tier-standard .tier-name{color:var(--blue);}
+.tier-silver .tier-name{color:#adb5bd;}
+.tier-gold .tier-name{color:var(--gold-light);}
+.tier-commission{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;margin:0.5rem 0;}
+.tier-standard .tier-commission{color:var(--blue);}
+.tier-silver .tier-commission{color:#adb5bd;}
+.tier-gold .tier-commission{color:var(--gold-light);text-shadow:0 0 20px rgba(212,160,23,0.5);}
+.tier-req{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);}
+
+/* FORM */
+.fld{margin-bottom:1rem;}
+.fld label{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:0.4rem;}
+.fld input,.fld select{width:100%;background:rgba(5,15,50,0.8);border:1px solid rgba(60,120,255,0.2);border-radius:8px;padding:0.65rem 0.9rem;font-family:'Crimson Text',serif;font-size:0.95rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.fld input:focus{border-color:var(--blue);}
+.fld input::placeholder{color:var(--text-dim);}
+.fld select option{background:#030c1e;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+/* REF LINK BOX */
+.ref-box{background:rgba(5,15,50,0.8);border:1px solid rgba(60,120,255,0.25);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;}
+.ref-link{font-family:monospace;font-size:0.82rem;color:var(--gold-light);flex:1;word-break:break-all;}
+.copy-btn{background:rgba(60,120,255,0.12);border:1px solid rgba(60,120,255,0.25);color:#93c5fd;padding:0.4rem 0.9rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.copy-btn:hover{background:rgba(60,120,255,0.25);}
+.copy-btn.copied{background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.3);color:var(--green);}
+
+/* BUTTONS */
+.btn{padding:0.75rem 1.5rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s;}
+.btn-gold{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;box-shadow:0 0 20px rgba(212,160,23,0.4);}
+.btn-gold:hover{transform:scale(1.02);}
+.btn-blue{background:linear-gradient(135deg,#1a4fd4,#3b82f6);color:#fff;box-shadow:0 0 15px rgba(59,130,246,0.3);}
+.btn-blue:hover{transform:scale(1.02);}
+.btn-full{width:100%;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);padding:0.7rem 0.8rem;text-align:left;border-bottom:1px solid rgba(60,120,255,0.15);background:rgba(30,60,140,0.1);}
+.tbl td{padding:0.7rem 0.8rem;border-bottom:1px solid rgba(60,120,255,0.05);font-size:0.85rem;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(60,120,255,0.04);}
+
+/* BADGE */
+.badge{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.15rem 0.55rem;border-radius:4px;}
+.badge-green{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.25);}
+.badge-orange{background:rgba(251,146,60,0.1);color:var(--orange);border:1px solid rgba(251,146,60,0.25);}
+.badge-blue{background:rgba(96,165,250,0.1);color:var(--blue);border:1px solid rgba(96,165,250,0.25);}
+
+/* ALERT */
+.al{border-radius:8px;padding:0.7rem 0.9rem;margin-bottom:0.9rem;font-size:0.85rem;display:none;align-items:center;gap:0.5rem;}
+.al.show{display:flex;}
+.al-ok{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:var(--green);}
+.al-err{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:var(--red);}
+.al-info{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.25);color:var(--blue);}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.how-step{background:rgba(5,15,50,0.7);border:1px solid rgba(60,120,255,0.15);border-radius:14px;padding:1.3rem;text-align:center;position:relative;}
+.how-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,rgba(60,120,255,0.5),transparent);}
+.how-num{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;color:rgba(60,120,255,0.15);margin-bottom:0.3rem;}
+.how-icon{font-size:1.8rem;margin-bottom:0.6rem;}
+.how-title{font-family:'Cinzel',serif;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#93c5fd;margin-bottom:0.4rem;}
+.how-desc{font-size:0.82rem;color:var(--text-dim);line-height:1.6;}
+
+/* SECTIONS */
+.section-title{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(60,120,255,0.5);}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(60,120,255,0.4),transparent);}
+
+/* TABS */
+.tabs{display:flex;gap:0.3rem;background:rgba(0,0,0,0.3);border:1px solid rgba(60,120,255,0.15);border-radius:12px;padding:0.3rem;margin-bottom:1.5rem;}
+.tab{flex:1;padding:0.6rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text-dim);transition:all 0.2s;}
+.tab.active{background:linear-gradient(135deg,rgba(26,79,212,0.4),rgba(59,130,246,0.25));color:#93c5fd;border:1px solid rgba(60,120,255,0.3);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* CHART */
+#earningsChart{width:100%;height:120px;display:block;border-radius:8px;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-ov.show{display:flex;}
+.modal{background:rgba(5,15,50,0.99);border:1px solid rgba(60,120,255,0.3);border-radius:20px;padding:2rem;max-width:480px;width:95%;}
+.modal-title{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:#93c5fd;margin-bottom:1.2rem;}
+
+footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);padding:2rem 1.5rem;text-align:center;font-size:0.75rem;color:var(--text-dim);}
+footer a{color:#93c5fd;text-decoration:none;}
+
+@media(max-width:900px){.tier-grid{grid-template-columns:1fr;}.how-grid{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){header{padding:0 1rem;}nav,.btn-dep,.btn-login{display:none;}.hamburger{display:flex;}.page{padding:1.5rem 0.8rem 4rem;}.g2{grid-template-columns:1fr;}.how-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
+  <nav>
+    <a href="casino.html">Casino</a><a href="live.html">Live</a>
+    <a href="sports.html">Sports</a><a href="vip.html">VIP</a>
+    <a href="affiliate.html" class="active">Affiliate</a>
+  </nav>
+  <div class="header-right">
+    <span class="btc-bal" id="headerBal" style="display:none">0.00000000 BTC</span>
+    <span id="headerVip"></span>
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login" id="loginBtn">Login</a>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="casino.html">Casino</a><a href="live.html">Live</a>
+  <a href="sports.html">Sports</a><a href="vip.html">&#127942; VIP</a>
+  <a href="affiliate.html">&#129309; Affiliate</a>
+  <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+</div>
+
+<!-- PAYOUT MODAL -->
+<div class="modal-ov" id="payoutModal">
+  <div class="modal">
+    <div class="modal-title">&#128184; Request Payout</div>
+    <div id="payoutAl" class="al"></div>
+    <div class="fld"><label>Your BTC Address</label><input type="text" id="payoutAddr" placeholder="bc1q..."></div>
+    <div class="fld"><label>Amount (BTC) — Available: <span id="payoutAvail">0.00000</span></label><input type="number" id="payoutAmt" placeholder="0.001" step="0.0001" min="0.001"></div>
+    <div style="display:flex;gap:0.8rem;margin-top:1rem;">
+      <button class="btn btn-gold" style="flex:1" onclick="submitPayout()">&#128184; Request</button>
+      <button class="btn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);" onclick="document.getElementById('payoutModal').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">&#129309; Partner Program</div>
+    <h1>Vydělávej s námi</h1>
+    <p>Přiveď hráče a získej až <strong style="color:var(--gold-light)">35% z jejich prohry</strong> — doživotně. Žádné limity, výplaty v BTC každý týden.</p>
+  </div>
+
+  <!-- TIER CARDS -->
+  <div class="section-title">&#127942; Provizní struktura</div>
+  <div class="tier-grid">
+    <div class="tier-card tier-standard">
+      <div class="tier-icon">&#129309;</div>
+      <div class="tier-name">Standard</div>
+      <div class="tier-commission">25%</div>
+      <div class="tier-req">0–9 aktivních hráčů</div>
+    </div>
+    <div class="tier-card tier-silver">
+      <div class="tier-icon">&#129352;</div>
+      <div class="tier-name">Silver</div>
+      <div class="tier-commission">30%</div>
+      <div class="tier-req">10–49 aktivních hráčů</div>
+    </div>
+    <div class="tier-card tier-gold">
+      <div class="tier-icon">&#129351;</div>
+      <div class="tier-name">Gold</div>
+      <div class="tier-commission">35%</div>
+      <div class="tier-req">50+ aktivních hráčů</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section-title">&#9889; Jak to funguje</div>
+  <div class="how-grid" style="margin-bottom:2rem;">
+    <div class="how-step">
+      <div class="how-num">01</div>
+      <div class="how-icon">&#128221;</div>
+      <div class="how-title">Registruj se</div>
+      <div class="how-desc">Vytvoř affiliate účet a získej unikátní ref kód a sledovací odkaz.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">02</div>
+      <div class="how-icon">&#128279;</div>
+      <div class="how-title">Sdílej link</div>
+      <div class="how-desc">Sdílej svůj odkaz na sociálních sítích, fórech nebo Telegramu.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">03</div>
+      <div class="how-icon">&#127918;</div>
+      <div class="how-title">Hráči hrají</div>
+      <div class="how-desc">Každý hráč co přijde přes tvůj link je navždy spojen s tebou.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">04</div>
+      <div class="how-icon">&#8383;</div>
+      <div class="how-title">Dostávej BTC</div>
+      <div class="how-desc">Každý týden automaticky vyplácíme tvoji komisi v BTC.</div>
+    </div>
+  </div>
+
+  <!-- AFFILIATE PANEL / REGISTER -->
+  <div id="notLoggedSection" style="display:none">
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">&#128272; Přihlas se pro přístup</span></div>
+      <div class="card-body" style="text-align:center;padding:2.5rem;">
+        <div style="font-size:3rem;margin-bottom:1rem">&#129309;</div>
+        <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-bottom:0.7rem">Připoj se k Affiliate programu</div>
+        <div style="font-size:0.88rem;color:var(--text-dim);margin-bottom:1.5rem">Přihlas se a zaregistruj svůj affiliate účet. Bezplatně, okamžitě.</div>
+        <a href="login.html" class="btn btn-blue">&#128272; Přihlásit se</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div id="registerSection" style="display:none">
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">&#129309; Registrace Affiliate</span></div>
+      <div class="card-body">
+        <div id="regAl" class="al"></div>
+        <div class="g2">
+          <div class="fld"><label>Affiliate Username</label><input type="text" id="regUsername" placeholder="Tvoje jméno/nick"></div>
+          <div class="fld"><label>Email</label><input type="email" id="regEmail" placeholder="email@example.com"></div>
+        </div>
+        <div class="fld"><label>BTC Adresa pro výplaty</label><input type="text" id="regBtc" placeholder="bc1q..."></div>
+        <div class="fld"><label>Jak nás plánuješ propagovat?</label>
+          <select id="regPromo">
+            <option value="">Vyber...</option>
+            <option value="social">Sociální sítě (Instagram, TikTok...)</option>
+            <option value="youtube">YouTube / Twitch</option>
+            <option value="telegram">Telegram skupiny</option>
+            <option value="forum">Fóra a komunity</option>
+            <option value="website">Vlastní web/blog</option>
+            <option value="other">Jiné</option>
+          </select>
+        </div>
+        <button class="btn btn-gold btn-full" onclick="registerAffiliate()">&#129309; Zaregistrovat se jako Affiliate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardSection" style="display:none">
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box sb-gold"><div class="stat-icon">&#8383;</div><div class="stat-lbl">Celkem vyděláno</div><div class="stat-val" id="dTotalEarned">0.00000</div></div>
+      <div class="stat-box sb-green"><div class="stat-icon">&#9203;</div><div class="stat-lbl">K výplatě</div><div class="stat-val" id="dPending">0.00000</div></div>
+      <div class="stat-box sb-blue"><div class="stat-icon">&#128101;</div><div class="stat-lbl">Hráčů přivedeno</div><div class="stat-val" id="dPlayers">0</div></div>
+      <div class="stat-box sb-purple"><div class="stat-icon">&#127919;</div><div class="stat-lbl">Provize</div><div class="stat-val" id="dCommission">25%</div></div>
+    </div>
+
+    <!-- REF LINK -->
+    <div class="card">
+      <div class="card-hdr">
+        <span class="card-title">&#128279; Tvůj Referral Link</span>
+        <span class="badge badge-green" id="tierBadge">Standard</span>
+      </div>
+      <div class="card-body">
+        <div class="ref-box">
+          <span class="ref-link" id="refLink">https://cryptokasino.io/?ref=...</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyRefLink()">&#128203; Kopírovat</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">
+          <button class="btn" style="background:rgba(29,161,242,0.1);border:1px solid rgba(29,161,242,0.25);color:#1da1f2;font-size:0.62rem;" onclick="shareTwitter()">&#120143; Twitter</button>
+          <button class="btn" style="background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:#25d366;font-size:0.62rem;" onclick="shareWhatsapp()">&#128241; WhatsApp</button>
+          <button class="btn" style="background:rgba(0,136,204,0.1);border:1px solid rgba(0,136,204,0.25);color:#0088cc;font-size:0.62rem;" onclick="shareTelegram()">&#128231; Telegram</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('stats',this)">&#128202; Statistiky</button>
+      <button class="tab" onclick="switchTab('players',this)">&#128101; Hráči</button>
+      <button class="tab" onclick="switchTab('payouts',this)">&#128184; Výplaty</button>
+      <button class="tab" onclick="switchTab('settings',this)">&#9881;&#65039; Nastavení</button>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-content active" id="tab-stats">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">&#128200; Výdělek — posledních 30 dní</span></div>
+        <div class="card-body">
+          <canvas id="earningsChart"></canvas>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:1rem;">
+            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Kliky</div>
+              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.2rem;" id="dClicks">0</div>
+            </div>
+            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Registrace</div>
+              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--blue);margin-top:0.2rem;" id="dRegs">0</div>
+            </div>
+            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Depositors</div>
+              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--green);margin-top:0.2rem;" id="dDepositors">0</div>
+            </div>
+            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Konverzní rate</div>
+              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.2rem;" id="dConvRate">0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYERS TAB -->
+    <div class="tab-content" id="tab-players">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">&#128101; Tvoji hráči</span><button class="btn" style="padding:0.3rem 0.7rem;font-size:0.6rem;background:rgba(60,120,255,0.1);border:1px solid rgba(60,120,255,0.25);color:#93c5fd;" onclick="loadPlayers()">Refresh</button></div>
+        <div class="card-body" style="padding:0;overflow-x:auto;">
+          <table class="tbl">
+            <thead><tr><th>Hráč</th><th>Registrace</th><th>Vsazeno</th><th>Tvoje provize</th><th>Status</th></tr></thead>
+            <tbody id="playersTbl"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">Zatím žádní hráči</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYOUTS TAB -->
+    <div class="tab-content" id="tab-payouts">
+      <div class="card">
+        <div class="card-hdr">
+          <span class="card-title">&#128184; Výplaty</span>
+          <button class="btn btn-gold" style="padding:0.4rem 1rem;font-size:0.65rem;" onclick="document.getElementById('payoutModal').classList.add('show');document.getElementById('payoutAvail').textContent=document.getElementById('dPending').textContent">&#128184; Vyžádat výplatu</button>
+        </div>
+        <div class="card-body">
+          <div style="background:rgba(60,120,255,0.06);border:1px solid rgba(60,120,255,0.15);border-radius:10px;padding:1rem;margin-bottom:1rem;">
+            <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;">Výplaty se provádějí každý pátek automaticky na tvoji BTC adresu. Min. výplata: 0.001 BTC.</div>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Datum</th><th>Částka</th><th>BTC Adresa</th><th>TXID</th><th>Status</th></tr></thead>
+            <tbody id="payoutsTbl"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">Žádné výplaty zatím</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings">
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">&#9881;&#65039; Nastavení účtu</span></div>
+        <div class="card-body">
+          <div id="settAl" class="al"></div>
+          <div class="fld"><label>BTC Adresa pro výplaty</label><input type="text" id="settBtc" placeholder="bc1q..."></div>
+          <div class="fld"><label>Email</label><input type="email" id="settEmail" placeholder="email@example.com" readonly style="opacity:0.6"></div>
+          <button class="btn btn-blue btn-full" onclick="saveSettings()">&#128190; Uložit nastavení</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dashboardSection -->
+
+</div>
+
+<footer><p>&#169; 2026 CryptoKasino &middot; Affiliate Program &middot; <a href="terms.html">Terms</a> &middot; <a href="support.html">Support</a></p></footer>
+
+<script>
+const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
+let sb=null,currentUser=null,affiliateData=null;
+
+(async function(){
+  try{
+    const {createClient}=supabase;
+    sb=createClient(SB_URL,SB_KEY);
+    const {data:{session}}=await sb.auth.getSession();
+    if(session){
+      currentUser=session.user;
+      document.getElementById('headerBal').style.display='';
+      document.getElementById('loginBtn').style.display='none';
+      if(window.CK){
+        const b=await CK.getBalance();
+        document.getElementById('headerBal').textContent=b.toFixed(8)+' BTC';
+      }
+      await loadAffiliate();
+    } else {
+      document.getElementById('notLoggedSection').style.display='block';
+    }
+  }catch(e){console.warn('[Affiliate]',e.message);document.getElementById('notLoggedSection').style.display='block';}
+})();
+
+async function loadAffiliate(){
+  if(!sb||!currentUser)return;
+  try{
+    const {data}=await sb.from('affiliates').select('*').eq('user_id',currentUser.id).single();
+    if(data){
+      affiliateData=data;
+      showDashboard(data);
+    } else {
+      // Neni affiliate - zobraz registracni formular
+      document.getElementById('registerSection').style.display='block';
+      // Pre-fill email
+      document.getElementById('regEmail').value=currentUser.email||'';
+    }
+  }catch(e){
+    document.getElementById('registerSection').style.display='block';
+    document.getElementById('regEmail').value=currentUser.email||'';
+  }
+}
+
+function showDashboard(aff){
+  document.getElementById('registerSection').style.display='none';
+  document.getElementById('dashboardSection').style.display='block';
+
+  const refLink=`https://www.cryptokasino.io/?ref=${aff.ref_code}`;
+  document.getElementById('refLink').textContent=refLink;
+  document.getElementById('dTotalEarned').textContent=parseFloat(aff.total_earned_btc||0).toFixed(5);
+  document.getElementById('dPending').textContent=parseFloat(aff.pending_btc||0).toFixed(5);
+  document.getElementById('dPlayers').textContent=aff.total_registrations||0;
+  document.getElementById('dCommission').textContent=(aff.commission_pct||25)+'%';
+  document.getElementById('dClicks').textContent=aff.total_clicks||0;
+  document.getElementById('dRegs').textContent=aff.total_registrations||0;
+  document.getElementById('dDepositors').textContent=aff.total_depositors||0;
+  const conv=aff.total_clicks>0?((aff.total_registrations||0)/(aff.total_clicks)*100).toFixed(1)+'%':'0%';
+  document.getElementById('dConvRate').textContent=conv;
+
+  // Tier badge
+  const tierColors={standard:'badge-blue',silver:'badge-blue',gold:'badge-green'};
+  const tierBadge=document.getElementById('tierBadge');
+  tierBadge.className='badge badge-'+(tierColors[aff.tier]||'badge-blue');
+  tierBadge.textContent=aff.tier?.toUpperCase()||'STANDARD';
+
+  // Settings pre-fill
+  document.getElementById('settBtc').value=aff.btc_address||'';
+  document.getElementById('settEmail').value=currentUser.email||'';
+  document.getElementById('payoutAvail').textContent=parseFloat(aff.pending_btc||0).toFixed(5);
+
+  drawEarningsChart();
+  loadPlayers();
+  loadPayouts();
+}
+
+async function registerAffiliate(){
+  const username=document.getElementById('regUsername').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const btc=document.getElementById('regBtc').value.trim();
+  const promo=document.getElementById('regPromo').value;
+
+  if(!username||!email||!btc){showAl('regAl','err','Vyplň všechna povinná pole');return;}
+  if(!btc.match(/^(bc1|1|3)[a-zA-HJ-NP-Z0-9]{25,62}$/)){showAl('regAl','err','Neplatná BTC adresa');return;}
+
+  // Vygeneruj ref code
+  const refCode=username.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0,8)+(Math.floor(Math.random()*99)+1);
+
+  try{
+    const {data,error}=await sb.from('affiliates').insert({
+      user_id:currentUser.id,
+      username,email,
+      btc_address:btc,
+      ref_code:refCode,
+      commission_pct:25,
+      tier:'standard',
+      status:'active'
+    }).select().single();
+
+    if(error)throw error;
+    affiliateData=data;
+    showAl('regAl','ok','✅ Registrace úspěšná! Vítej v programu!');
+    setTimeout(()=>showDashboard(data),1500);
+  }catch(e){
+    if(e.message.includes('unique'))showAl('regAl','err','Username nebo email již existuje');
+    else showAl('regAl','err','Chyba: '+e.message);
+  }
+}
+
+async function loadPlayers(){
+  if(!affiliateData||!sb)return;
+  try{
+    const {data}=await sb.from('affiliate_conversions')
+      .select('*,profiles(username,balance)')
+      .eq('affiliate_id',affiliateData.id)
+      .order('registered_at',{ascending:false})
+      .limit(20);
+
+    const tbody=document.getElementById('playersTbl');
+    if(!data||!data.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">Zatím žádní hráči</td></tr>';return;}
+
+    tbody.innerHTML=data.map(c=>{
+      const date=new Date(c.registered_at).toLocaleDateString('cs-CZ');
+      const wagered=parseFloat(c.total_wagered_btc||0).toFixed(5);
+      const comm=parseFloat(c.commission_earned_btc||0).toFixed(5);
+      const statusCls={registered:'badge-blue',depositor:'badge-green',active:'badge-green'}[c.status]||'badge-blue';
+      return `<tr>
+        <td style="font-family:'Cinzel',serif;font-size:0.75rem">${c.profiles?.username||'—'}</td>
+        <td style="font-size:0.78rem;color:var(--text-dim)">${date}</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold)">${wagered} BTC</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--green)">+${comm} BTC</td>
+        <td><span class="badge ${statusCls}">${c.status||'registered'}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){console.warn('[Players]',e.message);}
+}
+
+async function loadPayouts(){
+  if(!affiliateData||!sb)return;
+  try{
+    const {data}=await sb.from('affiliate_payouts')
+      .select('*').eq('affiliate_id',affiliateData.id)
+      .order('created_at',{ascending:false}).limit(20);
+
+    const tbody=document.getElementById('payoutsTbl');
+    if(!data||!data.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">Žádné výplaty zatím</td></tr>';return;}
+
+    tbody.innerHTML=data.map(p=>{
+      const date=new Date(p.created_at).toLocaleDateString('cs-CZ');
+      const addr=p.btc_address?p.btc_address.slice(0,12)+'...'+p.btc_address.slice(-6):'—';
+      const txid=p.txid?`<a href="https://mempool.space/tx/${p.txid}" target="_blank" style="color:#93c5fd;font-size:0.7rem">${p.txid.slice(0,12)}...</a>`:'—';
+      const statusCls={paid:'badge-green',pending:'badge-orange'}[p.status]||'badge-blue';
+      return `<tr>
+        <td style="font-size:0.78rem;color:var(--text-dim)">${date}</td>
+        <td style="font-family:'Cinzel',serif;color:var(--green)">${parseFloat(p.amount_btc).toFixed(5)} BTC</td>
+        <td style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">${addr}</td>
+        <td>${txid}</td>
+        <td><span class="badge ${statusCls}">${p.status}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){console.warn('[Payouts]',e.message);}
+}
+
+async function submitPayout(){
+  const addr=document.getElementById('payoutAddr').value.trim();
+  const amt=parseFloat(document.getElementById('payoutAmt').value);
+  const avail=parseFloat(affiliateData?.pending_btc||0);
+
+  if(!addr||!amt){showAl('payoutAl','err','Vyplň adresu a částku');return;}
+  if(amt<0.001){showAl('payoutAl','err','Minimum je 0.001 BTC');return;}
+  if(amt>avail){showAl('payoutAl','err','Nedostatek prostředků');return;}
+
+  try{
+    await sb.from('affiliate_payouts').insert({
+      affiliate_id:affiliateData.id,
+      amount_btc:amt,
+      btc_address:addr,
+      status:'pending',
+      period_end:new Date().toISOString().split('T')[0]
+    });
+    await sb.from('affiliates').update({pending_btc:avail-amt}).eq('id',affiliateData.id);
+    showAl('payoutAl','ok','✅ Žádost přijata! Vyplatíme v pátek.');
+    affiliateData.pending_btc=avail-amt;
+    document.getElementById('dPending').textContent=(avail-amt).toFixed(5);
+  }catch(e){showAl('payoutAl','err','Chyba: '+e.message);}
+}
+
+async function saveSettings(){
+  const btc=document.getElementById('settBtc').value.trim();
+  if(!btc){showAl('settAl','err','Zadej BTC adresu');return;}
+  try{
+    await sb.from('affiliates').update({btc_address:btc,updated_at:new Date().toISOString()}).eq('id',affiliateData.id);
+    showAl('settAl','ok','✅ Nastavení uloženo');
+  }catch(e){showAl('settAl','err','Chyba: '+e.message);}
+}
+
+function copyRefLink(){
+  const link=document.getElementById('refLink').textContent;
+  navigator.clipboard.writeText(link).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='✓ Zkopírováno!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 Kopírovat';btn.classList.remove('copied');},2500);
+  });
+}
+
+function shareTwitter(){
+  const link=encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://twitter.com/intent/tweet?text=Hraju%20na%20CryptoKasino%20-%20Bitcoin%20kasino%20s%20provably%20fair%20hrami!%20Registruj%20se%20přes%20můj%20link%3A%20${link}`,'_blank');
+}
+function shareWhatsapp(){
+  const link=encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://wa.me/?text=Zkus%20CryptoKasino%20-%20Bitcoin%20kasino!%20${link}`,'_blank');
+}
+function shareTelegram(){
+  const link=encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://t.me/share/url?url=${link}&text=Registruj%20se%20na%20CryptoKasino!`,'_blank');
+}
+
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function showAl(id,type,msg){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.className='al al-'+(type==='ok'?'ok':type==='err'?'err':'info')+' show';
+  el.textContent=msg;
+  setTimeout(()=>el.classList.remove('show'),5000);
+}
+
+function drawEarningsChart(){
+  const c=document.getElementById('earningsChart');
+  if(!c)return;
+  const cx=c.getContext('2d');c.width=c.offsetWidth;c.height=120;
+  const W=c.width,H=c.height;cx.clearRect(0,0,W,H);
+  // Demo data - posledních 14 dní
+  const days=14;const data=Array.from({length:days},()=>Math.random()*0.002);
+  const mx=Math.max(...data,0.001);
+  cx.strokeStyle='rgba(60,120,255,0.08)';cx.lineWidth=1;
+  for(let i=1;i<=4;i++){const y=H*i/4;cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}
+  cx.beginPath();data.forEach((v,i)=>{const x=(i/(days-1))*W,y=H-(v/mx)*(H-10)-5;i===0?cx.moveTo(x,y):cx.lineTo(x,y);});
+  cx.strokeStyle='#60a5fa';cx.lineWidth=2;cx.lineJoin='round';cx.stroke();
+  cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();
+  const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(96,165,250,0.2)');g.addColorStop(1,'rgba(96,165,250,0)');cx.fillStyle=g;cx.fill();
+  // Labels
+  cx.fillStyle='rgba(136,152,204,0.6)';cx.font='9px Cinzel,serif';cx.textAlign='center';
+  [-13,-6,0].forEach(d=>{const i=days-1+d;const x=(i/(days-1))*W;const date=new Date(Date.now()+d*86400000);cx.fillText(date.getDate()+'.'+(date.getMonth()+1)+'.',x,H-2);});
+}
+
+// Hamburger
+document.addEventListener('DOMContentLoaded',function(){
+  const h=document.getElementById('hamburger');
+  if(h)h.addEventListener('click',function(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+    h.classList.toggle('active');
+  });
+  document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',function(){
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('active');
+  }));
+});
+</script>
+</body>
+</html>
