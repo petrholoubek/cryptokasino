@@ -613,6 +613,36 @@
       else window._gsCache = {};
     },
 
+
+    // ── Server game endpoint ──────────────────────────
+    serverUrl: 'http://46.225.120.83:3001',
+
+    async callGameServer(gameId, betBtc, options) {
+      try {
+        var token = null;
+        if (_session && _session.access_token) token = _session.access_token;
+        if (!token && sb) {
+          var sess = await sb.auth.getSession();
+          if (sess && sess.data && sess.data.session) token = sess.data.session.access_token;
+        }
+        if (!token) throw new Error('No JWT token');
+        var resp = await fetch('https://api.cryptokasino.io/api/game/play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options || {} })
+        });
+        if (!resp.ok) throw new Error('Server error: ' + resp.status);
+        var data = await resp.json();
+        if (!data.ok) throw new Error(data.error || 'Unknown error');
+        console.log('[SERVER]', gameId, 'result:', data);
+        _profile = null; // refresh balance
+        return data;
+      } catch(e) {
+        console.warn('[SERVER] Fallback:', e.message);
+        return null;
+      }
+    },
+
     getClient() { return sb; }
   };
 
