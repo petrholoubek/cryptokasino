@@ -909,7 +909,11 @@ function resolveResult(bet){
   if(jackpotHit){setTimeout(()=>triggerJackpot(bet),300);return;}
   if(bonusCount>=3){setTimeout(()=>triggerBonus(bet),300);return;}
 
-  const payout=parseFloat((bet*totalMult).toFixed(7));
+  var _slots_he=(window._houseEdge_slots||0.045);
+  var _slots_em=totalMult>1?(1+((totalMult-1)*(1-_slots_he))):totalMult;
+  var _slots_raw=parseFloat((bet*_slots_em).toFixed(7));
+  var _slots_max=window._maxWin_slots||0.5;
+  const payout=Math.min(_slots_raw,bet+_slots_max);
   const profit=payout-bet;
 
   if(totalMult>0){
