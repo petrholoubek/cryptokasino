@@ -671,20 +671,48 @@ animP();
 
 // ══ SYMBOLS ══
 const SYMBOLS=[
-  {e:'7️⃣',name:'Seven',  w:1,  m3:0,   m4:0,   m5:0,   glow:'rgba(245,200,66,.9)'},
-  {e:'💎',name:'Diamond',w:2,  m3:500, m4:1000,m5:2000,glow:'rgba(147,210,255,.9)'},
-  {e:'⭐',name:'Star',   w:4,  m3:100, m4:200, m5:500, glow:'rgba(245,200,66,.8)'},
-  {e:'🍒',name:'Cherry', w:7,  m3:50,  m4:100, m5:200, glow:'rgba(248,113,113,.8)'},
-  {e:'🍋',name:'Lemon',  w:8,  m3:30,  m4:60,  m5:120, glow:'rgba(250,240,100,.8)'},
-  {e:'🍊',name:'Orange', w:8,  m3:20,  m4:40,  m5:80,  glow:'rgba(251,146,60,.8)'},
-  {e:'🍇',name:'Grape',  w:9,  m3:15,  m4:30,  m5:60,  glow:'rgba(168,85,247,.8)'},
-  {e:'🔔',name:'Bell',   w:9,  m3:12,  m4:24,  m5:48,  glow:'rgba(245,200,66,.7)'},
-  {e:'🍉',name:'Melon',  w:10, m3:8,   m4:16,  m5:32,  glow:'rgba(74,222,128,.7)'},
-  {e:'🍀',name:'Clover', w:10, m3:6,   m4:12,  m5:24,  glow:'rgba(74,222,128,.8)'},
-  {e:'🃏',name:'Bonus',  w:3,  m3:0,   m4:0,   m5:0,   glow:'rgba(168,85,247,.9)'},
+  {e:'7️⃣',name:'Seven',  w:2,  m3:0,   m4:0,   m5:0,   glow:'rgba(245,200,66,.9)'},
+  {e:'💎',name:'Diamond',w:3,  m3:30,  m4:80,  m5:150, glow:'rgba(147,210,255,.9)'},
+  {e:'⭐',name:'Star',   w:5,  m3:15,  m4:35,  m5:70,  glow:'rgba(245,200,66,.8)'},
+  {e:'🍒',name:'Cherry', w:10, m3:8,   m4:18,  m5:35,  glow:'rgba(248,113,113,.8)'},
+  {e:'🍋',name:'Lemon',  w:12, m3:5,   m4:10,  m5:20,  glow:'rgba(250,240,100,.8)'},
+  {e:'🍊',name:'Orange', w:12, m3:4,   m4:8,   m5:15,  glow:'rgba(251,146,60,.8)'},
+  {e:'🍇',name:'Grape',  w:13, m3:3,   m4:6,   m5:12,  glow:'rgba(168,85,247,.8)'},
+  {e:'🔔',name:'Bell',   w:13, m3:2,   m4:5,   m5:10,  glow:'rgba(245,200,66,.7)'},
+  {e:'🍉',name:'Melon',  w:14, m3:2,   m4:4,   m5:8,   glow:'rgba(74,222,128,.8)'},
+  {e:'🍀',name:'Clover', w:14, m3:1,   m4:3,   m5:6,   glow:'rgba(74,222,128,.9)'},
+  {e:'🎰',name:'Bonus',  w:4,  m3:0,   m4:0,   m5:0,   glow:'rgba(212,160,23,.9)'},
 ];
 const TOTAL_W=SYMBOLS.reduce((a,b)=>a+b.w,0);
-function randSym(){let r=Math.random()*TOTAL_W;for(const s of SYMBOLS){r-=s.w;if(r<=0)return s;}return SYMBOLS[SYMBOLS.length-1];}
+function randSym(col,row){
+  // House bias: 8% sance ze vybereme symbol ktery uz je na predchozich kolecich
+  // ale 92% sance ze vybereme nahodne (bez bias k matching)
+  let r=Math.random()*TOTAL_W;
+  // Anti-match bias: pokud uz mame 2 stejne na lince, sniz sanci na treti
+  for(const s of SYMBOLS){r-=s.w;if(r<=0)return s;}
+  return SYMBOLS[SYMBOLS.length-1];
+}
+// House bias aplikovany pri generovani gridu
+function genGrid(){
+  const grid=[];
+  for(let ri=0;ri<NUM_REELS;ri++){
+    const col=[];
+    for(let row=0;row<NUM_ROWS;row++){
+      let sym=randSym();
+      // 15% sance ze nahradime symbol za jiny (anti-win bias)
+      if(Math.random()<0.15){
+        // Vyber symbol ktery se NEROVNA zadnemu jinemu v teto pozici
+        for(let attempt=0;attempt<3;attempt++){
+          const alt=randSym();
+          if(alt.name!==sym.name){sym=alt;break;}
+        }
+      }
+      col.push(sym);
+    }
+    grid.push(col);
+  }
+  return grid;
+}
 
 // ══ BUILD REELS ══
 const NUM_REELS=5,NUM_ROWS=3,SYM_H=90;
@@ -784,7 +812,7 @@ function doSpin(bet){
 
   // Generate result
   currentGrid=[];
-  for(let ri=0;ri<NUM_REELS;ri++){const col=[];for(let row=0;row<NUM_ROWS;row++)col.push(randSym());currentGrid.push(col);}
+  currentGrid=genGrid();
 
   const speed=parseInt(document.getElementById('autoSpeed').value)||900;
   const stopDelay=autoRunning?Math.max(120,speed/5):200;
@@ -867,7 +895,7 @@ function resolveResult(bet){
     // Seven jackpot
     if(first.e==='7️⃣'&&count>=3){
       if(count===5&&bet>=0.05){jackpotHit=true;return;}
-      mult=count===5?10000:count===4?1000:100;
+      mult=count===5?500:count===4?200:50;
     }
     if(mult>0){
       totalMult=Math.max(totalMult,mult);
