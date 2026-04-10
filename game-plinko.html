@@ -901,34 +901,20 @@ async function loadGameSettings(gameId){
 // ═══════════════════════════════════════════════════════
 async function callGameServer(gameId, betBtc, options) {
   try {
-    // Ziskej JWT token ze vsech moznych zdroju
+    // Ziskej JWT token
     var token = null;
-    // 1. Z CK session
     if(window.CK && window.CK.session && window.CK.session.access_token) {
       token = window.CK.session.access_token;
     }
-    // 2. Ze supabase primo
-    if(!token && window.sb) {
-      try {
-        var sess = await window.sb.auth.getSession();
-        if(sess && sess.data && sess.data.session) token = sess.data.session.access_token;
-      } catch(e) {}
-    }
-    // 3. Z localStorage
     if(!token) {
       try {
-        var keys = Object.keys(localStorage);
-        for(var k of keys) {
-          if(k.includes('auth') || k.includes('supabase')) {
-            var val = JSON.parse(localStorage.getItem(k) || '{}');
-            if(val.access_token) { token = val.access_token; break; }
-          }
-        }
+        var _s = await (window.CK&&window.CK.sb||window.sb).auth.getSession();
+        if(_s&&_s.data&&_s.data.session) token = _s.data.session.access_token;
       } catch(e) {}
     }
     if(!token) throw new Error('No JWT token');
 
-    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
+    var resp = await fetch('http://46.225.120.83:3001/api/game/play', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
