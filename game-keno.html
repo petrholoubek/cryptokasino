@@ -836,8 +836,46 @@ function closeMenu(){document.getElementById('mobileMenu').classList.remove('ope
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 buildGrid();updatePayoutTable();updateBetDisplay();
 // Demo mode fallback
-document.addEventListener('DOMContentLoaded', function(){if(typeof setMode==='function')setMode('demo');},{once:true});
+document.addEventListener('DOMContentLoaded', function(){
+  // Nacti settings z DB a prepis hardcoded hodnoty
+  loadGameSettings('keno').then(function(gs){
+    if(!gs) return;
+    // Max win limit
+    if(gs.max_win_btc) window._maxWin_keno = parseFloat(gs.max_win_btc);
+    // Min/max bet
+    if(gs.min_bet_btc) window._minBet_keno = parseFloat(gs.min_bet_btc);
+    if(gs.max_bet_btc) window._maxBet_keno = parseFloat(gs.max_bet_btc);
+    // House edge / RTP - specificke pro kazdou hru
+    if(gs.house_edge_pct !== undefined) window._houseEdge_keno = parseFloat(gs.house_edge_pct)/100;
+    if(gs.rtp_pct !== undefined) window._rtp_keno = parseFloat(gs.rtp_pct);
+    // Disabled check
+    if(gs.enabled === false) {
+      document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#020610;color:#f87171;font-family:Cinzel,serif;font-size:1.5rem;text-align:center">&#9888; Tato hra je momentálně nedostupná.<br><a href="casino.html" style="color:#D4A017;margin-top:1rem;display:block;font-size:1rem">← Zpět do kasina</a></div>';
+      return;
+    }
+    console.log('[GS] keno settings applied from DB');
+  });if(typeof setMode==='function')setMode('demo');},{once:true});
 if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
+
+// ═══════════════════════════════════════════
+// GAME SETTINGS LOADER — RTP/Edge z Supabase
+// ═══════════════════════════════════════════
+async function loadGameSettings(gameId){
+  try{
+    var tries=0;
+    while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+    var db=window.CK&&window.CK.sb;
+    if(!db)return null;
+    var {data,error}=await db.from('game_settings').select('*').eq('id',gameId).single();
+    if(error||!data)return null;
+    console.log('[GS] '+gameId+': RTP='+data.rtp_pct+'% edge='+data.house_edge_pct+'% maxWin='+data.max_win_btc+' BTC');
+    return data;
+  }catch(e){
+    console.warn('[GS] Fallback defaults:',e.message);
+    return null;
+  }
+}
+
 </script>
 </body>
 </html>
