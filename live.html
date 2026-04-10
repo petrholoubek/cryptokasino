@@ -610,7 +610,7 @@ let sb=null,currentUser=null,currentTableId=null,realtimeChannel=null,activeTab=
 // SUPABASE INIT
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(window.CK){
     try{
       var bal=await CK.getBalance();
@@ -682,8 +682,26 @@ function showToast(type,title,msg,burst){
 // COUNTERS
 var jp=21.48250894;
 setInterval(function(){jp+=0.0000085+Math.random()*.000002;var el=document.getElementById('jpAmount');if(el)el.textContent=jp.toFixed(8);var ud=document.getElementById('jpUsd');if(ud)ud.textContent='≈ $'+(jp*65000).toFixed(2)+' USD';},1200);
-var onl=10284;
-setInterval(function(){onl+=Math.floor(Math.random()*12)-5;onl=Math.max(10100,Math.min(12500,onl));var el=document.getElementById('onlineNum');if(el)el.textContent=onl.toLocaleString();var he=document.getElementById('heroPlayers');if(he)he.textContent=Math.floor(onl*.12).toLocaleString();},2800);
+var onl=(function(){
+  var h=new Date().getHours();
+  var b=h>=20?38000:h>=16?28000:h>=10?20000:h>=7?13000:10000;
+  return b+Math.floor(Math.random()*5000);
+})();
+var onlTarget=onl;
+setInterval(function(){
+  var diff=onlTarget-onl;
+  onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*150)-60;
+  if(Math.random()<0.03){
+    var h=new Date().getHours();
+    var b=h>=20?38000:h>=16?28000:h>=10?20000:h>=7?13000:10000;
+    onlTarget=b+Math.floor(Math.random()*10000);
+  }
+  onl=Math.max(10000,Math.min(50000,onl));
+  var el=document.getElementById('onlineNum');
+  if(el)el.textContent=onl.toLocaleString();
+  var he=document.getElementById('heroBetting');
+  if(he)he.textContent=Math.floor(onl*0.28).toLocaleString();
+},2800);
 setInterval(function(){var el=document.getElementById('heroBigWin');if(el)el.textContent=(Math.random()*3+0.5).toFixed(3)+' BTC';},9000);
 var jpV=0.00248;
 setInterval(function(){jpV+=Math.random()*.00008;var el=document.getElementById('ls-jackpot');if(el)el.textContent='🏆 '+jpV.toFixed(5)+' BTC';},1200);
