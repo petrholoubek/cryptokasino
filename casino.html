@@ -1222,7 +1222,7 @@ var fakeInterval=setInterval(addFakeBet,2200);
 // Supabase Realtime
 (async function initRealtimeFeed(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK||!window.CK.sb){console.log('[Feed] No Supabase, using fake data');return;}
   var sb=window.CK.sb;
 
@@ -1292,7 +1292,7 @@ var LB=[
   // Zkus nacist z DB
   try{
     var tries=0;
-    while(!window.CK&&tries<20){await new Promise(r=>setTimeout(r,100));tries++;}
+    while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
     if(window.CK&&window.CK.sb){
       var {data}=await window.CK.sb
         .from('bets')
@@ -1641,7 +1641,7 @@ async function demoVerify(){
 <script>
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<20){await new Promise(function(r){setTimeout(r,100);});tries++;}
+  while(!window.CK&&tries<50){await new Promise(function(r){setTimeout(r,100);});tries++;}
   if(!window.CK){console.log('[Casino] Demo mode');return;}
   var bal=await CK.getBalance();
   if(bal>0)document.getElementById('headerBal').textContent=bal.toFixed(8)+' BTC';
