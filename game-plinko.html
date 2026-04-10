@@ -901,14 +901,30 @@ async function loadGameSettings(gameId){
 // ═══════════════════════════════════════════════════════
 async function callGameServer(gameId, betBtc, options) {
   try {
-    // Cekej na JWT token
+    // Ziskej JWT token ze vsech moznych zdroju
     var token = null;
-    var tries = 0;
-    while(!token && tries < 20) {
-      if(window.CK && window.CK.session && window.CK.session.access_token) {
-        token = window.CK.session.access_token;
-      }
-      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
+    // 1. Z CK session
+    if(window.CK && window.CK.session && window.CK.session.access_token) {
+      token = window.CK.session.access_token;
+    }
+    // 2. Ze supabase primo
+    if(!token && window.sb) {
+      try {
+        var sess = await window.sb.auth.getSession();
+        if(sess && sess.data && sess.data.session) token = sess.data.session.access_token;
+      } catch(e) {}
+    }
+    // 3. Z localStorage
+    if(!token) {
+      try {
+        var keys = Object.keys(localStorage);
+        for(var k of keys) {
+          if(k.includes('auth') || k.includes('supabase')) {
+            var val = JSON.parse(localStorage.getItem(k) || '{}');
+            if(val.access_token) { token = val.access_token; break; }
+          }
+        }
+      } catch(e) {}
     }
     if(!token) throw new Error('No JWT token');
 
