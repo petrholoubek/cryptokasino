@@ -730,7 +730,10 @@ async function playKeno(){
   // Resolve
   const n=picks.size;const payouts=PAYOUTS[n]||PAYOUTS[5];
   const multi=payouts[hitCount]||0;
-  const payout=parseFloat((bet*multi).toFixed(8));const profit=payout-bet;
+  var _k_he=(window._houseEdge_keno||0.085);
+  var _k_raw=parseFloat((bet*multi*(1-_k_he)).toFixed(8));
+  var _k_max=window._maxWin_keno||1.0;
+  const payout=Math.min(_k_raw,bet+_k_max);const profit=payout-bet;
 
   if(gameMode==='real'){balance+=payout;realBalance+=payout;if(payout>0)sbAddWin(Math.round(payout*1e8));}
   else{balance+=payout;demoBalance+=payout;}
@@ -873,6 +876,45 @@ async function loadGameSettings(gameId){
   }catch(e){
     console.warn('[GS] Fallback defaults:',e.message);
     return null;
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SERVER GAME ENDPOINT - volá /api/game/play
+// ═══════════════════════════════════════════════════════
+async function callGameServer(gameId, betBtc, options) {
+  try {
+    // Cekej na JWT token
+    var token = null;
+    var tries = 0;
+    while(!token && tries < 20) {
+      if(window.CK && window.CK.session && window.CK.session.access_token) {
+        token = window.CK.session.access_token;
+      }
+      if(!token) { await new Promise(r=>setTimeout(r,100)); tries++; }
+    }
+    if(!token) throw new Error('No JWT token');
+
+    var resp = await fetch('https://www.cryptokasino.io/api/game/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
+    });
+
+    if(!resp.ok) throw new Error('Server error: ' + resp.status);
+    var data = await resp.json();
+    if(!data.ok) throw new Error(data.error || 'Unknown error');
+
+    console.log('[SERVER] ' + gameId + ' result:', data);
+    return data; // { ok, result, mult, payout, profit, new_balance }
+
+  } catch(e) {
+    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
+    return null; // null = pouzij lokalni vypocet
   }
 }
 
