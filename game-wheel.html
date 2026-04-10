@@ -819,7 +819,11 @@ async function spinWheel(){
 }
 
 function resolveResult(result,bet){
-  const payout=parseFloat((bet*result.mult).toFixed(8));
+  var _wheel_he=(window._houseEdge_wheel||0.07);
+  var _wheel_em=result.mult>1?(1+((result.mult-1)*(1-_wheel_he))):result.mult;
+  var _wheel_raw=parseFloat((bet*_wheel_em).toFixed(8));
+  var _wheel_max=window._maxWin_wheel||0.5;
+  const payout=Math.min(_wheel_raw,bet+_wheel_max);
   const profit=payout-bet;
   if(gameMode==='real'){balance+=payout;realBalance+=payout;if(payout>0)sbAddWin(Math.round(payout*1e8));}else{balance+=payout;demoBalance+=payout;}
   sessionProfit+=profit;if(profit>bestWin)bestWin=profit;
