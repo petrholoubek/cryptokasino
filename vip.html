@@ -10,18 +10,6 @@
 <meta name="theme-color" content="#000d33">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
-
-<!-- Favicon -->
-<link rel="icon" href="/favicon.ico">
-<!-- PNG fallback -->
-<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-<!-- Apple (iPhone) -->
-<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-<!-- PWA manifest -->
-<link rel="manifest" href="/site.webmanifest">
-<!-- Theme color (mobilní horní lišta) -->
-<meta name="theme-color" content="#000d33">
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
@@ -180,13 +168,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav>
-    <a href="casino.html">Casino</a>
-    <a href="live.html">Live</a>
-    <a href="sports.html">Sports</a>
-    <a href="vip.html" class="active">VIP</a>
-    <a href="promotions.html">Promotions</a>
-  </nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <span class="vip-badge-header" id="headerVip" style="display:none"></span>
@@ -200,7 +182,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   <a href="live.html" onclick="closeMenu()">Live</a>
   <a href="vip.html" onclick="closeMenu()">VIP</a>
   <a href="promotions.html" onclick="closeMenu()">Promotions</a>
-  <div class="mobile-menu-btns">
+  <a href="affiliate.html">&#129309; Affiliate</a><div class="mobile-menu-btns">
     <a href="deposit.html" class="btn-dep">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
   </div>
