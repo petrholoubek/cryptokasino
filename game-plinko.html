@@ -900,40 +900,10 @@ async function loadGameSettings(gameId){
 // SERVER GAME ENDPOINT - volá /api/game/play
 // ═══════════════════════════════════════════════════════
 async function callGameServer(gameId, betBtc, options) {
-  try {
-    // Ziskej JWT token
-    var token = null;
-    if(window.CK && window.CK.session && window.CK.session.access_token) {
-      token = window.CK.session.access_token;
-    }
-    if(!token) {
-      try {
-        var _s = await (window.CK&&window.CK.sb||window.sb).auth.getSession();
-        if(_s&&_s.data&&_s.data.session) token = _s.data.session.access_token;
-      } catch(e) {}
-    }
-    if(!token) throw new Error('No JWT token');
-
-    var resp = await fetch('http://46.225.120.83:3001/api/game/play', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ gameId: gameId, betBtc: betBtc, options: options })
-    });
-
-    if(!resp.ok) throw new Error('Server error: ' + resp.status);
-    var data = await resp.json();
-    if(!data.ok) throw new Error(data.error || 'Unknown error');
-
-    console.log('[SERVER] ' + gameId + ' result:', data);
-    return data; // { ok, result, mult, payout, profit, new_balance }
-
-  } catch(e) {
-    console.warn('[SERVER] Fallback na lokální výpočet:', e.message);
-    return null; // null = pouzij lokalni vypocet
+  if (window.CK && window.CK.callGameServer) {
+    return await window.CK.callGameServer(gameId, betBtc, options);
   }
+  return null;
 }
 
 </script>
