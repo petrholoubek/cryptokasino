@@ -628,7 +628,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
     <a href="sports.html">Sports</a>
     <a href="vip.html">VIP</a>
     <a href="promotions.html">Promotions</a>
-  <a href="affiliate.html">Affiliate</a></nav>
+  <a href="affiliate.html">Affiliate</a><a href="verify.html" style="color:#4ade80;">&#9989; Provably Fair</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <span id="headerVip"></span>
@@ -1152,7 +1152,7 @@ function updateOnline(){
     var b = h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;
     onlTarget = b + Math.floor(Math.random()*8000);
   }
-  onl = Math.max(10000, Math.min(40000, onl));
+  onl = Math.max(10000, Math.min(50000, onl));
   var el = document.getElementById('jbOnline');
   if(el) el.textContent = onl.toLocaleString();
 }
@@ -1232,7 +1232,7 @@ var fakeInterval=setInterval(addFakeBet,2200);
 // Supabase Realtime
 (async function initRealtimeFeed(){
   var tries=0;
-  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
+  while((!window.CK||!window.CK.sb)&&tries<100){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK||!window.CK.sb){console.log('[Feed] No Supabase, using fake data');return;}
   var sb=window.CK.sb;
 
@@ -1651,7 +1651,7 @@ async function demoVerify(){
 <script>
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<50){await new Promise(function(r){setTimeout(r,100);});tries++;}
+  while(!window.CK&&tries<100){await new Promise(function(r){setTimeout(r,100);});tries++;}
   if(!window.CK){console.log('[Casino] Demo mode');return;}
   var bal=await CK.getBalance();
   if(bal>0)document.getElementById('headerBal').textContent=bal.toFixed(8)+' BTC';
