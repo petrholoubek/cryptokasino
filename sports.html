@@ -605,9 +605,9 @@ function showToast(type,title,msg,burst){
 }
 
 // ══ COUNTERS ══
-var onl=10284;
+var onl = (function(){   // Realisticka pocatecni hodnota podle casu dne   var h = new Date().getHours();   // Peak vecer 20-23h, minimum rano 4-7h   var base = h >= 20 ? 32000 : h >= 16 ? 24000 : h >= 10 ? 18000 : h >= 7 ? 12000 : 10000;   return base + Math.floor(Math.random() * 3000); })(); var onlTarget = onl, onlDir = 1;
 setInterval(function(){
-  onl+=Math.floor(Math.random()*12)-5;onl=Math.max(9600,Math.min(11500,onl));
+  var diff=onlTarget-onl;onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*120)-50;if(Math.random()<0.03){var h=new Date().getHours();var b=h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;onlTarget=b+Math.floor(Math.random()*8000);}onl=Math.max(10000,Math.min(40000,onl));
   var el=document.getElementById('onlineNum');if(el)el.textContent=onl.toLocaleString();
   var he=document.getElementById('heroBetting');if(he)he.textContent=Math.floor(onl*.28).toLocaleString();
 },2800);
@@ -817,7 +817,19 @@ function placeBet(){
   if(betSlip.length===0)return;
   var stake=parseFloat(document.getElementById('stakeInput')?.value||.01);
   var totalOdds=betSlip.reduce(function(t,b){return t*b.odds;},1);
-  var payout=stake*totalOdds;
+  var payout=parseFloat((stake*totalOdds).toFixed(8));
+  var _slip=betSlip.slice();
+  if(window.CK&&window.CK.callGameServer){
+    window.CK.callGameServer('sports',parseFloat(stake)||0,{odds:parseFloat(totalOdds.toFixed(4)),selections:_slip.length}).then(function(r){if(r)console.log('[SPORTS] Bet logged:',r);}).catch(function(){});
+  }
+  setTimeout(function(){
+    var won=Math.random()<(1/totalOdds)*0.95;
+    var betSat=Math.round(stake*1e8);
+    var profitSat=won?Math.round((payout-stake)*1e8):-betSat;
+    if(window.CK&&window.CK.logBet){window.CK.logBet('sports',betSat,profitSat,parseFloat(totalOdds.toFixed(4)),{selections:_slip.length}).catch(function(){});}
+    if(won)showToast('win','🏆 YOU WON!','Payout: +'+payout.toFixed(5)+' BTC',true);
+    else showToast('lose','❌ Bet Lost','-'+stake.toFixed(5)+' BTC',true);
+  },5000);
   showToast('win','✅ BET PLACED!','Potential win: '+payout.toFixed(5)+' BTC',true);
   betSlip=[];renderSlip();
   setTimeout(function(){showToast('gold','🏆 Good Luck!','Your bet is live. Come on!');},1500);
@@ -857,7 +869,7 @@ setTimeout(nextToast,4000);
 // Supabase balance
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK)return;
   try{
     var bal=await CK.getBalance();
