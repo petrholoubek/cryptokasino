@@ -151,8 +151,11 @@ const VIP_ICONS={none:'&#128100;',bronze:'&#129350;',silver:'&#129352;',gold:'&#
 const VIP_CASHBACK={none:0,bronze:1,silver:2,gold:3,platinum:5,diamond:8};
 
 async function loadProfile(){
-  const {createClient}=supabase;
-  const sb=createClient(SB_URL,SB_KEY);
+  // Pouzij existujici CK.sb misto vytvareni noveho klienta
+  var tries=0;
+  while(!window.CK&&tries<50){await new Promise(r=>setTimeout(r,100));tries++;}
+  const sb=window.CK?.sb;
+  if(!sb){console.warn('[Profile] CK.sb nedostupny');return;}
   const {data:{session}}=await sb.auth.getSession();
   const page=document.getElementById('pageContent');
 
