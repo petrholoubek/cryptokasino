@@ -705,7 +705,7 @@ async function sbDeductBet(sat){
 }
 
 async function sbAddWin(sat){
-  if(gameMode!=='real'||!sb||!currentUser)return;
+  if(gameMode!=='real'||!sbClient||!currentUser)return;
   if(!sbClient||!currentUser)return;
   try{await sbClient.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}
   catch(e){console.warn('AddWin:',e.message);}
