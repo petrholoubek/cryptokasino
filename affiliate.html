@@ -650,7 +650,7 @@ Do NOT share internal credentials, API keys, or server details. Do NOT guarantee
     isTyping = true;
     showTyping();
     try {
-      var response = await fetch('https://www.cryptokasino.io/api/chat', {
+      var response = await fetch('https://api.cryptokasino.io/api/chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({system: SYSTEM_PROMPT, messages: chatHistory})
