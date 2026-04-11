@@ -40,7 +40,7 @@
     td.innerHTML='<div class="cka bot">🤖</div><div class="ckb"><div class="ckt"><span></span><span></span><span></span></div></div>';
     m.appendChild(td);m.scrollTop=m.scrollHeight;
     try{
-      var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:SP,messages:hist})});
+      var r=await fetch('https://api.cryptokasino.io/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist,system:SP})});
       var d=await r.json();
       var te=document.getElementById('ckTyp');if(te)te.remove();
       if(d.content&&d.content[0]){var rep=d.content[0].text;hist.push({role:'assistant',content:rep});ckAdd('bot',rep);}
