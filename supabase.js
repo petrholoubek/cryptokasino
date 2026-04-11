@@ -615,7 +615,7 @@
 
 
     // ── Server game endpoint ──────────────────────────
-    serverUrl: 'http://46.225.120.83:3001',
+    serverUrl: 'https://api.cryptokasino.io',
 
     async callGameServer(gameId, betBtc, options) {
       try {
