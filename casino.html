@@ -661,7 +661,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
       <span class="jb-amount" id="jbAmt">21.48250894</span>
       <span class="jb-btc-tag">BTC</span>
     </div>
-    <div class="jb-usd" id="jbUsd">&#8776; $68.40 USD</div>
+    <div class="jb-usd" id="jbUsd">&#8776; $1,396,250 USD</div>
   </div>
   <div class="jb-stats">
     <div class="jb-online-big">
@@ -1165,7 +1165,7 @@ setInterval(function(){
   var ju=document.getElementById('jbUsd');
   if(ja&&ju){
     var v=parseFloat(ja.textContent)||0.001;
-    ju.textContent='≈ $'+(v*65000).toFixed(2)+' USD';
+    ju.textContent='≈ $'+(v*650000).toFixed(2)+' USD';
   }
 },2000);
 
