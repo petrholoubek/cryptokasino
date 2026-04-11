@@ -356,11 +356,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <!-- HEADER -->
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav>
-    <a href="casino.html">Casino</a><a href="live.html">Live</a>
-    <a href="sports.html">Sports</a><a href="vip.html">VIP</a>
-    <a href="promotions.html" class="active">Promotions</a>
-  </nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <span id="headerVip"></span>
@@ -369,11 +365,20 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </header>
+<!-- PROVABLY FAIR BANNER -->
+<div style="background:linear-gradient(90deg,rgba(5,15,50,.95),rgba(10,30,80,.95));border-top:1px solid rgba(74,222,128,.2);border-bottom:1px solid rgba(74,222,128,.2);padding:.7rem 2.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;position:relative;z-index:2;">
+  <div style="display:flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:#4ade80;">
+    <span style="width:8px;height:8px;background:#4ade80;border-radius:50%;box-shadow:0 0 8px #4ade80;display:inline-block;"></span>
+    Provably Fair — 100% ověřitelné výsledky
+  </div>
+  <a href="verify.html" style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:#4ade80;text-decoration:none;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:.3rem .8rem;border-radius:6px;transition:all .2s;">&#9989; Ověřit výsledky</a>
+  <div style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(136,152,204,.6);letter-spacing:.08em;">SHA-256 · Kryptograficky ověřeno · Open Source</div>
+</div>
 <div class="mobile-menu" id="mobileMenu">
   <a href="casino.html" onclick="closeMenu()">Casino</a><a href="live.html" onclick="closeMenu()">Live</a>
   <a href="sports.html" onclick="closeMenu()">Sports</a><a href="vip.html" onclick="closeMenu()">&#127942; VIP</a>
   <a href="promotions.html" onclick="closeMenu()">Promotions</a>
-  <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+  <a href="affiliate.html">&#129309; Affiliate</a><div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
 <!-- PROMO BAR — živý -->
@@ -668,7 +673,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 // SUPABASE BALANCE
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<30){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
   if(!window.CK)return;
   try{
     var bal=await CK.getBalance();
@@ -733,9 +738,9 @@ function showToast(type,title,msg,burst){
 }
 
 // ══ LIVE COUNTERS ══
-var onl=10284,pool=2.450;
+var onl = (function(){   // Realisticka pocatecni hodnota podle casu dne   var h = new Date().getHours();   // Peak vecer 20-23h, minimum rano 4-7h   var base = h >= 20 ? 32000 : h >= 16 ? 24000 : h >= 10 ? 18000 : h >= 7 ? 12000 : 10000;   return base + Math.floor(Math.random() * 3000); })(); var onlTarget = onl, onlDir = 1;;var pool=2.450
 setInterval(function(){
-  onl+=Math.floor(Math.random()*10)-4;onl=Math.max(9600,Math.min(11200,onl));
+  var diff=onlTarget-onl;onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*120)-50;if(Math.random()<0.03){var h=new Date().getHours();var b=h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;onlTarget=b+Math.floor(Math.random()*8000);}onl=Math.max(10000,Math.min(40000,onl));
   var el=document.getElementById('pbOnline');if(el)el.textContent=onl.toLocaleString();
 },2800);
 
