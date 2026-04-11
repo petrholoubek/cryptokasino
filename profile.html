@@ -306,29 +306,11 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 
-<!-- PROVABLY FAIR SEKCE V PROFILU -->
-<div style="background:rgba(5,15,50,.9);border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:1.5rem;margin-top:1.5rem;">
-  <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#4ade80;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;">
-    &#9989; Provably Fair
-    <div style="flex:1;height:1px;background:linear-gradient(to right,rgba(74,222,128,.4),transparent);"></div>
-  </div>
-  <p style="font-size:.85rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.2rem;">Každý výsledek hry je kryptograficky ověřitelný pomocí SHA-256. Nemůžeme manipulovat výsledky.</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">
-    <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;">
-      <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;">Server Seed Hash</div>
-      <div id="pfServerHash" style="font-family:monospace;font-size:.68rem;color:#93c5fd;word-break:break-all;">Načítám...</div>
-    </div>
-    <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;">
-      <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;">Client Seed</div>
-      <div id="pfClientSeed" style="font-family:monospace;font-size:.68rem;color:#93c5fd;word-break:break-all;">Načítám...</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
-    <a href="verify.html" style="font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4ade80;text-decoration:none;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:.55rem 1.2rem;border-radius:8px;">&#9989; Ověřit výsledky</a>
-    <button onclick="pfChangeClientSeed()" style="font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#60a5fa;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);padding:.55rem 1.2rem;border-radius:8px;cursor:pointer;">&#128260; Změnit Client Seed</button>
-  </div>
-</div>
+
+</body>
+</html>
 <script>
+
 async function pfLoadSeeds(){
   try{
     var sess = await window.CK?.getSession?.();
@@ -353,6 +335,18 @@ async function pfChangeClientSeed(){
   alert('✅ Client Seed změněn!');
 }
 setTimeout(pfLoadSeeds, 2000);
+
+
+// Injektuj PF sekci do stranky
+function injectPFSection() {
+  var existing = document.getElementById('pfSection');
+  if (existing) return;
+  var page = document.getElementById('pageContent');
+  if (!page) return;
+  var div = document.createElement('div');
+  div.innerHTML = '\n<div id="pfSection" style="background:rgba(5,15,50,.9);border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:1.5rem;margin-top:1.5rem;">\n  <div style="font-family:\'Cinzel\',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#4ade80;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;">\n    &#9989; Provably Fair\n    <div style="flex:1;height:1px;background:linear-gradient(to right,rgba(74,222,128,.4),transparent);"></div>\n  </div>\n  <p style="font-size:.85rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.2rem;">Every game result is cryptographically verifiable using SHA-256. We cannot manipulate results.</p>\n  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">\n    <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;">\n      <div style="font-family:\'Cinzel\',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;">Server Seed Hash</div>\n      <div id="pfServerHash" style="font-family:monospace;font-size:.68rem;color:#93c5fd;word-break:break-all;">Loading...</div>\n    </div>\n    <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;">\n      <div style="font-family:\'Cinzel\',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;">Client Seed</div>\n      <div id="pfClientSeed" style="font-family:monospace;font-size:.68rem;color:#93c5fd;word-break:break-all;">Loading...</div>\n    </div>\n  </div>\n  <div style="display:flex;gap:.8rem;flex-wrap:wrap;">\n    <a href="verify.html" style="font-family:\'Cinzel\',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4ade80;text-decoration:none;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:.55rem 1.2rem;border-radius:8px;">&#9989; Verify Results</a>\n    <button onclick="pfChangeClientSeed()" style="font-family:\'Cinzel\',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#60a5fa;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);padding:.55rem 1.2rem;border-radius:8px;cursor:pointer;">&#128260; Change Client Seed</button>\n  </div>\n</div>';
+  page.appendChild(div.firstElementChild);
+}
+
+setTimeout(function(){injectPFSection();pfLoadSeeds();}, 2500);
 </script>
-</body>
-</html>
