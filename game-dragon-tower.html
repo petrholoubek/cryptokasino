@@ -340,6 +340,65 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
 <script>
+// ── AUDIO ENGINE ──────────────────────────────────────────────
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+document.addEventListener('click',()=>{if(AC.state==='suspended')AC.resume();},{once:true});
+function playSound(t){
+  try{
+    if(t==='gem'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sine';o.frequency.setValueAtTime(600+Math.random()*200,AC.currentTime);
+      o.frequency.exponentialRampToValueAtTime(1000+Math.random()*300,AC.currentTime+.15);
+      g.gain.setValueAtTime(.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.22);
+      o.start();o.stop(AC.currentTime+.22);
+      // Shimmer
+      const o2=AC.createOscillator(),g2=AC.createGain();o2.connect(g2);g2.connect(AC.destination);
+      o2.type='triangle';o2.frequency.value=1400+Math.random()*400;
+      g2.gain.setValueAtTime(.06,AC.currentTime+.05);g2.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.2);
+      o2.start(AC.currentTime+.05);o2.stop(AC.currentTime+.2);
+    }else if(t==='mine'){
+      // BOOM
+      const buf=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+      const s=AC.createBufferSource(),g=AC.createGain();
+      s.buffer=buf;s.connect(g);g.connect(AC.destination);
+      g.gain.setValueAtTime(.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.5);
+      s.start();
+      // Low thump
+      const o=AC.createOscillator(),g2=AC.createGain();o.connect(g2);g2.connect(AC.destination);
+      o.type='sine';o.frequency.setValueAtTime(120,AC.currentTime);o.frequency.exponentialRampToValueAtTime(20,AC.currentTime+.5);
+      g2.gain.setValueAtTime(.3,AC.currentTime);g2.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.5);
+      o.start();o.stop(AC.currentTime+.5);
+    }else if(t==='cashout'){
+      [523,659,784,987,1175,1568].forEach((f,i)=>{
+        const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+        o.type='sine';o.frequency.value=f;
+        const delay=i*.08;
+        g.gain.setValueAtTime(.16,AC.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+delay+.3);
+        o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+.3);
+      });
+    }else if(t==='start'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sine';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.exponentialRampToValueAtTime(500,AC.currentTime+.2);
+      g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);
+      o.start();o.stop(AC.currentTime+.25);
+    }else if(t==='hover'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='square';o.frequency.value=800;
+      g.gain.setValueAtTime(.025,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.04);
+      o.start();o.stop(AC.currentTime+.04);
+    }else if(t==='closecall'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sawtooth';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.exponentialRampToValueAtTime(80,AC.currentTime+.3);
+      g.gain.setValueAtTime(.08,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.3);
+      o.start();o.stop(AC.currentTime+.3);
+    }
+  }catch(e){}
+}
+
+
+
 const ROWS=9;
 const DIFFS={easy:{cells:3,dragons:1},medium:{cells:4,dragons:2},hard:{cells:3,dragons:2}};
 const MULTS={easy:[1.0,1.35,1.80,2.40,3.20,4.20,5.60,7.50,10.0],medium:[1.0,1.70,2.90,4.90,8.30,14.0,23.8,40.5,68.9],hard:[1.0,2.80,7.85,22.0,61.6,172.,483.,1352,3786]};
@@ -422,6 +481,7 @@ async function startGame(){
   if(gameMode==='demo'&&betAmt>demoBalance){alert('Insufficient demo balance!');return;}
   if(gameMode==='real'&&betAmt>realBalance){alert('Insufficient balance!');return;}
   await pfUpdate();
+  playSound('start');
   if(gameMode==='demo'){demoBalance-=betAmt;balance=demoBalance;}
   else{realBalance-=betAmt;balance=realBalance;if(window.CK)window.CK.callGameServer('mines',betAmt,{}).catch(()=>{});}
   totalWagered+=betAmt;totalGamesCount++;
@@ -451,7 +511,7 @@ function selectCell(r,c){
   row.querySelectorAll('.tower-cell').forEach(cl=>{cl.classList.remove('active-cell');cl.classList.add('locked');cl.onclick=null;});
   row.querySelector('.row-lbl')?.classList.remove('current');
   if(isDragon){
-    cell.innerHTML='<span style="font-size:1.6rem">🐉</span>';cell.classList.add('dragon-cell');
+    cell.innerHTML='<span style="font-size:1.6rem">🐉</span>';cell.classList.add('dragon-cell');playSound('mine');
     rowSolutions[r].forEach((isDrag,col)=>{if(isDrag&&col!==c){const oc=document.getElementById('cell-'+r+'-'+col);if(oc){oc.innerHTML='<span style="font-size:1.6rem">🐉</span>';oc.classList.add('dragon-cell');}}});
     gameActive=false;
     const rt=document.getElementById('resultText');rt.textContent='🐉 Dragon! Game Over!';rt.className='result-text show lose';
@@ -463,7 +523,7 @@ function selectCell(r,c){
     updateTension(currentRow);
     if(window.CK&&window.CK.logBet)window.CK.logBet('mines',Math.round(betAmt*1e8),Math.round(-betAmt*1e8),0,{game:'dragon_tower',diff:currentDiff,floor:currentRow,result:'dragon'}).catch(()=>{});
   }else{
-    cell.innerHTML='<span style="font-size:1.6rem">✅</span>';cell.classList.add('safe-cell');
+    cell.innerHTML='<span style="font-size:1.6rem">✅</span>';cell.classList.add('safe-cell');playSound('gem');
     row.querySelectorAll('.tower-cell:not(.safe-cell)').forEach(cl=>cl.classList.add('passed'));
     currentRow++;currentMult=MULTS[currentDiff][r];
     const rect=cell.getBoundingClientRect();spawnP('safe',rect.left+rect.width/2,rect.top+rect.height/2);
@@ -480,6 +540,7 @@ function selectCell(r,c){
 }
 async function cashOut(){
   if(!gameActive||currentRow===0)return;
+  playSound('cashout');
   gameActive=false;
   const payout=parseFloat((betAmt*currentMult).toFixed(7));const profit=payout-betAmt;
   if(gameMode==='demo'){demoBalance+=payout;balance=demoBalance;}
