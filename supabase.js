@@ -705,7 +705,7 @@
 // ── AI AGENT LOADER ────────────────────────────────────────────
 (function(){
   var page = window.location.pathname.split('/').pop() || 'index.html';
-  var allowed = ['index.html','casino.html','live.html','sports.html',''];
+  var allowed = ['index.html','casino.html','live.html','sports.html','game-dragon-tower.html','game-video-poker.html',''];
   if(!allowed.includes(page)) return;
   var s = document.createElement('script');
   s.src = 'ck-agent.js';
