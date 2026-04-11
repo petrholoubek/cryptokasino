@@ -219,6 +219,27 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;font-size:.73rem;color:var(--text-dim);flex-wrap:wrap;gap:.5rem;}
 @media(max-width:1100px){.main{grid-template-columns:1fr;}.betslip{position:static;}.stats-row{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:640px){header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}.hero{height:70vh;min-height:430px;}.sport-bar{flex-wrap:wrap;gap:.6rem;justify-content:center;padding:.6rem 1rem;}.stats-row{grid-template-columns:1fr 1fr;}.footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}.footer-brand{grid-column:1/-1;}}
+
+.sports-result-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);animation:fadeIn .3s ease;}
+.sports-result-overlay.show{display:flex;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sports-result-card{background:rgba(5,15,50,.98);border-radius:24px;padding:2.5rem 3rem;text-align:center;position:relative;max-width:420px;width:90%;animation:scaleIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes scaleIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.sports-result-card.win-card{border:2px solid rgba(74,222,128,.5);box-shadow:0 0 60px rgba(74,222,128,.3);}
+.sports-result-card.lose-card{border:2px solid rgba(248,113,113,.4);box-shadow:0 0 40px rgba(248,113,113,.2);}
+.sr-icon{font-size:4rem;margin-bottom:.8rem;display:block;}
+.sr-title{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;letter-spacing:.08em;margin-bottom:.5rem;}
+.win-card .sr-title{color:#4ade80;text-shadow:0 0 30px rgba(74,222,128,.8);}
+.lose-card .sr-title{color:#f87171;}
+.sr-sub{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.5rem;}
+.sr-amount{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;margin-bottom:.4rem;}
+.win-card .sr-amount{color:#F5C842;text-shadow:0 0 20px rgba(212,160,23,.6);}
+.lose-card .sr-amount{color:#f87171;}
+.sr-odds{font-family:'Cinzel',serif;font-size:.8rem;color:var(--text-dim);margin-bottom:1.8rem;}
+.sr-close{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;border:none;padding:.8rem 2.5rem;border-radius:12px;font-family:'Cinzel',serif;font-size:.82rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.sr-close:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(22,163,74,.6);}
+.sr-selections{font-size:.78rem;color:var(--text-dim);margin-bottom:1.2rem;max-height:80px;overflow-y:auto;}
+.sr-sel-item{padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
 </style>
 </head>
 <body>
@@ -562,20 +583,50 @@ function placeBet(){
   var totalOdds=betSlip.reduce(function(t,b){return t*b.odds;},1);
   var payout=parseFloat((stake*totalOdds).toFixed(8));
   var _slip=betSlip.slice();
+
   if(window.CK&&window.CK.callGameServer){
     window.CK.callGameServer('sports',parseFloat(stake)||0,{odds:parseFloat(totalOdds.toFixed(4)),selections:_slip.length}).then(function(r){if(r)console.log('[SPORTS] Bet logged:',r);}).catch(function(){});
   }
+
+  showToast('sport','&#9989; BET PLACED!','Potential win: '+payout.toFixed(5)+' BTC');
+  betSlip=[];renderSlip();
+  setTimeout(function(){showToast('gold','&#9889; Live!','Waiting for result...');},1200);
+
+  // Zobraz vysledek po 5s
   setTimeout(function(){
     var won=Math.random()<(1/totalOdds)*0.95;
     var betSat=Math.round(stake*1e8);
     var profitSat=won?Math.round((payout-stake)*1e8):-betSat;
+
+    // Loguj do DB
     if(window.CK&&window.CK.logBet){window.CK.logBet('sports',betSat,profitSat,parseFloat(totalOdds.toFixed(4)),{selections:_slip.length}).catch(function(){});}
-    if(won)showToast('win','&#127942; YOU WON!','Payout: +'+payout.toFixed(5)+' BTC',true);
-    else showToast('lose','&#10060; Bet Lost','-'+stake.toFixed(5)+' BTC',true);
+
+    // Zobraz result overlay
+    var overlay=document.getElementById('sportsResultOverlay');
+    var card=document.getElementById('sportsResultCard');
+    if(won){
+      document.getElementById('srIcon').textContent='&#127942;';
+      document.getElementById('srTitle').textContent='YOU WON!';
+      document.getElementById('srSub').textContent='Congratulations! Your bet came in!';
+      document.getElementById('srAmount').textContent='+'+payout.toFixed(5)+' BTC';
+      card.className='sports-result-card win-card';
+      burstParticles(window.innerWidth/2,window.innerHeight/2);
+    } else {
+      document.getElementById('srIcon').textContent='&#128128;';
+      document.getElementById('srTitle').textContent='BET LOST';
+      document.getElementById('srSub').textContent='Better luck next time!';
+      document.getElementById('srAmount').textContent='-'+stake.toFixed(5)+' BTC';
+      card.className='sports-result-card lose-card';
+    }
+    document.getElementById('srSelections').innerHTML=_slip.map(function(b){return '<div class="sr-sel-item">'+b.label+' <b>@'+b.odds.toFixed(2)+'</b></div>';}).join('');
+    document.getElementById('srOdds').textContent='Odds: '+totalOdds.toFixed(2)+'x · Stake: '+stake.toFixed(4)+' BTC';
+    overlay.classList.add('show');
   },5000);
-  showToast('win','&#9989; BET PLACED!','Potential win: '+payout.toFixed(5)+' BTC',true);
-  betSlip=[];renderSlip();
-  setTimeout(function(){showToast('gold','&#127942; Good Luck!','Your bet is live. Come on!');},1500);
+}
+
+function closeSportsResult(e){
+  if(e&&e.target!==document.getElementById('sportsResultOverlay'))return;
+  document.getElementById('sportsResultOverlay').classList.remove('show');
 }
 
 var SPORTS=['Soccer','NBA','Tennis','NHL','CS2','Valorant','Boxing'];
@@ -626,5 +677,18 @@ renderMatches();
 renderQuickBets();
 renderSlip();
 </script>
+
+<!-- SPORTS RESULT OVERLAY -->
+<div class="sports-result-overlay" id="sportsResultOverlay" onclick="closeSportsResult(event)">
+  <div class="sports-result-card" id="sportsResultCard">
+    <span class="sr-icon" id="srIcon">&#127942;</span>
+    <div class="sr-title" id="srTitle">YOU WON!</div>
+    <div class="sr-sub" id="srSub">Your bet came in!</div>
+    <div class="sr-selections" id="srSelections"></div>
+    <div class="sr-amount" id="srAmount">+0.00000 BTC</div>
+    <div class="sr-odds" id="srOdds">Odds: 1.00x &middot; Stake: 0.001 BTC</div>
+    <button class="sr-close" onclick="closeSportsResult()">&#10003; Collect &amp; Continue</button>
+  </div>
+</div>
 </body>
 </html>
