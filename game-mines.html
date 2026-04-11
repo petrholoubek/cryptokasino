@@ -695,7 +695,7 @@ async function initSupabase(){
 }
 
 async function sbDeductBet(sat){
-  if(gameMode!=='real'||!sb||!currentUser)return;
+  if(gameMode!=='real'||!sbClient||!currentUser)return;
   if(!sbClient||!currentUser)return true;
   try{
     const {data,error}=await sbClient.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});
