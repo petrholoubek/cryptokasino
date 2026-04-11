@@ -694,7 +694,10 @@
   }
 
   console.log('[CK] supabase.js v2.3 loaded | Session:', !!_session, '| VIP: enabled');
-  if (_session) console.log('[CK] User:', _session.user.email);
+  if (_session) {
+    console.log('[CK] User:', _session.user.email);
+    window._ckSession = _session;  // Globally accessible pro hry
+  }
   // Auto nastaveni real mode po detekci session
   if (_session) {
     window._ckGameMode = 'real';
