@@ -3,51 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon -->
 <link rel="icon" href="/favicon.ico">
-<!-- PNG fallback -->
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-<!-- Apple (iPhone) -->
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-<!-- PWA manifest -->
 <link rel="manifest" href="/site.webmanifest">
-<!-- Theme color (mobilní horní lišta) -->
 <meta name="theme-color" content="#000d33">
-<title>Sports Betting – CryptoKasino</title>
+<title>Sports Betting &#8211; CryptoKasino</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
-  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
-  --green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#c084fc;
-  --sport-green:#16a34a;--sport-dark:#030c04;
-}
+:root{--gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);--dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--orange:#fb923c;--purple:#c084fc;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;
-  background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);
-  pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 45% 42% at 50% 48%, rgba(30,80,220,0.55) 0%, rgba(10,40,130,0.3) 40%, transparent 70%),
-    radial-gradient(ellipse 22% 20% at 50% 47%, rgba(100,160,255,0.3) 0%, transparent 55%),
-    conic-gradient(from 0deg at 50% 48%,
-      transparent 0deg, rgba(40,90,200,0.07) 15deg, transparent 30deg,
-      transparent 60deg, rgba(40,90,200,0.05) 75deg, transparent 90deg,
-      transparent 120deg, rgba(40,90,200,0.07) 135deg, transparent 150deg,
-      transparent 180deg, rgba(40,90,200,0.05) 195deg, transparent 210deg,
-      transparent 240deg, rgba(40,90,200,0.07) 255deg, transparent 270deg,
-      transparent 300deg, rgba(40,90,200,0.05) 315deg, transparent 330deg,
-      transparent 360deg);
-  pointer-events:none;z-index:0;animation:bgRays 25s linear infinite;}
-@keyframes bgBreath{0%{opacity:.8}100%{opacity:1}}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 45% 42% at 50% 48%, rgba(30,80,220,0.55) 0%, rgba(10,40,130,0.3) 40%, transparent 70%);pointer-events:none;z-index:0;animation:bgRays 25s linear infinite;}
 @keyframes bgRays{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-
 #particles{position:fixed;inset:0;pointer-events:none;z-index:1;}
 #winCanvas{position:fixed;inset:0;pointer-events:none;z-index:60;}
-
-/* ═══ HEADER ═══ */
 header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(2,6,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,0.2);}
 header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(60,120,255,0.5),rgba(212,160,23,0.6),rgba(60,120,255,0.5),transparent);}
 .logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
@@ -55,14 +27,11 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 .logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
 nav{display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;}
 nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}
-nav a:hover,nav a.active{color:var(--gold-light);}
-nav a.active{border-bottom:2px solid var(--gold);}
+nav a:hover{color:var(--gold-light);}
 .header-right{display:flex;align-items:center;gap:.8rem;}
 .btc-bal{font-family:'Cinzel',serif;font-size:.8rem;color:var(--green);background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);padding:.3rem .8rem;border-radius:6px;}
 .btn-dep{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;border:none;padding:.42rem 1.1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 18px rgba(212,160,23,.4);transition:all .2s;}
-.btn-dep:hover{box-shadow:0 0 35px rgba(212,160,23,.8);transform:scale(1.03);}
 .btn-login{background:transparent;color:var(--text-dim);border:1px solid rgba(212,160,23,.25);padding:.42rem 1rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.68rem;cursor:pointer;text-decoration:none;transition:all .2s;}
-.btn-login:hover{border-color:var(--gold);color:var(--gold-light);}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
 .hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all .3s;}
 .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
@@ -73,8 +42,6 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .mobile-menu a{font-family:'Cinzel',serif;font-size:.85rem;color:var(--text-dim);text-decoration:none;padding:.9rem 0;border-bottom:1px solid rgba(212,160,23,.08);}
 .mobile-menu-btns{display:flex;gap:.8rem;margin-top:1.2rem;}
 .mobile-menu-btns .btn-dep,.mobile-menu-btns .btn-login{flex:1;text-align:center;padding:.7rem;}
-
-/* ═══ TOASTS ═══ */
 .toast-container{position:fixed;bottom:1.5rem;left:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.6rem;pointer-events:none;}
 .toast{background:rgba(6,4,8,.97);border-radius:12px;padding:.9rem 1.1rem;display:flex;align-items:center;gap:.8rem;min-width:270px;max-width:330px;animation:tSlide .45s cubic-bezier(.34,1.56,.64,1);border-left:3px solid var(--gold);}
 @keyframes tSlide{from{opacity:0;transform:translateX(-30px) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}
@@ -84,135 +51,88 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .t-title{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.18rem;}
 .t-msg{font-size:.73rem;color:var(--text-dim);line-height:1.35;}
 .t-win{border-left-color:var(--green);}.t-win .t-title{color:var(--green);}
+.t-lose{border-left-color:var(--red);}.t-lose .t-title{color:var(--red);}
 .t-live{border-left-color:var(--red);}.t-live .t-title{color:var(--red);}
 .t-gold{border-left-color:var(--gold);}.t-gold .t-title{color:var(--gold-light);}
 .t-sport{border-left-color:#22c55e;}.t-sport .t-title{color:#4ade80;}
-
-/* ═══ SPORT JACKPOT BAR ═══ */
-.sport-bar{
-  background:linear-gradient(90deg,rgba(2,8,30,0.99),rgba(5,15,55,0.99),rgba(2,8,30,0.99));
-  border-bottom:1px solid rgba(60,120,255,.25);position:relative;z-index:2;
-  padding:.65rem 2.5rem;
-  display:flex;align-items:center;justify-content:center;gap:2.2rem;
-  position:relative;overflow:hidden;
-  box-shadow:0 4px 30px rgba(40,100,255,.1);
-}
-.sport-bar::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(22,163,74,.07),transparent);animation:sbSweep 2.2s linear infinite;}
+.sport-bar{background:linear-gradient(90deg,rgba(2,8,30,.99),rgba(5,15,55,.99),rgba(2,8,30,.99));border-bottom:1px solid rgba(60,120,255,.25);position:relative;z-index:2;padding:.65rem 2.5rem;display:flex;align-items:center;justify-content:center;gap:2.2rem;overflow:hidden;box-shadow:0 4px 30px rgba(40,100,255,.1);}
 .sport-bar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(22,163,74,.8),rgba(74,222,128,.6),rgba(22,163,74,.8),transparent);}
-@keyframes sbSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-
 .sb-sport-wrap{display:flex;align-items:center;gap:.7rem;flex-shrink:0;}
 .sb-sport-icon{font-size:1.8rem;animation:sportSpin 4s linear infinite;}
 @keyframes sportSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .sb-sport-lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:#4ade80;font-weight:700;}
 .sb-sport-sub{font-family:'Cinzel',serif;font-size:.52rem;color:var(--text-dim);margin-top:.1rem;}
-
 .sb-online-wrap{display:flex;align-items:center;gap:.5rem;}
 .sb-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:dotP 1.2s infinite;}
-@keyframes dotP{0%,100%{transform:scale(1)}50%{transform:scale(1.4);box-shadow:0 0 16px var(--green)}}
-.sb-online-num{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:var(--green);text-shadow:0 0 15px rgba(74,222,128,.7);}
+@keyframes dotP{0%,100%{transform:scale(1)}50%{transform:scale(1.4);}}
+.sb-online-num{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;color:var(--green);}
 .sb-online-lbl{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);}
-
 .sb-stats{display:flex;gap:2rem;flex-shrink:0;}
 .sb-stat-item{text-align:center;}
-.sb-stat-val{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 15px rgba(212,160,23,.6);}
+.sb-stat-val{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--gold-light);}
 .sb-stat-lbl{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:.1rem;}
-
 .sb-biggest-win{display:flex;flex-direction:column;gap:.2rem;flex-shrink:0;}
 .sb-win-item{font-family:'Cinzel',serif;font-size:.58rem;color:var(--text-dim);}
 .sb-win-item b{color:var(--gold-light);}
-
-.sb-bet-btn{background:linear-gradient(135deg,#15803d,#16a34a,#22c55e,#16a34a,#15803d);background-size:200% 100%;color:#fff;border:none;padding:.55rem 1.4rem;border-radius:25px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:900;cursor:pointer;text-decoration:none;box-shadow:0 0 25px rgba(22,163,74,.5);transition:all .3s;white-space:nowrap;flex-shrink:0;animation:sbBtnShimmer 3s linear infinite;}
-@keyframes sbBtnShimmer{0%{background-position:0%}100%{background-position:200%}}
-.sb-bet-btn:hover{transform:scale(1.08);box-shadow:0 0 40px rgba(22,163,74,.8);}
-
-/* ═══ HERO ═══ */
+.sb-bet-btn{background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:25px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:900;cursor:pointer;text-decoration:none;box-shadow:0 0 25px rgba(22,163,74,.5);transition:all .3s;white-space:nowrap;flex-shrink:0;}
+.sb-bet-btn:hover{transform:scale(1.08);}
 .hero{position:relative;width:100%;height:72vh;min-height:500px;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;overflow:hidden;}
 .hero-img-kb{position:absolute;width:110%;height:110%;top:-5%;left:-5%;object-fit:cover;object-position:center;display:block;filter:brightness(.82) saturate(1.3) contrast(1.12);animation:kenB 22s ease-in-out infinite alternate;}
-@keyframes kenB{0%{transform:scale(1.0) translate(0%,0%)}25%{transform:scale(1.07) translate(-1.5%,-.8%)}50%{transform:scale(1.04) translate(1.2%,-1.2%)}100%{transform:scale(1.05) translate(.5%,-.5%)}}
+@keyframes kenB{0%{transform:scale(1.0) translate(0%,0%)}100%{transform:scale(1.05) translate(.5%,-.5%)}}
 #heroCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
-.hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(0,0,0,.06) 0%,rgba(0,0,0,.12) 35%,rgba(0,0,0,.45) 65%,rgba(5,3,7,.99) 100%);}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(0,0,0,.06) 0%,rgba(0,0,0,.45) 65%,rgba(5,3,7,.99) 100%);}
 .hero-orb{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:1;animation:orbF 10s ease-in-out infinite alternate;}
-.hero-orb-1{width:300px;height:300px;background:radial-gradient(circle,rgba(22,163,74,.2),transparent 70%);top:-60px;left:8%;animation-duration:11s;}
-.hero-orb-2{width:250px;height:250px;background:radial-gradient(circle,rgba(212,160,23,.14),transparent 70%);top:25%;right:6%;animation-duration:13s;animation-delay:2s;}
-.hero-orb-3{width:200px;height:200px;background:radial-gradient(circle,rgba(96,165,250,.1),transparent 70%);bottom:20%;right:15%;animation-duration:9s;animation-delay:1s;}
-@keyframes orbF{0%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-15px) scale(1.1)}100%{transform:translate(-10px,10px) scale(.95)}}
-
+.hero-orb-1{width:300px;height:300px;background:radial-gradient(circle,rgba(22,163,74,.2),transparent 70%);top:-60px;left:8%;}
+.hero-orb-2{width:250px;height:250px;background:radial-gradient(circle,rgba(212,160,23,.14),transparent 70%);top:25%;right:6%;animation-delay:2s;}
+@keyframes orbF{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-10px,10px) scale(.95)}}
 .hero-content{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);text-align:center;width:100%;padding:0 1.5rem;z-index:3;}
-
-.sport-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(22,163,74,.2);border:1px solid rgba(22,163,74,.5);border-radius:25px;padding:.45rem 1.4rem;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:#4ade80;margin-bottom:1.1rem;backdrop-filter:blur(10px);box-shadow:0 0 20px rgba(22,163,74,.2);animation:sBadge 2s ease-in-out infinite;}
-@keyframes sBadge{0%,100%{box-shadow:0 0 15px rgba(22,163,74,.2)}50%{box-shadow:0 0 30px rgba(22,163,74,.45)}}
-.sb-badge-dot{width:9px;height:9px;background:#4ade80;border-radius:50%;box-shadow:0 0 8px #4ade80;animation:dotP 1.1s infinite;}
-
+.sport-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(22,163,74,.2);border:1px solid rgba(22,163,74,.5);border-radius:25px;padding:.45rem 1.4rem;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:#4ade80;margin-bottom:1.1rem;backdrop-filter:blur(10px);}
+.sb-badge-dot{width:9px;height:9px;background:#4ade80;border-radius:50%;animation:dotP 1.1s infinite;}
 .hero-title{font-family:'Cinzel',serif;font-size:clamp(2.2rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:.04em;animation:hFadeUp 1s ease .4s both;}
 @keyframes hFadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
-.hero-title .line1{color:#fff;display:block;text-shadow:0 3px 8px rgba(0,0,0,1),0 6px 24px rgba(0,0,0,.9),2px 2px 0 rgba(0,0,0,.7);}
-.hero-title .line2{color:#4ade80;display:block;text-shadow:0 0 60px rgba(74,222,128,1),0 0 120px rgba(22,163,74,.8),0 4px 8px rgba(0,0,0,1);animation:greenGlow 3s ease-in-out infinite alternate;}
-@keyframes greenGlow{0%{text-shadow:0 0 60px rgba(74,222,128,.9),0 0 120px rgba(22,163,74,.7),0 4px 8px rgba(0,0,0,1)}100%{text-shadow:0 0 90px rgba(74,222,128,1),0 0 180px rgba(22,163,74,1),0 0 250px rgba(22,163,74,.5),0 4px 8px rgba(0,0,0,1)}}
+.hero-title .line1{color:#fff;display:block;text-shadow:0 3px 8px rgba(0,0,0,1);}
+.hero-title .line2{color:#4ade80;display:block;animation:greenGlow 3s ease-in-out infinite alternate;}
+@keyframes greenGlow{0%{text-shadow:0 0 60px rgba(74,222,128,.9)}100%{text-shadow:0 0 90px rgba(74,222,128,1),0 0 180px rgba(22,163,74,1)}}
 .hero-sub{margin-top:.8rem;font-size:.95rem;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:uppercase;animation:hFadeUp 1s ease .7s both;}
-
 .hero-stats-bar{display:inline-flex;align-items:center;gap:2rem;margin-top:1.4rem;background:rgba(0,0,0,.4);backdrop-filter:blur(15px);border:1px solid rgba(60,120,255,.2);border-radius:16px;padding:.9rem 2.2rem;animation:hFadeUp 1s ease 1s both;}
 .hsb-item{text-align:center;}
 .hsb-val{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:900;color:#fff;}
-.hsb-val.green{color:var(--green);text-shadow:0 0 12px rgba(74,222,128,.6);}
-.hsb-val.gold{color:var(--gold-light);text-shadow:0 0 12px var(--gold-glow);}
+.hsb-val.green{color:var(--green);}
+.hsb-val.gold{color:var(--gold-light);}
 .hsb-lbl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.12rem;}
 .hsb-sep{width:1px;height:38px;background:rgba(22,163,74,.2);}
-
-/* ═══ TICKER ═══ */
 .live-ticker{background:rgba(3,10,40,.98);border-bottom:1px solid rgba(60,120,255,.2);padding:.6rem 1.2rem;display:flex;align-items:center;gap:1rem;overflow:hidden;position:relative;z-index:2;}
 .ticker-live{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:#4ade80;white-space:nowrap;display:flex;align-items:center;gap:.4rem;}
-.t-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;box-shadow:0 0 5px #4ade80;animation:dotP 1.2s infinite;}
+.t-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:dotP 1.2s infinite;}
 .ticker-track{display:flex;gap:2.5rem;animation:tickerS 35s linear infinite;white-space:nowrap;font-size:.78rem;color:var(--text-dim);}
 @keyframes tickerS{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .tw{color:var(--gold-light);font-family:'Cinzel',serif;font-weight:700;}
-.tr{color:var(--green);font-weight:700;text-shadow:0 0 8px rgba(74,222,128,.4);}
-
-/* ═══ MAIN LAYOUT ═══ */
+.tr{color:var(--green);font-weight:700;}
 .main{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:2rem 1.5rem 5rem;display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
 .main-left{min-width:0;}
-
-.sec-title{position:relative;z-index:2;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;text-shadow:0 0 20px rgba(212,160,23,.4);}
+.sec-title{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,160,23,.45),transparent);}
-
-/* ═══ SPORT FILTER TABS ═══ */
 .sport-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem;background:rgba(3,12,4,.9);border:1px solid rgba(22,163,74,.15);border-radius:12px;padding:.3rem;}
 .stab{padding:.55rem 1rem;border-radius:9px;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text-dim);transition:all .2s;display:flex;align-items:center;gap:.4rem;white-space:nowrap;}
-.stab.active{background:rgba(22,163,74,.2);color:#4ade80;box-shadow:0 0 15px rgba(22,163,74,.15);}
-.stab:hover:not(.active){color:var(--green);background:rgba(22,163,74,.08);}
+.stab.active{background:rgba(22,163,74,.2);color:#4ade80;}
+.stab:hover:not(.active){color:var(--green);}
 .stab-icon{font-size:1rem;}
 .stab-count{background:rgba(74,222,128,.15);color:var(--green);font-size:.48rem;padding:.08rem .35rem;border-radius:8px;}
-
-/* ═══ MATCHES ═══ */
 .matches-section{display:flex;flex-direction:column;gap:.8rem;}
-
-/* LIVE Match Card */
-.match-card{
-  background:rgba(5,15,50,.85);
-  border:1px solid rgba(60,120,255,.2);
-  border-radius:16px;overflow:hidden;
-  transition:all .3s;position:relative;
-  animation:cardIn .4s ease both;
-}
+.match-card{background:rgba(5,15,50,.85);border:1px solid rgba(60,120,255,.2);border-radius:16px;overflow:hidden;transition:all .3s;position:relative;animation:cardIn .4s ease both;}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.match-card:hover{border-color:rgba(22,163,74,.45);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.7),0 0 20px rgba(22,163,74,.1);}
-/* Live bar on top */
+.match-card:hover{border-color:rgba(22,163,74,.45);transform:translateY(-3px);}
 .match-card.live-match::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(220,38,38,.8),rgba(248,113,113,.6),rgba(220,38,38,.8),transparent);animation:liveBar 2s ease-in-out infinite alternate;}
-@keyframes liveBar{0%{opacity:.6}100%{opacity:1;box-shadow:0 0 8px rgba(220,38,38,.5)}}
-/* Upcoming bar */
+@keyframes liveBar{0%{opacity:.6}100%{opacity:1;}}
 .match-card.upcoming-match::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.5),transparent);}
-
 .match-header{padding:.7rem 1.1rem .5rem;display:flex;align-items:center;justify-content:space-between;}
 .match-league{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:.4rem;}
-.league-flag{font-size:.9rem;}
 .match-status{display:flex;align-items:center;gap:.5rem;}
-.live-badge-sm{background:rgba(220,38,38,.9);color:#fff;font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;padding:.18rem .5rem;border-radius:4px;display:flex;align-items:center;gap:.25rem;box-shadow:0 0 8px rgba(220,38,38,.5);}
+.live-badge-sm{background:rgba(220,38,38,.9);color:#fff;font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;padding:.18rem .5rem;border-radius:4px;display:flex;align-items:center;gap:.25rem;}
 .live-dot-sm{width:4px;height:4px;background:#fff;border-radius:50%;animation:dotP 1.2s infinite;}
 .match-time-badge{font-family:'Cinzel',serif;font-size:.6rem;color:var(--text-dim);background:rgba(255,255,255,.05);padding:.18rem .55rem;border-radius:4px;border:1px solid rgba(255,255,255,.07);}
 .match-minute{color:var(--green);font-weight:700;font-family:'Cinzel',serif;font-size:.62rem;}
-
-/* TEAMS ROW */
 .match-body{padding:.5rem 1.1rem 1rem;}
 .teams-row{display:flex;align-items:center;gap:1rem;}
 .team{flex:1;display:flex;align-items:center;gap:.7rem;}
@@ -222,81 +142,47 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .team.right .team-name{text-align:right;}
 .team-form{display:flex;gap:.2rem;margin-top:.2rem;}
 .team.right .team-form{justify-content:flex-end;}
-.form-dot{width:8px;height:8px;border-radius:50%;font-size:.4rem;}
-.form-w{background:var(--green);box-shadow:0 0 4px rgba(74,222,128,.5);}
+.form-dot{width:8px;height:8px;border-radius:50%;}
+.form-w{background:var(--green);}
 .form-d{background:var(--gold);}
 .form-l{background:var(--red);}
-
-/* SCORE */
 .score-center{text-align:center;min-width:90px;flex-shrink:0;}
-.score-display{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(255,255,255,.3);letter-spacing:.05em;line-height:1;}
-.score-display.live{color:#4ade80;text-shadow:0 0 20px rgba(74,222,128,.7),0 0 40px rgba(74,222,128,.3);animation:scorePulse 3s ease-in-out infinite;}
-@keyframes scorePulse{0%,100%{text-shadow:0 0 20px rgba(74,222,128,.7)}50%{text-shadow:0 0 35px rgba(74,222,128,1),0 0 60px rgba(74,222,128,.4)}}
+.score-display{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;color:#fff;letter-spacing:.05em;line-height:1;}
+.score-display.live{color:#4ade80;animation:scorePulse 3s ease-in-out infinite;}
+@keyframes scorePulse{0%,100%{text-shadow:0 0 20px rgba(74,222,128,.7)}50%{text-shadow:0 0 35px rgba(74,222,128,1)}}
 .score-vs{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);}
 .match-stats-mini{display:flex;gap:.6rem;justify-content:center;margin-top:.3rem;}
 .stat-mini{font-size:.58rem;color:var(--text-dim);font-family:'Cinzel',serif;}
 .stat-mini span{color:rgba(255,255,255,.5);}
-
-/* ODDS ROW */
 .odds-row{display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap;}
-.odds-btn{
-  flex:1;min-width:70px;
-  padding:.6rem .4rem;border-radius:10px;
-  font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
-  cursor:pointer;border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.04);color:var(--text-dim);
-  transition:all .25s;text-align:center;position:relative;overflow:hidden;
-}
-.odds-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.03),transparent);opacity:0;transition:opacity .3s;}
-.odds-btn:hover::before{opacity:1;}
-.odds-btn:hover{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.4);color:#4ade80;transform:scale(1.03);box-shadow:0 0 15px rgba(22,163,74,.2);}
-.odds-btn.selected{background:rgba(212,160,23,.2);border-color:rgba(212,160,23,.5);color:var(--gold-light);box-shadow:0 0 15px rgba(212,160,23,.25);}
-.odds-btn.boosted{border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08);}
+.odds-btn{flex:1;min-width:70px;padding:.6rem .4rem;border-radius:10px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--text-dim);transition:all .25s;text-align:center;}
+.odds-btn:hover{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.4);color:#4ade80;transform:scale(1.03);}
+.odds-btn.selected{background:rgba(212,160,23,.2);border-color:rgba(212,160,23,.5);color:var(--gold-light);}
 .odds-label{font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.15rem;}
-.odds-val{font-size:.9rem;font-weight:900;transition:all .3s;}
-.odds-val.boosted-val{color:var(--orange);}
-.odds-btn.selected .odds-val{color:var(--gold-light);}
+.odds-val{font-size:.9rem;font-weight:900;}
 .odds-change-up{animation:oddsUp .5s ease;}
 @keyframes oddsUp{0%{color:var(--green);transform:scale(1.3)}100%{color:inherit;transform:scale(1)}}
 .odds-change-down{animation:oddsDown .5s ease;}
 @keyframes oddsDown{0%{color:var(--red);transform:scale(.8)}100%{color:inherit;transform:scale(1)}}
-
-/* MORE MARKETS */
 .more-markets{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:.6rem;text-align:right;cursor:pointer;transition:color .2s;}
 .more-markets:hover{color:var(--gold);}
-
-/* UPCOMING match — mírně odlišný styl */
 .match-card.upcoming-match{background:rgba(6,10,8,.9);border-color:rgba(96,165,250,.15);}
-.match-card.upcoming-match:hover{border-color:rgba(96,165,250,.4);box-shadow:0 12px 40px rgba(0,0,0,.7),0 0 20px rgba(96,165,250,.1);}
-
-/* ═══ BET SLIP ═══ */
-.betslip{
-  background:rgba(5,15,50,.95);
-  border:1px solid rgba(60,120,255,.2);
-  border-radius:18px;overflow:hidden;
-  position:sticky;top:80px;
-  box-shadow:0 8px 40px rgba(0,0,0,.6);
-}
+.betslip{background:rgba(5,15,50,.95);border:1px solid rgba(60,120,255,.2);border-radius:18px;overflow:hidden;position:sticky;top:80px;box-shadow:0 8px 40px rgba(0,0,0,.6);}
 .bs-header{padding:1rem 1.2rem;background:rgba(3,12,4,.9);border-bottom:1px solid rgba(22,163,74,.12);display:flex;align-items:center;justify-content:space-between;}
 .bs-title{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:.5rem;}
 .bs-count{background:rgba(74,222,128,.2);color:var(--green);font-size:.62rem;padding:.15rem .5rem;border-radius:10px;font-weight:900;}
-.bs-clear{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);cursor:pointer;background:none;border:none;transition:opacity .2s;}
-.bs-clear:hover{opacity:.7;}
+.bs-clear{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--red);cursor:pointer;background:none;border:none;}
 .bs-empty{padding:2rem 1.2rem;text-align:center;}
 .bs-empty-icon{font-size:2.5rem;margin-bottom:.8rem;opacity:.4;}
 .bs-empty-lbl{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
 .bs-empty-sub{font-size:.78rem;color:rgba(138,122,80,.6);margin-top:.3rem;}
 .bs-items{max-height:280px;overflow-y:auto;padding:.8rem;}
-.bs-items::-webkit-scrollbar{width:2px;}
-.bs-items::-webkit-scrollbar-thumb{background:rgba(22,163,74,.2);}
 .bs-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:.7rem .8rem;margin-bottom:.5rem;position:relative;animation:bsItemIn .3s ease;}
 @keyframes bsItemIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .bs-item-match{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.25rem;}
-.bs-item-pick{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--text);}
 .bs-item-odds{font-family:'Cinzel',serif;font-size:.85rem;font-weight:900;color:var(--gold-light);margin-top:.2rem;}
-.bs-item-remove{position:absolute;top:.5rem;right:.6rem;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:.9rem;transition:color .2s;}
+.bs-item-remove{position:absolute;top:.5rem;right:.6rem;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:.9rem;}
 .bs-item-remove:hover{color:var(--red);}
-
 .bs-stake{padding:.8rem 1.2rem;border-top:1px solid rgba(255,255,255,.04);}
 .bs-stake-lbl{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;}
 .bs-stake-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(60,120,255,.2);border-radius:8px;padding:.65rem .8rem;font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold-light);outline:none;transition:border-color .2s;text-align:right;}
@@ -304,37 +190,23 @@ nav a.active{border-bottom:2px solid var(--gold);}
 .bs-quick-stakes{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap;}
 .qs{padding:.3rem .7rem;border-radius:6px;font-family:'Cinzel',serif;font-size:.58rem;font-weight:700;cursor:pointer;border:1px solid rgba(60,120,255,.2);background:rgba(22,163,74,.06);color:var(--text-dim);transition:all .2s;}
 .qs:hover{border-color:var(--green);color:var(--green);}
-
 .bs-summary{padding:.8rem 1.2rem;border-top:1px solid rgba(255,255,255,.04);}
 .bs-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;}
 .bs-row-lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
 .bs-row-val{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--text);}
 .bs-row-val.green{color:var(--green);}
 .bs-row-val.gold{color:var(--gold-light);}
-
 .bs-place-btn{width:100%;padding:.9rem;border-radius:10px;font-family:'Cinzel',serif;font-size:.82rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:none;margin-top:.8rem;background:linear-gradient(135deg,#15803d,#16a34a,#22c55e);color:#fff;box-shadow:0 0 25px rgba(22,163,74,.45);transition:all .25s;}
-.bs-place-btn:hover{transform:scale(1.02);box-shadow:0 0 40px rgba(22,163,74,.7);}
-.bs-place-btn:disabled{opacity:.35;cursor:not-allowed;}
-
-/* ═══ QUICK BETS BAR ═══ */
+.bs-place-btn:hover{transform:scale(1.02);}
 .quickbets-bar{position:relative;z-index:2;display:flex;gap:.6rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:.2rem;}
-.quickbets-bar::-webkit-scrollbar{height:2px;}
-.quickbets-bar::-webkit-scrollbar-thumb{background:rgba(22,163,74,.2);}
 .qb{background:rgba(5,15,50,.8);border:1px solid rgba(22,163,74,.18);border-radius:10px;padding:.55rem 1rem;font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;color:var(--text-dim);transition:all .2s;display:flex;align-items:center;gap:.4rem;}
 .qb:hover,.qb.active-qb{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.4);color:#4ade80;}
 .qb-odds{color:var(--gold-light);font-size:.7rem;}
-
-/* ═══ STATS CARDS ═══ */
 .stats-row{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:2rem;}
 .stat-card{background:rgba(5,15,50,.8);border:1px solid rgba(22,163,74,.12);border-radius:12px;padding:.9rem;text-align:center;position:relative;overflow:hidden;transition:all .3s;}
-.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(22,163,74,.05),transparent 70%);pointer-events:none;}
-.stat-card:hover{border-color:rgba(22,163,74,.3);transform:translateY(-2px);}
-.sc-val{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 12px rgba(212,160,23,.5);}
-.sc-val.green{color:var(--green);text-shadow:0 0 12px rgba(74,222,128,.5);}
-.sc-val.red{color:var(--red);}
+.sc-val{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold-light);}
+.sc-val.green{color:var(--green);}
 .sc-lbl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:.2rem;}
-
-/* Footer */
 footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);padding:2.5rem 1.5rem;margin-top:2rem;}
 .footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
 .footer-brand h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:900;color:var(--gold-light);margin-bottom:.7rem;}
@@ -345,28 +217,17 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 .footer-col a{color:var(--text-dim);text-decoration:none;font-size:.83rem;transition:color .2s;}
 .footer-col a:hover{color:var(--gold-light);}
 .footer-bottom{max-width:1400px;margin:1.5rem auto 0;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;font-size:.73rem;color:var(--text-dim);flex-wrap:wrap;gap:.5rem;}
-
 @media(max-width:1100px){.main{grid-template-columns:1fr;}.betslip{position:static;}.stats-row{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:640px){
-  body::after{opacity:0.55;}
-  header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}
-  .hero{height:70vh;min-height:430px;}
-  .sport-bar{flex-wrap:wrap;gap:.6rem;justify-content:center;padding:.6rem 1rem;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .hero-stats-bar{gap:1.2rem;padding:.7rem 1.4rem;}
-  .footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}.footer-brand{grid-column:1/-1;}
-}
+@media(max-width:640px){header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}.hero{height:70vh;min-height:430px;}.sport-bar{flex-wrap:wrap;gap:.6rem;justify-content:center;padding:.6rem 1rem;}.stats-row{grid-template-columns:1fr 1fr;}.footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}.footer-brand{grid-column:1/-1;}}
 </style>
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
-
 <canvas id="particles"></canvas>
 <canvas id="winCanvas"></canvas>
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- HEADER -->
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
   <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
@@ -388,24 +249,13 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   <div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
 </div>
 
-<!-- SPORT BAR -->
 <div class="sport-bar">
-  <div class="sb-sport-wrap">
-    <span class="sb-sport-icon">&#9917;</span>
-    <div>
-      <div class="sb-sport-lbl">&#128308; Live Sports Betting</div>
-      <div class="sb-sport-sub">BTC odds · Instant payouts</div>
-    </div>
-  </div>
-  <div class="sb-online-wrap">
-    <div class="sb-dot"></div>
-    <span class="sb-online-num" id="onlineNum">10,284</span>
-    <span class="sb-online-lbl">betting now</span>
-  </div>
+  <div class="sb-sport-wrap"><span class="sb-sport-icon">&#9917;</span><div><div class="sb-sport-lbl">&#128308; Live Sports Betting</div><div class="sb-sport-sub">BTC odds &middot; Instant payouts</div></div></div>
+  <div class="sb-online-wrap"><div class="sb-dot"></div><span class="sb-online-num" id="onlineNum">10,284</span><span class="sb-online-lbl">betting now</span></div>
   <div class="sb-stats">
     <div class="sb-stat-item"><div class="sb-stat-val" id="sbLiveMatches">15</div><div class="sb-stat-lbl">Live Now</div></div>
     <div class="sb-stat-item"><div class="sb-stat-val" id="sbUpcoming">284</div><div class="sb-stat-lbl">Upcoming</div></div>
-    <div class="sb-stat-item"><div class="sb-stat-val gold" id="sbBigWin">0.482 BTC</div><div class="sb-stat-lbl">Biggest Win</div></div>
+    <div class="sb-stat-item"><div class="sb-stat-val" id="sbBigWin">0.482 BTC</div><div class="sb-stat-lbl">Biggest Win</div></div>
   </div>
   <div class="sb-biggest-win" id="sbBigWins">
     <div class="sb-win-item">&#127881; CryptoX won <b>0.482 BTC</b> on Real Madrid to win</div>
@@ -414,22 +264,15 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   <a href="#matches" class="sb-bet-btn">&#9889; Bet Now</a>
 </div>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-bg">
-    <img src="images/herosports.jpg" alt="Sports Betting" class="hero-img-kb" >
-  </div>
+  <div class="hero-bg"><img src="images/herosports.jpg" alt="Sports Betting" class="hero-img-kb"></div>
   <canvas id="heroCanvas"></canvas>
   <div class="hero-overlay"></div>
   <div class="hero-orb hero-orb-1"></div>
   <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-orb hero-orb-3"></div>
   <div class="hero-content">
     <div class="sport-badge"><div class="sb-badge-dot"></div>&#9917; Live Sports Betting</div>
-    <h1 class="hero-title">
-      <span class="line1">SPORTS BETTING.</span>
-      <span class="line2">WIN WITH BTC.</span>
-    </h1>
+    <h1 class="hero-title"><span class="line1">SPORTS BETTING.</span><span class="line2">WIN WITH BTC.</span></h1>
     <p class="hero-sub">Real odds &middot; Instant BTC payouts &middot; 500+ markets</p>
     <div class="hero-stats-bar">
       <div class="hsb-item"><div class="hsb-val green" id="heroLive">15</div><div class="hsb-lbl">Live Matches</div></div>
@@ -443,7 +286,6 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   </div>
 </div>
 
-<!-- TICKER -->
 <div class="live-ticker">
   <div class="ticker-live"><div class="t-dot"></div>Live Bets</div>
   <div class="ticker-track" id="tickerTrack"></div>
@@ -451,22 +293,16 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 
 <div class="main" id="matches">
   <div class="main-left">
-
-    <!-- STATS -->
     <div class="stats-row">
       <div class="stat-card"><div class="sc-val green" id="sc1">15</div><div class="sc-lbl">Live Matches</div></div>
       <div class="stat-card"><div class="sc-val" id="sc2">284</div><div class="sc-lbl">Today's Matches</div></div>
       <div class="stat-card"><div class="sc-val" id="sc3">1,284</div><div class="sc-lbl">Open Bets</div></div>
       <div class="stat-card"><div class="sc-val gold" id="sc4">0.482 BTC</div><div class="sc-lbl">Biggest Win Today</div></div>
     </div>
-
-    <!-- QUICK BETS -->
-    <div class="sec-title">&#9889; Quick Bets — Best Odds</div>
+    <div class="sec-title">&#9889; Quick Bets</div>
     <div class="quickbets-bar" id="quickBets"></div>
-
-    <!-- SPORT FILTER -->
     <div class="sport-tabs" id="sportTabs">
-      <button class="stab active" onclick="filterSport('all',this)"><span class="stab-icon">&#127919;</span>All <span class="stab-count" id="tc-all">27</span></button>
+      <button class="stab active" onclick="filterSport('all',this)"><span class="stab-icon">&#127919;</span>All <span class="stab-count">27</span></button>
       <button class="stab" onclick="filterSport('soccer',this)"><span class="stab-icon">&#9917;</span>Soccer <span class="stab-count">8</span></button>
       <button class="stab" onclick="filterSport('basketball',this)"><span class="stab-icon">&#127944;</span>Basketball <span class="stab-count">4</span></button>
       <button class="stab" onclick="filterSport('tennis',this)"><span class="stab-icon">&#127934;</span>Tennis <span class="stab-count">3</span></button>
@@ -477,34 +313,20 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
       <button class="stab" onclick="filterSport('formula1',this)"><span class="stab-icon">&#127955;</span>F1 <span class="stab-count">1</span></button>
       <button class="stab" onclick="filterSport('esports',this)"><span class="stab-icon">&#127918;</span>Esports <span class="stab-count">2</span></button>
     </div>
-
-    <!-- LIVE sekce -->
     <div class="sec-title">&#128308; Live Now</div>
     <div class="matches-section" id="liveMatches"></div>
-
-    <!-- UPCOMING sekce -->
     <div class="sec-title" style="margin-top:2rem">&#128197; Upcoming</div>
     <div class="matches-section" id="upcomingMatches"></div>
-
   </div>
-
-  <!-- BET SLIP -->
   <div class="betslip">
     <div class="bs-header">
       <div class="bs-title">&#127180; Bet Slip <span class="bs-count" id="bsCount">0</span></div>
       <button class="bs-clear" onclick="clearSlip()">Clear All</button>
     </div>
-    <div id="bsContent">
-      <div class="bs-empty">
-        <div class="bs-empty-icon">&#127180;</div>
-        <div class="bs-empty-lbl">Slip is empty</div>
-        <div class="bs-empty-sub">Click odds to add selections</div>
-      </div>
-    </div>
+    <div id="bsContent"><div class="bs-empty"><div class="bs-empty-icon">&#127180;</div><div class="bs-empty-lbl">Slip is empty</div><div class="bs-empty-sub">Click odds to add selections</div></div></div>
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand"><h3>&#8383; CRYPTOKASINO</h3><p>Fast, secure and anonymous crypto gaming. Built for real players who demand the best.</p></div>
@@ -516,39 +338,33 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 </footer>
 
 <script>
-// ══ DATA ══
-var MATCHES = {
-  live: [
-    { id:1, sport:'soccer', league:'Premier League', flag:'🏴', home:{name:'Manchester City',logo:'🔵',form:['W','W','D','W','W']}, away:{name:'Arsenal',logo:'🔴',form:['W','W','W','D','W']}, score:'2:1', minute:67, odds:{home:1.55,draw:3.80,away:5.20}, extra:{corners:'6-4',shots:'14-9'} },
-    { id:2, sport:'soccer', league:'La Liga', flag:'🇪🇸', home:{name:'Real Madrid',logo:'⚪',form:['W','W','W','W','D']}, away:{name:'Barcelona',logo:'🔵',form:['W','W','D','W','W']}, score:'1:1', minute:34, odds:{home:2.10,draw:3.40,away:3.20}, extra:{corners:'4-3',shots:'8-7'} },
-    { id:3, sport:'basketball', league:'NBA', flag:'🇺🇸', home:{name:'Lakers',logo:'🟡',form:['W','L','W','W','L']}, away:{name:'Celtics',logo:'🟢',form:['W','W','W','D','W']}, score:'87:92', minute:3, isBasket:true, odds:{home:1.95,away:1.88}, extra:{quarter:'Q4',timeLeft:'3:42'} },
-    { id:4, sport:'tennis', league:'ATP Masters', flag:'🌍', home:{name:'Djokovic',logo:'🎾',form:['W','W','W','W','W']}, away:{name:'Alcaraz',logo:'🎾',form:['W','W','D','W','W']}, score:'6:4 4:3', minute:null, isTennis:true, odds:{home:1.65,away:2.25}, extra:{sets:'1-0',serve:'Djokovic'} },
-    { id:5, sport:'hockey', league:'NHL', flag:'🇺🇸', home:{name:'Rangers',logo:'🔵',form:['W','W','D','W','L']}, away:{name:'Bruins',logo:'⚫',form:['W','L','W','W','W']}, score:'2:1', minute:38, isHockey:true, odds:{home:1.72,draw:4.50,away:2.15}, extra:{period:'P2',puck:'Rangers'} },
-    { id:6, sport:'esports', league:'CS2 Major', flag:'🌐', home:{name:'NaVi',logo:'💛',form:['W','W','W','D','W']}, away:{name:'Faze Clan',logo:'💀',form:['W','D','W','W','L']}, score:'12:8', minute:null, isEsport:true, odds:{home:1.45,away:2.60}, extra:{map:'Mirage',round:'Round 20'} },
-    { id:21, sport:'mma', league:'UFC Fight Night', flag:'🥊', home:{name:'Sean OMalley',logo:'🦩',form:['W','W','W','D','W']}, away:{name:'Merab Dvalishvili',logo:'🇬🇪',form:['W','W','W','W','W']}, score:'Rd 2', minute:null, isMma:true, odds:{home:2.20,away:1.65}, extra:{round:'Round 2',method:'Live'} },
-    { id:22, sport:'boxing', league:'WBC Title Fight', flag:'🥊', home:{name:'Oleksandr Usyk',logo:'🇺🇦',form:['W','W','W','W','W']}, away:{name:'Daniel Dubois',logo:'🇬🇧',form:['W','W','W','L','W']}, score:'Rd 5', minute:null, isBoxing:true, odds:{home:1.35,away:3.10}, extra:{round:'Round 5',method:'Live'} },
-  ],
-  upcoming: [
-    { id:7, sport:'soccer', league:'Champions League', flag:'⭐', home:{name:'Bayern Munich',logo:'🔴',form:['W','W','W','W','W']}, away:{name:'PSG',logo:'🔵',form:['W','W','D','W','W']}, score:'0:0', time:'Today 20:45', odds:{home:1.90,draw:3.60,away:3.90} },
-    { id:8, sport:'soccer', league:'Serie A', flag:'🇮🇹', home:{name:'Inter Milan',logo:'⚫',form:['W','D','W','W','W']}, away:{name:'Juventus',logo:'⚪',form:['W','W','L','W','D']}, score:'0:0', time:'Today 18:00', odds:{home:1.75,draw:3.50,away:4.20} },
-    { id:9, sport:'basketball', league:'NBA', flag:'🇺🇸', home:{name:'Warriors',logo:'🟡',form:['W','W','W','L','W']}, away:{name:'Bucks',logo:'🟢',form:['W','L','W','W','W']}, score:'0:0', time:'Today 21:30', odds:{home:1.85,away:1.98} },
-    { id:10, sport:'soccer', league:'Bundesliga', flag:'🇩🇪', home:{name:'Dortmund',logo:'🟡',form:['W','W','D','W','L']}, away:{name:'Leverkusen',logo:'🔴',form:['W','W','W','W','W']}, score:'0:0', time:'Tomorrow 15:30', odds:{home:2.40,draw:3.20,away:2.80} },
-    { id:11, sport:'tennis', league:'WTA Finals', flag:'🌍', home:{name:'Swiatek',logo:'🎾',form:['W','W','W','W','W']}, away:{name:'Sabalenka',logo:'🎾',form:['W','W','D','W','W']}, score:'0:0', time:'Today 16:00', isTennis:true, odds:{home:1.55,away:2.45} },
-    { id:12, sport:'esports', league:'VALORANT Champions', flag:'🌐', home:{name:'Sentinels',logo:'🟠',form:['W','W','L','W','D']}, away:{name:'Loud',logo:'🟢',form:['W','W','W','D','W']}, score:'0:0', time:'Today 19:00', isEsport:true, odds:{home:1.80,away:2.00} },
-    { id:13, sport:'hockey', league:'NHL Playoffs', flag:'🇺🇸', home:{name:'Avalanche',logo:'🔵',form:['W','W','W','D','W']}, away:{name:'Panthers',logo:'🔴',form:['W','L','W','W','W']}, score:'0:0', time:'Tomorrow 19:00', isHockey:true, odds:{home:1.65,draw:4.80,away:2.30} },
-    { id:14, sport:'mma', league:'UFC 305', flag:'🥊', home:{name:'Islam Makhachev',logo:'🦅',form:['W','W','W','W','W']}, away:{name:'Charles Oliveira',logo:'🇧🇷',form:['W','W','L','W','W']}, score:'0:0', time:'Saturday 23:00', isMma:true, odds:{home:1.55,away:2.40} },
-    { id:15, sport:'mma', league:'Bellator MMA', flag:'🥊', home:{name:'Patricio Pitbull',logo:'🦁',form:['W','W','D','W','L']}, away:{name:'AJ McKee',logo:'🦊',form:['W','W','W','D','W']}, score:'0:0', time:'Friday 22:00', isMma:true, odds:{home:1.75,away:2.05} },
-    { id:16, sport:'boxing', league:'WBC Heavyweight', flag:'🥊', home:{name:'Tyson Fury',logo:'👑',form:['W','W','D','W','W']}, away:{name:'Anthony Joshua',logo:'🦁',form:['W','L','W','W','W']}, score:'0:0', time:'Saturday 22:00', isBoxing:true, odds:{home:1.62,away:2.30} },
-    { id:17, sport:'boxing', league:'WBA Super Welterweight', flag:'🥊', home:{name:'Canelo Alvarez',logo:'🌹',form:['W','W','W','W','W']}, away:{name:'Jermell Charlo',logo:'🐆',form:['W','W','L','W','D']}, score:'0:0', time:'Sunday 21:00', isBoxing:true, odds:{home:1.40,away:2.80} },
-    { id:18, sport:'baseball', league:'MLB', flag:'🇺🇸', home:{name:'NY Yankees',logo:'⚾',form:['W','W','D','W','L']}, away:{name:'LA Dodgers',logo:'🔵',form:['W','W','W','D','W']}, score:'0:0', time:'Today 19:00', isBaseball:true, odds:{home:2.10,away:1.75} },
-    { id:19, sport:'formula1', league:'Formula 1 GP', flag:'🏎', home:{name:'Max Verstappen',logo:'🔵',form:['W','W','W','W','W']}, away:{name:'Lewis Hamilton',logo:'🖤',form:['W','D','W','L','W']}, score:'0:0', time:'Sunday 14:00', isF1:true, odds:{home:1.45,away:3.20} },
-    { id:20, sport:'mma', league:'ONE Championship', flag:'🇸🇬', home:{name:'Demetrious Johnson',logo:'🦋',form:['W','W','W','W','D']}, away:{name:'Adriano Moraes',logo:'🇧🇷',form:['W','L','W','W','W']}, score:'0:0', time:'Friday 14:00', isMma:true, odds:{home:1.70,away:2.15} },
-  ]
-};
+var MATCHES={live:[
+  {id:1,sport:'soccer',league:'Premier League',flag:'&#127988;',home:{name:'Manchester City',logo:'&#128309;',form:['W','W','D','W','W']},away:{name:'Arsenal',logo:'&#128308;',form:['W','W','W','D','W']},score:'2:1',minute:67,odds:{home:1.55,draw:3.80,away:5.20},extra:{corners:'6-4',shots:'14-9'}},
+  {id:2,sport:'soccer',league:'La Liga',flag:'&#127466;&#127480;',home:{name:'Real Madrid',logo:'&#9898;',form:['W','W','W','W','D']},away:{name:'Barcelona',logo:'&#128309;',form:['W','W','D','W','W']},score:'1:1',minute:34,odds:{home:2.10,draw:3.40,away:3.20},extra:{corners:'4-3',shots:'8-7'}},
+  {id:3,sport:'basketball',league:'NBA',flag:'&#127482;&#127480;',home:{name:'Lakers',logo:'&#128993;',form:['W','L','W','W','L']},away:{name:'Celtics',logo:'&#128994;',form:['W','W','W','D','W']},score:'87:92',minute:3,isBasket:true,odds:{home:1.95,away:1.88},extra:{quarter:'Q4',timeLeft:'3:42'}},
+  {id:4,sport:'tennis',league:'ATP Masters',flag:'&#127758;',home:{name:'Djokovic',logo:'&#127934;',form:['W','W','W','W','W']},away:{name:'Alcaraz',logo:'&#127934;',form:['W','W','D','W','W']},score:'6:4 4:3',minute:null,isTennis:true,odds:{home:1.65,away:2.25},extra:{sets:'1-0',serve:'Djokovic'}},
+  {id:5,sport:'hockey',league:'NHL',flag:'&#127482;&#127480;',home:{name:'Rangers',logo:'&#128309;',form:['W','W','D','W','L']},away:{name:'Bruins',logo:'&#11035;',form:['W','L','W','W','W']},score:'2:1',minute:38,isHockey:true,odds:{home:1.72,draw:4.50,away:2.15},extra:{period:'P2',puck:'Rangers'}},
+  {id:6,sport:'esports',league:'CS2 Major',flag:'&#127760;',home:{name:'NaVi',logo:'&#128219;',form:['W','W','W','D','W']},away:{name:'Faze Clan',logo:'&#128128;',form:['W','D','W','W','L']},score:'12:8',minute:null,isEsport:true,odds:{home:1.45,away:2.60},extra:{map:'Mirage',round:'Round 20'}},
+  {id:21,sport:'mma',league:'UFC Fight Night',flag:'&#129354;',home:{name:'Sean OMalley',logo:'&#129193;',form:['W','W','W','D','W']},away:{name:'Merab Dvalishvili',logo:'&#127468;&#127466;',form:['W','W','W','W','W']},score:'Rd 2',minute:null,isMma:true,odds:{home:2.20,away:1.65},extra:{round:'Round 2',method:'Live'}},
+  {id:22,sport:'boxing',league:'WBC Title Fight',flag:'&#129354;',home:{name:'Oleksandr Usyk',logo:'&#127482;&#127462;',form:['W','W','W','W','W']},away:{name:'Daniel Dubois',logo:'&#127468;&#127463;',form:['W','W','W','L','W']},score:'Rd 5',minute:null,isBoxing:true,odds:{home:1.35,away:3.10},extra:{round:'Round 5',method:'Live'}}
+],upcoming:[
+  {id:7,sport:'soccer',league:'Champions League',flag:'&#11088;',home:{name:'Bayern Munich',logo:'&#128308;',form:['W','W','W','W','W']},away:{name:'PSG',logo:'&#128309;',form:['W','W','D','W','W']},score:'0:0',time:'Today 20:45',odds:{home:1.90,draw:3.60,away:3.90}},
+  {id:8,sport:'soccer',league:'Serie A',flag:'&#127470;&#127481;',home:{name:'Inter Milan',logo:'&#11035;',form:['W','D','W','W','W']},away:{name:'Juventus',logo:'&#11036;',form:['W','W','L','W','D']},score:'0:0',time:'Today 18:00',odds:{home:1.75,draw:3.50,away:4.20}},
+  {id:9,sport:'basketball',league:'NBA',flag:'&#127482;&#127480;',home:{name:'Warriors',logo:'&#128993;',form:['W','W','W','L','W']},away:{name:'Bucks',logo:'&#128994;',form:['W','L','W','W','W']},score:'0:0',time:'Today 21:30',odds:{home:1.85,away:1.98}},
+  {id:10,sport:'soccer',league:'Bundesliga',flag:'&#127465;&#127466;',home:{name:'Dortmund',logo:'&#128993;',form:['W','W','D','W','L']},away:{name:'Leverkusen',logo:'&#128308;',form:['W','W','W','W','W']},score:'0:0',time:'Tomorrow 15:30',odds:{home:2.40,draw:3.20,away:2.80}},
+  {id:11,sport:'tennis',league:'WTA Finals',flag:'&#127758;',home:{name:'Swiatek',logo:'&#127934;',form:['W','W','W','W','W']},away:{name:'Sabalenka',logo:'&#127934;',form:['W','W','D','W','W']},score:'0:0',time:'Today 16:00',isTennis:true,odds:{home:1.55,away:2.45}},
+  {id:12,sport:'esports',league:'VALORANT Champions',flag:'&#127760;',home:{name:'Sentinels',logo:'&#128992;',form:['W','W','L','W','D']},away:{name:'Loud',logo:'&#128994;',form:['W','W','W','D','W']},score:'0:0',time:'Today 19:00',isEsport:true,odds:{home:1.80,away:2.00}},
+  {id:13,sport:'hockey',league:'NHL Playoffs',flag:'&#127482;&#127480;',home:{name:'Avalanche',logo:'&#128309;',form:['W','W','W','D','W']},away:{name:'Panthers',logo:'&#128308;',form:['W','L','W','W','W']},score:'0:0',time:'Tomorrow 19:00',isHockey:true,odds:{home:1.65,draw:4.80,away:2.30}},
+  {id:14,sport:'mma',league:'UFC 305',flag:'&#129354;',home:{name:'Islam Makhachev',logo:'&#129413;',form:['W','W','W','W','W']},away:{name:'Charles Oliveira',logo:'&#127463;&#127479;',form:['W','W','L','W','W']},score:'0:0',time:'Saturday 23:00',isMma:true,odds:{home:1.55,away:2.40}},
+  {id:15,sport:'mma',league:'Bellator MMA',flag:'&#129354;',home:{name:'Patricio Pitbull',logo:'&#129409;',form:['W','W','D','W','L']},away:{name:'AJ McKee',logo:'&#129418;',form:['W','W','W','D','W']},score:'0:0',time:'Friday 22:00',isMma:true,odds:{home:1.75,away:2.05}},
+  {id:16,sport:'boxing',league:'WBC Heavyweight',flag:'&#129354;',home:{name:'Tyson Fury',logo:'&#128081;',form:['W','W','D','W','W']},away:{name:'Anthony Joshua',logo:'&#129409;',form:['W','L','W','W','W']},score:'0:0',time:'Saturday 22:00',isBoxing:true,odds:{home:1.62,away:2.30}},
+  {id:18,sport:'baseball',league:'MLB',flag:'&#127482;&#127480;',home:{name:'NY Yankees',logo:'&#9918;',form:['W','W','D','W','L']},away:{name:'LA Dodgers',logo:'&#128309;',form:['W','W','W','D','W']},score:'0:0',time:'Today 19:00',isBaseball:true,odds:{home:2.10,away:1.75}},
+  {id:19,sport:'formula1',league:'Formula 1 GP',flag:'&#127950;',home:{name:'Max Verstappen',logo:'&#128309;',form:['W','W','W','W','W']},away:{name:'Lewis Hamilton',logo:'&#128420;',form:['W','D','W','L','W']},score:'0:0',time:'Sunday 14:00',isF1:true,odds:{home:1.45,away:3.20}},
+  {id:20,sport:'mma',league:'ONE Championship',flag:'&#127480;&#127468;',home:{name:'Demetrious Johnson',logo:'&#129419;',form:['W','W','W','W','D']},away:{name:'Adriano Moraes',logo:'&#127463;&#127479;',form:['W','L','W','W','W']},score:'0:0',time:'Friday 14:00',isMma:true,odds:{home:1.70,away:2.15}}
+]};
 
-var betSlip = [], currentFilter = 'all';
+var betSlip=[],currentFilter='all';
 
-// ══ PARTICLES ══
 (function(){
   var c=document.getElementById('particles'),ctx=c.getContext('2d'),W,H,pts=[];
   function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
@@ -561,14 +377,13 @@ var betSlip = [], currentFilter = 'all';
   window.burstParticles=function(cx,cy){
     var wc=document.getElementById('winCanvas'),wctx=wc.getContext('2d');
     wc.width=window.innerWidth;wc.height=window.innerHeight;
-    var bp=[];var WCOLS=['rgba(22,163,74,','rgba(212,160,23,','rgba(255,255,255,','rgba(74,222,128,'];
-    for(var i=0;i<70;i++){var a=Math.random()*Math.PI*2,s=Math.random()*10+3;bp.push({x:cx||window.innerWidth/2,y:cy||window.innerHeight/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,r:Math.random()*5+1,life:1,decay:Math.random()*.02+.01,gravity:.35,col:WCOLS[Math.floor(Math.random()*WCOLS.length)]});}
+    var bp=[];
+    for(var i=0;i<70;i++){var a=Math.random()*Math.PI*2,s=Math.random()*10+3;bp.push({x:cx||window.innerWidth/2,y:cy||window.innerHeight/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,r:Math.random()*5+1,life:1,decay:Math.random()*.02+.01,gravity:.35,col:['rgba(22,163,74,','rgba(212,160,23,','rgba(255,255,255,'][Math.floor(Math.random()*3)]});}
     function animW(){wctx.clearRect(0,0,wc.width,wc.height);bp=bp.filter(function(p){return p.life>0;});bp.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;wctx.globalAlpha=p.life;wctx.beginPath();wctx.arc(p.x,p.y,p.r,0,Math.PI*2);wctx.fillStyle=p.col+p.life+')';wctx.fill();});wctx.globalAlpha=1;if(bp.length)requestAnimationFrame(animW);}
     animW();
   };
 })();
 
-// ══ HERO CANVAS ══
 (function(){
   var c=document.getElementById('heroCanvas'),hero=c.closest('.hero');
   if(!c||!hero)return;
@@ -591,39 +406,30 @@ var betSlip = [], currentFilter = 'all';
   requestAnimationFrame(draw);
 })();
 
-// ══ TOASTS ══
 function showToast(type,title,msg,burst){
   var c=document.getElementById('toastContainer');
   var t=document.createElement('div');
-  var icons={win:'💰',live:'📡',gold:'🏆',sport:'⚽'};
   t.className='toast t-'+(type||'sport');
-  t.innerHTML='<div class="t-icon">'+(icons[type]||'⚽')+'</div><div class="t-text"><div class="t-title">'+title+'</div><div class="t-msg">'+msg+'</div></div>';
+  t.innerHTML='<div class="t-icon">'+(type==='win'?'&#128176;':type==='lose'?'&#10060;':type==='live'?'&#128225;':type==='gold'?'&#127942;':'&#9917;')+'</div><div class="t-text"><div class="t-title">'+title+'</div><div class="t-msg">'+msg+'</div></div>';
   c.appendChild(t);
   if(burst)setTimeout(function(){burstParticles(window.innerWidth-160,window.innerHeight-120);},200);
   setTimeout(function(){t.classList.add('out');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},400);},4500);
   while(c.children.length>5)c.removeChild(c.firstChild);
 }
 
-// ══ COUNTERS ══
-var onl = (function(){   // Realisticka pocatecni hodnota podle casu dne   var h = new Date().getHours();   // Peak vecer 20-23h, minimum rano 4-7h   var base = h >= 20 ? 32000 : h >= 16 ? 24000 : h >= 10 ? 18000 : h >= 7 ? 12000 : 10000;   return base + Math.floor(Math.random() * 3000); })(); var onlTarget = onl, onlDir = 1;
+var onl=10284;
 setInterval(function(){
-  var diff=onlTarget-onl;onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*120)-50;if(Math.random()<0.03){var h=new Date().getHours();var b=h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;onlTarget=b+Math.floor(Math.random()*8000);}onl=Math.max(10000,Math.min(40000,onl));
+  onl+=Math.floor(Math.random()*12)-5;onl=Math.max(9600,Math.min(11500,onl));
   var el=document.getElementById('onlineNum');if(el)el.textContent=onl.toLocaleString();
   var he=document.getElementById('heroBetting');if(he)he.textContent=Math.floor(onl*.28).toLocaleString();
 },2800);
 
-// Live match minute counter
 setInterval(function(){
   MATCHES.live.forEach(function(m){
-    if(m.minute&&m.minute<90){
-      m.minute+=Math.random()>.4?1:0;
-      var el=document.getElementById('min-'+m.id);
-      if(el)el.textContent=m.minute+"'";
-    }
+    if(m.minute&&m.minute<90){m.minute+=Math.random()>.4?1:0;var el=document.getElementById('min-'+m.id);if(el)el.textContent=m.minute+"'";}
   });
 },30000);
 
-// Odds fluctuation
 setInterval(function(){
   MATCHES.live.forEach(function(m){
     ['home','draw','away'].forEach(function(k){
@@ -631,191 +437,128 @@ setInterval(function(){
       var change=(Math.random()-.5)*.05;
       m.odds[k]=Math.max(.01,+(m.odds[k]+change).toFixed(2));
       var el=document.getElementById('odds-'+m.id+'-'+k);
-      if(el){
-        el.textContent=m.odds[k].toFixed(2);
-        el.classList.add(change>0?'odds-change-up':'odds-change-down');
-        setTimeout(function(){el.classList.remove('odds-change-up','odds-change-down');},500);
-      }
+      if(el){el.textContent=m.odds[k].toFixed(2);el.classList.add(change>0?'odds-change-up':'odds-change-down');setTimeout(function(){el.classList.remove('odds-change-up','odds-change-down');},500);}
     });
-    // Update scores live occasionally
     if(Math.random()<.02&&m.minute){
       var parts=m.score.split(':');
-      if(Math.random()>.5)parts[0]=+parts[0]+1;
-      else parts[1]=+parts[1]+1;
+      if(Math.random()>.5)parts[0]=+parts[0]+1;else parts[1]=+parts[1]+1;
       m.score=parts.join(':');
       var sc=document.getElementById('score-'+m.id);
       if(sc){sc.textContent=m.score;sc.style.animation='none';sc.offsetHeight;sc.style.animation='scorePulse 3s ease-in-out infinite';}
-      showToast('live','⚽ GOAL!',m.home.name+' '+m.score+' '+m.away.name,true);
+      showToast('live','&#9917; GOAL!',m.home.name+' '+m.score+' '+m.away.name,true);
     }
   });
 },8000);
 
-// Big wins bar
 var bwWins=[['CryptoX','0.482 BTC','Real Madrid to win'],['Player77','0.218 BTC','Over 2.5 goals'],['BTC_Pro','0.388 BTC','Lakers -3.5'],['VegasKing','0.142 BTC','Djokovic to win']];
 var bwi=0;
 setInterval(function(){
   bwi++;
   var bw=document.getElementById('sbBigWins');
-  if(bw){var a=bwWins[bwi%bwWins.length],b=bwWins[(bwi+1)%bwWins.length];
-    bw.innerHTML='<div class="sb-win-item">🎉 '+a[0]+' won <b>'+a[1]+'</b> on '+a[2]+'</div><div class="sb-win-item">🎉 '+b[0]+' won <b>'+b[1]+'</b> on '+b[2]+'</div>';}
+  if(bw){
+    var a=bwWins[bwi%bwWins.length],b=bwWins[(bwi+1)%bwWins.length];
+    bw.innerHTML='<div class="sb-win-item">&#127881; '+a[0]+' won <b>'+a[1]+'</b> on '+a[2]+'</div><div class="sb-win-item">&#127881; '+b[0]+' won <b>'+b[1]+'</b> on '+b[2]+'</div>';
+  }
 },5000);
 
-// ══ RENDER MATCH ══
-function renderMatch(m, isLive){
-  var hasDraw = !m.isBasket&&!m.isTennis&&!m.isEsport&&!m.isMma&&!m.isBoxing&&!m.isBaseball&&!m.isF1&&m.odds&&m.odds.draw!=null&&m.odds.draw!=undefined;
-  var statusHtml = isLive
-    ? '<div class="live-badge-sm"><div class="live-dot-sm"></div>LIVE</div><span class="match-minute" id="min-'+m.id+'">'+(m.minute?m.minute+"'":(m.extra?m.extra.round||m.extra.timeLeft||m.extra.sets:''))+' </span>'
-    : '<span class="match-time-badge">'+m.time+'</span>';
-
-  var formHtml = function(form){
-    return form.map(function(f){
-      return '<div class="form-dot form-'+f.toLowerCase()+'"></div>';
-    }).join('');
-  };
-
-  var oddsHtml = '<div class="odds-row">';
+function renderMatch(m,isLive){
+  var hasDraw=!m.isBasket&&!m.isTennis&&!m.isEsport&&!m.isMma&&!m.isBoxing&&!m.isBaseball&&!m.isF1&&m.odds&&m.odds.draw!=null;
+  var statusHtml=isLive
+    ?'<div class="live-badge-sm"><div class="live-dot-sm"></div>LIVE</div><span class="match-minute" id="min-'+m.id+'">'+(m.minute?m.minute+"'":(m.extra?m.extra.round||m.extra.timeLeft||m.extra.sets||'':''))+' </span>'
+    :'<span class="match-time-badge">'+m.time+'</span>';
+  var formHtml=function(form){return form.map(function(f){return '<div class="form-dot form-'+f.toLowerCase()+'"></div>';}).join('');};
+  var oddsHtml='<div class="odds-row">';
   if(hasDraw){
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">1</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'draw\',\'Draw\','+m.odds.draw+',this)"><div class="odds-label">X</div><div class="odds-val" id="odds-'+m.id+'-draw">'+(m.odds.draw||0).toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">2</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
-  } else {
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">Home Win</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
-    oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">Away Win</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
+    oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">1</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
+    oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'draw\',\'Draw\','+m.odds.draw+',this)"><div class="odds-label">X</div><div class="odds-val" id="odds-'+m.id+'-draw">'+(m.odds.draw||0).toFixed(2)+'</div></div>';
+    oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">2</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
+  }else{
+    oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'home\',\''+m.home.name+' to Win\','+m.odds.home+',this)"><div class="odds-label">Home Win</div><div class="odds-val" id="odds-'+m.id+'-home">'+(m.odds.home||0).toFixed(2)+'</div></div>';
+    oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'away\',\''+m.away.name+' to Win\','+m.odds.away+',this)"><div class="odds-label">Away Win</div><div class="odds-val" id="odds-'+m.id+'-away">'+(m.odds.away||0).toFixed(2)+'</div></div>';
   }
-  if(m.extra&&m.extra.corners){oddsHtml += '<div class="odds-btn" onclick="addBet('+m.id+',\'o25\',\'Over 2.5 Goals\',1.88,this)"><div class="odds-label">Over 2.5</div><div class="odds-val">1.88</div></div>';}
-  oddsHtml += '</div><div class="more-markets" onclick="showToast(\'gold\',\'500+ Markets\',\'Full market list coming soon!\')">+48 more markets ›</div>';
-
-  var extraInfo = m.extra ? Object.values(m.extra).map(function(v,i){return '<span class="stat-mini">'+Object.keys(m.extra)[i]+': <span>'+v+'</span></span>';}).join('') : '';
-
-  return '<div class="match-card '+(isLive?'live-match':'upcoming-match')+'" data-sport="'+m.sport+'">' +
-    '<div class="match-header">' +
-      '<div class="match-league"><span class="league-flag">'+m.flag+'</span>'+m.league+'</div>' +
-      '<div class="match-status">'+statusHtml+'</div>' +
-    '</div>' +
-    '<div class="match-body">' +
-      '<div class="teams-row">' +
-        '<div class="team">' +
-          '<div class="team-logo">'+m.home.logo+'</div>' +
-          '<div><div class="team-name">'+m.home.name+'</div><div class="team-form">'+formHtml(m.home.form)+'</div></div>' +
-        '</div>' +
-        '<div class="score-center">' +
-          '<div class="score-display'+(isLive?' live':'')+'" id="score-'+m.id+'">'+m.score+'</div>' +
-          (isLive?'<div class="match-stats-mini">'+extraInfo+'</div>':'<div class="score-vs">VS</div>') +
-        '</div>' +
-        '<div class="team right">' +
-          '<div class="team-logo">'+m.away.logo+'</div>' +
-          '<div><div class="team-name">'+m.away.name+'</div><div class="team-form">'+formHtml(m.away.form)+'</div></div>' +
-        '</div>' +
-      '</div>' +
-      oddsHtml +
-    '</div>' +
-  '</div>';
+  if(m.extra&&m.extra.corners){oddsHtml+='<div class="odds-btn" onclick="addBet('+m.id+',\'o25\',\'Over 2.5 Goals\',1.88,this)"><div class="odds-label">Over 2.5</div><div class="odds-val">1.88</div></div>';}
+  oddsHtml+='</div><div class="more-markets" onclick="showToast(\'gold\',\'500+ Markets\',\'Full market list coming soon!\')">+48 more markets &#8250;</div>';
+  var extraInfo=m.extra?Object.entries(m.extra).map(function(e){return '<span class="stat-mini">'+e[0]+': <span>'+e[1]+'</span></span>';}).join(''):'';
+  return '<div class="match-card '+(isLive?'live-match':'upcoming-match')+'" data-sport="'+m.sport+'">'
+    +'<div class="match-header"><div class="match-league"><span class="league-flag">'+m.flag+'</span>'+m.league+'</div><div class="match-status">'+statusHtml+'</div></div>'
+    +'<div class="match-body"><div class="teams-row">'
+    +'<div class="team"><div class="team-logo">'+m.home.logo+'</div><div><div class="team-name">'+m.home.name+'</div><div class="team-form">'+formHtml(m.home.form)+'</div></div></div>'
+    +'<div class="score-center"><div class="score-display'+(isLive?' live':'')+'" id="score-'+m.id+'">'+m.score+'</div>'+(isLive?'<div class="match-stats-mini">'+extraInfo+'</div>':'<div class="score-vs">VS</div>')+'</div>'
+    +'<div class="team right"><div class="team-logo">'+m.away.logo+'</div><div><div class="team-name">'+m.away.name+'</div><div class="team-form">'+formHtml(m.away.form)+'</div></div></div>'
+    +'</div>'+oddsHtml+'</div></div>';
 }
 
 function renderMatches(){
-  var lm = document.getElementById('liveMatches');
-  var um = document.getElementById('upcomingMatches');
-  var filter = currentFilter;
-  var liveFiltered = filter==='all' ? MATCHES.live : MATCHES.live.filter(function(m){return m.sport===filter;});
-  var upFiltered = filter==='all' ? MATCHES.upcoming : MATCHES.upcoming.filter(function(m){return m.sport===filter;});
-  lm.innerHTML = liveFiltered.map(function(m){return renderMatch(m,true);}).join('');
-  um.innerHTML = upFiltered.map(function(m){return renderMatch(m,false);}).join('');
-  document.getElementById('sc1').textContent = liveFiltered.length;
-  document.getElementById('heroLive').textContent = liveFiltered.length;
+  var lm=document.getElementById('liveMatches'),um=document.getElementById('upcomingMatches');
+  var lf=currentFilter==='all'?MATCHES.live:MATCHES.live.filter(function(m){return m.sport===currentFilter;});
+  var uf=currentFilter==='all'?MATCHES.upcoming:MATCHES.upcoming.filter(function(m){return m.sport===currentFilter;});
+  lm.innerHTML=lf.map(function(m){return renderMatch(m,true);}).join('');
+  um.innerHTML=uf.map(function(m){return renderMatch(m,false);}).join('');
+  document.getElementById('sc1').textContent=lf.length;
+  document.getElementById('heroLive').textContent=lf.length;
 }
 
-function filterSport(sport, el){
-  currentFilter = sport;
+function filterSport(sport,el){
+  currentFilter=sport;
   document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
   renderMatches();
 }
 
-// ══ QUICK BETS ══
 function renderQuickBets(){
-  var qb = document.getElementById('quickBets');
-  var picks = [
-    {label:'Real Madrid to Win',odds:2.10,icon:'⚽'},
-    {label:'Over 2.5 Goals',odds:1.88,icon:'⚽'},
-    {label:'Lakers -3.5',odds:1.92,icon:'🏀'},
-    {label:'Djokovic to Win',odds:1.65,icon:'🎾'},
-    {label:'Both Teams Score',odds:1.72,icon:'⚽'},
-    {label:'NaVi Win Map 1',odds:1.45,icon:'🎮'},
-    {label:'Bayern Asian -1',odds:1.85,icon:'⚽'},
-    {label:'Fury by KO',odds:2.15,icon:'🥊'},
-    {label:'Makhachev Sub Win',odds:2.40,icon:'🥋'},
-    {label:'Verstappen Pole',odds:1.55,icon:'🏎'},
+  var qb=document.getElementById('quickBets');
+  var picks=[
+    {label:'Real Madrid to Win',odds:2.10,icon:'&#9917;'},{label:'Over 2.5 Goals',odds:1.88,icon:'&#9917;'},
+    {label:'Lakers -3.5',odds:1.92,icon:'&#127944;'},{label:'Djokovic to Win',odds:1.65,icon:'&#127934;'},
+    {label:'Both Teams Score',odds:1.72,icon:'&#9917;'},{label:'NaVi Win Map 1',odds:1.45,icon:'&#127918;'},
+    {label:'Bayern Asian -1',odds:1.85,icon:'&#9917;'},{label:'Fury by KO',odds:2.15,icon:'&#129354;'},
+    {label:'Makhachev Sub Win',odds:2.40,icon:'&#129355;'},{label:'Verstappen Pole',odds:1.55,icon:'&#127950;'}
   ];
-  qb.innerHTML = picks.map(function(p,i){
-    return '<div class="qb" onclick="addQuickBet(\''+p.label+'\','+p.odds+',this)"><span>'+p.icon+'</span> '+p.label+' <span class="qb-odds">'+p.odds+'</span></div>';
-  }).join('');
+  qb.innerHTML=picks.map(function(p){return '<div class="qb" onclick="addQuickBet(\''+p.label+'\','+p.odds+',this)"><span>'+p.icon+'</span> '+p.label+' <span class="qb-odds">'+p.odds+'</span></div>';}).join('');
 }
 
-function addQuickBet(label, odds, el){
-  el.classList.toggle('active-qb');
-  addBet('qb-'+Math.random(), 'pick', label, odds, null);
-}
+function addQuickBet(label,odds,el){el.classList.toggle('active-qb');addBet('qb-'+Math.random(),'pick',label,odds,null);}
 
-// ══ BET SLIP ══
-function addBet(matchId, market, label, odds, btnEl){
-  // Check if already in slip
-  var existing = betSlip.findIndex(function(b){return b.matchId===matchId&&b.market===market;});
-  if(existing>=0){
-    betSlip.splice(existing,1);
-    if(btnEl)btnEl.classList.remove('selected');
-    renderSlip();return;
-  }
-  betSlip.push({matchId:matchId, market:market, label:label, odds:odds, id:Date.now()});
+function addBet(matchId,market,label,odds,btnEl){
+  var existing=betSlip.findIndex(function(b){return b.matchId===matchId&&b.market===market;});
+  if(existing>=0){betSlip.splice(existing,1);if(btnEl)btnEl.classList.remove('selected');renderSlip();return;}
+  betSlip.push({matchId:matchId,market:market,label:label,odds:odds,id:Date.now()});
   if(btnEl)btnEl.classList.add('selected');
   renderSlip();
-  showToast('sport','✅ Added to Slip',label+' @ '+odds.toFixed(2));
+  showToast('sport','&#9989; Added to Slip',label+' @ '+odds.toFixed(2));
 }
 
-function removeFromSlip(id){
-  betSlip = betSlip.filter(function(b){return b.id!==id;});
-  renderSlip();
-}
-
+function removeFromSlip(id){betSlip=betSlip.filter(function(b){return b.id!==id;});renderSlip();}
 function clearSlip(){betSlip=[];renderSlip();}
 
 function renderSlip(){
-  var count = betSlip.length;
-  document.getElementById('bsCount').textContent = count;
-  var el = document.getElementById('bsContent');
-  if(count===0){el.innerHTML='<div class="bs-empty"><div class="bs-empty-icon">🎯</div><div class="bs-empty-lbl">Slip is empty</div><div class="bs-empty-sub">Click odds to add selections</div></div>';return;}
-
-  var totalOdds = betSlip.reduce(function(t,b){return t*b.odds;},1);
-  var stake = parseFloat(document.getElementById('stakeInput')?.value||0.01);
-  var payout = stake*totalOdds;
-
-  var itemsHtml = betSlip.map(function(b){
-    return '<div class="bs-item"><button class="bs-item-remove" onclick="removeFromSlip('+b.id+')">✕</button><div class="bs-item-match">'+b.label+'</div><div class="bs-item-odds">'+b.odds.toFixed(2)+'</div></div>';
-  }).join('');
-
-  el.innerHTML = '<div class="bs-items">'+itemsHtml+'</div>' +
-    '<div class="bs-stake"><div class="bs-stake-lbl">Stake (BTC)</div>' +
-    '<input class="bs-stake-input" id="stakeInput" type="number" value="0.01" min="0.001" step="0.001" oninput="renderSlip()">' +
-    '<div class="bs-quick-stakes">' +
-      '<div class="qs" onclick="setStake(.001)">0.001</div>' +
-      '<div class="qs" onclick="setStake(.005)">0.005</div>' +
-      '<div class="qs" onclick="setStake(.01)">0.01</div>' +
-      '<div class="qs" onclick="setStake(.05)">0.05</div>' +
-      '<div class="qs" onclick="setStake(.1)">0.1 BTC</div>' +
-    '</div></div>' +
-    '<div class="bs-summary">' +
-      '<div class="bs-row"><span class="bs-row-lbl">Selections</span><span class="bs-row-val">'+count+'</span></div>' +
-      '<div class="bs-row"><span class="bs-row-lbl">Total Odds</span><span class="bs-row-val gold">'+totalOdds.toFixed(2)+'</span></div>' +
-      '<div class="bs-row"><span class="bs-row-lbl">Stake</span><span class="bs-row-val">'+stake.toFixed(5)+' BTC</span></div>' +
-      '<div class="bs-row"><span class="bs-row-lbl">Potential Win</span><span class="bs-row-val green">+'+payout.toFixed(5)+' BTC</span></div>' +
-      '<button class="bs-place-btn" onclick="placeBet()">&#9889; Place Bet — '+payout.toFixed(4)+' BTC</button>' +
-    '</div>';
+  var count=betSlip.length;
+  document.getElementById('bsCount').textContent=count;
+  var el=document.getElementById('bsContent');
+  if(count===0){el.innerHTML='<div class="bs-empty"><div class="bs-empty-icon">&#127919;</div><div class="bs-empty-lbl">Slip is empty</div><div class="bs-empty-sub">Click odds to add selections</div></div>';return;}
+  var totalOdds=betSlip.reduce(function(t,b){return t*b.odds;},1);
+  var stakeEl=document.getElementById('stakeInput');
+  var stake=parseFloat(stakeEl&&stakeEl.value||0.01);
+  var payout=stake*totalOdds;
+  el.innerHTML='<div class="bs-items">'+betSlip.map(function(b){return '<div class="bs-item"><button class="bs-item-remove" onclick="removeFromSlip('+b.id+')">&#10005;</button><div class="bs-item-match">'+b.label+'</div><div class="bs-item-odds">'+b.odds.toFixed(2)+'</div></div>';}).join('')+'</div>'
+    +'<div class="bs-stake"><div class="bs-stake-lbl">Stake (BTC)</div>'
+    +'<input class="bs-stake-input" id="stakeInput" type="number" value="0.01" min="0.001" step="0.001" oninput="renderSlip()">'
+    +'<div class="bs-quick-stakes"><div class="qs" onclick="setStake(.001)">0.001</div><div class="qs" onclick="setStake(.005)">0.005</div><div class="qs" onclick="setStake(.01)">0.01</div><div class="qs" onclick="setStake(.05)">0.05</div><div class="qs" onclick="setStake(.1)">0.1 BTC</div></div></div>'
+    +'<div class="bs-summary">'
+    +'<div class="bs-row"><span class="bs-row-lbl">Selections</span><span class="bs-row-val">'+count+'</span></div>'
+    +'<div class="bs-row"><span class="bs-row-lbl">Total Odds</span><span class="bs-row-val gold">'+totalOdds.toFixed(2)+'</span></div>'
+    +'<div class="bs-row"><span class="bs-row-lbl">Stake</span><span class="bs-row-val">'+stake.toFixed(5)+' BTC</span></div>'
+    +'<div class="bs-row"><span class="bs-row-lbl">Potential Win</span><span class="bs-row-val green">+'+payout.toFixed(5)+' BTC</span></div>'
+    +'<button class="bs-place-btn" onclick="placeBet()">&#9889; Place Bet &mdash; '+payout.toFixed(4)+' BTC</button>'
+    +'</div>';
 }
 
 function setStake(v){var el=document.getElementById('stakeInput');if(el){el.value=v;renderSlip();}}
 
 function placeBet(){
   if(betSlip.length===0)return;
-  var stake=parseFloat(document.getElementById('stakeInput')?.value||.01);
+  var stakeEl=document.getElementById('stakeInput');
+  var stake=parseFloat(stakeEl&&stakeEl.value||.01);
   var totalOdds=betSlip.reduce(function(t,b){return t*b.odds;},1);
   var payout=parseFloat((stake*totalOdds).toFixed(8));
   var _slip=betSlip.slice();
@@ -827,17 +570,16 @@ function placeBet(){
     var betSat=Math.round(stake*1e8);
     var profitSat=won?Math.round((payout-stake)*1e8):-betSat;
     if(window.CK&&window.CK.logBet){window.CK.logBet('sports',betSat,profitSat,parseFloat(totalOdds.toFixed(4)),{selections:_slip.length}).catch(function(){});}
-    if(won)showToast('win','🏆 YOU WON!','Payout: +'+payout.toFixed(5)+' BTC',true);
-    else showToast('lose','❌ Bet Lost','-'+stake.toFixed(5)+' BTC',true);
+    if(won)showToast('win','&#127942; YOU WON!','Payout: +'+payout.toFixed(5)+' BTC',true);
+    else showToast('lose','&#10060; Bet Lost','-'+stake.toFixed(5)+' BTC',true);
   },5000);
-  showToast('win','✅ BET PLACED!','Potential win: '+payout.toFixed(5)+' BTC',true);
+  showToast('win','&#9989; BET PLACED!','Potential win: '+payout.toFixed(5)+' BTC',true);
   betSlip=[];renderSlip();
-  setTimeout(function(){showToast('gold','🏆 Good Luck!','Your bet is live. Come on!');},1500);
+  setTimeout(function(){showToast('gold','&#127942; Good Luck!','Your bet is live. Come on!');},1500);
 }
 
-// ══ TICKER ══
 var SPORTS=['Soccer','NBA','Tennis','NHL','CS2','Valorant','Boxing'];
-var USERS=['0xA91…','CryptoX','Player77','Satoshi','Lucky7','VegasKing','BTC_Pro'];
+var USERS=['0xA91...','CryptoX','Player77','Satoshi','Lucky7','VegasKing','BTC_Pro'];
 function buildTicker(){
   var t=document.getElementById('tickerTrack'),html='';
   for(var i=0;i<20;i++){
@@ -851,39 +593,35 @@ function buildTicker(){
 }
 buildTicker();
 
-// ══ AUTO TOASTS ══
 var tQ=[
-  function(){showToast('live','⚽ GOAL!','Man City 3:1 Arsenal — De Bruyne scores!',true);},
-  function(){showToast('win','💰 BIG WIN!','CryptoX won 0.482 BTC on Real Madrid!',true);},
-  function(){showToast('sport','🏀 NBA ALERT!','Lakers cut deficit to 2 pts — Q4!');},
-  function(){showToast('gold','🏆 10K LIVE!','10,284 players betting right now!');},
-  function(){showToast('live','🎾 BREAK!','Djokovic breaks Alcaraz serve in set 2!');},
-  function(){showToast('win','💰 PAYOUT!','Player77 wins 0.218 BTC on Over 2.5!',true);},
-  function(){showToast('sport','🎮 ESPORTS!','NaVi leading 12:8 on Mirage!');},
+  function(){showToast('live','&#9917; GOAL!','Man City 3:1 Arsenal',true);},
+  function(){showToast('win','&#128176; BIG WIN!','CryptoX won 0.482 BTC on Real Madrid!',true);},
+  function(){showToast('sport','&#127944; NBA ALERT!','Lakers cut deficit to 2 pts!');},
+  function(){showToast('gold','&#127942; 10K LIVE!','10,284 players betting right now!');},
+  function(){showToast('live','&#127934; BREAK!','Djokovic breaks Alcaraz serve in set 2!');},
+  function(){showToast('win','&#128176; PAYOUT!','Player77 wins 0.218 BTC on Over 2.5!',true);},
+  function(){showToast('sport','&#127918; ESPORTS!','NaVi leading 12:8 on Mirage!');}
 ];
 var tqi=0;
 function nextToast(){tQ[tqi%tQ.length]();tqi++;setTimeout(nextToast,Math.random()*7000+5000);}
-setTimeout(function(){showToast('sport','⚽ LIVE NOW!','<b>15 matches</b> live — place your bets!');},1200);
+setTimeout(function(){showToast('sport','&#9917; LIVE NOW!','<b>15 matches</b> live &mdash; place your bets!');},1200);
 setTimeout(nextToast,4000);
 
-// Supabase balance
 (async function(){
   var tries=0;
-  while(!window.CK&&tries<60){await new Promise(r=>setTimeout(r,100));tries++;}
+  while(!window.CK&&tries<30){await new Promise(function(r){setTimeout(r,100);});tries++;}
   if(!window.CK)return;
   try{
     var bal=await CK.getBalance();
     if(bal>0)document.getElementById('headerBal').textContent=bal.toFixed(8)+' BTC';
-    CK.subscribeBalance&&CK.subscribeBalance(function(b){document.getElementById('headerBal').textContent=b.toFixed(8)+' BTC';});
+    if(CK.subscribeBalance)CK.subscribeBalance(function(b){document.getElementById('headerBal').textContent=b.toFixed(8)+' BTC';});
   }catch(e){console.warn('[Sports]',e.message);}
 })();
 
-// Hamburger
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
 
-// ══ INIT ══
 renderMatches();
 renderQuickBets();
 renderSlip();
