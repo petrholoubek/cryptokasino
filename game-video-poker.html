@@ -467,7 +467,9 @@ function setMode(mode){
   document.getElementById('realBadge').style.display=isDemo?'none':'';
   document.body.classList.toggle('demo-mode',isDemo);
   document.getElementById('demoInfoBanner').style.display=isDemo?'':'none';
-  if(!isDemo&&!currentUser){document.getElementById('loginModal').classList.add('show');setTimeout(()=>setMode('demo'),100);return;}
+  // Kontroluj session pres CK wrapper - ne lokalni currentUser ktery se mohl jeste nenacist
+  var hasSession = currentUser || (window.CK && window._ckSession);
+  if(!isDemo&&!hasSession){document.getElementById('loginModal').classList.add('show');setTimeout(()=>setMode('demo'),100);return;}
   balance=isDemo?demoBalance:realBalance;
   document.getElementById('modeDisp').textContent=isDemo?'🎮 Demo':'₿ Real';
   document.getElementById('dealBtn').textContent=isDemo?'🎮 DEAL':'🃏 DEAL';
@@ -698,7 +700,26 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
 // ── INIT ──────────────────────────────────────────────────────────
 buildPaytable();renderCards(true);
 setTimeout(function(){setMode('demo');balance=demoBalance;updateBal();},100);
-window.addEventListener('load',async function(){var tries=0;while(!window.CK&&tries<50){await new Promise(r=>setTimeout(r,100));tries++;}if(window.CK){const bal=await CK.getBalance();if(bal>0){realBalance=bal;}}});
+window.addEventListener('load',async function(){
+  var tries=0;
+  while(!window.CK&&tries<80){await new Promise(r=>setTimeout(r,100));tries++;}
+  if(window.CK){
+    // Nacti session
+    try{
+      var sess=await window.CK.sb.auth.getSession();
+      if(sess&&sess.data&&sess.data.session){
+        currentUser=sess.data.session.user;
+        window._ckSession=sess.data.session;
+        var bal=await CK.getBalance();
+        if(bal>0){realBalance=bal;balance=realBalance;}
+        // Pokud je uzivatel prihlasen, aktivuj real mode automaticky
+        if(window._ckGameMode==='real'){
+          balance=realBalance;updateBal();
+        }
+      }
+    }catch(e){console.warn('[Game] Session load:',e.message);}
+  }
+});
 </script>
 </body>
 </html>
