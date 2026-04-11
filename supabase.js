@@ -701,4 +701,15 @@
     console.log('[CK] GameMode: real (auto)');
   }
 
+
+// ── AI AGENT LOADER ────────────────────────────────────────────
+(function(){
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+  var allowed = ['index.html','casino.html','live.html','sports.html',''];
+  if(!allowed.includes(page)) return;
+  var s = document.createElement('script');
+  s.src = 'ck-agent.js';
+  document.head.appendChild(s);
+})();
+
 })();
