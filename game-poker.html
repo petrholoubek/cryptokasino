@@ -813,7 +813,6 @@ async function dealHand(){
     try{await sb?.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:Math.round(ante*1e8)});}catch(e){}
     balance-=ante;callGameServer('poker', parseFloat(typeof ante!=='undefined'?ante:0)||0, {}).then(function(s){if(s&&s.new_balance){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});realBalance-=ante;
     // Track game session start
-    try{await sb?.from('game_sessions').insert({user_id:currentUser.id,game:'poker',bet_satoshi:Math.round(ante*1e8),started_at:new Date().toISOString(),meta:{phase:'preflop'}});}catch(e){}
   } else {balance-=ante;demoBalance-=ante;}
   pot+=ante*2;wagered+=ante;updateBal();updatePotUI();
 
