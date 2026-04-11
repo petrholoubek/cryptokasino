@@ -75,10 +75,12 @@
     const { createClient } = supabase;
     sb = createClient(SUPABASE_URL, SUPABASE_KEY);
     // Nastav window.CK.sb HNED - pred await - aby ostatni stranky nenecekaly
-    if (!window.CK) window.CK = { sb, getBalance: async()=>0, subscribeBalance:()=>{}, logout:()=>{}, logBet:()=>{}, getJackpot:async()=>0, setGameMode:()=>{}, isRealMode:()=>false };
-    else window.CK.sb = sb;
+    if (window.CK) window.CK.sb = sb;
     const { data } = await sb.auth.getSession();
     _session = data?.session || null;
+    if (_session && window.CK && window.CK.setGameMode) {
+      window.CK.setGameMode('real');
+    }
   } catch (e) {
     console.warn('[CK] Supabase init failed:', e.message);
   }
@@ -693,5 +695,10 @@
 
   console.log('[CK] supabase.js v2.3 loaded | Session:', !!_session, '| VIP: enabled');
   if (_session) console.log('[CK] User:', _session.user.email);
+  // Auto nastaveni real mode po detekci session
+  if (_session) {
+    window._ckGameMode = 'real';
+    console.log('[CK] GameMode: real (auto)');
+  }
 
 })();
