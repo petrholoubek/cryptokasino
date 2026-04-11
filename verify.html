@@ -105,87 +105,87 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <a href="casino.html" class="back-btn">&#8592; Kasino</a>
+  <a href="casino.html" class="back-btn">&#8592; Casino</a>
 </header>
 
 <div class="wrap">
 
   <!-- HERO -->
   <div class="pf-hero">
-    <div class="pf-badge">&#9989; Provably Fair — 100% ověřitelné</div>
+    <div class="pf-badge">&#9989; Provably Fair — 100% Verifiable</div>
     <h1 class="pf-title">Provably Fair</h1>
-    <p class="pf-sub">Každý výsledek hry je kryptograficky ověřitelný. Nemůžeme manipulovat výsledky — můžeš si to sám ověřit pomocí SHA-256.</p>
+    <p class="pf-sub">Every game result is cryptographically verifiable. We cannot manipulate results — you can verify this yourself using SHA-256.</p>
   </div>
 
   <!-- HOW IT WORKS -->
   <div class="how-it-works">
-    <div class="hiw-title">&#128272; Jak to funguje</div>
+    <div class="hiw-title">&#128272; How It Works</div>
     <div class="hiw-steps">
       <div class="hiw-step">
         <div class="hiw-num">1</div>
-        <div class="hiw-name">Před hrou</div>
-        <div class="hiw-desc">Server vygeneruje tajný <b>Server Seed</b> a pošle ti jeho SHA-256 hash. Z hashe nelze zjistit původní seed.</div>
+        <div class="hiw-name">Before the Game</div>
+        <div class="hiw-desc">The server generates a secret <b>Server Seed</b> and sends you its SHA-256 hash. The original seed cannot be determined from the hash.</div>
       </div>
       <div class="hiw-step">
         <div class="hiw-num">2</div>
-        <div class="hiw-name">Hra</div>
-        <div class="hiw-desc">Výsledek je vypočítán z kombinace <b>Server Seed + Client Seed + Nonce</b>. Ani my, ani ty nemůžeme výsledek předvídat.</div>
+        <div class="hiw-name">Game</div>
+        <div class="hiw-desc">The result is calculated from a combination of <b>Server Seed + Client Seed + Nonce</b>. Neither we nor you can predict the result.</div>
       </div>
       <div class="hiw-step">
         <div class="hiw-num">3</div>
-        <div class="hiw-name">Ověření</div>
-        <div class="hiw-desc">Po hře vidíš původní Server Seed. Můžeš sám spočítat výsledek a ověřit že hash sedí.</div>
+        <div class="hiw-name">Verification</div>
+        <div class="hiw-desc">After the game you see the original Server Seed. You can calculate the result yourself and verify that the hash matches.</div>
       </div>
     </div>
   </div>
 
   <!-- TVOJE SEEDY -->
   <div class="seeds-card" id="seedsCard" style="display:none;">
-    <div class="seeds-title">&#128273; Tvoje aktivní seedy</div>
+    <div class="seeds-title">&#128273; Your Active Seeds</div>
     <div class="seed-row">
       <div class="seed-label">Server Seed Hash (SHA-256)</div>
-      <div class="seed-value" id="serverSeedHash" onclick="copyText(this)">Načítám...</div>
+      <div class="seed-value" id="serverSeedHash" onclick="copyText(this)">Loading...</div>
     </div>
     <div class="seed-row">
-      <div class="seed-label">Client Seed (klikni pro změnu)</div>
-      <div class="seed-value" id="clientSeedDisplay" onclick="copyText(this)">Načítám...</div>
+      <div class="seed-label">Client Seed (click to change)</div>
+      <div class="seed-value" id="clientSeedDisplay" onclick="copyText(this)">Loading...</div>
     </div>
     <div class="seed-row">
-      <div class="seed-label">Nonce (počet sázek)</div>
+      <div class="seed-label">Nonce (bet count)</div>
       <div class="seed-value" id="nonceDisplay">0</div>
     </div>
     <div class="seeds-actions">
-      <button class="btn btn-blue" onclick="changeClientSeed()">&#128260; Změnit Client Seed</button>
-      <button class="btn btn-gold" onclick="loadSeeds()">&#128260; Obnovit</button>
+      <button class="btn btn-blue" onclick="changeClientSeed()">&#128260; Change Client Seed</button>
+      <button class="btn btn-gold" onclick="loadSeeds()">&#128260; Refresh</button>
     </div>
     <div id="seedsAlert" class="alert"></div>
   </div>
 
   <!-- VERIFY FORM -->
   <div class="verify-card">
-    <div class="verify-title">&#9989; Ověřit sázku</div>
+    <div class="verify-title">&#9989; Verify Bet</div>
 
     <div class="calc-box">
-      <div class="calc-title">Výpočet výsledku</div>
+      <div class="calc-title">Result Calculation</div>
       <div class="calc-code">
         hash = SHA256(<span>server_seed</span> + "-" + <span>client_seed</span> + "-" + <span>nonce</span>)<br>
         result = parseInt(hash[0..8], 16) / 0xFFFFFFFF<br>
-        <span>→ číslo mezi 0 a 1 → výsledek hry</span>
+        <span>→ number between 0 and 1 → game result</span>
       </div>
     </div>
 
     <div class="form-grid">
       <div class="fld">
-        <label>Bet ID (z historie sázek)</label>
-        <input type="text" id="betId" placeholder="UUID sázky...">
+        <label>Bet ID (from bet history)</label>
+        <input type="text" id="betId" placeholder="UUID set ID...">
       </div>
       <div class="fld">
-        <label>Nebo zadej manuálně — Server Seed</label>
-        <input type="text" id="manualServerSeed" placeholder="64 hex znaků...">
+        <label>Or enter manually — Server Seed</label>
+        <input type="text" id="manualServerSeed" placeholder="64 hex characters...">
       </div>
       <div class="fld">
         <label>Client Seed</label>
-        <input type="text" id="manualClientSeed" placeholder="Tvůj client seed...">
+        <input type="text" id="manualClientSeed" placeholder="Your client seed...">
       </div>
       <div class="fld">
         <label>Nonce</label>
@@ -194,13 +194,13 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;ba
     </div>
 
     <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
-      <button class="btn btn-gold" onclick="verifyBet()">&#9989; Ověřit sázku</button>
-      <button class="btn btn-blue" onclick="verifyManual()">&#128200; Ověřit manuálně</button>
+      <button class="btn btn-gold" onclick="verifyBet()">&#9989; Verify Bet</button>
+      <button class="btn btn-blue" onclick="verifyManual()">&#128200; Verify Manually</button>
     </div>
 
-    <!-- VÝSLEDEK -->
+    <!-- RESULT -->
     <div class="result-card" id="resultCard">
-      <div class="result-title" id="resultTitle">&#9989; Výsledek ověřen!</div>
+      <div class="result-title" id="resultTitle">&#9989; Vesult verified!</div>
       <div class="result-grid" id="resultGrid"></div>
       <div class="hash-check" id="hashCheck"></div>
     </div>
@@ -232,7 +232,7 @@ async function loadSeeds() {
 }
 
 async function changeClientSeed() {
-  var newSeed = prompt('Zadej nový Client Seed (nebo nech prázdné pro náhodný):');
+  var newSeed = prompt('Enter new Client Seed (leave empty for random):');
   if (newSeed === null) return;
   try {
     var sess = await window.CK?.getSession?.();
@@ -244,20 +244,20 @@ async function changeClientSeed() {
     });
     var data = await r.json();
     if (data.ok) {
-      showAlert('seedsAlert', 'ok', '✅ Client Seed změněn! Nový Server Seed Hash: ' + data.serverSeedHash.slice(0,20) + '...');
+      showAlert('seedsAlert', 'ok', '✅ Client Seed changed! New Server Seed Hash: ' + data.serverSeedHash.slice(0,20) + '...');
       loadSeeds();
     }
-  } catch(e) { showAlert('seedsAlert', 'err', '❌ Chyba: ' + e.message); }
+  } catch(e) { showAlert('seedsAlert', 'err', '❌ Error: ' + e.message); }
 }
 
 // Ověř sázku podle Bet ID
 async function verifyBet() {
   var betId = document.getElementById('betId').value.trim();
-  if (!betId) { alert('Zadej Bet ID'); return; }
+  if (!betId) { alert('Enter Bet ID'); return; }
   try {
     var r = await fetch(WALLET_SERVER + '/api/game/verify/' + betId);
     var data = await r.json();
-    if (!data.ok) { showResult(false, null, 'Sázka nenalezena: ' + data.error); return; }
+    if (!data.ok) { showResult(false, null, 'Bet not found: ' + data.error); return; }
 
     // Ověř hash
     var computedHash = await sha256(data.serverSeed);
@@ -279,7 +279,7 @@ async function verifyBet() {
       computedHash: computedHash,
       hashMatch: hashMatch
     });
-  } catch(e) { showResult(false, null, '❌ Chyba: ' + e.message); }
+  } catch(e) { showResult(false, null, '❌ Error: ' + e.message); }
 }
 
 // Ověř manuálně
@@ -287,7 +287,7 @@ async function verifyManual() {
   var serverSeed = document.getElementById('manualServerSeed').value.trim();
   var clientSeed = document.getElementById('manualClientSeed').value.trim();
   var nonce = parseInt(document.getElementById('manualNonce').value) || 0;
-  if (!serverSeed || !clientSeed) { alert('Zadej Server Seed a Client Seed'); return; }
+  if (!serverSeed || !clientSeed) { alert('Enter Server Seed and Client Seed'); return; }
 
   var computedHash = await sha256(serverSeed);
   var pfFloat = await computePfFloat(serverSeed, clientSeed, nonce);
@@ -316,14 +316,14 @@ function showResult(ok, data, errorMsg) {
     return;
   }
 
-  title.textContent = ok ? '✅ Výsledek ověřen — vše souhlasí!' : '❌ Hash nesouhlasí!';
+  title.textContent = ok ? '✅ Result verified — everything matches!' : '❌ Hash nesouhlasí!';
 
   grid.innerHTML = [
-    {label:'Hra', value: data.game || '—', cls:''},
+    {label:'Game', value: data.game || '—', cls:''},
     {label:'PF Float (0-1)', value: data.pfFloat?.toFixed(8) || '—', cls:'gold'},
     {label:'Multiplier', value: data.multiplier ? data.multiplier + 'x' : '—', cls:'green'},
     {label:'Nonce', value: data.nonce ?? '—', cls:''},
-    {label:'Sázka (satoshi)', value: data.betSatoshi || '—', cls:''},
+    {label:'Bet (satoshi)', value: data.betSatoshi || '—', cls:''},
     {label:'Profit (satoshi)', value: data.profitSatoshi || '—', cls: data.profitSatoshi > 0 ? 'green' : 'red'},
   ].map(function(i){
     return '<div class="result-item"><div class="result-item-label">'+i.label+'</div><div class="result-item-value '+i.cls+'">'+i.value+'</div></div>';
@@ -333,7 +333,7 @@ function showResult(ok, data, errorMsg) {
     '<div class="hash-label">Server Seed</div><div class="hash-value" style="color:var(--text-dim);margin-bottom:.6rem">' + (data.serverSeed||'—') + '</div>' +
     '<div class="hash-label">SHA-256 Hash (vypočítaný)</div><div class="hash-value ' + (data.hashMatch?'hash-match':'hash-nomatch') + '">' + (data.computedHash||'—') + '</div>' +
     '<div class="hash-label" style="margin-top:.6rem">SHA-256 Hash (uložený)</div><div class="hash-value">' + (data.serverSeedHash||'—') + '</div>' +
-    '<div style="margin-top:.8rem;font-family:Cinzel,serif;font-size:.75rem;color:' + (data.hashMatch?'var(--green)':'var(--red)') + '">' + (data.hashMatch?'✅ Hash sedí — výsledek je spravedlivý!':'❌ Hash nesedí!') + '</div>';
+    '<div style="margin-top:.8rem;font-family:Cinzel,serif;font-size:.75rem;color:' + (data.hashMatch?'var(--green)':'var(--red)') + '">' + (data.hashMatch?'✅ Hash matches — result is fair!':'❌ Hash does not match!') + '</div>';
 
   var clientSeedInput = document.getElementById('manualClientSeed');
   var serverSeedInput = document.getElementById('manualServerSeed');
