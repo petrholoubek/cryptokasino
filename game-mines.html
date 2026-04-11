@@ -1152,15 +1152,6 @@ async function startGame(){
   document.getElementById('resultText').textContent='';
   document.getElementById('multDisp').textContent='1.00×';
   document.getElementById('startBtn').disabled=true;
-  // Zapiš do game_sessions
-  if(sbClient&&currentUser){
-    sbClient.from('game_sessions').insert({
-      user_id:currentUser.id, game:'mines',
-      bet_satoshi:Math.round(betAmt*1e8),
-      started_at:new Date().toISOString(),
-      meta:{mines_count:minesCount,grid_size:GRID}
-    }).then(()=>{}).catch(()=>{});
-  }
   document.getElementById('cashoutBtn').classList.add('show');
   document.getElementById('cashoutBtn').classList.remove('danger-cashout');
   document.getElementById('boardWrap').className='board-wrap active-game';
