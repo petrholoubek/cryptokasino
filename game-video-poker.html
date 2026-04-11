@@ -385,6 +385,49 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <footer><p>&#169; 2026 CryptoKasino &middot; 18+ &middot; Play Responsibly &middot; <a href="casino.html" style="color:var(--gold)">&#8592; Back to Casino</a></p></footer>
 
 <script>
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+document.addEventListener('click',()=>{if(AC.state==='suspended')AC.resume();},{once:true});
+function playSound(t){
+  try{
+    if(t==='deal'){
+      // Klik karet
+      [0,1,2,3,4].forEach(function(i){
+        const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+        o.type='triangle';o.frequency.value=600+i*80;
+        const delay=i*0.06;
+        g.gain.setValueAtTime(.1,AC.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+delay+.1);
+        o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+.15);
+      });
+    }else if(t==='hold'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sine';o.frequency.setValueAtTime(800,AC.currentTime);o.frequency.exponentialRampToValueAtTime(1100,AC.currentTime+.08);
+      g.gain.setValueAtTime(.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.12);
+      o.start();o.stop(AC.currentTime+.12);
+    }else if(t==='win'){
+      [523,659,784,1047].forEach(function(f,i){
+        const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+        o.type='sine';o.frequency.value=f;
+        const delay=i*.1;
+        g.gain.setValueAtTime(.15,AC.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+delay+.3);
+        o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+.35);
+      });
+    }else if(t==='royal'){
+      [523,659,784,987,1175,1568,2093].forEach(function(f,i){
+        const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+        o.type='sine';o.frequency.value=f;
+        const delay=i*.08;
+        g.gain.setValueAtTime(.18,AC.currentTime+delay);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+delay+.4);
+        o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+.45);
+      });
+    }else if(t==='lose'){
+      const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
+      o.type='sawtooth';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.exponentialRampToValueAtTime(100,AC.currentTime+.4);
+      g.gain.setValueAtTime(.1,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);
+      o.start();o.stop(AC.currentTime+.4);
+    }
+  }catch(e){}
+}
+
 // ── PAYTABLE ──────────────────────────────────────────────────────
 const PAYTABLE=[
   {name:'Royal\nFlush',mult:800},
@@ -510,6 +553,7 @@ function renderCards(faceDown){
 
 function toggleHold(i){
   if(gamePhase!=='draw')return;
+  playSound('hold');
   held[i]=!held[i];
   const cards=document.querySelectorAll('.card.face-up');
   cards.forEach((c,idx)=>{c.classList.toggle('held',held[idx]);});
@@ -536,6 +580,7 @@ async function deal(){
   gamePhase='draw';
 
   document.getElementById('dealBtn').disabled=true;
+  playSound('deal');
   document.getElementById('drawBtn').classList.add('show');
   document.getElementById('boardWrap').className='board-wrap active-game';
 
@@ -579,7 +624,7 @@ async function draw(){
 
   const ht=document.getElementById('handText');
   if(result.mult>0){
-    ht.textContent=result.name.toUpperCase()+'!';ht.className='hand-text show win';
+    ht.textContent=result.name.toUpperCase()+'!';ht.className='hand-text show win';playSound(result.mult>=800?'royal':'win');
     document.getElementById('multVal').textContent=result.mult+'×';
     document.getElementById('multVal').classList.add('bump');setTimeout(()=>document.getElementById('multVal').classList.remove('bump'),350);
     document.getElementById('potVal').textContent=fmtS(payout)+' BTC';
@@ -599,7 +644,7 @@ async function draw(){
 
     if(window.CK&&window.CK.logBet)window.CK.logBet('mines',Math.round(betAmt*1e8),Math.round(profit*1e8),result.mult,{game:'video_poker',hand:result.name}).catch(()=>{});
   }else{
-    ht.textContent='No win — Better luck next time!';ht.className='hand-text show lose';
+    ht.textContent='No win — Better luck next time!';ht.className='hand-text show lose';playSound('lose');
     document.getElementById('multVal').textContent='0×';
     document.getElementById('boardWrap').className='board-wrap';
     sessionProfit-=betAmt;
