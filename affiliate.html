@@ -7,18 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
-
-<!-- Favicon -->
-<link rel="icon" href="/favicon.ico">
-<!-- PNG fallback -->
-<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-<!-- Apple (iPhone) -->
-<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-<!-- PWA manifest -->
-<link rel="manifest" href="/site.webmanifest">
-<!-- Theme color (mobilní horní lišta) -->
-<meta name="theme-color" content="#000d33">
 <style>
 :root{
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
@@ -234,7 +222,7 @@ nav a.active{color:var(--gold-light);}
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a><a href="verify.html" style="color:#4ade80;">&#9989; Provably Fair</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal" style="display:none">0.00000000 BTC</span>
     <span id="headerVip"></span>
@@ -584,7 +572,7 @@ nav a.active{color:var(--gold-light);}
     isTyping = true;
     showTyping();
     try {
-      var response = await fetch('https://api.cryptokasino.io/api/chat', {
+      var response = await fetch('https://www.cryptokasino.io/api/chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({system: SYSTEM_PROMPT, messages: chatHistory})
@@ -606,15 +594,35 @@ nav a.active{color:var(--gold-light);}
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    // Chat toggle button
     var btn = document.getElementById('aiChatBtn');
     if (btn) btn.addEventListener('click', toggleChat);
-    var closeBtn = document.querySelector('.chat-close');
+
+    // Close button - both id and class
+    var closeBtn = document.getElementById('chatCloseBtn');
+    if (!closeBtn) closeBtn = document.querySelector('.chat-close');
     if (closeBtn) closeBtn.addEventListener('click', toggleChat);
+
+    // Send button
     var sendBtn = document.getElementById('chatSend');
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+
+    // Enter key
     var inp = document.getElementById('chatInput');
     if (inp) inp.addEventListener('keypress', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    // Quick reply buttons
+    document.querySelectorAll('.quick-btn[data-msg]').forEach(function(qb) {
+      qb.addEventListener('click', function() {
+        var inp = document.getElementById('chatInput');
+        if (inp) {
+          inp.value = qb.getAttribute('data-msg');
+          if (!chatOpen) toggleChat();
+          setTimeout(sendMessage, 100);
+        }
+      });
     });
   });
 
@@ -628,8 +636,11 @@ let sb=null,currentUser=null,affiliateData=null;
 
 (async function(){
   try{
-    const {createClient}=supabase;
-    sb=createClient(SB_URL,SB_KEY);
+    // Pouzij sdileny CK.sb misto vlastniho klienta
+    var tries=0;
+    while(!window.CK&&tries<50){await new Promise(r=>setTimeout(r,100));tries++;}
+    sb=window.CK?.sb;
+    if(!sb){console.warn('[Affiliate] CK.sb nedostupny');return;}
     const {data:{session}}=await sb.auth.getSession();
     if(session){
       currentUser=session.user;
@@ -649,7 +660,7 @@ let sb=null,currentUser=null,affiliateData=null;
 async function loadAffiliate(){
   if(!sb||!currentUser)return;
   try{
-    const {data}=await sb.from('affiliates').select('*').eq('user_id',currentUser.id).single();
+    const {data}=await sb.from('affiliates').select('*').eq('user_id',currentUser.id).maybeSingle();
     if(data){
       affiliateData=data;
       showDashboard(data);
