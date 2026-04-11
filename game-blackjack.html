@@ -672,9 +672,14 @@ async function dealHand(){
   if(betAmt>balance){alert('Insufficient balance!');return;}
   dealing=true;await pfTick();
 
-  // Deduct
-  if(gameMode==='real'){await sbDeduct(Math.round(betAmt*1e8));realBalance-=betAmt;}
-  else demoBalance-=betAmt;
+  // Deduct + server log
+  if(gameMode==='real'){
+    callGameServer('blackjack', parseFloat(betAmt)||0, {}).then(function(s){
+      if(s && s.new_balance !== undefined){realBalance=s.new_balance;balance=s.new_balance;}
+      console.log('[SERVER] blackjack result:', s);
+    }).catch(function(){});
+    await sbDeduct(Math.round(betAmt*1e8));realBalance-=betAmt;
+  } else demoBalance-=betAmt;
   balance-=betAmt;pot=betAmt;insurance=0;totalWagered+=betAmt;
   updateBal();updatePot();
 
@@ -709,7 +714,7 @@ function enableActions(){
 
 function takeInsurance(yes){
   document.getElementById('insuranceBar').classList.remove('show');
-  if(yes){const ic=betAmt/2;if(ic>balance){alert('Insufficient for insurance!');return;}insurance=ic;if(gameMode==='real'){callGameServer('blackjack', parseFloat(typeof ic!=='undefined'?ic:0)||0, {}).then(function(s){if(s){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});sbDeduct(Math.round(ic*1e8));realBalance-=ic;}else demoBalance-=ic;balance-=ic;updateBal();playSound('chip');}
+  if(yes){const ic=betAmt/2;if(ic>balance){alert('Insufficient for insurance!');return;}insurance=ic;if(gameMode==='real'){callGameServer('blackjack', parseFloat(initialBet)||0, {}).then(function(s){if(s){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});sbDeduct(Math.round(ic*1e8));realBalance-=ic;}else demoBalance-=ic;balance-=ic;updateBal();playSound('chip');}
   enableActions();
 }
 
