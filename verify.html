@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provably Fair — CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);--dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;--green:#4ade80;--red:#f87171;--blue:#60a5fa;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);pointer-events:none;z-index:0;}
+
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(2,6,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.25);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(60,120,255,0.5),rgba(212,160,23,0.6),rgba(60,120,255,0.5),transparent);}
+.logo{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.1rem;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c8920a,#f5c842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#000;font-weight:900;}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+.back-btn{color:var(--text-dim);text-decoration:none;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(60,120,255,.2);padding:.3rem .8rem;border-radius:6px;transition:all .2s;}
+.back-btn:hover{color:#93c5fd;border-color:var(--blue);}
+
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:3rem 1.5rem;}
+
+/* HERO */
+.pf-hero{text-align:center;margin-bottom:3rem;}
+.pf-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:25px;padding:.5rem 1.5rem;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:1.2rem;}
+.pf-title{font-family:'Cinzel',serif;font-size:2.5rem;font-weight:900;color:var(--gold-light);text-shadow:0 0 30px var(--gold-glow);margin-bottom:.8rem;}
+.pf-sub{font-size:1rem;color:var(--text-dim);max-width:600px;margin:0 auto;line-height:1.7;}
+
+/* HOW IT WORKS */
+.how-it-works{background:rgba(5,15,50,.8);border:1px solid rgba(60,120,255,.2);border-radius:16px;padding:2rem;margin-bottom:2rem;}
+.hiw-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem;}
+.hiw-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(60,120,255,.4),transparent);}
+.hiw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.hiw-step{text-align:center;padding:1.2rem;background:rgba(30,60,140,.1);border-radius:12px;border:1px solid rgba(60,120,255,.1);}
+.hiw-num{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:var(--gold-light);margin-bottom:.5rem;}
+.hiw-name{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text);margin-bottom:.4rem;}
+.hiw-desc{font-size:.78rem;color:var(--text-dim);line-height:1.5;}
+
+/* SEEDS CARD */
+.seeds-card{background:rgba(5,15,50,.9);border:1px solid rgba(212,160,23,.25);border-radius:16px;padding:2rem;margin-bottom:2rem;}
+.seeds-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem;}
+.seeds-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(212,160,23,.4),transparent);}
+.seed-row{margin-bottom:1rem;}
+.seed-label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;}
+.seed-value{font-family:monospace;font-size:.8rem;color:var(--gold-light);background:rgba(0,0,0,.3);border:1px solid rgba(60,120,255,.15);border-radius:8px;padding:.6rem .9rem;word-break:break-all;cursor:pointer;transition:border-color .2s;}
+.seed-value:hover{border-color:var(--blue);}
+.seeds-actions{display:flex;gap:.8rem;margin-top:1.2rem;flex-wrap:wrap;}
+.btn{padding:.55rem 1.2rem;border-radius:8px;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s;}
+.btn-gold{background:linear-gradient(135deg,#c8920a,#e8b020);color:#000;}
+.btn-gold:hover{transform:scale(1.02);}
+.btn-blue{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.25);}
+.btn-blue:hover{background:rgba(96,165,250,.2);}
+.btn-green{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.25);}
+.btn-green:hover{background:rgba(74,222,128,.2);}
+
+/* VERIFY FORM */
+.verify-card{background:rgba(5,15,50,.9);border:1px solid rgba(60,120,255,.2);border-radius:16px;padding:2rem;margin-bottom:2rem;}
+.verify-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-bottom:1.5rem;display:flex;align-items:center;gap:.8rem;}
+.verify-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(60,120,255,.4),transparent);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;}
+.fld label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.4rem;}
+.fld input,.fld select{width:100%;background:rgba(5,15,50,.8);border:1px solid rgba(60,120,255,.2);border-radius:8px;padding:.6rem .9rem;font-family:monospace;font-size:.82rem;color:var(--text);outline:none;transition:border-color .2s;}
+.fld input:focus,.fld select:focus{border-color:var(--blue);}
+.fld select option{background:#030c1e;}
+
+/* RESULT */
+.result-card{background:rgba(5,15,50,.95);border-radius:16px;padding:2rem;margin-top:1.5rem;display:none;}
+.result-card.show{display:block;}
+.result-card.ok{border:1px solid rgba(74,222,128,.4);box-shadow:0 0 30px rgba(74,222,128,.1);}
+.result-card.fail{border:1px solid rgba(248,113,113,.4);}
+.result-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;margin-bottom:1rem;}
+.result-card.ok .result-title{color:var(--green);}
+.result-card.fail .result-title{color:var(--red);}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;}
+.result-item{background:rgba(0,0,0,.2);border-radius:8px;padding:.8rem;}
+.result-item-label{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;}
+.result-item-value{font-family:monospace;font-size:.78rem;color:var(--text);word-break:break-all;}
+.result-item-value.green{color:var(--green);}
+.result-item-value.gold{color:var(--gold-light);}
+.hash-check{background:rgba(30,60,140,.1);border:1px solid rgba(60,120,255,.15);border-radius:8px;padding:1rem;margin-top:1rem;}
+.hash-label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.4rem;}
+.hash-value{font-family:monospace;font-size:.72rem;word-break:break-all;}
+.hash-match{color:var(--green);}
+.hash-nomatch{color:var(--red);}
+
+/* CALC BOX */
+.calc-box{background:rgba(2,6,20,.8);border:1px solid rgba(60,120,255,.1);border-radius:10px;padding:1.2rem;margin-bottom:1.5rem;}
+.calc-title{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.8rem;}
+.calc-code{font-family:monospace;font-size:.72rem;color:#93c5fd;line-height:1.8;}
+.calc-code span{color:var(--gold-light);}
+
+/* ALERT */
+.alert{border-radius:8px;padding:.7rem .9rem;margin-top:.8rem;font-size:.8rem;display:none;}
+.alert.show{display:block;}
+.alert-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green);}
+.alert-err{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--red);}
+
+@media(max-width:700px){.hiw-steps,.form-grid,.result-grid{grid-template-columns:1fr;}.pf-title{font-size:1.8rem;}}
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
+  <a href="casino.html" class="back-btn">&#8592; Kasino</a>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="pf-hero">
+    <div class="pf-badge">&#9989; Provably Fair — 100% ověřitelné</div>
+    <h1 class="pf-title">Provably Fair</h1>
+    <p class="pf-sub">Každý výsledek hry je kryptograficky ověřitelný. Nemůžeme manipulovat výsledky — můžeš si to sám ověřit pomocí SHA-256.</p>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-it-works">
+    <div class="hiw-title">&#128272; Jak to funguje</div>
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <div class="hiw-name">Před hrou</div>
+        <div class="hiw-desc">Server vygeneruje tajný <b>Server Seed</b> a pošle ti jeho SHA-256 hash. Z hashe nelze zjistit původní seed.</div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <div class="hiw-name">Hra</div>
+        <div class="hiw-desc">Výsledek je vypočítán z kombinace <b>Server Seed + Client Seed + Nonce</b>. Ani my, ani ty nemůžeme výsledek předvídat.</div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <div class="hiw-name">Ověření</div>
+        <div class="hiw-desc">Po hře vidíš původní Server Seed. Můžeš sám spočítat výsledek a ověřit že hash sedí.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TVOJE SEEDY -->
+  <div class="seeds-card" id="seedsCard" style="display:none;">
+    <div class="seeds-title">&#128273; Tvoje aktivní seedy</div>
+    <div class="seed-row">
+      <div class="seed-label">Server Seed Hash (SHA-256)</div>
+      <div class="seed-value" id="serverSeedHash" onclick="copyText(this)">Načítám...</div>
+    </div>
+    <div class="seed-row">
+      <div class="seed-label">Client Seed (klikni pro změnu)</div>
+      <div class="seed-value" id="clientSeedDisplay" onclick="copyText(this)">Načítám...</div>
+    </div>
+    <div class="seed-row">
+      <div class="seed-label">Nonce (počet sázek)</div>
+      <div class="seed-value" id="nonceDisplay">0</div>
+    </div>
+    <div class="seeds-actions">
+      <button class="btn btn-blue" onclick="changeClientSeed()">&#128260; Změnit Client Seed</button>
+      <button class="btn btn-gold" onclick="loadSeeds()">&#128260; Obnovit</button>
+    </div>
+    <div id="seedsAlert" class="alert"></div>
+  </div>
+
+  <!-- VERIFY FORM -->
+  <div class="verify-card">
+    <div class="verify-title">&#9989; Ověřit sázku</div>
+
+    <div class="calc-box">
+      <div class="calc-title">Výpočet výsledku</div>
+      <div class="calc-code">
+        hash = SHA256(<span>server_seed</span> + "-" + <span>client_seed</span> + "-" + <span>nonce</span>)<br>
+        result = parseInt(hash[0..8], 16) / 0xFFFFFFFF<br>
+        <span>→ číslo mezi 0 a 1 → výsledek hry</span>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="fld">
+        <label>Bet ID (z historie sázek)</label>
+        <input type="text" id="betId" placeholder="UUID sázky...">
+      </div>
+      <div class="fld">
+        <label>Nebo zadej manuálně — Server Seed</label>
+        <input type="text" id="manualServerSeed" placeholder="64 hex znaků...">
+      </div>
+      <div class="fld">
+        <label>Client Seed</label>
+        <input type="text" id="manualClientSeed" placeholder="Tvůj client seed...">
+      </div>
+      <div class="fld">
+        <label>Nonce</label>
+        <input type="number" id="manualNonce" placeholder="0" min="0" value="0">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="verifyBet()">&#9989; Ověřit sázku</button>
+      <button class="btn btn-blue" onclick="verifyManual()">&#128200; Ověřit manuálně</button>
+    </div>
+
+    <!-- VÝSLEDEK -->
+    <div class="result-card" id="resultCard">
+      <div class="result-title" id="resultTitle">&#9989; Výsledek ověřen!</div>
+      <div class="result-grid" id="resultGrid"></div>
+      <div class="hash-check" id="hashCheck"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WALLET_SERVER = 'https://api.cryptokasino.io';
+
+// Nacti seedy hrace
+async function loadSeeds() {
+  var card = document.getElementById('seedsCard');
+  try {
+    var sess = await window.CK?.getSession?.();
+    if (!sess) { card.style.display='none'; return; }
+    var token = sess.access_token;
+    var r = await fetch(WALLET_SERVER + '/api/game/seeds', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    var data = await r.json();
+    if (data.ok) {
+      card.style.display = 'block';
+      document.getElementById('serverSeedHash').textContent = data.serverSeedHash;
+      document.getElementById('clientSeedDisplay').textContent = data.clientSeed;
+      document.getElementById('nonceDisplay').textContent = data.nonce;
+    }
+  } catch(e) { console.warn('Seeds load:', e); }
+}
+
+async function changeClientSeed() {
+  var newSeed = prompt('Zadej nový Client Seed (nebo nech prázdné pro náhodný):');
+  if (newSeed === null) return;
+  try {
+    var sess = await window.CK?.getSession?.();
+    if (!sess) return;
+    var r = await fetch(WALLET_SERVER + '/api/game/seeds/rotate', {
+      method: 'POST',
+      headers: {'Authorization': 'Bearer ' + sess.access_token, 'Content-Type': 'application/json'},
+      body: JSON.stringify({clientSeed: newSeed || undefined})
+    });
+    var data = await r.json();
+    if (data.ok) {
+      showAlert('seedsAlert', 'ok', '✅ Client Seed změněn! Nový Server Seed Hash: ' + data.serverSeedHash.slice(0,20) + '...');
+      loadSeeds();
+    }
+  } catch(e) { showAlert('seedsAlert', 'err', '❌ Chyba: ' + e.message); }
+}
+
+// Ověř sázku podle Bet ID
+async function verifyBet() {
+  var betId = document.getElementById('betId').value.trim();
+  if (!betId) { alert('Zadej Bet ID'); return; }
+  try {
+    var r = await fetch(WALLET_SERVER + '/api/game/verify/' + betId);
+    var data = await r.json();
+    if (!data.ok) { showResult(false, null, 'Sázka nenalezena: ' + data.error); return; }
+
+    // Ověř hash
+    var computedHash = await sha256(data.serverSeed);
+    var hashMatch = computedHash === data.serverSeedHash;
+
+    // Vypočítej float
+    var pfFloat = await computePfFloat(data.serverSeed, data.clientSeed, data.nonce);
+
+    showResult(hashMatch, {
+      game: data.game,
+      serverSeed: data.serverSeed,
+      serverSeedHash: data.serverSeedHash,
+      clientSeed: data.clientSeed,
+      nonce: data.nonce,
+      multiplier: data.multiplier,
+      betSatoshi: data.betSatoshi,
+      profitSatoshi: data.profitSatoshi,
+      pfFloat: pfFloat,
+      computedHash: computedHash,
+      hashMatch: hashMatch
+    });
+  } catch(e) { showResult(false, null, '❌ Chyba: ' + e.message); }
+}
+
+// Ověř manuálně
+async function verifyManual() {
+  var serverSeed = document.getElementById('manualServerSeed').value.trim();
+  var clientSeed = document.getElementById('manualClientSeed').value.trim();
+  var nonce = parseInt(document.getElementById('manualNonce').value) || 0;
+  if (!serverSeed || !clientSeed) { alert('Zadej Server Seed a Client Seed'); return; }
+
+  var computedHash = await sha256(serverSeed);
+  var pfFloat = await computePfFloat(serverSeed, clientSeed, nonce);
+
+  showResult(true, {
+    serverSeed, clientSeed, nonce,
+    serverSeedHash: computedHash,
+    computedHash,
+    pfFloat,
+    hashMatch: true
+  });
+}
+
+function showResult(ok, data, errorMsg) {
+  var card = document.getElementById('resultCard');
+  var title = document.getElementById('resultTitle');
+  var grid = document.getElementById('resultGrid');
+  var hashCheck = document.getElementById('hashCheck');
+
+  card.className = 'result-card show ' + (ok ? 'ok' : 'fail');
+
+  if (!ok && errorMsg) {
+    title.textContent = '❌ ' + errorMsg;
+    grid.innerHTML = '';
+    hashCheck.innerHTML = '';
+    return;
+  }
+
+  title.textContent = ok ? '✅ Výsledek ověřen — vše souhlasí!' : '❌ Hash nesouhlasí!';
+
+  grid.innerHTML = [
+    {label:'Hra', value: data.game || '—', cls:''},
+    {label:'PF Float (0-1)', value: data.pfFloat?.toFixed(8) || '—', cls:'gold'},
+    {label:'Multiplier', value: data.multiplier ? data.multiplier + 'x' : '—', cls:'green'},
+    {label:'Nonce', value: data.nonce ?? '—', cls:''},
+    {label:'Sázka (satoshi)', value: data.betSatoshi || '—', cls:''},
+    {label:'Profit (satoshi)', value: data.profitSatoshi || '—', cls: data.profitSatoshi > 0 ? 'green' : 'red'},
+  ].map(function(i){
+    return '<div class="result-item"><div class="result-item-label">'+i.label+'</div><div class="result-item-value '+i.cls+'">'+i.value+'</div></div>';
+  }).join('');
+
+  hashCheck.innerHTML =
+    '<div class="hash-label">Server Seed</div><div class="hash-value" style="color:var(--text-dim);margin-bottom:.6rem">' + (data.serverSeed||'—') + '</div>' +
+    '<div class="hash-label">SHA-256 Hash (vypočítaný)</div><div class="hash-value ' + (data.hashMatch?'hash-match':'hash-nomatch') + '">' + (data.computedHash||'—') + '</div>' +
+    '<div class="hash-label" style="margin-top:.6rem">SHA-256 Hash (uložený)</div><div class="hash-value">' + (data.serverSeedHash||'—') + '</div>' +
+    '<div style="margin-top:.8rem;font-family:Cinzel,serif;font-size:.75rem;color:' + (data.hashMatch?'var(--green)':'var(--red)') + '">' + (data.hashMatch?'✅ Hash sedí — výsledek je spravedlivý!':'❌ Hash nesedí!') + '</div>';
+
+  var clientSeedInput = document.getElementById('manualClientSeed');
+  var serverSeedInput = document.getElementById('manualServerSeed');
+  var nonceInput = document.getElementById('manualNonce');
+  if (data.serverSeed) serverSeedInput.value = data.serverSeed;
+  if (data.clientSeed) clientSeedInput.value = data.clientSeed;
+  if (data.nonce !== undefined) nonceInput.value = data.nonce;
+}
+
+// SHA-256 v prohlizeci
+async function sha256(message) {
+  var encoder = new TextEncoder();
+  var data = encoder.encode(message);
+  var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  var hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+
+// Vypocitej PF float
+async function computePfFloat(serverSeed, clientSeed, nonce) {
+  var combined = serverSeed + '-' + clientSeed + '-' + nonce;
+  var hash = await sha256(combined);
+  var decimal = parseInt(hash.slice(0,8), 16);
+  return decimal / 0xffffffff;
+}
+
+function copyText(el) {
+  navigator.clipboard.writeText(el.textContent).then(function(){
+    var orig = el.style.borderColor;
+    el.style.borderColor = 'var(--green)';
+    setTimeout(function(){el.style.borderColor = orig;}, 800);
+  });
+}
+
+function showAlert(id, type, msg) {
+  var el = document.getElementById(id);
+  el.className = 'alert alert-' + (type==='ok'?'ok':'err') + ' show';
+  el.textContent = msg;
+  setTimeout(function(){el.classList.remove('show');}, 5000);
+}
+
+// Inicializace
+(async function(){
+  var tries = 0;
+  while(!window.CK && tries < 30){await new Promise(function(r){setTimeout(r,100);});tries++;}
+  if(window.CK) loadSeeds();
+
+  // Zkontroluj URL parametr betId
+  var params = new URLSearchParams(window.location.search);
+  var betId = params.get('bet');
+  if(betId){document.getElementById('betId').value = betId; verifyBet();}
+})();
+</script>
+</body>
+</html>
