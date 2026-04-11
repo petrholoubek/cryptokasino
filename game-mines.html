@@ -834,7 +834,7 @@ window.addEventListener('load', async function(){
     const bal = await CK.getBalance();
     if(bal > 0){ realBalance = bal; if(gameMode==='real'){ balance = bal; updateBal(); } }
     // Načti game settings přes CK cache
-    const gs = await CK.getGameSettings('mines');
+    const gs = await window.CK&&window.CK.getGameSettings?window.CK.getGameSettings.bind(window.CK):async()=>null('mines');
     if(gs){ RTP = gs.rtp/100; HOUSE_EDGE = gs.house_edge/100; }
     console.log('[Mines] CK wrapper active, RTP:', (RTP*100).toFixed(1)+'%');
   }
