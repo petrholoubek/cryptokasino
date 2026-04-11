@@ -223,7 +223,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a><a href="verify.html" style="color:#4ade80;">&#9989; Provably Fair</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <a href="deposit.html" class="btn-dep">Deposit</a>
@@ -267,7 +267,17 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
 
     <!-- DEPOSIT TAB -->
     <div class="tab-content active" id="tab-deposit">
-      <div class="deposit-card">
+      
+<!-- WELCOME BONUS BANNER -->
+<div id="welcomeBonusBanner" style="background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(245,200,66,.08));border:1px solid rgba(212,160,23,.4);border-radius:16px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.2rem;">
+  <div style="font-size:2.2rem;">&#127873;</div>
+  <div style="flex:1;">
+    <div style="font-family:'Cinzel',serif;font-size:.8rem;font-weight:900;color:#F5C842;letter-spacing:.08em;margin-bottom:.3rem;">&#127381; WELCOME BONUS — 50% Match!</div>
+    <div style="font-size:.82rem;color:var(--text-dim);line-height:1.5;">Your first deposit gets a <b style="color:#F5C842;">50% bonus</b> up to <b style="color:#F5C842;">0.001 BTC</b> — automatically credited!</div>
+  </div>
+  <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:#F5C842;white-space:nowrap;">+50%<br><span style="font-size:.6rem;color:var(--text-dim);">FREE BTC</span></div>
+</div>
+<div class="deposit-card">
         <div class="dc-header">
           <span class="dc-title">&#8383; Bitcoin Deposit</span>
           <div class="dc-badge"><div class="dc-badge-dot"></div>HD Wallet &middot; Unique Address</div>
@@ -605,7 +615,15 @@ async function checkPendingDeposit() {
       document.getElementById('confStatus').style.color = 'var(--green)';
       document.getElementById('confBar').style.width = '100%';
       await loadTxHistory();
-      showModal('&#9989;', 'Deposit Confirmed!', '+'+data.amount_btc+' BTC credited to your account!');
+      if(data.is_first_deposit && data.welcome_bonus > 0) {
+        showModal('&#127881;', 'Welcome Bonus!',
+          '&#9989; Deposit: +'+data.amount_btc+' BTC\n' +
+          '&#127873; Welcome Bonus: +'+data.welcome_bonus.toFixed(8)+' BTC (50% match!)\n' +
+          '&#128176; Total credited: +'+(parseFloat(data.amount_btc)+data.welcome_bonus).toFixed(8)+' BTC'
+        );
+      } else {
+        showModal('&#9989;', 'Deposit Confirmed!', '+'+data.amount_btc+' BTC credited to your account!');
+      }
     } else if(data.status === 'pending') {
       setEl('confStatus', 'Transaction waiting for confirmation...');
     }
@@ -823,5 +841,29 @@ document.addEventListener('click',function(e){var m=document.getElementById('mob
   }
 })();
 </script>
+<script>
+// Skryj welcome bonus banner po prvnim depositu nebo pokud uz byl udelán
+async function checkWelcomeBonusStatus() {
+  try {
+    var sess = window.CK && await window.CK.sb?.auth.getSession();
+    if (!sess?.data?.session) return;
+    var token = sess.data.session.access_token;
+    var r = await fetch('https://api.cryptokasino.io/api/wallet/address', {
+      headers: {'Authorization': 'Bearer ' + token}
+    });
+    // Zkontroluj profil
+    if (window.CK && window.CK.sb) {
+      var {data: prof} = await window.CK.sb.from('profiles')
+        .select('first_deposit_done')
+        .eq('id', sess.data.session.user.id)
+        .single();
+      if (prof && prof.first_deposit_done) {
+        var banner = document.getElementById('welcomeBonusBanner');
+        if (banner) banner.style.display = 'none';
+      }
+    }
+  } catch(e) {}
+}
+setTimeout(checkWelcomeBonusStatus, 2000);</script>
 </body>
 </html>
