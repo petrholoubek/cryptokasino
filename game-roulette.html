@@ -824,7 +824,7 @@ async function spinWheel(){
   spinning=true;spinCount++;totalWagered+=total;
 
   // Deduct
-  if(gameMode==='real'){await callGameServer('roulette', parseFloat(typeof totalBetAmt!=='undefined'?totalBetAmt:0)||0, {}).then(function(s){if(s){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});sbDeduct(Math.round(total*1e8));balance-=total;realBalance-=total;}
+  if(gameMode==='real'){await callGameServer('roulette', parseFloat(total)||0, {}).then(function(s){if(s){realBalance=s.new_balance;balance=s.new_balance;}}).catch(function(){});sbDeduct(Math.round(total*1e8));balance-=total;realBalance-=total;}
   else{balance-=total;demoBalance-=total;}
   document.getElementById('srSpins').textContent=spinCount;
   updateBal();
