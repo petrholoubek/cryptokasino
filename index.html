@@ -552,6 +552,31 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   <div class="ticker-track" id="ticker"></div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- PROMOTION BANNER -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style>
+.promo-banner{position:relative;z-index:2;max-width:1300px;margin:2rem auto;padding:0 1.2rem;}
+.promo-box{background:linear-gradient(135deg,rgba(212,160,23,0.15),rgba(245,158,11,0.1));border:2px solid rgba(212,160,23,0.4);border-radius:16px;padding:1.5rem 2rem;text-align:center;box-shadow:0 0 40px rgba(212,160,23,0.2);position:relative;overflow:hidden;}
+.promo-box::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:skewX(-15deg);animation:promoShine 3s ease-in-out infinite;}
+@keyframes promoShine{0%{left:-100%;}50%{left:200%;}100%{left:200%;}}
+.promo-icon{font-size:2rem;margin-bottom:0.5rem;}
+.promo-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold-light);letter-spacing:0.08em;margin-bottom:0.5rem;text-shadow:0 0 20px rgba(212,160,23,0.6);}
+.promo-text{font-size:0.9rem;color:var(--text);margin-bottom:1rem;}
+.promo-btn{display:inline-block;background:linear-gradient(135deg,#d4a017,#f59e0b);color:#000;padding:0.7rem 2rem;border-radius:10px;font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;box-shadow:0 0 30px rgba(212,160,23,0.5);transition:all 0.3s;}
+.promo-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(212,160,23,0.8);}
+@media(max-width:640px){.promo-title{font-size:1rem;}.promo-text{font-size:0.8rem;}.promo-btn{padding:0.6rem 1.5rem;font-size:0.75rem;}}
+</style>
+
+<div class="promo-banner">
+  <div class="promo-box">
+    <div class="promo-icon">🎉</div>
+    <div class="promo-title">NEW PLAYER BONUS</div>
+    <div class="promo-text">Get 200% up to 1 BTC + 50 FREE SPINS on your first deposit!</div>
+    <a href="deposit.html" class="promo-btn">⚡ Claim Bonus Now</a>
+  </div>
+</div>
+
 <!-- TOP GAMES -->
 <div class="section" style="margin-top:2.5rem;">
   <div class="section-title">&#128293; Top Games</div>
@@ -1049,6 +1074,21 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <div class="featured-slots-section">
   <div class="section-title">⭐ Featured Slots</div>
+
+  <style>
+  .slot-tabs{display:flex;justify-content:center;gap:0.8rem;margin:1.5rem 0;flex-wrap:wrap;}
+  .slot-tab{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.6rem 1.5rem;border-radius:10px;background:rgba(3,10,40,0.6);border:1px solid rgba(60,120,255,0.25);color:var(--text-dim);cursor:pointer;transition:all 0.3s;}
+  .slot-tab:hover{border-color:rgba(100,160,255,0.5);color:var(--text);}
+  .slot-tab.active{background:linear-gradient(135deg,rgba(30,80,220,0.3),rgba(60,120,255,0.25));border-color:rgba(100,160,255,0.7);color:#fff;box-shadow:0 0 25px rgba(60,120,255,0.3);}
+  @media(max-width:640px){.slot-tabs{gap:0.5rem;}.slot-tab{padding:0.5rem 1rem;font-size:0.65rem;}}
+  </style>
+  
+  <div class="slot-tabs">
+    <div class="slot-tab active">🎰 All Slots</div>
+    <div class="slot-tab">⭐ New Releases</div>
+    <div class="slot-tab">🔥 Popular</div>
+    <div class="slot-tab">🏆 Jackpot</div>
+  </div>
   
   <!-- 4 VELKÉ KARTY -->
   <div class="featured-main">
@@ -1139,6 +1179,47 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   <div class="bets-table">
     <div class="bets-header"><span>Player</span><span>Game</span><span>Amount</span><span style="text-align:right">Profit</span></div>
     <div id="betsFeed"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- WHY PLAY HERE -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style>
+.why-section{position:relative;z-index:1;max-width:1300px;margin:4rem auto 3rem;padding:0 1.2rem;}
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2rem;}
+.why-item{text-align:center;padding:1.5rem 1rem;background:rgba(3,10,40,0.6);border:1px solid rgba(60,120,255,0.2);border-radius:14px;transition:all 0.3s;}
+.why-item:hover{border-color:rgba(60,120,255,0.5);transform:translateY(-5px);box-shadow:0 0 30px rgba(60,120,255,0.2);}
+.why-icon{font-size:2.5rem;margin-bottom:0.8rem;}
+.why-title{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:#93c5fd;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.why-desc{font-size:0.8rem;color:var(--text-dim);line-height:1.5;}
+@media(max-width:1024px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.why-grid{grid-template-columns:1fr;gap:1rem;}}
+</style>
+
+<div class="why-section">
+  <div class="section-title">⭐ Why Play at CryptoKasino?</div>
+  <div class="why-grid">
+    <div class="why-item">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">INSTANT PAYOUTS</div>
+      <div class="why-desc">Withdraw your winnings in Bitcoin instantly. No waiting, no delays.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">🔒</div>
+      <div class="why-title">PROVABLY FAIR</div>
+      <div class="why-desc">Every game is cryptographically verified. 100% transparent and fair.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">👤</div>
+      <div class="why-title">NO KYC REQUIRED</div>
+      <div class="why-desc">Play anonymously. No ID verification, no personal documents needed.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">💬</div>
+      <div class="why-title">24/7 SUPPORT</div>
+      <div class="why-desc">Live chat support available around the clock. We're here to help.</div>
+    </div>
   </div>
 </div>
 
