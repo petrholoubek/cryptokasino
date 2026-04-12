@@ -199,7 +199,7 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hov
   transition:all .25s;
 }
 .sym-img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));transition:all .3s;}
-.sym-emoji{font-size:70px;line-height:1;text-shadow:0 2px 8px rgba(0,255,255,.8), 0 0 20px rgba(255,0,255,.6);transition:all .3s;}
+.sym-emoji{font-size:2.2rem;line-height:1;text-shadow:0 2px 8px rgba(0,255,255,.8), 0 0 20px rgba(255,0,255,.6);transition:all .3s;}
 .sym-label{font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-top:.15rem;transition:color .3s;}
 .symbol.sym-win .sym-img,
 .symbol.sym-win .sym-emoji{
@@ -309,11 +309,20 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   .game-area{padding:.8rem .8rem 3rem;}
   .balance-bar{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.75rem;}
   .reel-outer{height:200px;max-width:100px;}.symbol{height:66px;}.sym-img{width:50px;height:50px;}
+  .sym-emoji{font-size:1.8rem !important;}
   .reel-outer::before{top:calc(50% - 33px);height:66px;}
   .action-row{grid-template-columns:1fr 1fr;}.spin-btn{grid-column:1/-1;}
   .auto-opts{grid-template-columns:1fr 1fr;}
   .stats-grid{grid-template-columns:1fr 1fr;}
   .pt-grid{grid-template-columns:1fr 1fr;}
+  .reels-container{gap:.4rem;}
+}
+@media(max-width:480px){
+  .sym-emoji{font-size:1.5rem !important;}
+  .reel-outer{max-width:80px;height:180px;}
+  .symbol{height:60px;}
+  .reels-container{gap:.3rem;}
+  h1,.ghb-title{font-size:1.1rem;}
 }
 </style>
 </head>
