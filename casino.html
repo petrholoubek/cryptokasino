@@ -731,6 +731,46 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
     </div>
   </div>
 
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- SLOTS INFO BANNER -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style>
+.slots-info-banner{position:relative;z-index:2;max-width:1320px;margin:0 auto 2rem;padding:0 1.5rem;}
+.info-banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;background:linear-gradient(135deg,rgba(30,58,138,0.25),rgba(30,64,175,0.15));border:1px solid rgba(59,130,246,0.25);border-radius:16px;padding:2rem 1.5rem;box-shadow:0 0 40px rgba(59,130,246,0.12);}
+.info-item{text-align:center;padding:0.5rem;}
+.info-icon{font-size:2.2rem;margin-bottom:0.6rem;animation:iconFloat 3s ease-in-out infinite;}
+.info-title{font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;color:#93c5fd;letter-spacing:0.12em;margin-bottom:0.4rem;text-transform:uppercase;}
+.info-desc{font-size:0.73rem;color:var(--text-dim);line-height:1.5;}
+@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@media(max-width:1024px){.info-banner-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem;padding:1.5rem 1.2rem;}}
+@media(max-width:640px){.info-banner-grid{grid-template-columns:1fr;gap:0.6rem;padding:1.2rem 1rem;}.info-icon{font-size:1.8rem;}.info-title{font-size:0.65rem;}.info-desc{font-size:0.7rem;}}
+</style>
+
+<div class="slots-info-banner">
+  <div class="info-banner-grid">
+    <div class="info-item">
+      <div class="info-icon">🎁</div>
+      <div class="info-title">Free Spins</div>
+      <div class="info-desc">Trigger up to 20 free spins with expanding symbols & multipliers</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🏆</div>
+      <div class="info-title">Progressive Jackpots</div>
+      <div class="info-desc">Win life-changing jackpots starting from 0.5+ BTC</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">⚡</div>
+      <div class="info-title">Bonus Features</div>
+      <div class="info-desc">Sticky wilds, respins, cascading wins & bonus rounds</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">💎</div>
+      <div class="info-title">High RTP</div>
+      <div class="info-desc">96%+ return to player on all premium slots</div>
+    </div>
+  </div>
+</div>
+
   <!-- ALL GAMES -->
   <div id="games"></div>
   <div class="sec-title">&#127920; All Casino Games</div>
