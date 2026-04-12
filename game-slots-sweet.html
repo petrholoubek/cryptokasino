@@ -523,13 +523,30 @@ spinning=true;
 currentNonce=pfN;
 pfTick();
 
+// Call server for real mode payout
+if(gameMode==='real' && window.CK && bet > 0){
+  window.CK.callGameServer('sweet_bonanza', bet, {
+    serverSeed: pfSS,
+    clientSeed: pfCS,
+    nonce: currentNonce
+  }).then(serverResult => {
+    if(serverResult && serverResult.ok){
+      console.log('[SERVER] sweet_bonanza result:', serverResult);
+      // Server už odečetl bet a přidal win, jen refresh balance
+      window.CK.refreshBalance().then(newBal => {
+        realBalance = newBal;
+        bal = newBal;
+        updateBal();
+      });
+    }
+  }).catch(err => {
+    console.warn('[SERVER] sweet_bonanza error:', err);
+  });
+}
+
 if(bet>0){
   if(gameMode==='real' && window.CK){
-    window.CK.deductBet(Math.round(bet*1e8)).then(r => {
-      if (r && !r.ok && !r.demo) {
-        alert('Error deducting bet: ' + (r.error || 'Unknown'));
-      }
-    });
+    // Server už to řeší, jen lokálně odečti pro UI
     realBalance-=bet;
   }else{
     demoBalance-=bet;
@@ -612,18 +629,11 @@ const prof=payout-bet;
 
 if(totalMult>0){
 if(gameMode==='real' && window.CK){
+  // Server už přidal výhru a zalogoval bet
   bal+=payout;
   realBalance+=payout;
-  window.CK.addWin(Math.round(payout*1e8));
-  window.CK.logBet('sweet_bonanza', Math.round(bet*1e8), Math.round(prof*1e8), totalMult, {
-    serverSeed:pfSS,
-    clientSeed:pfCS,
-    nonce:currentNonce,
-    clusters:clusters.length,
-    freeSpins:fsMode,
-    multiplier:mult
-  });
 }else{
+  // Demo mode - běží lokálně
   bal+=payout;
   demoBalance+=payout;
 }
