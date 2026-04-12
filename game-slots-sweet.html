@@ -360,15 +360,15 @@ setTimeout(()=>playBeep([523,659,784,1047,1318][i],.3),i*100);
 }
 
 const SYMS=[
-{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:3,m8:5,m10:10,m12:20,m15:100,scatter:true},
-{k:'CANDY',i:'🍬',n:'Candy',w:5,m8:3,m10:8,m12:15,m15:50},
-{k:'GRAPE',i:'🍇',n:'Grape',w:8,m8:2,m10:5,m12:10,m15:30},
-{k:'BANANA',i:'🍌',n:'Banana',w:8,m8:2,m10:5,m12:10,m15:30},
-{k:'MELON',i:'🍉',n:'Watermelon',w:10,m8:1.5,m10:4,m12:8,m15:25},
-{k:'DIAMOND',i:'💎',n:'Diamond',w:2,m8:10,m10:25,m12:50,m15:200,bomb:true},
-{k:'HEART',i:'❤️',n:'Heart',w:12,m8:1,m10:3,m12:6,m15:15},
-{k:'BLUE',i:'💙',n:'Blue',w:14,m8:1,m10:2,m12:5,m15:12},
-{k:'GREEN',i:'💚',n:'Green',w:16,m8:0.5,m10:1.5,m12:4,m15:10}
+{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:3,m5:2,m8:5,m10:10,m12:20,m15:100,scatter:true},
+{k:'CANDY',i:'🍬',n:'Candy',w:5,m5:1.5,m8:3,m10:8,m12:15,m15:50},
+{k:'GRAPE',i:'🍇',n:'Grape',w:8,m5:1,m8:2,m10:5,m12:10,m15:30},
+{k:'BANANA',i:'🍌',n:'Banana',w:8,m5:1,m8:2,m10:5,m12:10,m15:30},
+{k:'MELON',i:'🍉',n:'Watermelon',w:10,m5:0.8,m8:1.5,m10:4,m12:8,m15:25},
+{k:'DIAMOND',i:'💎',n:'Diamond',w:2,m5:5,m8:10,m10:25,m12:50,m15:200,bomb:true},
+{k:'HEART',i:'❤️',n:'Heart',w:12,m5:0.5,m8:1,m10:3,m12:6,m15:15},
+{k:'BLUE',i:'💙',n:'Blue',w:14,m5:0.3,m8:1,m10:2,m12:5,m15:12},
+{k:'GREEN',i:'💚',n:'Green',w:16,m5:0.2,m8:0.5,m10:1.5,m12:4,m15:10}
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
@@ -567,6 +567,7 @@ if(count>=15)m=sym.m15;
 else if(count>=12)m=sym.m12;
 else if(count>=10)m=sym.m10;
 else if(count>=8)m=sym.m8;
+else if(count>=5)m=sym.m5;
 totalMult+=m||0;
 cluster.cells.forEach(c=>{
 const cell=grid[c.r][c.c];
@@ -582,9 +583,6 @@ const payout=bet*totalMult;
 const prof=payout-bet;
 
 if(totalMult>0){
-const payout=bet*totalMult;
-const prof=payout-bet;
-
 if(gameMode==='real'){
   bal+=payout;
   realBalance+=payout;
@@ -633,7 +631,7 @@ for(let r=0;r<ROWS;r++){
 for(let c=0;c<COLS;c++){
 if(!visited[r][c]){
 const cluster=bfs(r,c,visited);
-if(cluster.length>=8)clusters.push({sym:grid[r][c].sym,cells:cluster});
+if(cluster.length>=5)clusters.push({sym:grid[r][c].sym,cells:cluster});
 }
 }
 }
