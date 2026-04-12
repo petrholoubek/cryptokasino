@@ -774,7 +774,12 @@ function doSpin(bet){
   pfTick();
   
   if(gameMode==='real') {
-    callGameServer('egypt_gold', parseFloat(bet)||0, {}).then(function(srv) {
+    // Poslat Provably Fair data na server
+    callGameServer('egypt_gold', parseFloat(bet)||0, {
+      serverSeed: pfSS,
+      clientSeed: pfCS,
+      nonce: pfN
+    }).then(function(srv) {
       if(srv) {
         if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
         if(typeof balance !== 'undefined') balance = srv.new_balance;
@@ -924,7 +929,12 @@ function resolveResult(bet){
 
   sessionProfit+=profit;updateBal();updateStats();chartData.push(profit);if(chartData.length>40)chartData.shift();updateChart();
   addHistory(midRow,bet,totalMult,profit);
-  if(gameMode==='real')sbLog(Math.round(bet*1e8),Math.round(profit*1e8),totalMult,{symbols:midRow.map(s=>s.key)});
+  if(gameMode==='real')sbLog(Math.round(bet*1e8),Math.round(profit*1e8),totalMult,{
+    symbols:midRow.map(s=>s.key),
+    serverSeed:pfSS,
+    clientSeed:pfCS,
+    nonce:pfN
+  });
 
   finishSpin(bet,profit);
 }
