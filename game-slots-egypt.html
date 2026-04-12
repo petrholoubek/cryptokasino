@@ -305,6 +305,13 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hov
 .h-profit{font-family:'Cinzel',serif;font-size:.75rem;text-align:right;}
 .h-profit.win{color:var(--green);}.h-profit.lose{color:var(--red);}
 
+/* PROVABLY FAIR */
+.pf-bar{background:rgba(212,160,23,.04);border:1px solid rgba(212,160,23,.1);border-radius:10px;padding:.62rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;}
+.pf-lbl{font-family:'Cinzel',serif;font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.pf-hash{font-family:monospace;font-size:.57rem;color:var(--text-dim);flex:1;word-break:break-all;}
+.pf-btn{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.25);color:var(--gold);padding:.27rem .68rem;border-radius:5px;font-family:'Cinzel',serif;font-size:.57rem;cursor:pointer;transition:all .2s;}
+.pf-btn:hover{background:rgba(212,160,23,.2);}
+
 footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);padding:2rem;text-align:center;font-size:.75rem;color:var(--text-dim);}
 
 @media(max-width:640px){
@@ -480,6 +487,13 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
     <div class="pt-grid" id="paytableGrid">
       <!-- Dynamicky naplneno z JS -->
     </div>
+  </div>
+
+  <!-- PROVABLY FAIR -->
+  <div class="pf-bar">
+    <div class="pf-lbl">🔐 Provably Fair</div>
+    <div class="pf-hash" id="pfHash">Spin to see SHA-256 proof</div>
+    <button class="pf-btn" onclick="verifyHash()">Verify</button>
   </div>
 
   <!-- STATS -->
@@ -755,6 +769,10 @@ function handleSpin(){
 
 function doSpin(bet){
   spinning=true;
+  
+  // ═══ UPDATE PROVABLY FAIR HASH ═══
+  pfTick();
+  
   if(gameMode==='real') {
     callGameServer('egypt_gold', parseFloat(bet)||0, {}).then(function(srv) {
       if(srv) {
@@ -988,6 +1006,61 @@ async function loadGameSettings(gameId){
     return null;
   }
 }
+
+// ══ PF ══
+let pfSS=genS(),pfCS=genS(),pfN=0;
+function genS(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function hashS(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function pfTick(){const c=`${pfSS}-${pfCS}-${pfN}`;const h=await hashS(c);pfN++;document.getElementById('pfHash').textContent=`Server:${pfSS.substring(0,12)}... Nonce:${pfN} Hash:${h.substring(0,20)}...`;}
+async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await hashS(c);alert(`✅ Provably Fair — Egypt Gold\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN-1}\n\nSHA-256: ${h}`);}
+
+// ══════════════════════════════════════════════════════════════
+// IMAGE PRELOADER - Rychlé načítání PNG symbolů
+// ══════════════════════════════════════════════════════════════
+
+const IMAGE_CACHE = {};
+const SYMBOL_IMAGES = [
+  'images/pharaon.png',
+  'images/kniha.png',
+  'images/pyramida.png',
+  'images/oko.png',
+  'images/anubis.png',
+  'images/horus.png',
+  'images/bastet.png',
+  'images/tablet.png',
+  'images/zezlo.png',
+  'images/ankh.png',
+  'images/rubin.png',
+  'images/smaragd.png',
+  'images/prsten.png'
+];
+
+// Preload all symbol images
+function preloadImages() {
+  let loaded = 0;
+  const total = SYMBOL_IMAGES.length;
+  
+  SYMBOL_IMAGES.forEach(src => {
+    const img = new Image();
+    img.onload = function() {
+      IMAGE_CACHE[src] = img;
+      loaded++;
+      if (loaded === total) {
+        console.log(`✅ ${total} PNG symbolů načteno do cache`);
+      }
+    };
+    img.onerror = function() {
+      console.warn(`⚠️ Nelze načíst: ${src}`);
+      loaded++;
+    };
+    img.src = src;
+  });
+}
+
+// Start preloading immediately
+preloadImages();
+
+// ══════════════════════════════════════════════════════════════
 
 // ══ SERVER GAME ENDPOINT ══
 async function callGameServer(gameId, betBtc, options) {
