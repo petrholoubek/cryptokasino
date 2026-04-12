@@ -141,6 +141,50 @@ footer{padding:2rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.9)
 <button class="spin-btn" id="spinBtn" onclick="handleSpin()">🍭 SPIN</button>
 </div>
 </div>
+<div class="bet-controls">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+<span style="font-size:.7rem;text-transform:uppercase;letter-spacing:.15em">⚡ Auto Spin</span>
+<label style="position:relative;width:50px;height:26px;cursor:pointer">
+<input type="checkbox" id="autoToggle" onchange="toggleAuto()" style="opacity:0;width:0;height:0">
+<span style="position:absolute;inset:0;background:rgba(255,255,255,.2);border-radius:26px;transition:.3s;border:2px solid rgba(255,255,255,.4)"></span>
+<span id="autoSlider" style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.3s"></span>
+</label>
+</div>
+<div id="autoSettings" style="display:none">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.6rem">
+<div>
+<div style="font-size:.55rem;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.3rem">Spins</div>
+<select id="autoSpins" style="width:100%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:8px;padding:.5rem;font-size:.75rem;color:#fff;outline:none">
+<option value="10">10</option>
+<option value="20">20</option>
+<option value="50">50</option>
+<option value="100">100</option>
+<option value="999999">∞ Infinite</option>
+</select>
+</div>
+<div>
+<div style="font-size:.55rem;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.3rem">Stop on Win</div>
+<select id="stopWin" style="width:100%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:8px;padding:.5rem;font-size:.75rem;color:#fff;outline:none">
+<option value="0">Never</option>
+<option value="0.01">0.01 BTC</option>
+<option value="0.05">0.05 BTC</option>
+<option value="0.1">0.1 BTC</option>
+</select>
+</div>
+<div>
+<div style="font-size:.55rem;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:.3rem">Speed</div>
+<select id="autoSpeed" style="width:100%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:8px;padding:.5rem;font-size:.75rem;color:#fff;outline:none">
+<option value="1000">Normal</option>
+<option value="500">Fast</option>
+<option value="200">Turbo</option>
+</select>
+</div>
+</div>
+<div style="background:rgba(135,206,235,.2);border:1px solid rgba(135,206,235,.4);border-radius:8px;padding:.6rem;font-size:.6rem;color:rgba(255,255,255,.9)">
+<span id="autoStatus">Ready to start</span> · <span id="autoRemaining">0</span> spins left
+</div>
+</div>
+</div>
 <div class="stats">
 <div style="font-size:.7rem;text-transform:uppercase;margin-bottom:.8rem;text-align:center">📊 Session Statistics</div>
 <div class="stats-grid">
@@ -212,6 +256,7 @@ function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)re
 
 let bal=1,spinning=false,tumbling=false,fsRem=0,fsMode=false,mult=1;
 let totalSpins=0,totalWag=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
+let autoEnabled=false,autoRemaining=0,autoStopWin=0,autoDelay=1000;
 
 const ROWS=6,COLS=5,grid=[];
 const gridEl=document.getElementById('grid');
@@ -267,15 +312,49 @@ function maxBet(){setBet(Math.min(bal,.1))}
 function clearBet(){setBet(.001)}
 function setMode(m){console.log('Mode:',m)}
 
+function toggleAuto(){
+autoEnabled=document.getElementById('autoToggle').checked;
+const settings=document.getElementById('autoSettings');
+const slider=document.getElementById('autoSlider');
+if(autoEnabled){
+settings.style.display='block';
+slider.style.left='29px';
+slider.style.background='var(--green)';
+autoRemaining=parseInt(document.getElementById('autoSpins').value);
+autoStopWin=parseFloat(document.getElementById('stopWin').value);
+autoDelay=parseInt(document.getElementById('autoSpeed').value);
+document.getElementById('autoStatus').textContent='Auto Spin Active';
+document.getElementById('autoRemaining').textContent=autoRemaining>999999?'∞':autoRemaining;
+if(!spinning&&!tumbling){
+setTimeout(()=>handleSpin(),500);
+}
+}else{
+settings.style.display='none';
+slider.style.left='3px';
+slider.style.background='#fff';
+document.getElementById('autoStatus').textContent='Stopped';
+}
+}
+
+function updateAutoStatus(){
+if(autoEnabled){
+document.getElementById('autoRemaining').textContent=autoRemaining>999999?'∞':autoRemaining;
+if(autoRemaining<=0&&autoRemaining<999999){
+document.getElementById('autoToggle').checked=false;
+toggleAuto();
+}
+}
+}
+
 function handleSpin(){
 console.log('🎰 SPIN CLICKED!');
 initAudio();
-snd('win');
+if(!autoEnabled)snd('win');
 if(spinning||tumbling)return;
 if(fsRem>0){doSpin(0);return}
 const bet=parseFloat(document.getElementById('betInput').value);
 if(!bet||bet<=0){alert('Enter bet!');return}
-if(bet>bal){alert('Insufficient balance!');return}
+if(bet>bal){alert('Insufficient balance!');autoEnabled=false;document.getElementById('autoToggle').checked=false;toggleAuto();return}
 doSpin(bet);
 }
 
@@ -493,6 +572,19 @@ if(fsRem===0){fsMode=false;mult=1;updateBal()}
 setTimeout(()=>doSpin(0),1000);
 }else{
 document.getElementById('spinBtn').textContent='🍭 SPIN';
+if(autoEnabled&&bet>0){
+if(autoRemaining<999999)autoRemaining--;
+updateAutoStatus();
+if(autoStopWin>0&&profit>=autoStopWin){
+document.getElementById('autoToggle').checked=false;
+toggleAuto();
+alert('🎉 Target win reached! Auto spin stopped.');
+return;
+}
+if(autoRemaining>0||autoRemaining>999999){
+setTimeout(()=>handleSpin(),autoDelay);
+}
+}
 }
 }
 
