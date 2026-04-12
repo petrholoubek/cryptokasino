@@ -770,15 +770,18 @@ function handleSpin(){
 function doSpin(bet){
   spinning=true;
   
-  // ═══ UPDATE PROVABLY FAIR HASH ═══
+  // ═══ ULOŽIT CURRENT NONCE PŘED ZVÝŠENÍM ═══
+  const currentNonce = pfN;
+  
+  // ═══ UPDATE PROVABLY FAIR HASH (pfN se zvýší) ═══
   pfTick();
   
   if(gameMode==='real') {
-    // Poslat Provably Fair data na server
+    // Poslat Provably Fair data na server s PŮVODNÍM nonce
     callGameServer('egypt_gold', parseFloat(bet)||0, {
       serverSeed: pfSS,
       clientSeed: pfCS,
-      nonce: pfN
+      nonce: currentNonce
     }).then(function(srv) {
       if(srv) {
         if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
@@ -850,13 +853,13 @@ function doSpin(bet){
       },50);
 
       if(ri===NUM_REELS-1){
-        setTimeout(()=>{resolveResult(bet);},350);
+        setTimeout(()=>{resolveResult(bet, currentNonce);},350);
       }
     },stopTime);
   });
 }
 
-function resolveResult(bet){
+function resolveResult(bet, currentNonce){
   document.getElementById('slotCabinet').classList.remove('spinning-cabinet');
   const midRow=currentGrid.map(c=>c[1]);
   const topRow=currentGrid.map(c=>c[0]);
@@ -933,7 +936,7 @@ function resolveResult(bet){
     symbols:midRow.map(s=>s.key),
     serverSeed:pfSS,
     clientSeed:pfCS,
-    nonce:pfN
+    nonce:currentNonce
   });
 
   finishSpin(bet,profit);
