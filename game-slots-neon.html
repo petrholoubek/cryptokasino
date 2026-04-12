@@ -360,10 +360,10 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <!-- GAME HEADER BAR -->
 <div class="game-header-bar">
   <div class="ghb-left">
-    <div class="ghb-icon">🏺</div>
+    <div class="ghb-icon">🌃</div>
     <div>
       <div class="ghb-title">NEON CITY</div>
-      <div class="ghb-sub">5 Reels · 3 Rows · 5 Paylines · Ancient Riches</div>
+      <div class="ghb-sub">5 Reels · 3 Rows · 5 Paylines · Cyberpunk Nights</div>
     </div>
   </div>
   <div class="ghb-center">
@@ -534,19 +534,19 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 // ══ 13 EGYPTSKÝCH SYMBOLŮ ══
 const SYMBOLS=[
-  {key:'WILD',     img:'💎', name:'Diamond',   w:2,  m3:10,  m4:50,  m5:200},
-  {key:'SCATTER',  img:'🚀', name:'Rocket',    w:3,  m3:5,   m4:20,  m5:100},
-  {key:'ROBOT',    img:'🤖', name:'Robot',     w:5,  m3:5,   m4:15,  m5:80},
-  {key:'ALIEN',    img:'👾', name:'Alien',     w:6,  m3:4,   m4:12,  m5:60},
-  {key:'GAME',     img:'🎮', name:'Game',      w:8,  m3:3,   m4:10,  m5:50},
-  {key:'TARGET',   img:'🎯', name:'Target',    w:8,  m3:3,   m4:10,  m5:50},
-  {key:'LIGHTNING',img:'⚡', name:'Lightning', w:8,  m3:3,   m4:10,  m5:50},
-  {key:'PURPLE',   img:'💜', name:'Purple',    w:10, m3:2,   m4:8,   m5:40},
-  {key:'BLUE',     img:'💙', name:'Blue',      w:10, m3:2,   m4:8,   m5:40},
-  {key:'BLACK',    img:'🖤', name:'Black',     w:12, m3:2,   m4:6,   m5:30},
-  {key:'NEON_A',   img:'🔷', name:'Neon A',    w:14, m3:1,   m4:4,   m5:20},
-  {key:'NEON_B',   img:'🔶', name:'Neon B',    w:14, m3:1,   m4:4,   m5:20},
-  {key:'NEON_C',   img:'⬛', name:'Neon C',    w:16, m3:1,   m4:3,   m5:15}
+  {key:'WILD',     img:'💎', name:'Diamond',    w:2,  m3:10,  m4:50,  m5:200},
+  {key:'SCATTER',  img:'🚀', name:'Rocket',     w:3,  m3:5,   m4:20,  m5:100},
+  {key:'ROBOT',    img:'🤖', name:'Robot',      w:5,  m3:5,   m4:15,  m5:80},
+  {key:'ALIEN',    img:'👾', name:'Alien',      w:6,  m3:4,   m4:12,  m5:60},
+  {key:'CYBORG',   img:'🦾', name:'Cyborg',     w:7,  m3:3,   m4:10,  m5:50},
+  {key:'CITY',     img:'🌆', name:'City',       w:8,  m3:3,   m4:10,  m5:50},
+  {key:'NEON',     img:'💡', name:'Neon',       w:8,  m3:3,   m4:10,  m5:50},
+  {key:'PURPLE',   img:'💜', name:'Purple',     w:10, m3:2,   m4:8,   m5:40},
+  {key:'BLUE',     img:'💙', name:'Blue',       w:10, m3:2,   m4:8,   m5:40},
+  {key:'CYAN',     img:'🩵', name:'Cyan',       w:12, m3:2,   m4:6,   m5:30},
+  {key:'NEON_A',   img:'🟦', name:'Blue Neon',  w:14, m3:1,   m4:4,   m5:20},
+  {key:'NEON_B',   img:'🟪', name:'Pink Neon',  w:14, m3:1,   m4:4,   m5:20},
+  {key:'NEON_C',   img:'⬛', name:'Dark Neon',  w:16, m3:1,   m4:3,   m5:15}
 ];
 const TOTAL_W=SYMBOLS.reduce((a,b)=>a+b.w,0);
 
@@ -724,7 +724,7 @@ function togglePayline(n,btn){
 }
 
 // ══ LIVE FEED ══
-const FAKE=['PharaohKing','CleoX','0xRamses','EgyptGold','TutPro','AnubisBTC','PyramidCat'];
+const FAKE=['CyberNinja','NeonRunner','TechSamurai','0xGhost','PixelPunk','DataDragon','ByteBlade','SynthWave'];
 function addLive(){
   const feed=document.getElementById('liveFeed');
   const n=FAKE[Math.floor(Math.random()*FAKE.length)];
@@ -1027,51 +1027,8 @@ async function pfTick(){const c=`${pfSS}-${pfCS}-${pfN}`;const h=await hashS(c);
 async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await hashS(c);alert(`✅ Provably Fair — Neon City\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN-1}\n\nSHA-256: ${h}`);}
 
 // ══════════════════════════════════════════════════════════════
-// IMAGE PRELOADER - Rychlé načítání PNG symbolů
 // ══════════════════════════════════════════════════════════════
-
-const IMAGE_CACHE = {};
-const SYMBOL_IMAGES = [
-  'images/pharaon.png',
-  'images/kniha.png',
-  'images/pyramida.png',
-  'images/oko.png',
-  'images/anubis.png',
-  'images/horus.png',
-  'images/bastet.png',
-  'images/tablet.png',
-  'images/zezlo.png',
-  'images/ankh.png',
-  'images/rubin.png',
-  'images/smaragd.png',
-  'images/prsten.png'
-];
-
-// Preload all symbol images
-function preloadImages() {
-  let loaded = 0;
-  const total = SYMBOL_IMAGES.length;
-  
-  SYMBOL_IMAGES.forEach(src => {
-    const img = new Image();
-    img.onload = function() {
-      IMAGE_CACHE[src] = img;
-      loaded++;
-      if (loaded === total) {
-        console.log(`✅ ${total} PNG symbolů načteno do cache`);
-      }
-    };
-    img.onerror = function() {
-      console.warn(`⚠️ Nelze načíst: ${src}`);
-      loaded++;
-    };
-    img.src = src;
-  });
-}
-
-// Start preloading immediately
-preloadImages();
-
+// NEON CITY uses EMOJI symbols - no image preloading needed
 // ══════════════════════════════════════════════════════════════
 
 // ══ SERVER GAME ENDPOINT ══
