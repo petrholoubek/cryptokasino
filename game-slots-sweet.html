@@ -399,6 +399,7 @@ function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)re
 let bal=1,spinning=false,tumbling=false,fsRem=0,fsMode=false,mult=1;
 let totalSpins=0,totalWag=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
 let autoEnabled=false,autoRemaining=0,autoStopWin=0,autoDelay=1000;
+let currentNonce=0;
 
 const ROWS=6,COLS=5,grid=[];
 const gridEl=document.getElementById('grid');
@@ -519,7 +520,7 @@ doSpin(bet);
 
 function doSpin(bet){
 spinning=true;
-const currentNonce=pfN;
+currentNonce=pfN;
 pfTick();
 
 if(bet>0){
