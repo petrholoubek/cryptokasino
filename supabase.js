@@ -1,14 +1,13 @@
 // ════════════════════════════════════════════════════════
-// CRYPTOKASINO — supabase.js  v2.3
+// CRYPTOKASINO — supabase.js  v2.4
 // DEMO/REAL SEPARATION — demo nikdy nejde do DB
 // NOVA FUNKCE: initHeader() — automaticky upravuje header
 // NOVA FUNKCE: VIP system — badge, level, progress
 //
-// OPRAVY v2.3:
-//  - renderVipBadge() — zobrazí VIP badge v headeru
-//  - getVipInfo() — vrátí kompletní VIP data hráče
-//  - initHeader() — zobrazuje VIP badge vedle username
-//  - logBet() — automaticky update total_wagered_btc pro VIP
+// OPRAVY v2.4:
+//  - Přidány egypt_gold, neon_city, dragon_slots do defaults
+//  - Přidán sports do defaults
+//  - Aktualizován AI agent loader
 // ════════════════════════════════════════════════════════
 
 (async function () {
@@ -269,6 +268,7 @@
     isDemo()       { return isDemoMode(); },
     isLoggedIn()   { return !!_session; },
     getUser()      { return _session?.user || null; },
+    getSession: async () => _session,
 
     async getUsername() {
       const p = await _getProfile();
@@ -572,22 +572,28 @@
       }
 
       const defaults = {
-        crash:       { rtp_pct: 97,    house_edge_pct: 3    },
-        slots:       { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        roulette:    { rtp_pct: 94.74, house_edge_pct: 5.26 },
-        blackjack:   { rtp_pct: 99,    house_edge_pct: 1    },
-        dice:        { rtp_pct: 98,    house_edge_pct: 2    },
-        mines:       { rtp_pct: 97,    house_edge_pct: 3    },
-        plinko:      { rtp_pct: 97.5,  house_edge_pct: 2.5  },
-        wheel:       { rtp_pct: 96,    house_edge_pct: 4    },
-        poker:       { rtp_pct: 97,    house_edge_pct: 3    },
-        craps:       { rtp_pct: 98.6,  house_edge_pct: 1.4  },
-        baccarat:    { rtp_pct: 98.94, house_edge_pct: 1.06 },
-        crazytime:   { rtp_pct: 95,    house_edge_pct: 5    },
-        keno:        { rtp_pct: 92,    house_edge_pct: 8    },
-        hilo:        { rtp_pct: 97,    house_edge_pct: 3    },
-        jackpot:     { rtp_pct: 90,    house_edge_pct: 10   },
-        jackpotshow: { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        crash:        { rtp_pct: 97,    house_edge_pct: 3    },
+        slots:        { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        egypt_gold:   { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        neon_city:    { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        dragon_slots: { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        roulette:     { rtp_pct: 94.74, house_edge_pct: 5.26 },
+        blackjack:    { rtp_pct: 99,    house_edge_pct: 1    },
+        dice:         { rtp_pct: 98,    house_edge_pct: 2    },
+        mines:        { rtp_pct: 97,    house_edge_pct: 3    },
+        plinko:       { rtp_pct: 97.5,  house_edge_pct: 2.5  },
+        wheel:        { rtp_pct: 96,    house_edge_pct: 4    },
+        poker:        { rtp_pct: 97,    house_edge_pct: 3    },
+        craps:        { rtp_pct: 98.6,  house_edge_pct: 1.4  },
+        baccarat:     { rtp_pct: 98.94, house_edge_pct: 1.06 },
+        crazytime:    { rtp_pct: 95,    house_edge_pct: 5    },
+        keno:         { rtp_pct: 92,    house_edge_pct: 8    },
+        hilo:         { rtp_pct: 97,    house_edge_pct: 3    },
+        jackpot:      { rtp_pct: 90,    house_edge_pct: 10   },
+        jackpotshow:  { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+        dragon_tower: { rtp_pct: 96,    house_edge_pct: 4    },
+        video_poker:  { rtp_pct: 98,    house_edge_pct: 2    },
+        sports:       { rtp_pct: 95,    house_edge_pct: 5    },
       };
 
       try {
@@ -693,7 +699,7 @@
     initHeader();
   }
 
-  console.log('[CK] supabase.js v2.3 loaded | Session:', !!_session, '| VIP: enabled');
+  console.log('[CK] supabase.js v2.4 loaded | Session:', !!_session, '| VIP: enabled');
   if (_session) {
     console.log('[CK] User:', _session.user.email);
     window._ckSession = _session;  // Globally accessible pro hry
@@ -708,7 +714,18 @@
 // ── AI AGENT LOADER ────────────────────────────────────────────
 (function(){
   var page = window.location.pathname.split('/').pop() || 'index.html';
-  var allowed = ['index.html','casino.html','live.html','sports.html','game-dragon-tower.html','game-video-poker.html',''];
+  var allowed = [
+    'index.html',
+    'casino.html',
+    'live.html',
+    'sports.html',
+    'game-dragon-tower.html',
+    'game-video-poker.html',
+    'game-slots-egypt.html',
+    'game-slots-neon.html',
+    'game-slots-dragon.html',
+    ''
+  ];
   if(!allowed.includes(page)) return;
   var s = document.createElement('script');
   s.src = 'ck-agent.js';
