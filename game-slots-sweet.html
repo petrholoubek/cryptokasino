@@ -251,41 +251,79 @@ footer{padding:2rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.9)
 <script src="supabase.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
-// SUPABASE CONNECTION
+// SWEET BONANZA - Using window.CK API
 // ══════════════════════════════════════════════════════════════
-const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
-let sb=null,currentUser=null,realBalance=0,RTP=0.965;
-let gameMode='demo';
-const DEMO_BAL=1.0;
-let demoBalance=DEMO_BAL;
+
+let currentUser = null;
+let realBalance = 0;
+let RTP = 0.965;
+let gameMode = 'demo';
+const DEMO_BAL = 1.0;
+let demoBalance = DEMO_BAL;
 
 (async function(){
-  setTimeout(()=>{if(typeof setMode==='function')setMode('demo');},50);
-  try{
-    sb=window.CK&&window.CK.sb?window.CK.sb:(()=>{const {createClient}=supabase;return createClient(SB_URL,SB_KEY);})();
-    if(sb){
-      try{
-        const {data:gs}=await sb.from('game_settings').select('*').eq('id','sweet_bonanza').maybeSingle();
-        if(gs){RTP=gs.rtp_pct/100;console.log('[Sweet] RTP='+gs.rtp_pct+'%');}
-      }catch(e){}
+  // Počkej na window.CK
+  let attempts = 0;
+  while (!window.CK && attempts < 50) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+  
+  if (!window.CK) {
+    console.warn('[Sweet] window.CK not found, using demo mode only');
+    setMode('demo');
+    return;
+  }
+
+  // Načti game settings
+  try {
+    const gs = await window.CK.getGameSettings('sweet_bonanza');
+    if (gs) {
+      RTP = gs.rtp_pct / 100;
+      document.getElementById('rtpDisplay').textContent = (RTP * 100).toFixed(1) + '%';
+      console.log('[Sweet] Settings loaded: RTP=' + gs.rtp_pct + '%');
     }
-    const {data:{session}}=await sb.auth.getSession();
-    if(session){
-      currentUser=session.user;
-      const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();
-      if(prof){currentUser.username=prof.username||'Player';realBalance=parseFloat(prof.balance||0);}
-      updateUserDisplay();
+  } catch(e) {
+    console.warn('[Sweet] Settings error:', e.message);
+  }
+
+  // Check if logged in
+  if (window.CK.isLoggedIn()) {
+    currentUser = window.CK.getUser();
+    const username = await window.CK.getUsername();
+    realBalance = await window.CK.getBalance();
+    currentUser.username = username;
+    updateUserDisplay();
+    console.log('[Sweet] User:', username, 'Balance:', realBalance);
+  }
+
+  // Subscribe to balance changes
+  if (currentUser) {
+    window.CK.subscribeBalance((newBalance) => {
+      if (gameMode === 'real') {
+        realBalance = newBalance;
+        bal = newBalance;
+        updateBal();
+      }
+    });
+  }
+
+  // Auto set mode
+  setTimeout(() => { 
+    if (typeof setMode === 'function') {
+      setMode(window.CK.isLoggedIn() ? 'real' : 'demo');
     }
-  }catch(e){console.warn('[Sweet]',e.message);}
+  }, 50);
 })();
 
-async function sbDeduct(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('deduct_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
-async function sbAddWin(sat){if(gameMode!=='real'||!sb||!currentUser)return;try{await sb.rpc('add_balance',{p_user_id:currentUser.id,p_amount_sat:sat});}catch(e){}}
-async function sbLog(betSat,profitSat,mult,meta){
-  if(gameMode!=='real'||!sb||!currentUser)return;
-  try{await sb.from('bets').insert({user_id:currentUser.id,game:'sweet_bonanza',bet_satoshi:betSat,profit_satoshi:profitSat,multiplier:parseFloat(mult)||0,meta,created_at:new Date().toISOString()});}catch(e){}
-}
+// ══════════════════════════════════════════════════════════════
+// PROVABLY FAIR
+// ══════════════════════════════════════════════════════════════
+let pfSS=genS(),pfCS=genS(),pfN=0;
+function genS(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function hashS(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function pfTick(){const c=`${pfSS}-${pfCS}-${pfN}`;const h=await hashS(c);pfN++;return h;}
+async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await hashS(c);alert(`✅ Provably Fair — Sweet Bonanza\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN-1}\n\nSHA-256: ${h}`);}
 
 function updateUserDisplay(){
   if(currentUser){
@@ -301,25 +339,10 @@ function updateUserDisplay(){
 }
 
 async function handleLogout(){
-  if(sb){
-    await sb.auth.signOut();
-    currentUser=null;
-    realBalance=0;
-    if(gameMode==='real')setMode('demo');
-    updateUserDisplay();
-    window.location.href='index.html';
+  if(window.CK){
+    await window.CK.logout();
   }
 }
-
-// ══════════════════════════════════════════════════════════════
-// PROVABLY FAIR
-// ══════════════════════════════════════════════════════════════
-let pfSS=genS(),pfCS=genS(),pfN=0;
-function genS(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function hashS(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function pfTick(){const c=`${pfSS}-${pfCS}-${pfN}`;const h=await hashS(c);pfN++;return h;}
-async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await hashS(c);alert(`✅ Provably Fair — Sweet Bonanza\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN-1}\n\nSHA-256: ${h}`);}
-
 // AUDIO - SIMPLE & WORKS!
 let AC;
 function initAudio(){
@@ -500,8 +523,12 @@ const currentNonce=pfN;
 pfTick();
 
 if(bet>0){
-  if(gameMode==='real'){
-    sbDeduct(Math.round(bet*1e8));
+  if(gameMode==='real' && window.CK){
+    window.CK.deductBet(Math.round(bet*1e8)).then(r => {
+      if (r && !r.ok && !r.demo) {
+        alert('Error deducting bet: ' + (r.error || 'Unknown'));
+      }
+    });
     realBalance-=bet;
   }else{
     demoBalance-=bet;
@@ -583,15 +610,17 @@ const payout=bet*totalMult;
 const prof=payout-bet;
 
 if(totalMult>0){
-if(gameMode==='real'){
+if(gameMode==='real' && window.CK){
   bal+=payout;
   realBalance+=payout;
-  sbAddWin(Math.round(payout*1e8));
-  sbLog(Math.round(bet*1e8),Math.round(prof*1e8),totalMult,{
+  window.CK.addWin(Math.round(payout*1e8));
+  window.CK.logBet('sweet_bonanza', Math.round(bet*1e8), Math.round(prof*1e8), totalMult, {
     serverSeed:pfSS,
     clientSeed:pfCS,
     nonce:currentNonce,
-    clusters:clusters.length
+    clusters:clusters.length,
+    freeSpins:fsMode,
+    multiplier:mult
   });
 }else{
   bal+=payout;
