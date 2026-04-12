@@ -1007,6 +1007,46 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 @media(max-width:640px){.featured-main{grid-template-columns:1fr 1fr;gap:0.6rem;}.featured-secondary{grid-template-columns:1fr 1fr;gap:0.6rem;}.featured-game-name{font-size:1rem;}.featured-card-sm .featured-game-name{font-size:0.9rem;}}
 </style>
 
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- INFO BANNER -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style>
+.slots-info-banner{position:relative;z-index:1;max-width:1300px;margin:2rem auto 1.5rem;padding:0 1.2rem;}
+.info-banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;background:linear-gradient(135deg,rgba(30,58,138,0.3),rgba(30,64,175,0.2));border:1px solid rgba(59,130,246,0.3);border-radius:16px;padding:1.5rem;box-shadow:0 0 40px rgba(59,130,246,0.15);}
+.info-item{text-align:center;padding:0.8rem;}
+.info-icon{font-size:2rem;margin-bottom:0.5rem;animation:iconFloat 3s ease-in-out infinite;}
+.info-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;color:#93c5fd;letter-spacing:0.08em;margin-bottom:0.3rem;}
+.info-desc{font-size:0.7rem;color:var(--text-dim);line-height:1.4;}
+@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@media(max-width:1024px){.info-banner-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem;padding:1.2rem;}}
+@media(max-width:640px){.info-banner-grid{grid-template-columns:1fr;gap:0.6rem;padding:1rem;}.info-icon{font-size:1.5rem;}}
+</style>
+
+<div class="slots-info-banner">
+  <div class="info-banner-grid">
+    <div class="info-item">
+      <div class="info-icon">🎁</div>
+      <div class="info-title">FREE SPINS</div>
+      <div class="info-desc">Trigger up to 20 free spins with expanding symbols & multipliers</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">🏆</div>
+      <div class="info-title">PROGRESSIVE JACKPOTS</div>
+      <div class="info-desc">Win life-changing jackpots starting from 0.5+ BTC</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">⚡</div>
+      <div class="info-title">BONUS FEATURES</div>
+      <div class="info-desc">Sticky wilds, respins, cascading wins & bonus rounds</div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">💎</div>
+      <div class="info-title">HIGH RTP</div>
+      <div class="info-desc">96%+ return to player on all premium slots</div>
+    </div>
+  </div>
+</div>
+
 <div class="featured-slots-section">
   <div class="section-title">⭐ Featured Slots</div>
   
