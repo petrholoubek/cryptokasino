@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sweet Bonanza Deluxe – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff1493;--purple:#9400d3;--blue:#1e90ff;--green:#00ff00;--gold:#ffd700;--red:#ff4444}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(180deg,#ff69b4 0%,#da70d6 33%,#87ceeb 66%,#ffd700 100%);color:#fff;font-family:'Cinzel',serif;min-height:100vh;position:relative}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle,rgba(255,255,255,.15) 2px,transparent 2px);background-size:40px 40px;pointer-events:none;z-index:0}
+#particles{position:fixed;inset:0;pointer-events:none;z-index:50}
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;background:rgba(255,20,147,.95);backdrop-filter:blur(20px);border-bottom:2px solid rgba(255,255,255,.4);box-shadow:0 4px 20px rgba(255,20,147,.4)}
+.logo{font-size:1.2rem;font-weight:900;color:#fff;text-decoration:none}
+.logo span:first-child{color:#ffd700}
+nav{display:flex;gap:2rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+nav a{color:rgba(255,255,255,.9);text-decoration:none;transition:.2s}
+.btc-bal{font-size:.8rem;color:var(--green);background:rgba(0,255,0,.2);border:1px solid rgba(0,255,0,.4);padding:.3rem .8rem;border-radius:6px}
+.game-header{background:rgba(255,20,147,.95);border-bottom:2px solid rgba(255,255,255,.4);padding:.8rem 2rem;display:flex;align-items:center;gap:1.5rem;position:relative;z-index:10}
+.game-title{font-size:1.6rem;font-weight:900;letter-spacing:.1em;text-shadow:0 0 20px #ffd700}
+.mode-toggle{display:flex;background:rgba(255,255,255,.25);border-radius:25px;padding:.25rem;gap:.2rem}
+.mode-btn{padding:.4rem 1.2rem;border-radius:20px;font-size:.65rem;font-weight:700;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.8);transition:.3s}
+.mode-btn.active{background:#fff;color:#ff1493}
+.demo-badge{font-size:.5rem;text-transform:uppercase;color:#87ceeb;background:rgba(135,206,235,.25);border:1px solid rgba(135,206,235,.5);border-radius:10px;padding:.2rem .6rem}
+.game-area{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:1rem 1.5rem 4rem}
+.balance-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:15px;padding:1rem 1.5rem;margin-bottom:1rem;backdrop-filter:blur(10px)}
+.bal-item{text-align:center}
+.bal-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.bal-value{font-size:1rem;font-weight:700;color:#ffd700;margin-top:.2rem}
+.bal-value.green{color:var(--green)}
+.jackpot{background:linear-gradient(135deg,rgba(255,215,0,.4),rgba(255,20,147,.4));border:3px solid rgba(255,215,0,.7);border-radius:18px;padding:1rem;margin-bottom:1rem;text-align:center;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,215,0,.5)}
+.jackpot::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-15deg);animation:sweep 3s linear infinite}
+@keyframes sweep{0%{left:-60%}100%{left:120%}}
+.jackpot-label{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase}
+.jackpot-value{font-size:2.5rem;font-weight:900;color:#ffd700;text-shadow:0 0 30px #ffd700}
+.grid-container{background:rgba(255,255,255,.35);border:3px solid rgba(255,255,255,.6);border-radius:20px;padding:1.5rem;margin-bottom:1rem;backdrop-filter:blur(10px);box-shadow:0 0 40px rgba(255,20,147,.4)}
+.candy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-bottom:1rem}
+.candy-cell{aspect-ratio:1;background:rgba(255,255,255,.4);border:2px solid rgba(255,255,255,.6);border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;transition:.3s;cursor:pointer}
+.candy-cell:hover{transform:scale(1.05)}
+.candy-cell.winning{animation:pulse .5s ease-in-out infinite alternate;border-color:#ffd700;box-shadow:0 0 30px #ffd700}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}
+.candy-cell.exploding{animation:explode .5s forwards}
+@keyframes explode{0%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
+.candy-cell.falling{animation:fall .6s ease-out}
+@keyframes fall{0%{transform:translateY(-200px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.candy-symbol{font-size:2.5rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+.bomb-mult{position:absolute;top:-5px;right:-5px;background:linear-gradient(135deg,#ff1493,#ffd700);border:2px solid #fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:#fff}
+.win-section{text-align:center;min-height:3rem;padding:.5rem 0}
+.win-text{font-size:2.2rem;font-weight:900;letter-spacing:.1em;opacity:0;transition:.4s}
+.win-text.show{opacity:1}
+.win-text.mega{background:linear-gradient(45deg,#ff1493,#ffd700,#87ceeb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2.8rem}
+.win-text.big{color:#ffd700;text-shadow:0 0 30px #ffd700}
+.win-text.small{color:#fff}
+.win-amount{font-size:1.2rem;font-weight:700;color:var(--green);margin-top:.5rem}
+.bet-controls{background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:15px;padding:1.2rem;margin-bottom:1rem;backdrop-filter:blur(10px)}
+.bet-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+.bet-lbl{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase}
+.bet-input{flex:1;background:rgba(255,255,255,.4);border:2px solid rgba(255,255,255,.6);border-radius:10px;padding:.6rem .8rem;font-size:1rem;color:#fff;outline:none}
+.quick-bets{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.qb{background:rgba(255,215,0,.4);border:2px solid rgba(255,215,0,.6);color:#fff;padding:.4rem .9rem;border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s}
+.qb:hover{background:rgba(255,215,0,.6);transform:scale(1.05)}
+.action-row{display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:.6rem}
+.act-btn{padding:.8rem;border-radius:10px;font-size:.75rem;font-weight:700;cursor:pointer;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.3);color:#fff;transition:.2s;text-transform:uppercase}
+.spin-btn{padding:1.2rem;border-radius:15px;font-size:1.1rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,#ff1493,#ffd700,#87ceeb);color:#fff;box-shadow:0 0 30px rgba(255,215,0,.7);transition:.3s}
+.spin-btn:hover:not(:disabled){transform:scale(1.05)}
+.spin-btn:disabled{opacity:.5;cursor:not-allowed}
+.freespin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column}
+.freespin-overlay.show{display:flex}
+.fs-title{font-size:3.5rem;font-weight:900;background:linear-gradient(45deg,#ff1493,#ffd700,#87ceeb,#9400d3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}
+.fs-count{font-size:2.5rem;color:#ffd700;margin-bottom:1rem}
+.fs-info{font-size:1.3rem;color:#ffb3d9;margin-bottom:2rem}
+.fs-start-btn{background:linear-gradient(135deg,#ff1493,#ffd700);color:#fff;padding:1.2rem 3.5rem;border-radius:15px;font-size:1.3rem;font-weight:900;cursor:pointer;border:none;box-shadow:0 0 40px rgba(255,215,0,.7);transition:.3s;text-transform:uppercase}
+.fs-start-btn:hover{transform:scale(1.1)}
+.stats{background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);border-radius:15px;padding:1rem;margin-bottom:1rem}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.stat-item{text-align:center;background:rgba(255,255,255,.3);border-radius:8px;padding:.6rem}
+.stat-lbl{font-size:.55rem;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.stat-val{font-size:.9rem;font-weight:700;color:#ffd700;margin-top:.2rem}
+footer{padding:2rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.9)}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="freespin-overlay" id="fsOverlay">
+<div class="fs-title">🍭 FREE SPINS! 🍬</div>
+<div class="fs-count" id="fsCount">12 Free Spins</div>
+<div class="fs-info">Progressive multipliers active!</div>
+<button class="fs-start-btn" onclick="startFS()">🎁 START</button>
+</div>
+<header>
+<a href="index.html" class="logo"><span>Crypto</span><span>Kasino</span></a>
+<nav><a href="casino.html">Casino</a><a href="live.html">Live</a></nav>
+<span class="btc-bal" id="hbal">1.00000000 BTC</span>
+</header>
+<div class="game-header">
+<div class="game-title">🍬 SWEET BONANZA</div>
+<div class="mode-toggle">
+<button class="mode-btn active" onclick="setMode('demo')">Demo</button>
+<button class="mode-btn" onclick="setMode('real')">Real</button>
+</div>
+<div class="demo-badge">Practice Mode</div>
+</div>
+<div class="game-area">
+<div class="balance-bar">
+<div class="bal-item"><div class="bal-label">Balance</div><div class="bal-value green" id="bal">1.00000000</div></div>
+<div class="bal-item"><div class="bal-label">Last Win</div><div class="bal-value" id="lastWin">—</div></div>
+<div class="bal-item"><div class="bal-label">Free Spins</div><div class="bal-value" id="fsRem">0</div></div>
+<div class="bal-item"><div class="bal-label">Best Win</div><div class="bal-value green" id="bestWin">0.00000</div></div>
+</div>
+<div class="jackpot">
+<div class="jackpot-label">🏆 SWEET JACKPOT</div>
+<div class="jackpot-value" id="jp">0.25000000 BTC</div>
+</div>
+<div class="grid-container">
+<div class="candy-grid" id="grid"></div>
+<div class="win-section">
+<div class="win-text" id="winText"></div>
+<div class="win-amount" id="winAmt"></div>
+</div>
+</div>
+<div class="bet-controls">
+<div class="bet-row">
+<span class="bet-lbl">Bet Amount</span>
+<input type="number" class="bet-input" id="betInput" value="0.001" min="0.0001" step="0.0001">
+<span class="bet-lbl">BTC</span>
+</div>
+<div class="quick-bets">
+<button class="qb" onclick="setBet(.001)">0.001</button>
+<button class="qb" onclick="setBet(.005)">0.005</button>
+<button class="qb" onclick="setBet(.01)">0.010</button>
+<button class="qb" onclick="setBet(.05)">0.050</button>
+<button class="qb" onclick="halfBet()">½</button>
+<button class="qb" onclick="doubleBet()">×2</button>
+<button class="qb" onclick="maxBet()">MAX</button>
+</div>
+<div class="action-row">
+<button class="act-btn" onclick="clearBet()">Clear</button>
+<button class="act-btn" onclick="doubleBet()">Double</button>
+<button class="act-btn" onclick="maxBet()">Max</button>
+<button class="spin-btn" id="spinBtn" onclick="handleSpin()">🍭 SPIN</button>
+</div>
+</div>
+<div class="stats">
+<div style="font-size:.7rem;text-transform:uppercase;margin-bottom:.8rem;text-align:center">📊 Session Statistics</div>
+<div class="stats-grid">
+<div class="stat-item"><div class="stat-lbl">Total Spins</div><div class="stat-val" id="stSpins">0</div></div>
+<div class="stat-item"><div class="stat-lbl">Wins</div><div class="stat-val" style="color:var(--green)" id="stWins">0</div></div>
+<div class="stat-item"><div class="stat-lbl">Losses</div><div class="stat-val" style="color:var(--red)" id="stLoss">0</div></div>
+<div class="stat-item"><div class="stat-lbl">Win Rate</div><div class="stat-val" id="stWR">0%</div></div>
+</div>
+<div style="margin-top:.8rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+<div class="stat-item"><div class="stat-lbl">Wagered</div><div class="stat-val" id="stWag">0.00000</div></div>
+<div class="stat-item"><div class="stat-lbl">Profit/Loss</div><div class="stat-val" id="stProfit">±0.00000</div></div>
+</div>
+</div>
+</div>
+<footer>© 2026 CryptoKasino · <a href="casino.html" style="color:#ffd700">← Casino</a></footer>
+<script>
+// AUDIO - SIMPLE & WORKS!
+let AC;
+function initAudio(){
+if(!AC){
+AC=new(window.AudioContext||window.webkitAudioContext)();
+console.log('🔊 Audio initialized!',AC.state);
+}
+if(AC.state==='suspended'){
+AC.resume().then(()=>console.log('🔊 Audio resumed!',AC.state));
+}
+}
+function playBeep(freq,dur){
+initAudio();
+if(!AC||AC.state!=='running'){console.log('⚠️ Audio not ready');return}
+const o=AC.createOscillator(),g=AC.createGain();
+o.connect(g);g.connect(AC.destination);
+o.frequency.value=freq;
+g.gain.setValueAtTime(.3,AC.currentTime);
+g.gain.exponentialRampToValueAtTime(.01,AC.currentTime+dur);
+o.start();
+o.stop(AC.currentTime+dur);
+console.log('🔊 BEEP!',freq+'Hz');
+}
+function snd(t){
+console.log('🎵 Sound:',t);
+if(t==='win'){
+playBeep(523,.1);
+setTimeout(()=>playBeep(659,.1),80);
+setTimeout(()=>playBeep(784,.1),160);
+setTimeout(()=>playBeep(1047,.2),240);
+}
+else if(t==='tumble'){playBeep(400,.15)}
+else if(t==='fs'){
+for(let i=0;i<5;i++){
+setTimeout(()=>playBeep([523,659,784,1047,1318][i],.3),i*100);
+}
+}
+}
+
+const SYMS=[
+{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:3,m8:5,m10:10,m12:20,m15:100,scatter:true},
+{k:'CANDY',i:'🍬',n:'Candy',w:5,m8:3,m10:8,m12:15,m15:50},
+{k:'GRAPE',i:'🍇',n:'Grape',w:8,m8:2,m10:5,m12:10,m15:30},
+{k:'BANANA',i:'🍌',n:'Banana',w:8,m8:2,m10:5,m12:10,m15:30},
+{k:'MELON',i:'🍉',n:'Watermelon',w:10,m8:1.5,m10:4,m12:8,m15:25},
+{k:'DIAMOND',i:'💎',n:'Diamond',w:2,m8:10,m10:25,m12:50,m15:200,bomb:true},
+{k:'HEART',i:'❤️',n:'Heart',w:12,m8:1,m10:3,m12:6,m15:15},
+{k:'BLUE',i:'💙',n:'Blue',w:14,m8:1,m10:2,m12:5,m15:12},
+{k:'GREEN',i:'💚',n:'Green',w:16,m8:0.5,m10:1.5,m12:4,m15:10}
+];
+const TW=SYMS.reduce((a,b)=>a+b.w,0);
+function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
+
+let bal=1,spinning=false,tumbling=false,fsRem=0,fsMode=false,mult=1;
+let totalSpins=0,totalWag=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
+
+const ROWS=6,COLS=5,grid=[];
+const gridEl=document.getElementById('grid');
+for(let r=0;r<ROWS;r++){
+const row=[];
+for(let c=0;c<COLS;c++){
+const cell=document.createElement('div');
+cell.className='candy-cell';
+const sym=randSym();
+const symEl=document.createElement('div');
+symEl.className='candy-symbol';
+symEl.textContent=sym.i;
+cell.appendChild(symEl);
+gridEl.appendChild(cell);
+row.push({sym,mult:1,el:cell});
+}
+grid.push(row);
+}
+
+const pC=document.getElementById('particles'),pCtx=pC.getContext('2d');let particles=[];
+function resizeP(){pC.width=window.innerWidth;pC.height=window.innerHeight}resizeP();window.addEventListener('resize',resizeP);
+function spawnP(type){
+const cx=window.innerWidth/2,cy=window.innerHeight*.4;
+const cfg={mega:{count:300,cols:['#ff1493','#ffd700','#87ceeb','#fff'],sz:[5,20]},big:{count:150,cols:['#ff1493','#ffd700','#fff'],sz:[3,12]},small:{count:60,cols:['#ff1493','#fff'],sz:[2,8]}};
+const c=cfg[type]||cfg.small;
+for(let i=0;i<c.count;i++){const a=Math.random()*Math.PI*2,s=Math.random()*18+5;particles.push({x:cx+(Math.random()-.5)*200,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,sz:Math.random()*(c.sz[1]-c.sz[0])+c.sz[0],col:c.cols[Math.floor(Math.random()*c.cols.length)],life:1,decay:Math.random()*.018+.008,gravity:.5})}
+}
+function animP(){pCtx.clearRect(0,0,pC.width,pC.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;pCtx.save();pCtx.globalAlpha=p.life;pCtx.beginPath();pCtx.arc(p.x,p.y,p.sz,0,Math.PI*2);pCtx.fillStyle=p.col;pCtx.fill();pCtx.restore()});requestAnimationFrame(animP)}
+animP();
+
+let jp=0.25;
+setInterval(()=>{jp+=.000001+Math.random()*.0000015;document.getElementById('jp').textContent=jp.toFixed(8)+' BTC'},100);
+
+function f5(n){return parseFloat(n||0).toFixed(5)}
+function f8(n){return parseFloat(n||0).toFixed(8)}
+function updateBal(){
+document.getElementById('bal').textContent=f8(bal);
+document.getElementById('hbal').textContent=f8(bal)+' BTC';
+document.getElementById('fsRem').textContent=fsRem;
+document.getElementById('stWag').textContent=f5(totalWag);
+document.getElementById('stSpins').textContent=totalSpins;
+document.getElementById('stWins').textContent=totalWins;
+document.getElementById('stLoss').textContent=totalLosses;
+document.getElementById('stWR').textContent=totalSpins>0?((totalWins/totalSpins)*100).toFixed(0)+'%':'0%';
+const profEl=document.getElementById('stProfit');
+profEl.textContent=(profit>=0?'+':'')+f5(profit);
+profEl.style.color=profit>=0?'var(--green)':'var(--red)';
+}
+function setBet(v){document.getElementById('betInput').value=v.toFixed(4)}
+function halfBet(){setBet(Math.max(.0001,(parseFloat(document.getElementById('betInput').value)||.001)/2))}
+function doubleBet(){setBet(Math.min(bal,(parseFloat(document.getElementById('betInput').value)||.001)*2))}
+function maxBet(){setBet(Math.min(bal,.1))}
+function clearBet(){setBet(.001)}
+function setMode(m){console.log('Mode:',m)}
+
+function handleSpin(){
+console.log('🎰 SPIN CLICKED!');
+initAudio();
+snd('win');
+if(spinning||tumbling)return;
+if(fsRem>0){doSpin(0);return}
+const bet=parseFloat(document.getElementById('betInput').value);
+if(!bet||bet<=0){alert('Enter bet!');return}
+if(bet>bal){alert('Insufficient balance!');return}
+doSpin(bet);
+}
+
+function doSpin(bet){
+spinning=true;
+if(bet>0){bal-=bet;totalWag+=bet}
+totalSpins++;
+updateBal();
+document.getElementById('spinBtn').disabled=true;
+document.getElementById('spinBtn').textContent=fsMode?'🎁 Spinning...':'🍭 Spinning...';
+const wt=document.getElementById('winText');wt.className='win-text';wt.textContent='';
+document.getElementById('winAmt').textContent='';
+
+for(let r=0;r<ROWS;r++){
+for(let c=0;c<COLS;c++){
+const cell=grid[r][c];
+cell.el.classList.remove('winning','exploding','falling');
+const sym=randSym();
+let m=1;
+if(sym.bomb&&Math.random()<.05)m=[2,5,10,25,100][Math.floor(Math.random()*5)];
+cell.sym=sym;
+cell.mult=m;
+const symEl=cell.el.querySelector('.candy-symbol');
+symEl.textContent=sym.i;
+const oldBomb=cell.el.querySelector('.bomb-mult');
+if(oldBomb)oldBomb.remove();
+if(m>1){
+const bomb=document.createElement('div');
+bomb.className='bomb-mult';
+bomb.textContent=m+'×';
+cell.el.appendChild(bomb);
+}
+cell.el.classList.add('falling');
+}
+}
+
+setTimeout(()=>{checkResolve(bet)},700);
+}
+
+function checkResolve(bet){
+const scatterCnt=countSym('LOLLIPOP');
+if(scatterCnt>=4&&fsRem===0){
+const fs=scatterCnt===4?12:scatterCnt===5?16:20;
+triggerFS(fs);
+return;
+}
+
+const clusters=findClusters();
+if(clusters.length===0){
+if(bet>0)totalLosses++;
+updateBal();
+finishSpin(bet);
+return;
+}
+
+let totalMult=0,bombMult=1;
+clusters.forEach(cluster=>{
+const sym=cluster.sym;
+const count=cluster.cells.length;
+let m=0;
+if(count>=15)m=sym.m15;
+else if(count>=12)m=sym.m12;
+else if(count>=10)m=sym.m10;
+else if(count>=8)m=sym.m8;
+totalMult+=m||0;
+cluster.cells.forEach(c=>{
+const cell=grid[c.r][c.c];
+if(cell.mult>1)bombMult*=cell.mult;
+});
+cluster.cells.forEach(c=>{grid[c.r][c.c].el.classList.add('winning')});
+});
+
+totalMult*=bombMult;
+if(fsMode){mult=Math.min(100,mult+1);totalMult*=mult}
+
+const payout=bet*totalMult;
+const prof=payout-bet;
+
+if(totalMult>0){
+bal+=payout;
+profit+=prof;
+if(prof>bestWin)bestWin=prof;
+totalWins++;
+const wt=document.getElementById('winText');
+if(totalMult>=100){wt.textContent='🍭 MEGA WIN! 🍬';wt.className='win-text show mega';snd('fs');spawnP('mega')}
+else if(totalMult>=30){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';snd('win');spawnP('big')}
+else{wt.textContent='✨ WIN!';wt.className='win-text show small';snd('win');spawnP('small')}
+document.getElementById('winAmt').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
+document.getElementById('lastWin').textContent='+'+f5(prof);
+document.getElementById('bestWin').textContent=f5(bestWin);
+}
+
+updateBal();
+
+setTimeout(()=>{
+snd('tumble');
+clusters.forEach(cluster=>{
+cluster.cells.forEach(c=>{grid[c.r][c.c].el.classList.add('exploding')});
+});
+setTimeout(()=>{
+tumble(clusters);
+setTimeout(()=>{checkResolve(bet)},700);
+},500);
+},1000);
+}
+
+function findClusters(){
+const visited=Array(ROWS).fill(0).map(()=>Array(COLS).fill(false));
+const clusters=[];
+for(let r=0;r<ROWS;r++){
+for(let c=0;c<COLS;c++){
+if(!visited[r][c]){
+const cluster=bfs(r,c,visited);
+if(cluster.length>=8)clusters.push({sym:grid[r][c].sym,cells:cluster});
+}
+}
+}
+return clusters;
+}
+
+function bfs(startR,startC,visited){
+const queue=[{r:startR,c:startC}];
+const cluster=[];
+const sym=grid[startR][startC].sym.k;
+visited[startR][startC]=true;
+while(queue.length>0){
+const {r,c}=queue.shift();
+cluster.push({r,c});
+const neighbors=[[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
+neighbors.forEach(([nr,nc])=>{
+if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!visited[nr][nc]&&grid[nr][nc].sym.k===sym){
+visited[nr][nc]=true;
+queue.push({r:nr,c:nc});
+}
+});
+}
+return cluster;
+}
+
+function tumble(clusters){
+tumbling=true;
+clusters.forEach(cluster=>{
+cluster.cells.forEach(c=>{
+grid[c.r][c.c].el.querySelector('.candy-symbol').textContent='';
+const bomb=grid[c.r][c.c].el.querySelector('.bomb-mult');
+if(bomb)bomb.remove();
+});
+});
+
+for(let c=0;c<COLS;c++){
+let emptyRow=ROWS-1;
+for(let r=ROWS-1;r>=0;r--){
+const symText=grid[r][c].el.querySelector('.candy-symbol').textContent;
+if(symText){
+if(emptyRow!==r){
+grid[emptyRow][c].sym=grid[r][c].sym;
+grid[emptyRow][c].mult=grid[r][c].mult;
+grid[emptyRow][c].el.querySelector('.candy-symbol').textContent=symText;
+const bomb=grid[r][c].el.querySelector('.bomb-mult');
+if(bomb){
+const newBomb=bomb.cloneNode(true);
+grid[emptyRow][c].el.appendChild(newBomb);
+bomb.remove();
+}
+grid[r][c].el.querySelector('.candy-symbol').textContent='';
+const oldBomb=grid[r][c].el.querySelector('.bomb-mult');
+if(oldBomb)oldBomb.remove();
+}
+emptyRow--;
+}
+}
+
+for(let r=emptyRow;r>=0;r--){
+const sym=randSym();
+let m=1;
+if(sym.bomb&&Math.random()<.05)m=[2,5,10,25,100][Math.floor(Math.random()*5)];
+grid[r][c].sym=sym;
+grid[r][c].mult=m;
+grid[r][c].el.querySelector('.candy-symbol').textContent=sym.i;
+grid[r][c].el.classList.add('falling');
+if(m>1){
+const bomb=document.createElement('div');
+bomb.className='bomb-mult';
+bomb.textContent=m+'×';
+grid[r][c].el.appendChild(bomb);
+}
+}
+}
+
+for(let r=0;r<ROWS;r++){
+for(let c=0;c<COLS;c++){
+grid[r][c].el.classList.remove('winning','exploding');
+}
+}
+tumbling=false;
+}
+
+function countSym(key){
+let count=0;
+for(let r=0;r<ROWS;r++){
+for(let c=0;c<COLS;c++){
+if(grid[r][c].sym.k===key)count++;
+}
+}
+return count;
+}
+
+function finishSpin(bet){
+spinning=false;
+document.getElementById('spinBtn').disabled=false;
+if(fsRem>0){
+fsRem--;
+updateBal();
+if(fsRem===0){fsMode=false;mult=1;updateBal()}
+setTimeout(()=>doSpin(0),1000);
+}else{
+document.getElementById('spinBtn').textContent='🍭 SPIN';
+}
+}
+
+function triggerFS(count){
+fsRem=count;
+fsMode=true;
+mult=1;
+snd('fs');
+spawnP('mega');
+document.getElementById('fsCount').textContent=count+' Free Spins';
+document.getElementById('fsOverlay').classList.add('show');
+updateBal();
+spinning=false;
+}
+
+function startFS(){
+document.getElementById('fsOverlay').classList.remove('show');
+document.getElementById('spinBtn').disabled=false;
+document.getElementById('spinBtn').textContent='🎁 Free Spin';
+setTimeout(()=>doSpin(0),500);
+}
+
+updateBal();
+console.log('🍭 Sweet Bonanza loaded!');
+</script>
+</body>
+</html>
