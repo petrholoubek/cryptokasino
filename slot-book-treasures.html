@@ -700,8 +700,30 @@ header{
 
 <!-- HEADER -->
 <header>
-  <a href="index.html" class="logo">📖 BOOK OF TREASURES</a>
-  <span class="btc-bal" id="headerBal">1.00000000 BTC</span>
+  <a href="index.html" class="logo">
+    <div style="width:24px;height:24px;background:linear-gradient(135deg,#D4A017,#F5C842);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#000;font-weight:900">₿</div>
+    <span style="color:var(--gold-light)">CRYPTO</span>
+    <span style="color:#fff">KASINO</span>
+  </a>
+  
+  <nav style="display:flex;gap:2rem;font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase">
+    <a href="casino.html" style="color:var(--text-dim);text-decoration:none;transition:color .2s">Casino</a>
+    <a href="live.html" style="color:var(--text-dim);text-decoration:none;transition:color .2s">Live</a>
+    <a href="sports.html" style="color:var(--text-dim);text-decoration:none;transition:color .2s">Sports</a>
+    <a href="promotions.html" style="color:var(--text-dim);text-decoration:none;transition:color .2s">Promotions</a>
+  </nav>
+  
+  <div style="display:flex;align-items:center;gap:1rem">
+    <span class="btc-bal" id="headerBal">1.00000000 BTC</span>
+    <a href="deposit.html" style="background:linear-gradient(135deg,#D4A017,#F5C842);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;box-shadow:0 0 20px rgba(212,160,23,0.4);transition:all .2s" id="depositBtn" style="display:none">Deposit</a>
+    <a href="login.html" id="loginBtn" style="font-size:0.7rem;color:var(--text-dim);text-decoration:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 1.1rem;border-radius:8px;text-transform:uppercase;letter-spacing:0.05em;transition:all .2s">Login</a>
+    <div id="userMenu" style="display:none;position:relative">
+      <button id="userMenuBtn" style="background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.3);color:var(--gold-light);padding:0.5rem 1.1rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:0.5rem">
+        <span id="username">PLAYER</span>
+        <span style="font-size:0.6rem">▼</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- GAME HEADER -->
@@ -934,9 +956,20 @@ let gameSettings = null;
       realBalance = await window.CK.getBalance();
       currentUser.username = username;
       console.log('[Book] User logged in:', username, 'Balance:', realBalance.toFixed(8), 'BTC');
+      
+      // Update header UI for logged in user
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('depositBtn').style.display = 'block';
+      document.getElementById('userMenu').style.display = 'block';
+      document.getElementById('username').textContent = username.toUpperCase();
     } catch (e) {
       console.warn('[Book] User load error:', e.message);
     }
+  } else {
+    // Show login button for non-logged in users
+    document.getElementById('loginBtn').style.display = 'block';
+    document.getElementById('depositBtn').style.display = 'none';
+    document.getElementById('userMenu').style.display = 'none';
   }
 
   // ══ SUBSCRIBE TO REAL-TIME BALANCE UPDATES ══
