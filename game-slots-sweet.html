@@ -910,11 +910,104 @@ text-shadow:0 0 15px rgba(255,215,0,.8);
 }
 
 @media(max-width:768px){
-.spin-btn{font-size:1.2rem;padding:1.3rem}
-.game-title{font-size:1.5rem}
-.candy-symbol{font-size:3rem}
-.action-row{grid-template-columns:1fr 1fr;gap:.5rem}
-.spin-btn{grid-column:1/-1}
+/* HEADER */
+header{padding:0 1rem;height:54px}
+.logo{font-size:0.95rem}
+nav{display:none}
+.btc-bal{font-size:0.7rem;padding:0.25rem 0.6rem}
+
+/* GAME HEADER */
+.game-header{padding:0.8rem 1rem;flex-direction:column;gap:0.8rem}
+.ghb-left{flex-direction:column;gap:0.5rem}
+.game-title{font-size:1.3rem}
+.ghb-sub{font-size:0.5rem}
+.ghb-right{display:none}
+
+/* BALANCE BAR */
+.balance-bar{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.6rem;
+  padding:0.75rem;
+}
+.bal-label{font-size:0.55rem}
+.bal-value{font-size:0.85rem !important}
+
+/* JACKPOT */
+.jackpot{padding:0.9rem}
+.jackpot-label{font-size:0.6rem}
+.jackpot-value{font-size:1.8rem !important}
+
+/* GRID */
+.candy-grid{
+  gap:0.5rem;
+  grid-template-columns:repeat(5,1fr);
+}
+.candy-cell{border-radius:15px}
+.candy-symbol{font-size:2.5rem !important}
+
+/* WIN SECTION */
+.win-section{min-height:3rem;padding:0.5rem 0}
+.win-text{font-size:1.4rem !important}
+.win-text.mega{font-size:2rem !important}
+.win-amount{font-size:0.95rem !important;margin-top:0.3rem}
+
+/* BET CONTROLS */
+.bet-controls{padding:0.9rem}
+.bet-row{gap:0.5rem;margin-bottom:0.6rem}
+.bet-lbl{font-size:0.55rem}
+.bet-input{padding:0.5rem 0.6rem;font-size:0.85rem}
+.quick-bets{gap:0.4rem}
+.qb{padding:0.35rem 0.7rem;font-size:0.65rem}
+
+/* ACTION ROW */
+.action-row{
+  grid-template-columns:1fr 1fr;
+  gap:0.5rem;
+}
+.act-btn{padding:0.65rem;font-size:0.68rem}
+.spin-btn{
+  grid-column:1/-1;
+  padding:1.1rem;
+  font-size:1rem !important;
+}
+
+/* STATS */
+.stats-grid{
+  grid-template-columns:1fr 1fr;
+  gap:0.5rem;
+}
+.stat-lbl{font-size:0.52rem}
+.stat-val{font-size:0.85rem}
+
+/* PROVABLY FAIR */
+.pf-bar{
+  flex-direction:column;
+  align-items:flex-start;
+  gap:0.5rem;
+  padding:0.6rem 0.8rem;
+}
+.pf-hash{font-size:0.52rem}
+.pf-btn{padding:0.25rem 0.6rem;font-size:0.55rem}
+
+/* MODE TOGGLE */
+.mode-toggle{padding:0.2rem;gap:0.15rem}
+.mode-btn{padding:0.38rem 1.1rem;font-size:0.58rem}
+.demo-badge,.real-badge{font-size:0.48rem;padding:0.15rem 0.55rem}
+}
+
+@media(max-width:480px){
+/* EXTRA MALÉ MOBILY */
+.candy-symbol{font-size:2rem !important}
+.candy-grid{gap:0.4rem}
+.game-title{font-size:1.1rem}
+.jackpot-value{font-size:1.5rem !important}
+.win-text{font-size:1.2rem !important}
+.win-text.mega{font-size:1.6rem !important}
+.balance-bar{padding:0.6rem}
+.bal-value{font-size:0.75rem !important}
+.qb{padding:0.3rem 0.6rem;font-size:0.6rem}
+.spin-btn{font-size:0.9rem !important;padding:1rem}
 }
 </style>
 </head>
@@ -1126,7 +1219,7 @@ let demoBalance = DEMO_BAL;
     console.warn('[Sweet] Settings error:', e.message);
   }
 
-  if (window.CK.isLoggedIn()) {
+  if (window.CK && typeof window.CK.isLoggedIn === 'function' && window.CK.isLoggedIn()) {
     currentUser = window.CK.getUser();
     const username = await window.CK.getUsername();
     realBalance = await window.CK.getBalance();
@@ -1147,7 +1240,7 @@ let demoBalance = DEMO_BAL;
 
   setTimeout(() => { 
     if (typeof setMode === 'function') {
-      setMode(window.CK.isLoggedIn() ? 'real' : 'demo');
+      setMode(window.CK && typeof window.CK.isLoggedIn === 'function' && window.CK.isLoggedIn() ? 'real' : 'demo');
     }
   }, 50);
 })();
@@ -1217,15 +1310,15 @@ setTimeout(()=>playBeep([523,659,784,1047,1318][i],.3),i*100);
 
 // ══ SYMBOLY ══
 const SYMS=[
-{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:5,m5:2,m8:5,m10:10,m12:20,m15:100,scatter:true}, // w: 3→5
-{k:'CANDY',i:'🍬',n:'Candy',w:8,m5:1.5,m8:3,m10:8,m12:15,m15:50}, // w: 5→8
-{k:'GRAPE',i:'🍇',n:'Grape',w:12,m5:1,m8:2,m10:5,m12:10,m15:30}, // w: 8→12
-{k:'BANANA',i:'🍌',n:'Banana',w:12,m5:1,m8:2,m10:5,m12:10,m15:30}, // w: 8→12
-{k:'MELON',i:'🍉',n:'Watermelon',w:15,m5:0.8,m8:1.5,m10:4,m12:8,m15:25}, // w: 10→15
-{k:'DIAMOND',i:'💎',n:'Diamond',w:4,m5:5,m8:10,m10:25,m12:50,m15:200,bomb:true}, // w: 2→4
-{k:'HEART',i:'❤️',n:'Heart',w:18,m5:0.5,m8:1,m10:3,m12:6,m15:15}, // w: 12→18
-{k:'BLUE',i:'💙',n:'Blue',w:20,m5:0.3,m8:1,m10:2,m12:5,m15:12}, // w: 14→20
-{k:'GREEN',i:'💚',n:'Green',w:22,m5:0.2,m8:0.5,m10:1.5,m12:4,m15:10} // w: 16→22
+{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:5,m5:2,m8:5,m10:10,m12:20,m15:100,scatter:true},
+{k:'CANDY',i:'🍬',n:'Candy',w:8,m5:1.5,m8:3,m10:8,m12:15,m15:50},
+{k:'GRAPE',i:'🍇',n:'Grape',w:12,m5:1,m8:2,m10:5,m12:10,m15:30},
+{k:'BANANA',i:'🍌',n:'Banana',w:12,m5:1,m8:2,m10:5,m12:10,m15:30},
+{k:'MELON',i:'🍉',n:'Watermelon',w:15,m5:0.8,m8:1.5,m10:4,m12:8,m15:25},
+{k:'DIAMOND',i:'💎',n:'Diamond',w:4,m5:5,m8:10,m10:25,m12:50,m15:200,bomb:true},
+{k:'HEART',i:'❤️',n:'Heart',w:18,m5:0.5,m8:1,m10:3,m12:6,m15:15},
+{k:'BLUE',i:'💙',n:'Blue',w:20,m5:0.3,m8:1,m10:2,m12:5,m15:12},
+{k:'GREEN',i:'💚',n:'Green',w:22,m5:0.2,m8:0.5,m10:1.5,m12:4,m15:10}
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
@@ -1234,6 +1327,7 @@ let bal=1,spinning=false,tumbling=false,fsRem=0,fsMode=false,mult=1;
 let totalSpins=0,totalWag=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
 let autoEnabled=false,autoRemaining=0,autoStopWin=0,autoDelay=1000;
 let currentNonce=0;
+let currentBet=0; // ← PŘIDÁNO: Globální bet pro tumbles
 
 const ROWS=6,COLS=5,grid=[];
 const gridEl=document.getElementById('grid');
@@ -1355,6 +1449,7 @@ doSpin(bet);
 
 function doSpin(bet){
 spinning=true;
+currentBet=bet; // ← OPRAVENO: Uložit bet pro tumbles!
 currentNonce=pfN;
 pfTick();
 
@@ -1416,10 +1511,10 @@ cell.el.classList.add('falling');
 }
 }
 
-setTimeout(()=>{checkResolve(bet)},800);
+setTimeout(()=>{checkResolve()},800); // ← OPRAVENO: Bez parametru!
 }
 
-function checkResolve(bet){
+function checkResolve(){ // ← OPRAVENO: Bez parametru!
 const scatterCnt=countSym('LOLLIPOP');
 
 // FREE SPINS - TRIGGER
@@ -1444,14 +1539,13 @@ setTimeout(()=>{wt.textContent='';wt.className='win-text';},2000);
 
 const clusters=findClusters();
 
-// DEBUG - zobraz clustery v konzoli
 console.log('🔍 Clustery:', clusters.length);
 clusters.forEach((cl,i)=>console.log(`${i+1}. ${cl.sym.k} × ${cl.cells.length}`));
 
 if(clusters.length===0){
-if(bet>0&&!fsMode)totalLosses++;
+if(currentBet>0&&!fsMode)totalLosses++; // ← OPRAVENO: Použij currentBet
 updateBal();
-finishSpin(bet);
+finishSpin(currentBet); // ← OPRAVENO: Použij currentBet
 return;
 }
 
@@ -1460,14 +1554,14 @@ clusters.forEach(cluster=>{
 const sym=cluster.sym;
 const count=cluster.cells.length;
 let m=0;
-if(count>=15)m=sym.m15;
-else if(count>=12)m=sym.m12;
-else if(count>=10)m=sym.m10;
-else if(count>=8)m=sym.m8;
-else if(count>=6)m=sym.m8*0.7;
-else if(count>=5)m=sym.m5;
-else if(count>=4)m=sym.m5*0.6;
-else if(count>=3)m=sym.m5*0.4;  // PŘIDÁNO!
+if(count>=15)m=sym.m15||20;
+else if(count>=12)m=sym.m12||15;
+else if(count>=10)m=sym.m10||10;
+else if(count>=8)m=sym.m8||5;
+else if(count>=6)m=(sym.m8||5)*0.8;  // ZVÝŠENO
+else if(count>=5)m=(sym.m5||2)*1.2;  // ZVÝŠENO
+else if(count>=4)m=(sym.m5||2)*0.9;  // ZVÝŠENO
+else if(count>=3)m=(sym.m5||2)*0.7;  // ZVÝŠENO z 0.5
 totalMult+=m||0;
 cluster.cells.forEach(c=>{
 const cell=grid[c.r][c.c];
@@ -1479,28 +1573,37 @@ cluster.cells.forEach(c=>{grid[c.r][c.c].el.classList.add('winning')});
 totalMult*=bombMult;
 if(fsMode){mult=Math.min(100,mult+1);totalMult*=mult}
 
-const payout=bet*totalMult;
-const prof=payout-bet;
+const payout = currentBet * totalMult; // ← OPRAVENO: Použij currentBet
+const prof = payout - currentBet; // ← OPRAVENO: Použij currentBet
 
-if(totalMult>0){
-if(gameMode==='real' && window.CK){
-  bal+=payout;
-  realBalance+=payout;
-}else{
-  bal+=payout;
-  demoBalance+=payout;
-}
+console.log('🎰 VÝHRA:', {
+  bet: currentBet, // ← OPRAVENO
+  totalMult: totalMult,
+  payout: payout,
+  profit: prof,
+  currentBalance: bal
+});
 
-profit+=prof;
-if(prof>bestWin)bestWin=prof;
-totalWins++;
-const wt=document.getElementById('winText');
-if(totalMult>=100){wt.textContent='🍭 MEGA WIN! 🍬';wt.className='win-text show mega';snd('fs');spawnP('mega')}
-else if(totalMult>=30){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';snd('win');spawnP('big')}
-else{wt.textContent='✨ WIN!';wt.className='win-text show small';snd('win');spawnP('small')}
-document.getElementById('winAmt').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
-document.getElementById('lastWin').textContent='+'+f5(prof);
-document.getElementById('bestWin').textContent=f5(bestWin);
+if(totalMult > 0 && payout > 0){
+  if(gameMode === 'real' && window.CK){
+    bal += payout;
+    realBalance += payout;
+  } else {
+    bal += payout;
+    demoBalance += payout;
+  }
+
+  profit += prof;
+  if(prof > bestWin) bestWin = prof;
+  totalWins++;
+
+  const wt=document.getElementById('winText');
+  if(totalMult>=100){wt.textContent='🍭 MEGA WIN! 🍬';wt.className='win-text show mega';snd('fs');spawnP('mega')}
+  else if(totalMult>=30){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';snd('win');spawnP('big')}
+  else{wt.textContent='✨ WIN!';wt.className='win-text show small';snd('win');spawnP('small')}
+  document.getElementById('winAmt').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
+  document.getElementById('lastWin').textContent='+'+f5(prof);
+  document.getElementById('bestWin').textContent=f5(bestWin);
 }
 
 updateBal();
@@ -1512,7 +1615,7 @@ cluster.cells.forEach(c=>{grid[c.r][c.c].el.classList.add('exploding')});
 });
 setTimeout(()=>{
 tumble(clusters);
-setTimeout(()=>{checkResolve(bet)},800);
+setTimeout(()=>{checkResolve()},800); // ← OPRAVENO: Bez parametru!
 },600);
 },1100);
 }
@@ -1524,7 +1627,7 @@ for(let r=0;r<ROWS;r++){
 for(let c=0;c<COLS;c++){
 if(!visited[r][c]){
 const cluster=bfs(r,c,visited);
-if(cluster.length>=3)clusters.push({sym:grid[r][c].sym,cells:cluster});  // ZMĚNA: 4→3
+if(cluster.length>=3)clusters.push({sym:grid[r][c].sym,cells:cluster});
 }
 }
 }
@@ -1541,7 +1644,6 @@ while(queue.length>0){
 const {r,c}=queue.shift();
 cluster.push({r,c});
 
-// Sousedé: nahoru, dolů, vlevo, vpravo
 const neighbors=[[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
 
 neighbors.forEach(([nr,nc])=>{
@@ -1630,7 +1732,7 @@ if(fsRem>0){
 fsRem--;
 updateBal();
 if(fsRem===0){fsMode=false;mult=1;updateBal()}
-setTimeout(()=>doSpin(0),1200);
+setTimeout(()=>{currentBet=0;doSpin(0)},1200); // ← OPRAVENO
 }else{
 document.getElementById('spinBtn').textContent='🍭 SPIN';
 if(autoEnabled&&bet>0){
@@ -1665,11 +1767,12 @@ function startFS(){
 document.getElementById('fsOverlay').classList.remove('show');
 document.getElementById('spinBtn').disabled=false;
 document.getElementById('spinBtn').textContent='🎁 Free Spin';
-setTimeout(()=>doSpin(0),600);
+setTimeout(()=>{currentBet=0;doSpin(0)},600); // ← OPRAVENO
 }
 
 updateBal();
 console.log('🍭 Sweet Bonanza Deluxe loaded!');
 </script>
+
 </body>
 </html>
