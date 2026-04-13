@@ -540,7 +540,6 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 </div>
 
 <footer><p>© 2026 CryptoKasino · 18+ · Play Responsibly · <a href="casino.html" style="color:var(--gold)">← Back to Casino</a></p></footer>
-
 <script>
 // ══════════════════════════════════════════════════════════════
 // EGYPT GOLD SLOTS - DNA CRYPTOKASINO + EGYPTSKÉ SYMBOLY
@@ -554,22 +553,23 @@ let gameMode='demo';
 const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
-// ══ 13 EGYPTSKÝCH SYMBOLŮ ══
+// ══ 13 EGYPTSKÝCH SYMBOLŮ - OPRAVENÉ VÁHY PRO ČASTĚJŠÍ VÝHRY ══
 const SYMBOLS=[
-  {key:'WILD',    img:'images/pharaon.png', name:'Pharaoh',  w:2,  m3:10,  m4:50,  m5:200},
-  {key:'SCATTER', img:'images/kniha.png',   name:'Book',     w:3,  m3:5,   m4:20,  m5:100},
-  {key:'PYRAMID', img:'images/pyramida.png',name:'Pyramid',  w:5,  m3:5,   m4:15,  m5:80},
-  {key:'EYE',     img:'images/oko.png',     name:'Eye of Ra',w:6,  m3:4,   m4:12,  m5:60},
-  {key:'ANUBIS',  img:'images/anubis.png',  name:'Anubis',   w:8,  m3:3,   m4:10,  m5:50},
-  {key:'HORUS',   img:'images/horus.png',   name:'Horus',    w:8,  m3:3,   m4:10,  m5:50},
-  {key:'BASTET',  img:'images/bastet.png',  name:'Bastet',   w:8,  m3:3,   m4:10,  m5:50},
-  {key:'TABLET',  img:'images/tablet.png',  name:'Tablet',   w:10, m3:2,   m4:8,   m5:40},
-  {key:'SCEPTER', img:'images/zezlo.png',   name:'Scepter',  w:10, m3:2,   m4:8,   m5:40},
-  {key:'ANKH',    img:'images/ankh.png',    name:'Ankh',     w:12, m3:2,   m4:6,   m5:30},
-  {key:'RUBY',    img:'images/rubin.png',   name:'Ruby',     w:14, m3:1,   m4:4,   m5:20},
-  {key:'EMERALD', img:'images/smaragd.png', name:'Emerald',  w:14, m3:1,   m4:4,   m5:20},
-  {key:'RING',    img:'images/prsten.png',  name:'Ring',     w:16, m3:1,   m4:3,   m5:15}
+  {key:'WILD',    img:'images/pharaon.png', name:'Pharaoh',  w:6,  m3:10,  m4:50,  m5:200},
+  {key:'SCATTER', img:'images/kniha.png',   name:'Book',     w:5,  m3:5,   m4:20,  m5:100},
+  {key:'PYRAMID', img:'images/pyramida.png',name:'Pyramid',  w:10, m3:5,   m4:15,  m5:80},
+  {key:'EYE',     img:'images/oko.png',     name:'Eye of Ra',w:12, m3:4,   m4:12,  m5:60},
+  {key:'ANUBIS',  img:'images/anubis.png',  name:'Anubis',   w:14, m3:3,   m4:10,  m5:50},
+  {key:'HORUS',   img:'images/horus.png',   name:'Horus',    w:14, m3:3,   m4:10,  m5:50},
+  {key:'BASTET',  img:'images/bastet.png',  name:'Bastet',   w:14, m3:3,   m4:10,  m5:50},
+  {key:'TABLET',  img:'images/tablet.png',  name:'Tablet',   w:18, m3:2,   m4:8,   m5:40},
+  {key:'SCEPTER', img:'images/zezlo.png',   name:'Scepter',  w:18, m3:2,   m4:8,   m5:40},
+  {key:'ANKH',    img:'images/ankh.png',    name:'Ankh',     w:22, m3:2,   m4:6,   m5:30},
+  {key:'RUBY',    img:'images/rubin.png',   name:'Ruby',     w:26, m3:1.5, m4:4,   m5:20},
+  {key:'EMERALD', img:'images/smaragd.png', name:'Emerald',  w:26, m3:1.5, m4:4,   m5:20},
+  {key:'RING',    img:'images/prsten.png',  name:'Ring',     w:30, m3:1,   m4:3,   m5:15}
 ];
+
 const TOTAL_W=SYMBOLS.reduce((a,b)=>a+b.w,0);
 
 function randSym(){
@@ -583,14 +583,7 @@ function genGrid(){
   for(let ri=0;ri<NUM_REELS;ri++){
     const col=[];
     for(let row=0;row<NUM_ROWS;row++){
-      let sym=randSym();
-      if(Math.random()<0.15){
-        for(let attempt=0;attempt<3;attempt++){
-          const alt=randSym();
-          if(alt.key!==sym.key){sym=alt;break;}
-        }
-      }
-      col.push(sym);
+      col.push(randSym());
     }
     grid.push(col);
   }
@@ -603,7 +596,6 @@ function genGrid(){
   try{
     sb=window.CK&&window.CK.sb?window.CK.sb:(()=>{const {createClient}=supabase;return createClient(SB_URL,SB_KEY);})();
     
-    // Načtení game settings pro Egypt Gold
     if(sb){
       try{
         const {data:gs,error}=await sb.from('game_settings').select('*').eq('id','egypt_gold').maybeSingle();
@@ -660,7 +652,6 @@ async function sbLog(betSat,profitSat,mult,meta){
   }catch(e){console.warn('[Egypt] Log error:',e.message);}
 }
 
-// ══ MODE SWITCHING ══
 function setMode(mode){
   gameMode=mode;
   if(window.CK)CK.setGameMode(mode);
@@ -675,7 +666,6 @@ function setMode(mode){
   updateBal();
 }
 
-// ══ AUDIO ENGINE ══
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 document.addEventListener('click',()=>{if(AC.state==='suspended')AC.resume();},{once:true});
 function playSound(t){
@@ -689,7 +679,6 @@ function playSound(t){
   }catch(e){}
 }
 
-// ══ PARTICLE SYSTEM ══
 const pC=document.getElementById('particleCanvas'),pCtx=pC.getContext('2d');let particles=[];
 function resizeP(){pC.width=window.innerWidth;pC.height=window.innerHeight;}resizeP();window.addEventListener('resize',resizeP);
 function spawnP(type){
@@ -702,7 +691,6 @@ function drawStar(c,x,y,r,col){c.beginPath();for(let i=0;i<5;i++){const a=(i*Mat
 function animP(){pCtx.clearRect(0,0,pC.width,pC.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;p.rot+=p.rotV;pCtx.save();pCtx.globalAlpha=p.life;pCtx.translate(p.x,p.y);pCtx.rotate(p.rot);if(Math.random()>.5)drawStar(pCtx,0,0,p.sz,p.col);else{pCtx.beginPath();pCtx.arc(0,0,p.sz,0,Math.PI*2);pCtx.fillStyle=p.col;pCtx.fill();}pCtx.restore();});requestAnimationFrame(animP);}
 animP();
 
-// ══ BUILD REELS ══
 const NUM_REELS=5,NUM_ROWS=3,SYM_H=90;
 const reelEls=[],reelInners=[];
 const reelsContainer=document.getElementById('reelsContainer');
@@ -726,7 +714,6 @@ for(let ri=0;ri<NUM_REELS;ri++){
   reelEls.push(outer);reelInners.push(inner);
 }
 
-// ══ BUILD PAYTABLE ══
 const ptGrid=document.getElementById('paytableGrid');
 SYMBOLS.forEach(sym=>{
   const d=document.createElement('div');d.className='pt-item';
@@ -738,14 +725,12 @@ SYMBOLS.forEach(sym=>{
   ptGrid.appendChild(d);
 });
 
-// ══ PAYLINE STATE ══
 const activePaylines=new Set([1,2,3]);
 function togglePayline(n,btn){
   if(activePaylines.has(n)&&activePaylines.size>1){activePaylines.delete(n);btn.classList.remove('active');}
   else{activePaylines.add(n);btn.classList.add('active');}
 }
 
-// ══ LIVE FEED ══
 const FAKE=['PharaohKing','CleoX','0xRamses','EgyptGold','TutPro','AnubisBTC','PyramidCat'];
 function addLive(){
   const feed=document.getElementById('liveFeed');
@@ -757,11 +742,9 @@ function addLive(){
 }
 setInterval(addLive,2600);for(let i=0;i<3;i++)addLive();
 
-// ══ JACKPOT ══
 let jackpot=0.12345678;
 setInterval(()=>{jackpot+=0.00000001+Math.random()*.000001;document.getElementById('jackpotVal').textContent=jackpot.toFixed(8)+' BTC';},100);
 
-// ══ STATE ══
 let spinning=false,autoCount=0,autoRunning=false;
 let totalSpinsCount=0,totalWins=0,totalWagered=0,biggestWin=0,sessionProfit=0,freeSpins=0;
 let freeSpinsRemaining=0,freeSpinMode=false,freeSpinMultiplier=1;
@@ -780,7 +763,6 @@ function doubleBet(){setBet(Math.min(balance,(parseFloat(document.getElementById
 function maxBet(){setBet(Math.min(balance,.1));}
 function clearBet(){setBet(.001);}
 
-// ══ SPIN ══
 function handleSpin(){
   if(spinning)return;
   const bet=parseFloat(document.getElementById('betInput').value);
@@ -797,15 +779,10 @@ function startFreeSpins(){
 
 function doSpin(bet){
   spinning=true;
-  
-  // ═══ ULOŽIT CURRENT NONCE PŘED ZVÝŠENÍM ═══
   const currentNonce = pfN;
-  
-  // ═══ UPDATE PROVABLY FAIR HASH (pfN se zvýší) ═══
   pfTick();
   
   if(gameMode==='real') {
-    // Poslat Provably Fair data na server s PŮVODNÍM nonce
     callGameServer('egypt_gold', parseFloat(bet)||0, {
       serverSeed: pfSS,
       clientSeed: pfCS,
@@ -837,7 +814,6 @@ function doSpin(bet){
   reelEls.forEach(r=>{r.classList.remove('win-reel','bounce');});
 
   playSound('spin');
-
   currentGrid=genGrid();
 
   const speed=parseInt(document.getElementById('autoSpeed').value)||900;
@@ -893,52 +869,58 @@ function resolveResult(bet, currentNonce){
   const topRow=currentGrid.map(c=>c[0]);
   const botRow=currentGrid.map(c=>c[2]);
   const rows=[midRow,topRow,botRow];
-
   let totalMult=0,winningReelSet=new Set();
   let scatterCount=currentGrid.flat().filter(s=>s.key==='SCATTER').length;
 
-// FREE SPINS TRIGGER
-if(scatterCount>=3 && !freeSpinMode){
-  freeSpinsRemaining=10;
-  freeSpinMultiplier=1;
-  document.getElementById('fsCount').textContent=freeSpinsRemaining+' Free Spins';
-  document.getElementById('fsOverlay').classList.add('show');
-  playSound('jackpot');
-  spawnP('jackpot');
-  spinning=false;
-  document.getElementById('spinBtn').disabled=false;
-  document.getElementById('spinBtn').textContent='🏺 SPIN';
-  return;
-}
+  // FREE SPINS TRIGGER
+  if(scatterCount>=3 && !freeSpinMode){
+    freeSpinsRemaining=10;
+    freeSpinMultiplier=1;
+    freeSpins++;
+    document.getElementById('stFreeS').textContent=freeSpins;
+    document.getElementById('fsCount').textContent=freeSpinsRemaining+' Free Spins';
+    document.getElementById('fsOverlay').classList.add('show');
+    playSound('jackpot');
+    spawnP('jackpot');
+    spinning=false;
+    document.getElementById('spinBtn').disabled=false;
+    document.getElementById('spinBtn').textContent='🏺 SPIN';
+    return;
+  }
 
-// FREE SPINS RETRIGGER
-if(scatterCount>=3 && freeSpinMode){
-  freeSpinsRemaining+=10;
-  playSound('win');
-  spawnP('big');
-}
-
-// FREE SPINS MULTIPLIER
-if(freeSpinMode && totalMult>0){
-  totalMult*=freeSpinMultiplier;
-  freeSpinMultiplier++;
-}
-
-  rows.forEach((row,rowIdx)=>{
-    if(!activePaylines.has(rowIdx+1))return;
-    const first=row[0];
-    if(first.key==='SCATTER')return;
-    let count=1;
-    for(let i=1;i<NUM_REELS;i++){
-      if(row[i].key===first.key||row[i].key==='WILD')count++;
-      else break;
+ // VÝPOČET VÝHER - OPRAVENO PRO ČASTĚJŠÍ VÝHRY
+rows.forEach((row,rowIdx)=>{
+  if(!activePaylines.has(rowIdx+1))return;
+  const first=row[0];
+  if(first.key==='SCATTER')return;
+  
+  // Počítej stejné symboly od začátku
+  let count=1;
+  for(let i=1;i<NUM_REELS;i++){
+    const current=row[i];
+    // WILD nahrazuje COKOLIV
+    if(current.key==='WILD'){
+      count++;
+      continue;
     }
+    // Pokud first je WILD, akceptuj jakýkoliv symbol
+    if(first.key==='WILD'){
+      count++;
+      continue;
+    }
+    // Normální shoda
+    if(current.key===first.key){
+      count++;
+    } else {
+      break;
+    }
+  }
     let mult=0;
     if(count===5)mult=first.m5;
     else if(count===4)mult=first.m4;
     else if(count===3)mult=first.m3;
     if(mult>0){
-      totalMult=Math.max(totalMult,mult);
+      totalMult+=mult; // ZMĚNA: += místo Math.max
       for(let i=0;i<count;i++)winningReelSet.add(i);
       if(rowIdx===0)document.getElementById('pl2').classList.add('show');
       if(rowIdx===1)document.getElementById('pl1').classList.add('show');
@@ -946,14 +928,33 @@ if(freeSpinMode && totalMult>0){
     }
   });
 
+  // FREE SPINS RETRIGGER
+  if(scatterCount>=3 && freeSpinMode){
+    freeSpinsRemaining+=10;
+    playSound('win');
+    spawnP('big');
+  }
+
+  // FREE SPINS MULTIPLIER
+  if(freeSpinMode && totalMult>0){
+    totalMult*=freeSpinMultiplier;
+    freeSpinMultiplier++;
+  }
+
   if(scatterCount>=5){setTimeout(()=>{triggerJackpot(bet);},300);return;}
+
+  // ═══ OPRAVA: Použít reálnou sázku i pro free spiny ═══
+  let baseBet = bet;
+  if(freeSpinMode && bet === 0) {
+    baseBet = parseFloat(document.getElementById('betInput').value) || 0.001;
+  }
 
   var _egypt_he=(window._houseEdge_egypt_gold||0.035);
   var _egypt_em=totalMult>1?(1+((totalMult-1)*(1-_egypt_he))):totalMult;
-  var _egypt_raw=parseFloat((bet*_egypt_em).toFixed(7));
+  var _egypt_raw=parseFloat((baseBet*_egypt_em).toFixed(7));
   var _egypt_max=window._maxWin_egypt_gold||0.5;
-  const payout=Math.min(_egypt_raw,bet+_egypt_max);
-  const profit=payout-bet;
+  const payout=Math.min(_egypt_raw,baseBet+_egypt_max);
+  const profit=payout-baseBet;
 
   if(totalMult>0){
     if(gameMode==='real'){balance+=payout;realBalance+=payout;sbAddWin(Math.round(payout*1e8));}
@@ -970,6 +971,7 @@ if(freeSpinMode && totalMult>0){
         }
       });
     });
+
     document.getElementById('slotCabinet').classList.add('win-cabinet');
     const wt=document.getElementById('winText');
     if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';playSound('jackpot');spawnP('jackpot');}
@@ -977,41 +979,61 @@ if(freeSpinMode && totalMult>0){
     else{wt.textContent='✨ WIN!';wt.className='win-text show small';playSound('win');spawnP('small');}
     document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
     document.getElementById('winAmount').style.color='var(--green)';
-    const mb=document.getElementById('winMultBadge');mb.textContent=totalMult+'×';mb.className='win-mult-badge show';
+    const mb=document.getElementById('winMultBadge');
+    if(freeSpinMode && freeSpinMultiplier > 1){
+      mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
+    } else {
+      mb.textContent=totalMult+'×';
+    }
+    mb.className='win-mult-badge show';
     document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';document.getElementById('lastWin').style.color='var(--green)';
   } else {
     playSound('lose');spawnP('lose');
     const wt=document.getElementById('winText');wt.textContent='No Win';wt.className='win-text show lose';
-    document.getElementById('lastWin').textContent='-'+f5(bet)+' BTC';document.getElementById('lastWin').style.color='var(--red)';
+    document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';document.getElementById('lastWin').style.color='var(--red)';
   }
 
   sessionProfit+=profit;updateBal();updateStats();chartData.push(profit);if(chartData.length>40)chartData.shift();updateChart();
-  addHistory(midRow,bet,totalMult,profit);
-  if(gameMode==='real')sbLog(Math.round(bet*1e8),Math.round(profit*1e8),totalMult,{
+  addHistory(midRow,baseBet,totalMult,profit);
+  if(gameMode==='real' && baseBet > 0)sbLog(Math.round(baseBet*1e8),Math.round(profit*1e8),totalMult,{
     symbols:midRow.map(s=>s.key),
     serverSeed:pfSS,
     clientSeed:pfCS,
-    nonce:currentNonce
+    nonce:currentNonce,
+    freeSpinMode:freeSpinMode
   });
 
-  finishSpin(bet,profit);
+  finishSpin(baseBet,profit);
 }
 
 function finishSpin(bet,profit){
-
-// FREE SPINS LOGIC
-if(freeSpinMode && freeSpinsRemaining>0){
-  freeSpinsRemaining--;
-  if(freeSpinsRemaining>0){
-    setTimeout(()=>doSpin(0),1200);
-    spinning=false;
-    return;
-  } else {
-    freeSpinMode=false;
-    freeSpinMultiplier=1;
-    playSound('win');
+  // FREE SPINS LOGIC
+  if(freeSpinMode && freeSpinsRemaining>0){
+    freeSpinsRemaining--;
+    
+    let badge=document.getElementById('fsBadge');
+    if(!badge){
+      badge=document.createElement('div');
+      badge.id='fsBadge';
+      badge.className='fs-badge';
+      document.getElementById('slotCabinet').appendChild(badge);
+    }
+    badge.textContent=`🎁 Free Spins: ${freeSpinsRemaining} | Mult: ${freeSpinMultiplier}×`;
+    badge.style.display='block';
+    
+    if(freeSpinsRemaining>0){
+      setTimeout(()=>doSpin(0),1800);
+      spinning=false;
+      return;
+    } else {
+      freeSpinMode=false;
+      freeSpinMultiplier=1;
+      badge.style.display='none';
+      playSound('win');
+      spawnP('big');
+    }
   }
-}
+
   const autoOn=document.getElementById('autoToggle').checked;
   const maxSp=parseInt(document.getElementById('autoSpins').value)||20;
   const stopWin=parseFloat(document.getElementById('stopWin').value)||0;
@@ -1072,7 +1094,6 @@ function toggleMenu(){document.getElementById('mobileMenu')?.classList.toggle('o
 document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;if(e.code==='Space'||e.code==='Enter'){e.preventDefault();handleSpin();}});
 updateBal();updateStats();
 
-// ══ GAME SETTINGS LOADER ══
 async function loadGameSettings(gameId){
   try{
     var tries=0;
@@ -1089,16 +1110,11 @@ async function loadGameSettings(gameId){
   }
 }
 
-// ══ PF ══
 let pfSS=genS(),pfCS=genS(),pfN=0;
 function genS(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function hashS(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function pfTick(){const c=`${pfSS}-${pfCS}-${pfN}`;const h=await hashS(c);pfN++;document.getElementById('pfHash').textContent=`Server:${pfSS.substring(0,12)}... Nonce:${pfN} Hash:${h.substring(0,20)}...`;}
 async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await hashS(c);alert(`✅ Provably Fair — Egypt Gold\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN-1}\n\nSHA-256: ${h}`);}
-
-// ══════════════════════════════════════════════════════════════
-// IMAGE PRELOADER - Rychlé načítání PNG symbolů
-// ══════════════════════════════════════════════════════════════
 
 const IMAGE_CACHE = {};
 const SYMBOL_IMAGES = [
@@ -1117,7 +1133,6 @@ const SYMBOL_IMAGES = [
   'images/prsten.png'
 ];
 
-// Preload all symbol images
 function preloadImages() {
   let loaded = 0;
   const total = SYMBOL_IMAGES.length;
@@ -1139,12 +1154,8 @@ function preloadImages() {
   });
 }
 
-// Start preloading immediately
 preloadImages();
 
-// ══════════════════════════════════════════════════════════════
-
-// ══ SERVER GAME ENDPOINT ══
 async function callGameServer(gameId, betBtc, options) {
   if (window.CK && window.CK.callGameServer) {
     return await window.CK.callGameServer(gameId, betBtc, options);
@@ -1152,7 +1163,6 @@ async function callGameServer(gameId, betBtc, options) {
   return null;
 }
 
-// ══ INIT ══
 document.addEventListener('DOMContentLoaded', function(){
   loadGameSettings('egypt_gold').then(function(gs){
     if(!gs) return;
@@ -1169,5 +1179,6 @@ document.addEventListener('DOMContentLoaded', function(){
   });if(typeof setMode==='function')setMode('demo');},{once:true});
 if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
 </script>
+
 </body>
 </html>
