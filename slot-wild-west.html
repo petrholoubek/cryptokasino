@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico">
+<title>Wild West Gold Rush – CryptoKasino</title>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4AF37;--gold-light:#FFD700;--gold-dark:#B8860B;
+  --orange:#FF8C42;--orange-light:#FFA500;--orange-dark:#CC5614;
+  --brown:#8B4513;--brown-dark:#5C2E0A;--brown-light:#A0522D;
+  --text:#F5E6D3;--text-dim:#C9B896;
+  --green:#4ade80;--red:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#000;color:var(--text);
+  font-family:'Roboto Condensed',sans-serif;
+  min-height:100vh;overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(255,140,66,0.25), transparent 50%),
+    radial-gradient(ellipse at 30% 40%, rgba(212,175,55,0.15), transparent 45%),
+    radial-gradient(ellipse at 70% 40%, rgba(212,175,55,0.12), transparent 45%),
+    linear-gradient(180deg, #5C2E0A 0%, #8B4513 30%, #A0522D 60%, #5C2E0A 100%);
+  pointer-events:none;z-index:0;
+}
+canvas#particles{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:60px;
+  background:rgba(92,46,10,0.95);backdrop-filter:blur(20px);
+  border-bottom:2px solid rgba(212,175,55,0.4);
+  box-shadow:0 0 40px rgba(212,175,55,0.3);
+}
+.logo{
+  display:flex;align-items:center;gap:0.6rem;
+  text-decoration:none;
+}
+.logo div{
+  width:24px;height:24px;
+  background:linear-gradient(135deg,#D4AF37,#FFD700);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;color:#000;font-weight:900;
+}
+.logo span:first-of-type{color:var(--gold-light)}
+.logo span:last-of-type{color:#fff}
+header nav{
+  display:flex;gap:2rem;
+  font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+}
+header nav a{
+  color:var(--text-dim);text-decoration:none;transition:color .2s;
+}
+header nav a:hover{color:var(--gold-light)}
+.btc-bal{
+  font-size:0.85rem;color:var(--green);
+  background:rgba(74,222,128,0.1);
+  border:1px solid rgba(74,222,128,0.3);
+  padding:0.4rem 1rem;border-radius:8px;
+}
+
+/* GAME HEADER */
+.game-header{
+  background:linear-gradient(135deg, rgba(139,69,19,0.95), rgba(92,46,10,0.95));
+  border-bottom:2px solid rgba(212,175,55,0.5);
+  padding:1rem 2rem;
+  display:flex;align-items:center;gap:2rem;
+  position:relative;z-index:10;
+}
+.gh-left{display:flex;align-items:center;gap:1rem}
+.gh-icon{
+  font-size:3rem;
+  animation:westGlow 3s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 20px #D4AF37);
+}
+@keyframes westGlow{
+  from{filter:drop-shadow(0 0 15px #D4AF37)}
+  to{filter:drop-shadow(0 0 40px #FFD700) drop-shadow(0 0 60px #D4AF37)}
+}
+.gh-title{
+  font-family:'Rye',serif;font-size:2.2rem;font-weight:900;
+  background:linear-gradient(135deg,#FFD700,#D4AF37,#B8860B);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 25px rgba(212,175,55,0.9));
+  letter-spacing:0.05em;
+}
+.gh-sub{
+  font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);margin-top:0.3rem;
+}
+.gh-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+.mode-toggle{
+  display:flex;background:rgba(0,0,0,0.6);
+  border:1px solid rgba(212,175,55,0.3);
+  border-radius:30px;padding:0.3rem;gap:0.3rem;
+}
+.mode-btn{
+  padding:0.5rem 1.5rem;border-radius:25px;
+  font-size:0.7rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  cursor:pointer;border:none;background:transparent;
+  color:var(--text-dim);transition:all 0.3s;
+}
+.mode-btn.active.mode-demo{
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);
+  color:#93c5fd;box-shadow:0 0 20px rgba(37,99,235,0.4);
+}
+.mode-btn.active.mode-real{
+  background:linear-gradient(135deg,#D4AF37,#FFD700);
+  color:#000;box-shadow:0 0 30px rgba(212,175,55,0.6);
+  font-weight:900;
+}
+.demo-badge,.real-badge{
+  font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;
+  border-radius:12px;padding:0.25rem 0.8rem;
+}
+.demo-badge{
+  color:#60a5fa;background:rgba(37,99,235,0.15);
+  border:1px solid rgba(37,99,235,0.3);
+}
+.real-badge{
+  color:#000;background:rgba(212,175,55,0.3);
+  border:1px solid rgba(212,175,55,0.5);
+  animation:realBadge 2s infinite;
+}
+@keyframes realBadge{
+  0%,100%{box-shadow:0 0 10px rgba(212,175,55,0.4)}
+  50%{box-shadow:0 0 25px rgba(255,215,0,0.7)}
+}
+.gh-right{display:flex;align-items:center;gap:1.5rem}
+.gh-stat{text-align:center}
+.gh-stat-lbl{
+  font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.gh-stat-val{
+  font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.2rem;
+}
+.gh-stat-val.green{color:var(--green)}
+
+/* GAME AREA */
+.game-area{
+  position:relative;z-index:2;
+  max-width:1000px;margin:0 auto;
+  padding:1.5rem 2rem 4rem;
+}
+
+/* BALANCE BAR */
+.balance-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+  background:rgba(139,69,19,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:16px;padding:1.2rem;
+  margin-bottom:1.2rem;
+  box-shadow:0 0 30px rgba(212,175,55,0.2);
+}
+.bal-item{text-align:center}
+.bal-label{
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.bal-value{
+  font-size:1.1rem;font-weight:700;color:var(--gold-light);margin-top:0.3rem;
+}
+.bal-value.green{color:var(--green)}
+.bal-value.red{color:var(--red)}
+
+/* GOLD RUSH MODAL */
+.goldrush-modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.95);
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.goldrush-modal.show{display:flex}
+.goldrush-container{
+  text-align:center;
+  max-width:700px;width:95%;
+}
+.goldrush-title{
+  font-family:'Rye',serif;
+  font-size:2.5rem;font-weight:900;
+  background:linear-gradient(135deg,#FFD700,#D4AF37);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:2rem;
+  filter:drop-shadow(0 0 30px #D4AF37);
+}
+.goldrush-bags{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2rem;margin-bottom:2rem;
+}
+.gold-bag{
+  background:linear-gradient(135deg,rgba(139,69,19,0.8),rgba(92,46,10,0.9));
+  border:3px solid rgba(212,175,55,0.6);
+  border-radius:20px;padding:2rem;
+  cursor:pointer;
+  transition:all 0.3s;
+  position:relative;
+}
+.gold-bag:hover:not(.picked){
+  transform:scale(1.05);
+  border-color:var(--gold-light);
+  box-shadow:0 0 40px rgba(212,175,55,0.6);
+}
+.gold-bag.picked{
+  background:linear-gradient(135deg,rgba(212,175,55,0.4),rgba(139,69,19,0.6));
+  cursor:default;
+}
+.bag-icon{
+  font-size:4rem;
+  filter:drop-shadow(0 0 20px #D4AF37);
+}
+.bag-value{
+  font-family:'Rye',serif;
+  font-size:1.5rem;font-weight:900;
+  color:var(--gold-light);
+  margin-top:1rem;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.gold-bag.picked .bag-value{opacity:1}
+.goldrush-total{
+  font-family:'Rye',serif;
+  font-size:2rem;font-weight:900;
+  color:var(--green);
+  margin-top:1rem;
+}
+
+/* DUEL MODAL */
+.duel-modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.95);
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.duel-modal.show{display:flex}
+.duel-container{
+  text-align:center;
+  max-width:600px;width:95%;
+}
+.duel-title{
+  font-family:'Rye',serif;
+  font-size:2.5rem;font-weight:900;
+  background:linear-gradient(135deg,#FFD700,#D4AF37);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:2rem;
+}
+.duel-vs{
+  display:flex;justify-content:space-around;
+  align-items:center;margin-bottom:2rem;
+}
+.duelist{font-size:6rem;opacity:0.5;transition:all 0.5s}
+.duelist.winner{opacity:1;transform:scale(1.2);filter:drop-shadow(0 0 30px #FFD700)}
+.duel-result{
+  font-family:'Rye',serif;
+  font-size:2rem;font-weight:900;
+  color:var(--green);
+  margin-top:1rem;
+}
+
+/* SLOT CABINET */
+.slot-cabinet{
+  background:linear-gradient(180deg,#8B4513 0%,#5C2E0A 50%,#000 100%);
+  border:4px solid rgba(212,175,55,0.6);
+  border-radius:30px;padding:2rem;
+  margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+  box-shadow:
+    0 0 60px rgba(212,175,55,0.4),
+    0 0 100px rgba(255,215,0,0.3);
+}
+.slot-cabinet::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(to right,transparent,#FFD700,#D4AF37,#FFD700,transparent);
+}
+.slot-cabinet.spinning{
+  border-color:rgba(255,215,0,0.9);
+  box-shadow:0 0 80px rgba(212,175,55,0.6);
+}
+.slot-cabinet.win{
+  animation:cabinetWin 0.5s ease-in-out infinite alternate;
+}
+@keyframes cabinetWin{
+  from{box-shadow:0 0 60px rgba(212,175,55,0.7)}
+  to{box-shadow:0 0 120px rgba(255,215,0,1)}
+}
+
+/* PAYLINES */
+.paylines-row{
+  display:flex;justify-content:center;align-items:center;gap:0.6rem;
+  margin-bottom:1rem;
+}
+.paylines-label{
+  font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.pl-num{
+  font-size:0.75rem;font-weight:700;color:var(--gold);
+  background:rgba(212,175,55,0.15);
+  border:2px solid rgba(212,175,55,0.3);
+  padding:0.3rem 0.8rem;border-radius:8px;
+}
+
+/* REELS - 3x3 GRID */
+.reels-container{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1rem;margin-bottom:1.5rem;
+  max-width:600px;margin-left:auto;margin-right:auto;
+}
+.reel{
+  background:rgba(0,0,0,0.7);
+  border:3px solid rgba(212,175,55,0.4);
+  border-radius:20px;padding:1rem;
+  position:relative;min-height:370px;
+  box-shadow:inset 0 0 30px rgba(0,0,0,0.9);
+}
+.reel.spinning{
+  border-color:rgba(255,215,0,0.8);
+  box-shadow:0 0 30px rgba(212,175,55,0.4);
+}
+.reel.win{
+  border-color:rgba(255,215,0,0.9);
+  animation:reelWin 0.4s ease-in-out infinite alternate;
+}
+@keyframes reelWin{
+  from{box-shadow:0 0 20px rgba(212,175,55,0.5)}
+  to{box-shadow:0 0 60px rgba(255,215,0,0.9)}
+}
+.reel-inner{
+  display:flex;flex-direction:column;gap:0.7rem;
+}
+.symbol{
+  background:linear-gradient(135deg,rgba(139,69,19,0.7),rgba(92,46,10,0.9));
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:14px;padding:1.2rem;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;min-height:100px;
+  transition:all 0.3s;
+}
+.sym-icon{
+  font-size:3rem;
+  filter:drop-shadow(0 2px 8px rgba(212,175,55,0.4));
+  transition:all 0.3s;
+}
+.symbol.win .sym-icon{
+  animation:symbolWin 0.4s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 20px #D4AF37);
+}
+@keyframes symbolWin{
+  from{transform:scale(1)}
+  to{transform:scale(1.3)}
+}
+.sym-name{
+  font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-dim);margin-top:0.4rem;
+}
+.symbol.win .sym-name{color:var(--gold-light)}
+
+/* WIN SECTION */
+.win-section{
+  text-align:center;min-height:5rem;padding:1rem 0;
+}
+.win-text{
+  font-family:'Rye',serif;font-size:2.5rem;font-weight:900;
+  letter-spacing:0.05em;opacity:0;transition:all 0.4s;
+}
+.win-text.show{opacity:1}
+.win-text.mega{
+  background:linear-gradient(135deg,#FFD700,#D4AF37);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:winMega 0.5s ease;
+  filter:drop-shadow(0 0 30px #D4AF37);
+}
+.win-text.big{
+  color:var(--green);
+  text-shadow:0 0 30px rgba(74,222,128,0.8);
+}
+.win-text.small{
+  color:var(--gold-light);
+  text-shadow:0 0 20px rgba(212,175,55,0.6);
+}
+@keyframes winMega{
+  0%{transform:scale(0.5)}
+  60%{transform:scale(1.15)}
+  100%{transform:scale(1)}
+}
+.win-amount{
+  font-size:1.3rem;font-weight:700;color:var(--green);
+  margin-top:0.8rem;
+  text-shadow:0 0 20px rgba(74,222,128,0.5);
+}
+
+/* BET CONTROLS */
+.bet-controls{
+  background:rgba(139,69,19,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:16px;padding:1.5rem;
+  margin-bottom:1.2rem;
+}
+.bet-row{
+  display:flex;align-items:center;gap:1rem;margin-bottom:1rem;
+}
+.bet-lbl{
+  font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--text-dim);white-space:nowrap;
+}
+.bet-input{
+  flex:1;background:rgba(0,0,0,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:10px;padding:0.7rem 1rem;
+  font-size:1rem;color:var(--gold-light);outline:none;
+  transition:border-color 0.3s;
+}
+.bet-input:focus{
+  border-color:var(--gold-light);
+  box-shadow:0 0 20px rgba(212,175,55,0.3);
+}
+.quick-bets{
+  display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;
+}
+.qb{
+  background:rgba(212,175,55,0.1);
+  border:2px solid rgba(212,175,55,0.3);
+  color:var(--gold);padding:0.5rem 1rem;border-radius:8px;
+  font-size:0.75rem;font-weight:700;cursor:pointer;
+  transition:all 0.3s;
+}
+.qb:hover{
+  background:rgba(212,175,55,0.25);
+  border-color:var(--gold-light);
+  box-shadow:0 0 15px rgba(212,175,55,0.4);
+}
+.action-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;
+}
+.act-btn{
+  padding:0.9rem;border-radius:10px;
+  font-size:0.8rem;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;cursor:pointer;
+  border:2px solid rgba(212,175,55,0.3);
+  background:rgba(212,175,55,0.1);
+  color:var(--text-dim);transition:all 0.3s;
+}
+.act-btn:hover{
+  background:rgba(212,175,55,0.2);
+  color:var(--gold-light);
+}
+.spin-btn{
+  grid-column:1/-1;padding:1.3rem;border-radius:15px;
+  font-family:'Rye',serif;font-size:1.3rem;font-weight:900;
+  letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;
+  border:3px solid #D4AF37;
+  background:linear-gradient(135deg,#D4AF37,#FFD700,#D4AF37);
+  background-size:200% 100%;color:#000;
+  box-shadow:0 0 40px rgba(212,175,55,0.6);
+  transition:all 0.3s;
+  animation:spinBtnGlow 3s linear infinite;
+}
+@keyframes spinBtnGlow{
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
+.spin-btn:hover:not(:disabled){
+  box-shadow:0 0 60px rgba(255,215,0,0.9);
+  transform:scale(1.03);
+}
+.spin-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* AUTO SPIN */
+.auto-section{
+  background:rgba(139,69,19,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:16px;padding:1.2rem;margin-bottom:1.2rem;
+}
+.auto-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;
+}
+.auto-title{
+  font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.toggle-switch{
+  position:relative;width:50px;height:28px;cursor:pointer;
+}
+.toggle-switch input{opacity:0;width:0;height:0}
+.slider{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:30px;transition:0.3s;
+}
+.slider::before{
+  content:'';position:absolute;
+  width:20px;height:20px;left:4px;bottom:2px;
+  background:var(--text-dim);border-radius:50%;transition:0.3s;
+}
+.toggle-switch input:checked + .slider{
+  background:rgba(212,175,55,0.3);
+  border-color:var(--gold);
+}
+.toggle-switch input:checked + .slider::before{
+  transform:translateX(22px);
+  background:var(--gold);
+  box-shadow:0 0 10px var(--gold);
+}
+.auto-opts{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;
+}
+.auto-opt label{
+  font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-dim);display:block;margin-bottom:0.4rem;
+}
+.auto-opt select{
+  width:100%;background:rgba(0,0,0,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:8px;padding:0.6rem;
+  font-size:0.8rem;color:var(--gold-light);outline:none;
+}
+
+/* PROVABLY FAIR */
+.pf-bar{
+  background:rgba(139,69,19,0.4);
+  border:2px solid rgba(212,175,55,0.2);
+  border-radius:12px;padding:0.8rem 1.2rem;margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.pf-lbl{
+  font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold);
+}
+.pf-hash{
+  font-family:monospace;font-size:0.6rem;
+  color:var(--text-dim);flex:1;word-break:break-all;
+}
+.pf-btn{
+  background:rgba(212,175,55,0.15);
+  border:2px solid rgba(212,175,55,0.3);
+  color:var(--gold);padding:0.4rem 1rem;border-radius:8px;
+  font-size:0.65rem;cursor:pointer;transition:all 0.3s;
+}
+.pf-btn:hover{
+  background:rgba(212,175,55,0.3);
+  box-shadow:0 0 15px rgba(212,175,55,0.4);
+}
+
+/* STATS */
+.stats{
+  background:rgba(139,69,19,0.6);
+  border:2px solid rgba(212,175,55,0.3);
+  border-radius:16px;padding:1.5rem;
+}
+.stats-title{
+  font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-dim);margin-bottom:1.2rem;
+}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+}
+.stat-item{
+  background:rgba(0,0,0,0.4);
+  border-radius:10px;padding:1rem;text-align:center;
+}
+.stat-lbl{
+  font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-dim);
+}
+.stat-val{
+  font-size:1rem;font-weight:700;color:var(--gold);margin-top:0.4rem;
+}
+.stat-val.green{color:var(--green)}
+.stat-val.red{color:var(--red)}
+
+/* MOBILE */
+@media(max-width:768px){
+  header{padding:0 1rem;height:54px}
+  .game-area{padding:1rem}
+  .balance-bar{grid-template-columns:1fr 1fr;gap:0.8rem;padding:1rem}
+  .reels-container{gap:0.6rem}
+  .reel{min-height:300px;padding:0.8rem}
+  .symbol{min-height:80px;padding:0.8rem}
+  .sym-icon{font-size:2.2rem}
+  .action-row{grid-template-columns:1fr 1fr}
+  .spin-btn{grid-column:1/-1;font-size:1.1rem}
+  .auto-opts{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .gh-title{font-size:1.6rem}
+  .goldrush-bags{grid-template-columns:1fr;gap:1rem}
+}
+@media(max-width:480px){
+  .reels-container{gap:0.4rem}
+  .reel{min-height:260px;padding:0.6rem}
+  .symbol{min-height:70px;padding:0.6rem}
+  .sym-icon{font-size:1.8rem}
+  .gh-title{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<canvas id="particles"></canvas>
+
+<!-- LOGIN MODAL -->
+<div class="modal-ov" id="loginModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:none;align-items:center;justify-content:center">
+  <div class="modal-box" style="background:linear-gradient(135deg,rgba(139,69,19,0.98),rgba(92,46,10,0.98));border:2px solid rgba(212,175,55,0.5);border-radius:20px;padding:3rem;max-width:450px;width:92%;text-align:center;box-shadow:0 0 60px rgba(212,175,55,0.4)">
+    <div style="font-size:4rem;margin-bottom:1.5rem">🔒</div>
+    <div style="font-family:'Rye',serif;font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#FFD700,#D4AF37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem">Login Required</div>
+    <div style="font-size:1rem;color:var(--text-dim);line-height:1.7;margin-bottom:2rem">To play Wild West Gold Rush for real BTC, you need to login. Demo mode is always free!</div>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="login.html" style="background:linear-gradient(135deg,#D4AF37,#FFD700);color:#000;padding:0.9rem 2.5rem;border-radius:12px;font-family:'Rye',serif;font-size:1rem;font-weight:700;text-decoration:none;box-shadow:0 0 30px rgba(212,175,55,0.5);transition:all 0.3s">Login / Register</a>
+      <button onclick="document.getElementById('loginModal').classList.remove('show');document.getElementById('loginModal').style.display='none'" style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);color:var(--text-dim);padding:0.9rem 2rem;border-radius:12px;font-size:0.9rem;cursor:pointer;transition:all 0.3s">Stay Demo</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo">
+    <div>₿</div>
+    <span>CRYPTO</span>
+    <span>KASINO</span>
+  </a>
+  
+  <nav>
+    <a href="casino.html">Casino</a>
+    <a href="live.html">Live</a>
+    <a href="sports.html">Sports</a>
+    <a href="promotions.html">Promotions</a>
+  </nav>
+  
+  <div style="display:flex;align-items:center;gap:1rem">
+    <span class="btc-bal" id="headerBal">1.00000000 BTC</span>
+    <a href="deposit.html" style="background:linear-gradient(135deg,#D4AF37,#FFD700);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-size:0.7rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;box-shadow:0 0 20px rgba(212,175,55,0.4);transition:all .2s" id="depositBtn" style="display:none">Deposit</a>
+    <a href="login.html" id="loginBtn" style="font-size:0.7rem;color:var(--text-dim);text-decoration:none;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 1.1rem;border-radius:8px;text-transform:uppercase;letter-spacing:0.05em;transition:all .2s">Login</a>
+    <div id="userMenu" style="display:none;position:relative">
+      <button id="userMenuBtn" style="background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.3);color:var(--gold-light);padding:0.5rem 1.1rem;border-radius:8px;font-size:0.7rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:0.5rem">
+        <span id="username">PLAYER</span>
+        <span style="font-size:0.6rem">▼</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- GAME HEADER -->
+<div class="game-header">
+  <div class="gh-left">
+    <div class="gh-icon">🤠</div>
+    <div>
+      <div class="gh-title">WILD WEST GOLD RUSH</div>
+      <div class="gh-sub">3 Reels · 3 Rows · 5 Paylines · Dueling & Gold Rush</div>
+    </div>
+  </div>
+  <div class="gh-center">
+    <div class="mode-toggle">
+      <button class="mode-btn mode-demo active" id="modeDemo" onclick="setMode('demo')">🎮 Demo</button>
+      <button class="mode-btn mode-real" id="modeReal" onclick="setMode('real')">₿ Real</button>
+    </div>
+    <div class="demo-badge" id="demoBadge">🎮 Practice Mode</div>
+    <div class="real-badge" id="realBadge" style="display:none">🔥 Real Money</div>
+  </div>
+  <div class="gh-right">
+    <div class="gh-stat"><div class="gh-stat-lbl">Balance</div><div class="gh-stat-val green" id="balDisplay">1.00000000</div></div>
+    <div class="gh-stat"><div class="gh-stat-lbl">RTP</div><div class="gh-stat-val" id="rtpDisplay">96.5%</div></div>
+  </div>
+</div>
+
+<div class="game-area">
+
+  <!-- BALANCE BAR -->
+  <div class="balance-bar">
+    <div class="bal-item"><div class="bal-label">Balance</div><div class="bal-value green" id="bal">1.00000000</div></div>
+    <div class="bal-item"><div class="bal-label">Last Win</div><div class="bal-value" id="lastWin">—</div></div>
+    <div class="bal-item"><div class="bal-label">Total Bet</div><div class="bal-value" id="totalBet">0.00500</div></div>
+    <div class="bal-item"><div class="bal-label">Best Win</div><div class="bal-value green" id="bestWin">0.00000</div></div>
+  </div>
+
+  <!-- GOLD RUSH MODAL -->
+  <div class="goldrush-modal" id="goldrushModal">
+    <div class="goldrush-container">
+      <div class="goldrush-title">💰 GOLD RUSH BONUS!</div>
+      <div class="goldrush-bags" id="goldrushBags"></div>
+      <div class="goldrush-total" id="goldrushTotal"></div>
+    </div>
+  </div>
+
+  <!-- DUEL MODAL -->
+  <div class="duel-modal" id="duelModal">
+    <div class="duel-container">
+      <div class="duel-title">🔫 DUEL!</div>
+      <div class="duel-vs">
+        <div class="duelist" id="cowboy">🤠</div>
+        <div style="font-size:2rem;color:var(--gold)">VS</div>
+        <div class="duelist" id="bandit">🦹</div>
+      </div>
+      <div class="duel-result" id="duelResult"></div>
+    </div>
+  </div>
+
+  <!-- SLOT CABINET -->
+  <div class="slot-cabinet" id="slotCabinet">
+
+    <!-- PAYLINES -->
+    <div class="paylines-row">
+      <span class="paylines-label">Active Paylines:</span>
+      <div class="pl-num">5 Lines</div>
+    </div>
+
+    <!-- REELS -->
+    <div class="reels-container" id="reelsContainer"></div>
+
+    <!-- WIN SECTION -->
+    <div class="win-section">
+      <div class="win-text" id="winText"></div>
+      <div class="win-amount" id="winAmount"></div>
+    </div>
+  </div>
+
+  <!-- BET CONTROLS -->
+  <div class="bet-controls">
+    <div class="bet-row">
+      <span class="bet-lbl">Bet per Line</span>
+      <input type="number" class="bet-input" id="betInput" value="0.001" min="0.0001" step="0.0001">
+      <span class="bet-lbl">BTC</span>
+    </div>
+    <div class="quick-bets">
+      <button class="qb" onclick="setBet(.0001)">0.0001</button>
+      <button class="qb" onclick="setBet(.001)">0.001</button>
+      <button class="qb" onclick="setBet(.005)">0.005</button>
+      <button class="qb" onclick="setBet(.01)">0.010</button>
+      <button class="qb" onclick="halfBet()">½</button>
+      <button class="qb" onclick="doubleBet()">×2</button>
+      <button class="qb" onclick="maxBet()">MAX</button>
+    </div>
+    <div class="action-row">
+      <button class="act-btn" onclick="clearBet()">Clear</button>
+      <button class="act-btn" onclick="doubleBet()">Double</button>
+      <button class="act-btn" onclick="maxBet()">Max</button>
+      <button class="spin-btn" id="spinBtn" onclick="handleSpin()">🤠 SPIN</button>
+    </div>
+  </div>
+
+  <!-- AUTO SPIN -->
+  <div class="auto-section">
+    <div class="auto-header">
+      <span class="auto-title">⚡ Auto Spin</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="autoToggle" onchange="toggleAuto()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div id="autoSettings" style="display:none">
+      <div class="auto-opts">
+        <div class="auto-opt">
+          <label>Spins</label>
+          <select id="autoSpins">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="999999">∞</option>
+          </select>
+        </div>
+        <div class="auto-opt">
+          <label>Stop Win</label>
+          <select id="stopWin">
+            <option value="0">Never</option>
+            <option value="0.01">0.01</option>
+            <option value="0.05">0.05</option>
+            <option value="0.1">0.1</option>
+          </select>
+        </div>
+        <div class="auto-opt">
+          <label>Speed</label>
+          <select id="autoSpeed">
+            <option value="1000">Normal</option>
+            <option value="500">Fast</option>
+            <option value="200">Turbo</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROVABLY FAIR -->
+  <div class="pf-bar">
+    <div class="pf-lbl">🔐 Provably Fair</div>
+    <div class="pf-hash" id="pfHash">Spin to see SHA-256 proof</div>
+    <button class="pf-btn" onclick="verifyHash()">Verify</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-title">📊 Session Statistics</div>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-lbl">Total Spins</div><div class="stat-val" id="stSpins">0</div></div>
+      <div class="stat-item"><div class="stat-lbl">Wins</div><div class="stat-val green" id="stWins">0</div></div>
+      <div class="stat-item"><div class="stat-lbl">Win Rate</div><div class="stat-val" id="stWR">0%</div></div>
+      <div class="stat-item"><div class="stat-lbl">Profit/Loss</div><div class="stat-val" id="stProfit">±0.00000</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// WILD WEST GOLD RUSH - 3x3 SLOT
+// Server-Side Game Logic + Dueling + Gold Rush Bonus
+// ══════════════════════════════════════════════════════════════
+
+const GAME_ID = 'wild_west_gold_rush';
+let currentUser = null, realBalance = 0, RTP = 0.965;
+let gameMode = 'demo';
+const DEMO_BAL = 1.0;
+let demoBalance = DEMO_BAL;
+let gameSettings = null;
+
+// Initialize
+(async function initGame() {
+  console.log('[WildWest] Initializing...');
+  
+  let attempts = 0;
+  while (!window.CK && attempts < 50) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+
+  if (!window.CK) {
+    console.warn('[WildWest] ⚠️ window.CK not found, demo mode only');
+    setMode('demo');
+    return;
+  }
+
+  console.log('[WildWest] ✅ window.CK loaded');
+
+  try {
+    gameSettings = await window.CK.getGameSettings(GAME_ID);
+    if (gameSettings) {
+      RTP = gameSettings.rtp_pct / 100;
+      document.getElementById('rtpDisplay').textContent = (RTP * 100).toFixed(1) + '%';
+      console.log('[WildWest] Settings loaded');
+      
+      if (gameSettings.enabled === false) {
+        document.body.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100vh;
+                      background:linear-gradient(180deg,#5C2E0A,#8B4513);color:#FFD700;
+                      font-family:'Rye',serif;font-size:1.5rem;text-align:center;padding:2rem">
+            <div>
+              <div style="font-size:4rem;margin-bottom:1rem">🤠</div>
+              <div>Wild West Gold Rush is temporarily unavailable</div>
+              <a href="casino.html" style="color:#D4AF37;margin-top:2rem;display:block;font-size:1rem">
+                ← Back to Casino
+              </a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn('[WildWest] Settings error:', e.message);
+  }
+
+  if (window.CK && typeof window.CK.isLoggedIn === 'function' && window.CK.isLoggedIn()) {
+    try {
+      currentUser = window.CK.getUser();
+      const username = await window.CK.getUsername();
+      realBalance = await window.CK.getBalance();
+      currentUser.username = username;
+      console.log('[WildWest] User:', username, 'Balance:', realBalance.toFixed(8));
+      
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('depositBtn').style.display = 'block';
+      document.getElementById('userMenu').style.display = 'block';
+      document.getElementById('username').textContent = username.toUpperCase();
+    } catch (e) {
+      console.warn('[WildWest] User load error:', e.message);
+    }
+  } else {
+    document.getElementById('loginBtn').style.display = 'block';
+    document.getElementById('depositBtn').style.display = 'none';
+    document.getElementById('userMenu').style.display = 'none';
+  }
+
+  if (currentUser && window.CK.subscribeBalance) {
+    window.CK.subscribeBalance((newBalance) => {
+      if (gameMode === 'real') {
+        realBalance = newBalance;
+        bal = newBalance;
+        updateBal();
+      }
+    });
+  }
+
+  setTimeout(() => {
+    if (typeof setMode === 'function') {
+      const isLoggedIn = window.CK && typeof window.CK.isLoggedIn === 'function' && window.CK.isLoggedIn();
+      setMode(isLoggedIn ? 'real' : 'demo');
+    }
+  }, 50);
+})();
+
+// PROVABLY FAIR
+let pfSS = genS(), pfCS = genS(), pfN = 0;
+function genS() { return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function hashS(s) { const b = new TextEncoder().encode(s); const h = await crypto.subtle.digest('SHA-256', b); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function pfTick() { const c = `${pfSS}-${pfCS}-${pfN}`; const h = await hashS(c); pfN++; document.getElementById('pfHash').textContent = `Server:${pfSS.substring(0, 12)}... Nonce:${pfN} Hash:${h.substring(0, 20)}...`; return h; }
+async function verifyHash() { const c = `${pfSS}-${pfCS}-${pfN - 1}`; const h = await hashS(c); alert(`✅ Provably Fair — Wild West Gold Rush\n\nServer: ${pfSS}\nClient: ${pfCS}\nNonce: ${pfN - 1}\n\nSHA-256: ${h}`); }
+
+function setMode(m) {
+  console.log('[WildWest] Setting mode:', m);
+  
+  if (m === 'real' && !currentUser) {
+    document.getElementById('loginModal').style.display = 'flex';
+    document.getElementById('loginModal').classList.add('show');
+    return;
+  }
+  
+  gameMode = m;
+  const isDemo = m === 'demo';
+  document.getElementById('modeDemo').classList.toggle('active', isDemo);
+  document.getElementById('modeReal').classList.toggle('active', !isDemo);
+  document.getElementById('demoBadge').style.display = isDemo ? '' : 'none';
+  document.getElementById('realBadge').style.display = isDemo ? 'none' : '';
+  bal = isDemo ? demoBalance : realBalance;
+  updateBal();
+}
+
+// AUDIO
+let AC;
+function initAudio() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+}
+function playBeep(freq, dur) {
+  initAudio();
+  if (!AC || AC.state !== 'running') return;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(.3, AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.01, AC.currentTime + dur);
+  o.start(); o.stop(AC.currentTime + dur);
+}
+function snd(t) {
+  if (t === 'win') {
+    [330, 440, 554, 660].forEach((f, i) => setTimeout(() => playBeep(f, .15), i * 80));
+  } else if (t === 'spin') playBeep(200, .15);
+  else if (t === 'stop') playBeep(300, .08);
+  else if (t === 'duel') {
+    [440, 554].forEach((f, i) => setTimeout(() => playBeep(f, .1), i * 100));
+  } else if (t === 'gold') {
+    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playBeep(f, .2), i * 100));
+  }
+}
+
+// SYMBOLS - WILD WEST
+const SYMS = [
+  { k: 'HAT', i: '🤠', n: 'Cowboy Hat', w: 3, m3: 200 },
+  { k: 'STAR', i: '⭐', n: 'Sheriff Star', w: 4, m3: 100 },
+  { k: 'GUN', i: '🔫', n: 'Revolver', w: 5, m3: 80 },
+  { k: 'WHISKY', i: '🥃', n: 'Whisky', w: 6, m3: 60 },
+  { k: 'GOLD', i: '💰', n: 'Gold Bag', w: 7, m3: 50 },
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 8, m3: 40 },
+  { k: 'CHIP', i: '🎲', n: 'Poker Chip', w: 10, m3: 30 },
+  { k: 'SHOE', i: '🐴', n: 'Horseshoe', w: 12, m3: 20 },
+  { k: 'CACTUS', i: '🌵', n: 'Cactus', w: 14, m3: 10 }
+];
+const TW = SYMS.reduce((a, b) => a + b.w, 0);
+function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
+
+let bal = 1, spinning = false;
+let totalSpins = 0, totalWins = 0, totalLosses = 0, bestWin = 0, profit = 0;
+let currentNonce = 0;
+let autoEnabled = false, autoRemaining = 0, autoStopWin = 0, autoDelay = 1000;
+
+const ROWS = 3, COLS = 3, grid = [];
+const reelsContainer = document.getElementById('reelsContainer');
+
+// CREATE REELS (3x3)
+for (let c = 0; c < COLS; c++) {
+  const reel = document.createElement('div');
+  reel.className = 'reel';
+  const reelInner = document.createElement('div');
+  reelInner.className = 'reel-inner';
+  const col = [];
+  for (let r = 0; r < ROWS; r++) {
+    const sym = randSym();
+    const symEl = document.createElement('div');
+    symEl.className = 'symbol';
+    symEl.innerHTML = `<div class="sym-icon">${sym.i}</div><div class="sym-name">${sym.n}</div>`;
+    reelInner.appendChild(symEl);
+    col.push({ sym, el: symEl });
+  }
+  reel.appendChild(reelInner);
+  reelsContainer.appendChild(reel);
+  grid.push(col);
+}
+
+// PARTICLES
+const pC = document.getElementById('particles'), pCtx = pC.getContext('2d'); let particles = [];
+function resizeP() { pC.width = window.innerWidth; pC.height = window.innerHeight } resizeP(); window.addEventListener('resize', resizeP);
+function spawnP(type) {
+  const cx = window.innerWidth / 2, cy = window.innerHeight * .4;
+  const cfg = { mega: { count: 300, cols: ['#FFD700', '#D4AF37', '#fff'], sz: [6, 20] }, big: { count: 150, cols: ['#FFD700', '#fff'], sz: [4, 12] }, small: { count: 60, cols: ['#D4AF37', '#fff'], sz: [2, 8] } };
+  const c = cfg[type] || cfg.small;
+  for (let i = 0; i < c.count; i++) { const a = Math.random() * Math.PI * 2, s = Math.random() * 18 + 5; particles.push({ x: cx + (Math.random() - .5) * 200, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 5, sz: Math.random() * (c.sz[1] - c.sz[0]) + c.sz[0], col: c.cols[Math.floor(Math.random() * c.cols.length)], life: 1, decay: Math.random() * .018 + .008, gravity: .5 }) }
+}
+function animP() { pCtx.clearRect(0, 0, pC.width, pC.height); particles = particles.filter(p => p.life > 0); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.life -= p.decay; pCtx.save(); pCtx.globalAlpha = p.life; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); pCtx.fillStyle = p.col; pCtx.fill(); pCtx.restore() }); requestAnimationFrame(animP) }
+animP();
+
+function f5(n) { return parseFloat(n || 0).toFixed(5) }
+function f8(n) { return parseFloat(n || 0).toFixed(8) }
+function updateBal() {
+  document.getElementById('bal').textContent = f8(bal);
+  document.getElementById('headerBal').textContent = f8(bal) + ' BTC';
+  document.getElementById('balDisplay').textContent = f8(bal);
+  const betPerLine = parseFloat(document.getElementById('betInput').value) || 0.001;
+  document.getElementById('totalBet').textContent = f5(betPerLine * 5);
+  document.getElementById('stSpins').textContent = totalSpins;
+  document.getElementById('stWins').textContent = totalWins;
+  document.getElementById('stWR').textContent = totalSpins > 0 ? ((totalWins / totalSpins) * 100).toFixed(0) + '%' : '0%';
+  const profEl = document.getElementById('stProfit');
+  profEl.textContent = (profit >= 0 ? '+' : '') + f5(profit);
+  profEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+}
+function setBet(v) { document.getElementById('betInput').value = v.toFixed(4) }
+function halfBet() { setBet(Math.max(.0001, (parseFloat(document.getElementById('betInput').value) || .001) / 2)) }
+function doubleBet() { setBet(Math.min(bal / 5, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }
+function maxBet() { setBet(Math.min(bal / 5, .01)) }
+function clearBet() { setBet(.001) }
+
+// AUTO SPIN
+function toggleAuto() {
+  autoEnabled = document.getElementById('autoToggle').checked;
+  const settings = document.getElementById('autoSettings');
+  if (autoEnabled) {
+    settings.style.display = 'block';
+    autoRemaining = parseInt(document.getElementById('autoSpins').value);
+    autoStopWin = parseFloat(document.getElementById('stopWin').value);
+    autoDelay = parseInt(document.getElementById('autoSpeed').value);
+    if (!spinning) setTimeout(() => handleSpin(), 500);
+  } else {
+    settings.style.display = 'none';
+  }
+}
+
+function handleSpin() {
+  initAudio();
+  snd('spin');
+  if (spinning) return;
+  
+  const betPerLine = parseFloat(document.getElementById('betInput').value);
+  const totalBet = betPerLine * 5;
+  if (!betPerLine || betPerLine <= 0) { alert('Enter bet!'); return }
+  if (totalBet > bal) { alert('Insufficient balance!'); autoEnabled = false; document.getElementById('autoToggle').checked = false; toggleAuto(); return }
+  doSpin(totalBet);
+}
+
+function doSpin(bet) {
+  spinning = true;
+  currentNonce = pfN;
+  pfTick();
+
+  if (gameMode === 'real' && window.CK && bet > 0) {
+    window.CK.callGameServer(GAME_ID, bet, {
+      serverSeed: pfSS,
+      clientSeed: pfCS,
+      nonce: currentNonce
+    }).then(serverResult => {
+      if (serverResult && serverResult.ok) {
+        realBalance = serverResult.new_balance;
+        bal = serverResult.new_balance;
+        updateBal();
+        window.CK.refreshBalance();
+      }
+    }).catch(err => {
+      console.error('[WildWest] Server error:', err);
+    });
+  }
+
+  if (bet > 0) {
+    if (gameMode === 'real' && window.CK) {
+      realBalance -= bet;
+    } else {
+      demoBalance -= bet;
+    }
+    bal -= bet;
+  }
+
+  totalSpins++;
+  updateBal();
+  
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('spinBtn').textContent = '🤠 Spinning...';
+  document.getElementById('slotCabinet').classList.add('spinning');
+  document.getElementById('slotCabinet').classList.remove('win');
+
+  const wt = document.getElementById('winText');
+  wt.className = 'win-text';
+  wt.textContent = '';
+  document.getElementById('winAmount').textContent = '';
+
+  const reels = document.querySelectorAll('.reel');
+  reels.forEach(r => {
+    r.classList.remove('win');
+    r.classList.add('spinning');
+  });
+
+  setTimeout(() => {
+    grid.forEach((col, c) => {
+      col.forEach((cell, r) => {
+        const sym = randSym();
+        cell.sym = sym;
+        cell.el.innerHTML = `<div class="sym-icon">${sym.i}</div><div class="sym-name">${sym.n}</div>`;
+        cell.el.classList.remove('win');
+      });
+      reels[c].classList.remove('spinning');
+      snd('stop');
+    });
+
+    setTimeout(() => { checkResolve(bet, currentNonce) }, 400);
+  }, 1200);
+}
+
+// 5 PAYLINES (3x3 grid)
+const PAYLINES = [
+  [1, 1, 1], // mid
+  [0, 0, 0], // top
+  [2, 2, 2], // bot
+  [0, 1, 2], // diag down
+  [2, 1, 0]  // diag up
+];
+
+function checkResolve(bet, currentNonce) {
+  const starCnt = grid.flat().filter(c => c.sym.k === 'STAR').length;
+  const gunCnt = grid.flat().filter(c => c.sym.k === 'GUN').length;
+
+  // GOLD RUSH BONUS
+  if (starCnt >= 3) {
+    triggerGoldRush(bet);
+    return;
+  }
+
+  // DUELING FEATURE
+  let duelMult = 1.0;
+  if (gunCnt >= 2) {
+    duelMult = triggerDuel();
+  }
+
+  let totalMult = 0;
+  const winningCells = new Set();
+
+  PAYLINES.forEach(line => {
+    const syms = line.map((row, col) => grid[col][row].sym);
+    const first = syms[0];
+    if (first.k === 'STAR') return;
+
+    let allMatch = true;
+    for (let i = 1; i < 3; i++) {
+      if (syms[i].k !== first.k && syms[i].k !== 'HAT') {
+        allMatch = false;
+        break;
+      }
+    }
+
+    if (allMatch) {
+      totalMult += first.m3;
+      for (let i = 0; i < 3; i++) {
+        const cellKey = `${i}-${line[i]}`;
+        winningCells.add(cellKey);
+      }
+    }
+  });
+
+  totalMult *= duelMult;
+
+  if (totalMult === 0) {
+    if (bet > 0) totalLosses++;
+    updateBal();
+    finishSpin(bet);
+    return;
+  }
+
+  const payout = bet * totalMult;
+  const prof = payout - bet;
+
+  if (totalMult > 0) {
+    if (gameMode === 'real' && window.CK) {
+      bal += payout;
+      realBalance += payout;
+    } else {
+      bal += payout;
+      demoBalance += payout;
+    }
+
+    profit += prof;
+    if (prof > bestWin) bestWin = prof;
+    totalWins++;
+
+    winningCells.forEach(key => {
+      const [col, row] = key.split('-').map(Number);
+      grid[col][row].el.classList.add('win');
+    });
+
+    const reels = document.querySelectorAll('.reel');
+    reels.forEach((reel, idx) => {
+      const hasWin = [...winningCells].some(k => k.startsWith(idx + '-'));
+      if (hasWin) reel.classList.add('win');
+    });
+
+    document.getElementById('slotCabinet').classList.add('win');
+    const wt = document.getElementById('winText');
+    if (totalMult >= 100) { wt.textContent = '🤠 JACKPOT!'; wt.className = 'win-text show mega'; snd('gold'); spawnP('mega') }
+    else if (totalMult >= 30) { wt.textContent = '💰 BIG WIN!'; wt.className = 'win-text show big'; snd('win'); spawnP('big') }
+    else { wt.textContent = '⭐ WIN!'; wt.className = 'win-text show small'; snd('win'); spawnP('small') }
+    document.getElementById('winAmount').textContent = `+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
+    document.getElementById('lastWin').textContent = '+' + f5(prof);
+    document.getElementById('bestWin').textContent = f5(bestWin);
+  }
+
+  updateBal();
+  setTimeout(() => finishSpin(bet), 2000);
+}
+
+function finishSpin(bet) {
+  spinning = false;
+  document.getElementById('spinBtn').disabled = false;
+  document.getElementById('spinBtn').textContent = '🤠 SPIN';
+  document.getElementById('slotCabinet').classList.remove('spinning', 'win');
+
+  const reels = document.querySelectorAll('.reel');
+  reels.forEach(r => r.classList.remove('win', 'spinning'));
+
+  if (autoEnabled && bet > 0) {
+    if (autoRemaining < 999999) autoRemaining--;
+    if (autoStopWin > 0 && profit >= autoStopWin) {
+      document.getElementById('autoToggle').checked = false;
+      toggleAuto();
+      alert('🎉 Target win reached!');
+      return;
+    }
+    if (autoRemaining > 0 || autoRemaining > 999999) {
+      setTimeout(() => handleSpin(), autoDelay);
+    }
+  }
+
+  grid.forEach(col => {
+    col.forEach(cell => cell.el.classList.remove('win'));
+  });
+}
+
+// DUEL FEATURE
+function triggerDuel() {
+  snd('duel');
+  const modal = document.getElementById('duelModal');
+  modal.classList.add('show');
+  
+  const cowboy = document.getElementById('cowboy');
+  const bandit = document.getElementById('bandit');
+  
+  setTimeout(() => {
+    const win = Math.random() > 0.5;
+    const mult = win ? (2 + Math.random() * 3) : 1.0; // 2x-5x or 1x
+    
+    if (win) {
+      cowboy.classList.add('winner');
+      document.getElementById('duelResult').textContent = `You Win! ${mult.toFixed(1)}× Multiplier`;
+    } else {
+      bandit.classList.add('winner');
+      document.getElementById('duelResult').textContent = 'Bandit Wins! No Multiplier';
+    }
+    
+    setTimeout(() => {
+      modal.classList.remove('show');
+      cowboy.classList.remove('winner');
+      bandit.classList.remove('winner');
+    }, 2000);
+    
+    return mult;
+  }, 1000);
+  
+  return 1.0;
+}
+
+// GOLD RUSH BONUS
+function triggerGoldRush(bet) {
+  snd('gold');
+  spawnP('mega');
+  const modal = document.getElementById('goldrushModal');
+  modal.classList.add('show');
+  
+  const container = document.getElementById('goldrushBags');
+  container.innerHTML = '';
+  
+  const prizes = [10, 25, 50, 100, 200, 500].map(v => v * bet / 5);
+  let totalWin = 0;
+  let pickedCount = 0;
+  
+  for (let i = 0; i < 3; i++) {
+    const bag = document.createElement('div');
+    bag.className = 'gold-bag';
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    bag.innerHTML = `
+      <div class="bag-icon">💰</div>
+      <div class="bag-value">${f5(prize)} BTC</div>
+    `;
+    
+    bag.onclick = () => {
+      if (pickedCount >= 3 || bag.classList.contains('picked')) return;
+      bag.classList.add('picked');
+      totalWin += prize;
+      pickedCount++;
+      
+      document.getElementById('goldrushTotal').textContent = `Total Win: ${f8(totalWin)} BTC`;
+      
+      if (pickedCount === 3) {
+        if (gameMode === 'real' && window.CK) {
+          bal += totalWin;
+          realBalance += totalWin;
+        } else {
+          bal += totalWin;
+          demoBalance += totalWin;
+        }
+        
+        profit += totalWin;
+        if (totalWin > bestWin) bestWin = totalWin;
+        totalWins++;
+        
+        document.getElementById('lastWin').textContent = '+' + f8(totalWin);
+        document.getElementById('bestWin').textContent = f5(bestWin);
+        updateBal();
+        
+        setTimeout(() => {
+          modal.classList.remove('show');
+          finishSpin(0);
+        }, 3000);
+      }
+    };
+    
+    container.appendChild(bag);
+  }
+}
+
+updateBal();
+console.log('🤠 Wild West Gold Rush loaded!');
+</script>
+</body>
+</html>
