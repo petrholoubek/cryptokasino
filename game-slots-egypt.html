@@ -325,6 +325,19 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   .stats-grid{grid-template-columns:1fr 1fr;}
   .pt-grid{grid-template-columns:1fr 1fr;}
 }
+/* FREE SPINS OVERLAY */
+.fs-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;animation:fsIn .5s ease;}
+.fs-overlay.show{display:flex;}
+@keyframes fsIn{from{opacity:0}to{opacity:1}}
+.fs-title{font-family:'Cinzel',serif;font-size:3.5rem;font-weight:900;background:linear-gradient(45deg,#D4A017,#F5C842,#fff,#F5C842,#D4A017);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;animation:fsGlow 1.5s ease-in-out infinite alternate;text-shadow:0 0 60px rgba(245,200,66,.8);}
+@keyframes fsGlow{from{filter:drop-shadow(0 0 20px rgba(245,200,66,.6))}to{filter:drop-shadow(0 0 60px rgba(245,200,66,1))}}
+.fs-count{font-family:'Cinzel',serif;font-size:2.5rem;color:var(--gold-light);margin-bottom:1rem;text-shadow:0 0 30px rgba(245,200,66,.8);}
+.fs-info{font-size:1.3rem;color:var(--text-dim);margin-bottom:2rem;}
+.fs-start-btn{background:linear-gradient(135deg,#D4A017,#F5C842);color:#000;padding:1.2rem 3.5rem;border-radius:15px;font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;cursor:pointer;border:none;box-shadow:0 0 40px rgba(245,200,66,.7);transition:.3s;text-transform:uppercase;}
+.fs-start-btn:hover{transform:scale(1.08);box-shadow:0 0 60px rgba(245,200,66,1);}
+.fs-badge{position:absolute;top:10px;right:10px;background:rgba(212,160,23,.2);border:2px solid var(--gold);border-radius:12px;padding:.4rem 1rem;font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--gold-light);animation:fsBadge 1s ease-in-out infinite alternate;}
+@keyframes fsBadge{from{box-shadow:0 0 10px rgba(212,160,23,.4)}to{box-shadow:0 0 25px rgba(212,160,23,.8)}}
+
 </style>
 </head>
 <body>
@@ -344,6 +357,14 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
       <button onclick="document.getElementById('loginModal').classList.remove('show')" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text-dim);padding:.72rem 1.5rem;border-radius:8px;font-family:'Cinzel',serif;font-size:.8rem;cursor:pointer">Stay Demo</button>
     </div>
   </div>
+</div>
+
+<!-- FREE SPINS OVERLAY -->
+<div class="fs-overlay" id="fsOverlay">
+  <div class="fs-title">🏺 FREE SPINS! 📖</div>
+  <div class="fs-count" id="fsCount">10 Free Spins</div>
+  <div class="fs-info">Progressive multipliers active!</div>
+  <button class="fs-start-btn" onclick="startFreeSpins()">🎁 START</button>
 </div>
 
 <!-- HEADER -->
@@ -743,6 +764,7 @@ setInterval(()=>{jackpot+=0.00000001+Math.random()*.000001;document.getElementBy
 // ══ STATE ══
 let spinning=false,autoCount=0,autoRunning=false;
 let totalSpinsCount=0,totalWins=0,totalWagered=0,biggestWin=0,sessionProfit=0,freeSpins=0;
+let freeSpinsRemaining=0,freeSpinMode=false,freeSpinMultiplier=1;
 let chartData=[],currentGrid=[];
 
 function f5(n){return parseFloat(n||0).toFixed(5);}
@@ -765,6 +787,12 @@ function handleSpin(){
   if(!bet||bet<=0){alert('Enter bet amount!');return;}
   if(bet>balance){alert('Insufficient balance!');return;}
   doSpin(bet);
+}
+
+function startFreeSpins(){
+  document.getElementById('fsOverlay').classList.remove('show');
+  freeSpinMode=true;
+  setTimeout(()=>doSpin(0),500);
 }
 
 function doSpin(bet){
@@ -869,6 +897,33 @@ function resolveResult(bet, currentNonce){
   let totalMult=0,winningReelSet=new Set();
   let scatterCount=currentGrid.flat().filter(s=>s.key==='SCATTER').length;
 
+// FREE SPINS TRIGGER
+if(scatterCount>=3 && !freeSpinMode){
+  freeSpinsRemaining=10;
+  freeSpinMultiplier=1;
+  document.getElementById('fsCount').textContent=freeSpinsRemaining+' Free Spins';
+  document.getElementById('fsOverlay').classList.add('show');
+  playSound('jackpot');
+  spawnP('jackpot');
+  spinning=false;
+  document.getElementById('spinBtn').disabled=false;
+  document.getElementById('spinBtn').textContent='🏺 SPIN';
+  return;
+}
+
+// FREE SPINS RETRIGGER
+if(scatterCount>=3 && freeSpinMode){
+  freeSpinsRemaining+=10;
+  playSound('win');
+  spawnP('big');
+}
+
+// FREE SPINS MULTIPLIER
+if(freeSpinMode && totalMult>0){
+  totalMult*=freeSpinMultiplier;
+  freeSpinMultiplier++;
+}
+
   rows.forEach((row,rowIdx)=>{
     if(!activePaylines.has(rowIdx+1))return;
     const first=row[0];
@@ -943,6 +998,20 @@ function resolveResult(bet, currentNonce){
 }
 
 function finishSpin(bet,profit){
+
+// FREE SPINS LOGIC
+if(freeSpinMode && freeSpinsRemaining>0){
+  freeSpinsRemaining--;
+  if(freeSpinsRemaining>0){
+    setTimeout(()=>doSpin(0),1200);
+    spinning=false;
+    return;
+  } else {
+    freeSpinMode=false;
+    freeSpinMultiplier=1;
+    playSound('win');
+  }
+}
   const autoOn=document.getElementById('autoToggle').checked;
   const maxSp=parseInt(document.getElementById('autoSpins').value)||20;
   const stopWin=parseFloat(document.getElementById('stopWin').value)||0;
