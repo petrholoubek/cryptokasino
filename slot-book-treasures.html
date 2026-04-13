@@ -24,27 +24,11 @@ body{
 body::before{
   content:'';position:fixed;inset:0;
   background:
-    /* Zlaté sloupy po stranách */
-    linear-gradient(90deg, 
-      rgba(212,160,23,0.12) 0%, 
-      rgba(139,69,19,0.08) 5%,
-      transparent 15%, 
-      transparent 85%, 
-      rgba(139,69,19,0.08) 95%,
-      rgba(212,160,23,0.12) 100%
-    ),
-    /* Plameny zespodu vlevo */
-    radial-gradient(ellipse 25% 35% at 15% 100%, rgba(255,140,0,0.18), transparent 50%),
-    /* Plameny zespodu vpravo */
-    radial-gradient(ellipse 25% 35% at 85% 100%, rgba(255,140,0,0.18), transparent 50%),
-    /* Zlaté světlo shora */
     radial-gradient(ellipse 50% 40% at 50% 45%, rgba(212,160,23,0.15) 0%, transparent 60%),
     radial-gradient(ellipse 60% 50% at 50% 20%, rgba(139,69,19,0.2) 0%, transparent 50%),
-    /* Chrámové pozadí */
     linear-gradient(180deg, #1a0f00 0%, #0d0600 50%, #000 100%);
   pointer-events:none;z-index:0;
 }
-
 body::after{
   content:'';position:fixed;inset:0;
   background-image:
@@ -701,6 +685,19 @@ header{
 <script src="supabase.js"></script>
 <canvas id="particles"></canvas>
 
+<!-- LOGIN MODAL -->
+<div class="modal-ov" id="loginModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:none;align-items:center;justify-content:center">
+  <div class="modal-box" style="background:linear-gradient(135deg,rgba(42,21,0,0.98),rgba(26,15,0,0.98));border:2px solid rgba(212,160,23,0.5);border-radius:20px;padding:3rem;max-width:450px;width:92%;text-align:center;box-shadow:0 0 60px rgba(212,160,23,0.4)">
+    <div style="font-size:4rem;margin-bottom:1.5rem">🔒</div>
+    <div style="font-family:'Cinzel',serif;font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#F5C842,#D4A017);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem">Login Required</div>
+    <div style="font-size:1rem;color:var(--text-dim);line-height:1.7;margin-bottom:2rem">To play Book of Treasures for real BTC, you need to login. Demo mode is always free!</div>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="login.html" style="background:linear-gradient(135deg,#D4A017,#F5C842);color:#000;padding:0.9rem 2.5rem;border-radius:12px;font-family:'Cinzel',serif;font-size:1rem;font-weight:700;text-decoration:none;box-shadow:0 0 30px rgba(212,160,23,0.5);transition:all 0.3s">Login / Register</a>
+      <button onclick="document.getElementById('loginModal').classList.remove('show');document.getElementById('loginModal').style.display='none'" style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);color:var(--text-dim);padding:0.9rem 2rem;border-radius:12px;font-family:'Crimson Text',serif;font-size:0.9rem;cursor:pointer;transition:all 0.3s">Stay Demo</button>
+    </div>
+  </div>
+</div>
+
 <!-- HEADER -->
 <header>
   <a href="index.html" class="logo">📖 BOOK OF TREASURES</a>
@@ -972,6 +969,14 @@ async function verifyHash(){const c=`${pfSS}-${pfCS}-${pfN-1}`;const h=await has
 
 function setMode(m){
 console.log('Mode:',m);
+
+// Check if trying to switch to real mode without login
+if (m === 'real' && !currentUser) {
+  document.getElementById('loginModal').style.display = 'flex';
+  document.getElementById('loginModal').classList.add('show');
+  return;
+}
+
 gameMode=m;
 const isDemo=m==='demo';
 document.getElementById('modeDemo').classList.toggle('active',isDemo);
