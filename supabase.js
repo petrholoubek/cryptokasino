@@ -572,30 +572,47 @@
       }
 
       const defaults = {
-        crash:         { rtp_pct: 97,    house_edge_pct: 3    },
-        slots:         { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        egypt_gold:    { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        neon_city:     { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        dragon_slots:  { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        sweet_bonanza: { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        roulette:      { rtp_pct: 94.74, house_edge_pct: 5.26 },
-        blackjack:     { rtp_pct: 99,    house_edge_pct: 1    },
-        dice:          { rtp_pct: 98,    house_edge_pct: 2    },
-        mines:         { rtp_pct: 97,    house_edge_pct: 3    },
-        plinko:        { rtp_pct: 97.5,  house_edge_pct: 2.5  },
-        wheel:         { rtp_pct: 96,    house_edge_pct: 4    },
-        poker:         { rtp_pct: 97,    house_edge_pct: 3    },
-        craps:         { rtp_pct: 98.6,  house_edge_pct: 1.4  },
-        baccarat:      { rtp_pct: 98.94, house_edge_pct: 1.06 },
-        crazytime:     { rtp_pct: 95,    house_edge_pct: 5    },
-        keno:          { rtp_pct: 92,    house_edge_pct: 8    },
-        hilo:          { rtp_pct: 97,    house_edge_pct: 3    },
-        jackpot:       { rtp_pct: 90,    house_edge_pct: 10   },
-        jackpotshow:   { rtp_pct: 96.5,  house_edge_pct: 3.5  },
-        dragon_tower:  { rtp_pct: 96,    house_edge_pct: 4    },
-        video_poker:   { rtp_pct: 98,    house_edge_pct: 2    },
-        sports:        { rtp_pct: 95,    house_edge_pct: 5    },
-      };
+  // Crash game
+  crash:         { rtp_pct: 97,    house_edge_pct: 3    },
+  
+  // Slots
+  slots:         { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  jackpot:       { rtp_pct: 90,    house_edge_pct: 10   },
+  egypt_gold:    { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  neon_city:     { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  dragon_slots:  { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  sweet_bonanza: { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  book_treasures:      { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  mega_fortune:        { rtp_pct: 96.6,  house_edge_pct: 3.4  },
+  viking_runestrike:   { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  wild_west_gold_rush: { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  
+  // Table games
+  roulette:      { rtp_pct: 94.74, house_edge_pct: 5.26 },
+  blackjack:     { rtp_pct: 99,    house_edge_pct: 1    },
+  baccarat:      { rtp_pct: 98.94, house_edge_pct: 1.06 },
+  craps:         { rtp_pct: 98.6,  house_edge_pct: 1.4  },
+  
+  // Card games
+  poker:         { rtp_pct: 97,    house_edge_pct: 3    },
+  video_poker:   { rtp_pct: 98,    house_edge_pct: 2    },
+  
+  // Casual games
+  dice:          { rtp_pct: 98,    house_edge_pct: 2    },
+  mines:         { rtp_pct: 97,    house_edge_pct: 3    },
+  plinko:        { rtp_pct: 97.5,  house_edge_pct: 2.5  },
+  wheel:         { rtp_pct: 96,    house_edge_pct: 4    },
+  hilo:          { rtp_pct: 97,    house_edge_pct: 3    },
+  keno:          { rtp_pct: 92,    house_edge_pct: 8    },
+  
+  // Special games
+  dragon_tower:  { rtp_pct: 96,    house_edge_pct: 4    },
+  crazytime:     { rtp_pct: 95,    house_edge_pct: 5    },
+  jackpotshow:   { rtp_pct: 96.5,  house_edge_pct: 3.5  },
+  
+  // Sports
+  sports:        { rtp_pct: 95,    house_edge_pct: 5    },
+};
 
       try {
         if (!sb) throw new Error('no sb');
@@ -720,12 +737,6 @@
     'casino.html',
     'live.html',
     'sports.html',
-    'game-dragon-tower.html',
-    'game-video-poker.html',
-    'game-slots-egypt.html',
-    'game-slots-neon.html',
-    'game-slots-dragon.html',
-    'game-slots-sweet.html',
     ''
   ];
   if(!allowed.includes(page)) return;
