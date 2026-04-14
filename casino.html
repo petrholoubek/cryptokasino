@@ -609,6 +609,8 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
   .footer-brand{grid-column:1/-1;}
   .resp-btns{margin-left:0;}
 }
+
+
 </style>
 </head>
 <body>
@@ -1073,6 +1075,19 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
         <div class="game-footer"><span class="game-limits">0.0001 – 0.5 BTC</span><button class="game-play-btn">Play Now</button></div>
       </div>
     </a>
+
+<a href="game-slots-neon.html" class="game-card gc-slots" data-cat="slots">
+  <img src="images/slot-neon-city.jpg" alt="Neon City">
+  <div class="game-badge badge-hot">🔥 Hot</div>
+  <div class="game-players" id="gp24">312 playing</div>
+  <div class="game-overlay"></div>
+  <div class="card-live-stat cls-neon" id="cls-neon">💎 Lucky 7 Jackpot!</div>
+  <div class="game-info">
+    <div class="game-cat">Neon Slots</div>
+    <div class="game-name">Neon City</div>
+    <div class="game-footer"><span class="game-limits">0.0001 – 0.5 BTC</span><button class="game-play-btn">Play Now</button></div>
+  </div>
+</a>
 
     <a href="sports.html" class="game-card gc-sports" data-cat="popular">
       <img src="images/herosports.jpg" alt="Sports">
@@ -1829,6 +1844,17 @@ setTimeout(function(){showToast('jp','🔥 10,248 Players Online!','CryptoKasino
     if(el) el.textContent = egyptMsgs[ei % egyptMsgs.length];
     ei++;
   }, 3000);
+
+ // 8️⃣ Neon City — lucky 7 jackpots
+  var neonMsgs = ['💎 Lucky 7 Jackpot!', '🎰 3× Wilds Win!', '⭐ Mega Multiplier!', '🎲 Dice Bonus!', '💜 Hearts Aligned!', '7️⃣ Triple Sevens!', '♣️ Club Royal!', '🪙 Coin Rush!'];
+  var ni = 0;
+  setInterval(function(){
+    var el = document.getElementById('cls-neon');
+    if(el) el.textContent = neonMsgs[ni % neonMsgs.length];
+    ni++;
+  }, 4000);
+
+
 
   console.log('[Slots] 7 nových slotů s live animacemi aktivních! 🎰✨');
 })();
