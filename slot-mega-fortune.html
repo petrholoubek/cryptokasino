@@ -1305,23 +1305,18 @@ function checkResolve(bet, currentNonce) {
   const payout = bet * totalMult;
   const prof = payout - bet;
 
- if (totalMult > 0) {
-  // ✅ Real mode: použij addWin s max win cap
+if (totalMult > 0) {
+  // ✅ Real mode: server už to zařídil v callGameServer
   if (gameMode === 'real' && window.CK && currentBet > 0) {
-    const payoutSat = Math.floor(payout * 1e8);
+    // Server už přičetl výhru - NEDĚLEJ NIC
+    // Balance byl updatnut v callGameServer response
+    console.log('[Fortune] Win handled by server, balance:', bal);
     
-    // Přičti výhru přes addWin (aplikuje max win cap v DB)
-    window.CK.addWin(payoutSat, 'mega_fortune').then(result => {
-      if(result && result.ok){
-        window.CK.refreshBalance().then(newBal => {
-          realBalance = newBal;
-          bal = newBal;
-          updateBal();
-        });
-      }
-    }).catch(err => {
-      console.warn('[Fortune] addWin error:', err);
-    });
+  } else {
+    // Demo mode: přičti lokálně
+    bal += payout;
+    demoBalance += payout;
+  }
     
     // Log bet do DB
     window.CK.logBet('mega_fortune', 
