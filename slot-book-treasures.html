@@ -1049,14 +1049,14 @@ setTimeout(()=>playBeep(f,.25),i*100);
 // BALANCED SYMBOLS - Heavily reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS=[
-{k:'BOOK',i:'📖',n:'Book',w:3,m3:4,m4:12,m5:60,scatter:true},      // ✅ Reduced from 200, marked as scatter
-{k:'PHARAOH',i:'👑',n:'Pharaoh',w:4,m3:8,m4:25,m5:80},            // ✅ Reduced from 150
-{k:'ANUBIS',i:'🐕',n:'Anubis',w:5,m3:6,m4:20,m5:60},              // ✅ Reduced from 100
-{k:'EYE',i:'👁️',n:'Eye of Ra',w:6,m3:5,m4:15,m5:50},             // ✅ Reduced from 80
-{k:'SCARAB',i:'🪲',n:'Scarab',w:7,m3:4,m4:12,m5:40},              // ✅ Reduced from 60
-{k:'VASE',i:'🏺',n:'Vase',w:8,m3:3,m4:10,m5:35},                  // ✅ Reduced from 50
-{k:'AMULET',i:'💎',n:'Amulet',w:10,m3:2,m4:8,m5:30},              // ✅ Reduced from 40
-{k:'ANKH',i:'🔱',n:'Ankh',w:12,m3:2,m4:6,m5:25}                   // ✅ Reduced from 30
+{k:'PHARAOH',i:'👑',n:'Pharaoh',w:1,m3:8,m4:25,m5:80},            // ✅ 1 (was 4) - RAREST
+{k:'BOOK',i:'📖',n:'Book',w:2,m3:4,m4:12,m5:60,scatter:true},      // ✅ 2 (was 3) - RARE
+{k:'ANUBIS',i:'🐕',n:'Anubis',w:3,m3:6,m4:20,m5:60},              // ✅ 3 (was 5) - UNCOMMON
+{k:'EYE',i:'👁️',n:'Eye of Ra',w:5,m3:5,m4:15,m5:50},             // ✅ 5 (was 6) - COMMON
+{k:'SCARAB',i:'🪲',n:'Scarab',w:7,m3:4,m4:12,m5:40},              // ✅ 7 (same) - COMMON
+{k:'VASE',i:'🏺',n:'Vase',w:10,m3:3,m4:10,m5:35},                  // ✅ 10 (was 8) - VERY COMMON
+{k:'AMULET',i:'💎',n:'Amulet',w:12,m3:2,m4:8,m5:30},              // ✅ 12 (was 10) - VERY COMMON
+{k:'ANKH',i:'🔱',n:'Ankh',w:16,m3:2,m4:6,m5:25}                   // ✅ 16 (was 12) - MOST COMMON
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[7]}
