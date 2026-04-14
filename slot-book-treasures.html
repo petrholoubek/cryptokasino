@@ -1343,18 +1343,39 @@ finishSpin(bet);
 return;
 }
 
-if(totalMult>0){
-if(gameMode==='real'&&window.CK){
-bal+=payout;
-realBalance+=payout;
-}else{
-bal+=payout;
-demoBalance+=payout;
+// ✅ CALCULATE PAYOUT
+const rawPayout = (fsMode ? currentBet : bet) * totalMult;
+
+// ✅ APPLY MAX WIN CAP (only for real mode)
+let payout, prof;
+
+if (gameMode === 'real' && window.CK) {
+  // Get limits from settings
+  const maxWin = gameSettings?.max_win_btc || 1.0;
+  const houseEdge = gameSettings?.house_edge_pct ? gameSettings.house_edge_pct / 100 : 0.03;
+  
+  // Apply house edge
+  const afterEdge = rawPayout * (1 - houseEdge);
+  
+  // Cap at max win
+  const cappedPayout = Math.min(afterEdge, maxWin);
+  
+  payout = cappedPayout;
+  prof = cappedPayout - (fsMode ? 0 : bet);
+  
+  // ✅ Server already updated balance, just sync
+  bal = realBalance;
+  
+} else {
+  // Demo mode - no caps
+  payout = rawPayout;
+  prof = rawPayout - (fsMode ? 0 : bet);
+  
+  bal += payout;
+  demoBalance += payout;
 }
 
-profit+=prof;
-if(prof>bestWin)bestWin=prof;
-totalWins++;
+if(totalMult>0){
 
 winningCells.forEach(key=>{
 const[col,row]=key.split('-').map(Number);
