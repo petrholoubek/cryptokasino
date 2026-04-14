@@ -1233,7 +1233,7 @@ function finishSpin(bet) {
 function triggerFS(count) {
   fsRem = count;
   fsMode = true;
-  runeMult = 1.5;  // ✅ Was: 2.0
+  runeMult = 1.0;  // ✅ Start at 1.0 (was 2.0, then 1.5)
   stickyWilds = [];  // ✅ No sticky wilds anymore!
   
   snd('lightning');
