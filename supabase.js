@@ -361,20 +361,11 @@ async addWin(satoshi, gameId = null) {
   if (isDemoMode()) return { ok: true, demo: true };
   if (!sb || !_session) return { ok: true, demo: true };
   try {
-    // ✅ Apply max win cap
-    let cappedSatoshi = Math.floor(satoshi);
-    if (gameId) {
-      const gameSettings = await this.getGameSettings(gameId);
-      const maxWinSat = Math.floor((gameSettings?.max_win_btc || 1.0) * 1e8);
-      if (cappedSatoshi > maxWinSat) {
-        console.warn('[CK] addWin capped:', (cappedSatoshi/1e8).toFixed(8), '→', (maxWinSat/1e8).toFixed(8), 'BTC');
-        cappedSatoshi = maxWinSat;
-      }
-    }
-    
-    const { data, error } = await sb.rpc('add_balance', {
+    // ✅ Použij RPC funkci s max win protection
+    const { data, error } = await sb.rpc('add_balance_with_cap', {
       p_user_id: _session.user.id, 
-      p_amount_sat: cappedSatoshi
+      p_amount_sat: Math.floor(satoshi),
+      p_game_id: gameId
     });
     if (error) throw error;
     _profile = null;
@@ -811,6 +802,4 @@ async triggerJackpot(gameId = null) {
   var s = document.createElement('script');
   s.src = 'ck-agent.js';
   document.head.appendChild(s);
-})();
-
 })();
