@@ -890,15 +890,15 @@ function snd(t) {
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS = [
-  { k: 'AXE', i: '⚔️', n: 'Battle Axe', w: 3, m3: 8, m4: 30, m5: 100, wild: true },  // ✅ Reduced & marked as wild
-  { k: 'RUNE', i: '🔱', n: 'Rune Stone', w: 4, m3: 4, m4: 15, m5: 60 },              // ✅ Reduced
-  { k: 'HELMET', i: '🪖', n: 'Viking Helmet', w: 5, m3: 6, m4: 20, m5: 70 },        // ✅ Reduced
-  { k: 'SWORD', i: '🗡️', n: 'Nordic Sword', w: 6, m3: 5, m4: 15, m5: 50 },          // ✅ Reduced
-  { k: 'SHIELD', i: '🛡️', n: 'War Shield', w: 7, m3: 4, m4: 12, m5: 40 },           // ✅ Reduced
-  { k: 'HORN', i: '📯', n: 'War Horn', w: 8, m3: 3, m4: 10, m5: 35 },               // ✅ Reduced
-  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 10, m3: 2, m4: 8, m5: 30 },              // ✅ Reduced
-  { k: 'HAMMER', i: '🔨', n: 'Thor Hammer', w: 12, m3: 2, m4: 6, m5: 25 },          // ✅ Reduced
-  { k: 'LIGHTNING', i: '⚡', n: 'Lightning', w: 14, m3: 1, m4: 5, m5: 20 }           // ✅ Reduced
+  { k: 'AXE', i: '⚔️', n: 'Battle Axe', w: 1, m3: 8, m4: 30, m5: 100, wild: true },   // ✅ Highest payout = RAREST
+  { k: 'RUNE', i: '🔱', n: 'Rune Stone', w: 2, m3: 4, m4: 15, m5: 60 },               // ✅ High payout = RARE
+  { k: 'HELMET', i: '🪖', n: 'Viking Helmet', w: 3, m3: 6, m4: 20, m5: 70 },          // ✅ Medium-high = UNCOMMON
+  { k: 'SWORD', i: '🗡️', n: 'Nordic Sword', w: 5, m3: 5, m4: 15, m5: 50 },           // ✅ Medium = COMMON
+  { k: 'SHIELD', i: '🛡️', n: 'War Shield', w: 7, m3: 4, m4: 12, m5: 40 },            // ✅ Medium-low = MORE COMMON
+  { k: 'HORN', i: '📯', n: 'War Horn', w: 10, m3: 3, m4: 10, m5: 35 },                // ✅ Low = VERY COMMON
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 12, m3: 2, m4: 8, m5: 30 },                // ✅ Low = VERY COMMON
+  { k: 'HAMMER', i: '🔨', n: 'Thor Hammer', w: 14, m3: 2, m4: 6, m5: 25 },            // ✅ Lowest = MOST COMMON
+  { k: 'LIGHTNING', i: '⚡', n: 'Lightning', w: 16, m3: 1, m4: 5, m5: 20 }             // ✅ Lowest = MOST COMMON
 ];
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
 function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
