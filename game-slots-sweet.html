@@ -1313,15 +1313,15 @@ setTimeout(()=>playBeep([523,659,784,1047,1318][i],.3),i*100);
 // BALANCED SYMBOLS - Reduced multipliers & weights
 // ═══════════════════════════════════════════════════════
 const SYMS=[
-{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:5,m5:2,m8:4,m10:8,m12:15,m15:40,scatter:true},        // ✅ Sníženo z 100
-{k:'CANDY',i:'🍬',n:'Candy',w:8,m5:1.5,m8:3,m10:6,m12:12,m15:30},                         // ✅ Sníženo z 50
-{k:'GRAPE',i:'🍇',n:'Grape',w:12,m5:1,m8:2,m10:4,m12:8,m15:20},                           // ✅ Sníženo z 30
-{k:'BANANA',i:'🍌',n:'Banana',w:12,m5:1,m8:2,m10:4,m12:8,m15:20},                         // ✅ Sníženo z 30
-{k:'MELON',i:'🍉',n:'Watermelon',w:15,m5:0.8,m8:1.5,m10:3,m12:6,m15:15},                  // ✅ Sníženo z 25
-{k:'DIAMOND',i:'💎',n:'Diamond',w:4,m5:3,m8:6,m10:12,m12:25,m15:80,bomb:true},           // ✅ Sníženo z 200
-{k:'HEART',i:'❤️',n:'Heart',w:18,m5:0.5,m8:1,m10:2,m12:4,m15:10},                        // ✅ Sníženo z 15
-{k:'BLUE',i:'💙',n:'Blue',w:20,m5:0.3,m8:0.8,m10:1.5,m12:3,m15:8},                       // ✅ Sníženo z 12
-{k:'GREEN',i:'💚',n:'Green',w:22,m5:0.2,m8:0.5,m10:1,m12:2,m15:6}                        // ✅ Sníženo z 10
+{k:'DIAMOND',i:'💎',n:'Diamond',w:1,m5:3,m8:6,m10:12,m12:25,m15:80,bomb:true},           // ✅ 1 (was 4) - RAREST
+{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:2,m5:2,m8:4,m10:8,m12:15,m15:40,scatter:true},        // ✅ 2 (was 5) - RARE
+{k:'CANDY',i:'🍬',n:'Candy',w:5,m5:1.5,m8:3,m10:6,m12:12,m15:30},                         // ✅ 5 (was 8) - UNCOMMON
+{k:'GRAPE',i:'🍇',n:'Grape',w:8,m5:1,m8:2,m10:4,m12:8,m15:20},                           // ✅ 8 (was 12) - COMMON
+{k:'BANANA',i:'🍌',n:'Banana',w:10,m5:1,m8:2,m10:4,m12:8,m15:20},                         // ✅ 10 (was 12) - COMMON
+{k:'MELON',i:'🍉',n:'Watermelon',w:12,m5:0.8,m8:1.5,m10:3,m12:6,m15:15},                  // ✅ 12 (was 15) - VERY COMMON
+{k:'HEART',i:'❤️',n:'Heart',w:15,m5:0.5,m8:1,m10:2,m12:4,m15:10},                        // ✅ 15 (was 18) - VERY COMMON
+{k:'BLUE',i:'💙',n:'Blue',w:18,m5:0.3,m8:0.8,m10:1.5,m12:3,m15:8},                       // ✅ 18 (was 20) - MOST COMMON
+{k:'GREEN',i:'💚',n:'Green',w:20,m5:0.2,m8:0.5,m10:1,m12:2,m15:6}                        // ✅ 20 (was 22) - MOST COMMON
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
