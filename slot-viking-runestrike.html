@@ -953,7 +953,7 @@ function updateBal() {
   document.getElementById('headerBal').textContent = f8(bal) + ' BTC';
   document.getElementById('balDisplay').textContent = f8(bal);
   const betPerLine = parseFloat(document.getElementById('betInput').value) || 0.001;
-  document.getElementById('totalBet').textContent = f5(betPerLine * 20);
+  document.getElementById('totalBet').textContent = f5(betPerLine * 10);  // ✅ 10 paylines (was 20)
   document.getElementById('runeMult').textContent = runeMult.toFixed(1) + '×';
   document.getElementById('stSpins').textContent = totalSpins;
   document.getElementById('stWins').textContent = totalWins;
@@ -964,8 +964,8 @@ function updateBal() {
 }
 function setBet(v) { document.getElementById('betInput').value = v.toFixed(4) }
 function halfBet() { setBet(Math.max(.0001, (parseFloat(document.getElementById('betInput').value) || .001) / 2)) }
-function doubleBet() { setBet(Math.min(bal / 20, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }
-function maxBet() { setBet(Math.min(bal / 20, .01)) }
+function doubleBet() { setBet(Math.min(bal / 10, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }  // ✅ bal/10 for 10 paylines (was bal/20)
+function maxBet() { setBet(Math.min(bal / 10, .01)) }  // ✅ bal/10 for 10 paylines (was bal/20)
 function clearBet() { setBet(.001) }
 
 // AUTO SPIN
@@ -994,7 +994,7 @@ function handleSpin() {
   }
   
   const betPerLine = parseFloat(document.getElementById('betInput').value);
-  const totalBet = betPerLine * 20;
+  const totalBet = betPerLine * 10;  // ✅ 10 paylines (was 20)
   if (!betPerLine || betPerLine <= 0) { alert('Enter bet!'); return }
   if (totalBet > bal) { alert('Insufficient balance!'); autoEnabled = false; document.getElementById('autoToggle').checked = false; toggleAuto(); return }
   doSpin(totalBet);
@@ -1068,13 +1068,18 @@ function doSpin(bet) {
   }, 1200);
 }
 
-// 20 PAYLINES
+// ✅ 10 PAYLINES - Reduced from 20 for balanced RTP
 const PAYLINES = [
-  [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2],
-  [0, 1, 2, 1, 0], [2, 1, 0, 1, 2], [1, 0, 1, 2, 1], [1, 2, 1, 0, 1],
-  [0, 0, 1, 2, 2], [2, 2, 1, 0, 0], [1, 0, 0, 0, 1], [1, 2, 2, 2, 1],
-  [0, 1, 0, 1, 0], [2, 1, 2, 1, 2], [0, 1, 1, 1, 0], [2, 1, 1, 1, 2],
-  [1, 0, 1, 0, 1], [1, 2, 1, 2, 1], [0, 0, 0, 1, 2], [2, 2, 2, 1, 0], [0, 1, 2, 2, 2]
+  [1, 1, 1, 1, 1], // mid
+  [0, 0, 0, 0, 0], // top
+  [2, 2, 2, 2, 2], // bot
+  [0, 1, 2, 1, 0], // V
+  [2, 1, 0, 1, 2], // ^
+  [1, 0, 1, 2, 1], // zig
+  [1, 2, 1, 0, 1], // zag
+  [0, 0, 1, 2, 2], // steps up
+  [2, 2, 1, 0, 0], // steps down
+  [1, 0, 0, 0, 1]  // W
 ];
 
 function checkResolve(bet, currentNonce) {
