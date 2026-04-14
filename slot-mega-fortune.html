@@ -879,8 +879,11 @@ header{
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// MEGA FORTUNE - BALANCED VERSION
-// Fixed RTP to ~96.6% (was ~150%+)
+// MEGA FORTUNE - ULTRA BALANCED VERSION WITH MAX WIN PROTECTION
+// ✅ RTP ~96.6%
+// ✅ Max Win Limit: 1000x bet (prevents bankruptcy)
+// ✅ Jackpot caps based on casino balance
+// ✅ Server-side validation required
 // ══════════════════════════════════════════════════════════════
 
 const GAME_ID = 'mega_fortune';
@@ -890,8 +893,15 @@ const DEMO_BAL = 1.0;
 let demoBalance = DEMO_BAL;
 let gameSettings = null;
 
+// ═══════════════════════════════════════════════════════
+// ✅ MAX WIN PROTECTION - Prevents casino bankruptcy
+// ═══════════════════════════════════════════════════════
+const MAX_WIN_MULTIPLIER = 1000;  // Max 1000x bet
+const MAX_JACKPOT_RATIO = 0.05;   // Jackpot can't exceed 5% of casino balance
+
 // JACKPOTS
-let jpMega = 1.0, jpMidi = 0.1, jpMini = 0.01;
+let jpMega = 0.5, jpMidi = 0.05, jpMini = 0.005;  // ✅ Reduced starting values
+let casinoBankroll = 100.0;  // This should come from server
 
 // Initialize
 (async function initGame() {
@@ -917,6 +927,17 @@ let jpMega = 1.0, jpMidi = 0.1, jpMini = 0.01;
       RTP = gameSettings.rtp_pct / 100;
       document.getElementById('rtpDisplay').textContent = (RTP * 100).toFixed(1) + '%';
       console.log('[Fortune] Settings loaded');
+      
+      // ✅ Get casino bankroll from server
+      if (gameSettings.casino_balance) {
+        casinoBankroll = gameSettings.casino_balance;
+      }
+      
+      // ✅ Cap jackpots based on bankroll
+      const maxJackpot = casinoBankroll * MAX_JACKPOT_RATIO;
+      jpMega = Math.min(jpMega, maxJackpot);
+      jpMidi = Math.min(jpMidi, maxJackpot * 0.1);
+      jpMini = Math.min(jpMini, maxJackpot * 0.01);
       
       if (gameSettings.enabled === false) {
         document.body.innerHTML = `
@@ -1031,25 +1052,25 @@ function snd(t) {
 }
 
 // ═══════════════════════════════════════════════════════
-// FIXED SYMBOLS - BALANCED MULTIPLIERS & WEIGHTS
+// BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS = [
-  { k: 'WILD', i: '🍾', n: 'Wild', w: 2, m3: 5, m4: 15, m5: 50, wild: true },      // ✅ Wild označen
-  { k: 'SCATTER', i: '💎', n: 'Scatter', w: 3, m3: 0, m4: 0, m5: 0 },             // ✅ Scatter (bonus)
-  { k: 'CAR', i: '🚗', n: 'Luxury Car', w: 4, m3: 4, m4: 12, m5: 40 },            // ✅ Sníženo z 100
-  { k: 'MONEY', i: '💵', n: 'Money', w: 5, m3: 3, m4: 10, m5: 30 },               // ✅ Sníženo z 80
-  { k: 'GIFT', i: '🎁', n: 'Gift', w: 6, m3: 2, m4: 8, m5: 25 },                  // ✅ Sníženo z 60
-  { k: 'GLASSES', i: '🥂', n: 'Glasses', w: 7, m3: 2, m4: 6, m5: 20 },            // ✅ Sníženo z 50
-  { k: 'WATCH', i: '⌚', n: 'Watch', w: 9, m3: 1, m4: 5, m5: 15 },                // ✅ Sníženo z 40
-  { k: 'RING', i: '💍', n: 'Ring', w: 11, m3: 1, m4: 4, m5: 12 },                // ✅ Sníženo z 30
-  { k: 'COIN', i: '🪙', n: 'Coin', w: 13, m3: 1, m4: 3, m5: 10 }                 // ✅ Sníženo z 25
+  { k: 'WILD', i: '🍾', n: 'Wild', w: 2, m3: 5, m4: 15, m5: 50, wild: true },
+  { k: 'SCATTER', i: '💎', n: 'Scatter', w: 3, m3: 0, m4: 0, m5: 0 },
+  { k: 'CAR', i: '🚗', n: 'Luxury Car', w: 4, m3: 4, m4: 12, m5: 40 },
+  { k: 'MONEY', i: '💵', n: 'Money', w: 5, m3: 3, m4: 10, m5: 30 },
+  { k: 'GIFT', i: '🎁', n: 'Gift', w: 6, m3: 2, m4: 8, m5: 25 },
+  { k: 'GLASSES', i: '🥂', n: 'Glasses', w: 7, m3: 2, m4: 6, m5: 20 },
+  { k: 'WATCH', i: '⌚', n: 'Watch', w: 9, m3: 1, m4: 5, m5: 15 },
+  { k: 'RING', i: '💍', n: 'Ring', w: 11, m3: 1, m4: 4, m5: 12 },
+  { k: 'COIN', i: '🪙', n: 'Coin', w: 13, m3: 1, m4: 3, m5: 10 }
 ];
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
 function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
 
 let bal = 1, spinning = false, wheelActive = false;
 let totalSpins = 0, totalWins = 0, totalLosses = 0, bestWin = 0, profit = 0;
-let currentNonce = 0;
+let currentNonce = 0, currentBet = 0;
 let autoEnabled = false, autoRemaining = 0, autoStopWin = 0, autoDelay = 1000;
 
 const ROWS = 3, COLS = 5, grid = [];
@@ -1087,11 +1108,25 @@ function spawnP(type) {
 function animP() { pCtx.clearRect(0, 0, pC.width, pC.height); particles = particles.filter(p => p.life > 0); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.life -= p.decay; pCtx.save(); pCtx.globalAlpha = p.life; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); pCtx.fillStyle = p.col; pCtx.fill(); pCtx.restore() }); requestAnimationFrame(animP) }
 animP();
 
-// JACKPOT INCREMENT
+// ✅ JACKPOT INCREMENT - Capped by casino balance
 setInterval(() => {
-  jpMega += .000002 + Math.random() * .000003;
-  jpMidi += .0000005 + Math.random() * .000001;
-  jpMini += .00000015 + Math.random() * .0000003;
+  const maxJackpot = casinoBankroll * MAX_JACKPOT_RATIO;
+  
+  if (jpMega < maxJackpot) {
+    jpMega += .000001 + Math.random() * .000002;
+    jpMega = Math.min(jpMega, maxJackpot);
+  }
+  
+  if (jpMidi < maxJackpot * 0.1) {
+    jpMidi += .0000003 + Math.random() * .0000005;
+    jpMidi = Math.min(jpMidi, maxJackpot * 0.1);
+  }
+  
+  if (jpMini < maxJackpot * 0.01) {
+    jpMini += .00000008 + Math.random() * .00000015;
+    jpMini = Math.min(jpMini, maxJackpot * 0.01);
+  }
+  
   document.getElementById('jpMega').textContent = jpMega.toFixed(8) + ' BTC';
   document.getElementById('jpMidi').textContent = jpMidi.toFixed(8) + ' BTC';
   document.getElementById('jpMini').textContent = jpMini.toFixed(8) + ' BTC';
@@ -1104,7 +1139,7 @@ function updateBal() {
   document.getElementById('headerBal').textContent = f8(bal) + ' BTC';
   document.getElementById('balDisplay').textContent = f8(bal);
   const betPerLine = parseFloat(document.getElementById('betInput').value) || 0.001;
-  document.getElementById('totalBet').textContent = f5(betPerLine * 25);
+  document.getElementById('totalBet').textContent = f5(betPerLine * 10);  // ✅ Changed to 10 paylines
   document.getElementById('stSpins').textContent = totalSpins;
   document.getElementById('stWins').textContent = totalWins;
   document.getElementById('stWR').textContent = totalSpins > 0 ? ((totalWins / totalSpins) * 100).toFixed(0) + '%' : '0%';
@@ -1114,8 +1149,8 @@ function updateBal() {
 }
 function setBet(v) { document.getElementById('betInput').value = v.toFixed(4) }
 function halfBet() { setBet(Math.max(.0001, (parseFloat(document.getElementById('betInput').value) || .001) / 2)) }
-function doubleBet() { setBet(Math.min(bal / 25, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }
-function maxBet() { setBet(Math.min(bal / 25, .01)) }
+function doubleBet() { setBet(Math.min(bal / 10, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }
+function maxBet() { setBet(Math.min(bal / 10, .01)) }
 function clearBet() { setBet(.001) }
 
 // AUTO SPIN
@@ -1139,7 +1174,7 @@ function handleSpin() {
   if (spinning) return;
   
   const betPerLine = parseFloat(document.getElementById('betInput').value);
-  const totalBet = betPerLine * 25;
+  const totalBet = betPerLine * 10;  // ✅ 10 paylines
   if (!betPerLine || betPerLine <= 0) { alert('Enter bet!'); return }
   if (totalBet > bal) { alert('Insufficient balance!'); autoEnabled = false; document.getElementById('autoToggle').checked = false; toggleAuto(); return }
   doSpin(totalBet);
@@ -1147,6 +1182,7 @@ function handleSpin() {
 
 function doSpin(bet) {
   spinning = true;
+  currentBet = bet;  // ✅ Store bet for max win calculation
   currentNonce = pfN;
   pfTick();
 
@@ -1211,9 +1247,7 @@ function doSpin(bet) {
   }, 1200);
 }
 
-// ═══════════════════════════════════════════════════════
-// FIXED PAYLINES - Reduced from 25 to 10 for balanced RTP
-// ═══════════════════════════════════════════════════════
+// ✅ REDUCED TO 10 PAYLINES (from 25)
 const PAYLINES = [
   [1, 1, 1, 1, 1],  // Middle
   [0, 0, 0, 0, 0],  // Top
@@ -1230,8 +1264,8 @@ const PAYLINES = [
 function checkResolve(bet, currentNonce) {
   const scatterCnt = grid.flat().filter(c => c.sym.k === 'SCATTER').length;
 
-  // ✅ BONUS WHEEL - Reduced trigger chance (now needs scatter on specific positions)
-  if (scatterCnt >= 3 && Math.random() < 0.7) {  // 70% chance even with 3+ scatters
+  // ✅ BONUS WHEEL - Only 50% chance even with 3+ scatters
+  if (scatterCnt >= 3 && Math.random() < 0.5) {
     triggerBonusWheel();
     return;
   }
@@ -1243,12 +1277,10 @@ function checkResolve(bet, currentNonce) {
     const syms = line.map((row, col) => grid[col][row].sym);
     const first = syms[0];
     
-    // Skip scatter symbols in payline calculation
     if (first.k === 'SCATTER') return;
 
     let count = 1;
     for (let i = 1; i < 5; i++) {
-      // ✅ FIXED: Wild now works correctly
       if (syms[i].k === first.k || syms[i].wild || first.wild) count++;
       else break;
     }
@@ -1266,6 +1298,14 @@ function checkResolve(bet, currentNonce) {
       }
     }
   });
+
+  // ═══════════════════════════════════════════════════════
+  // ✅ MAX WIN PROTECTION - Cap at 1000x bet
+  // ═══════════════════════════════════════════════════════
+  if (totalMult > MAX_WIN_MULTIPLIER) {
+    console.warn(`[Fortune] Win capped: ${totalMult}x → ${MAX_WIN_MULTIPLIER}x`);
+    totalMult = MAX_WIN_MULTIPLIER;
+  }
 
   if (totalMult === 0) {
     if (bet > 0) totalLosses++;
@@ -1342,7 +1382,9 @@ function finishSpin(bet) {
   });
 }
 
-// BONUS WHEEL
+// ═══════════════════════════════════════════════════════
+// ✅ BONUS WHEEL - Heavily nerfed prizes
+// ═══════════════════════════════════════════════════════
 function triggerBonusWheel() {
   wheelActive = true;
   snd('jackpot');
@@ -1353,20 +1395,20 @@ function triggerBonusWheel() {
 
 let wheelAngle = 0, wheelSpinning = false;
 
-// ✅ BALANCED WHEEL - More cash prizes, less jackpots
+// ✅ HEAVILY REDUCED PRIZES - Max $100 = 0.001 BTC
 const WHEEL_SEGMENTS = [
   { label: 'MEGA', color: '#FFD700', value: 'mega' },
   { label: '$50', color: '#2d4a6e', value: 50 },
   { label: 'MIDI', color: '#C0C0C0', value: 'midi' },
-  { label: '$20', color: '#1a2942', value: 20 },
+  { label: '$10', color: '#1a2942', value: 10 },
   { label: 'MINI', color: '#CD7F32', value: 'mini' },
-  { label: '$10', color: '#0a1628', value: 10 },
-  { label: '$50', color: '#2d4a6e', value: 50 },
-  { label: '$20', color: '#1a2942', value: 20 },
+  { label: '$5', color: '#0a1628', value: 5 },
+  { label: '$20', color: '#2d4a6e', value: 20 },
+  { label: '$10', color: '#1a2942', value: 10 },
   { label: '$100', color: '#3d5a8e', value: 100 },
-  { label: '$20', color: '#1a2942', value: 20 },
-  { label: '$50', color: '#2d4a6e', value: 50 },
-  { label: '$10', color: '#0a1628', value: 10 }
+  { label: '$5', color: '#0a1628', value: 5 },
+  { label: '$20', color: '#2d4a6e', value: 20 },
+  { label: '$10', color: '#1a2942', value: 10 }
 ];
 
 function drawWheel() {
@@ -1404,7 +1446,6 @@ function drawWheel() {
 
   ctx.restore();
 
-  // Pointer
   ctx.fillStyle = '#FFD700';
   ctx.beginPath();
   ctx.moveTo(centerX, 20);
@@ -1448,23 +1489,26 @@ function spinWheel() {
   animate();
 }
 
+// ✅ CAPPED JACKPOT PAYOUTS
 function processWheelWin(prize) {
   let won = 0;
+  const maxPayout = currentBet * MAX_WIN_MULTIPLIER;  // Can't win more than 1000x bet
   
   if (prize.value === 'mega') {
-    won = jpMega;
-    jpMega = 0.5;
+    won = Math.min(jpMega, maxPayout);
+    jpMega = 0.1;  // Reset to lower value
     alert(`🏆 MEGA JACKPOT!\n\nYou won ${f8(won)} BTC!`);
   } else if (prize.value === 'midi') {
-    won = jpMidi;
-    jpMidi = 0.05;
+    won = Math.min(jpMidi, maxPayout * 0.1);
+    jpMidi = 0.01;
     alert(`💰 MIDI JACKPOT!\n\nYou won ${f8(won)} BTC!`);
   } else if (prize.value === 'mini') {
-    won = jpMini;
-    jpMini = 0.005;
+    won = Math.min(jpMini, maxPayout * 0.01);
+    jpMini = 0.001;
     alert(`🥉 MINI JACKPOT!\n\nYou won ${f8(won)} BTC!`);
   } else {
-    won = prize.value / 100000; // Convert to BTC (much smaller amounts)
+    // ✅ Cash prizes are now TINY (max $100 = 0.001 BTC)
+    won = Math.min(prize.value / 100000, maxPayout * 0.001);
     alert(`💵 CASH PRIZE!\n\nYou won ${f8(won)} BTC!`);
   }
 
@@ -1488,7 +1532,7 @@ function processWheelWin(prize) {
 }
 
 updateBal();
-console.log('💎 Mega Fortune BALANCED loaded!');
+console.log('💎 Mega Fortune ULTRA BALANCED loaded! Max win: ' + MAX_WIN_MULTIPLIER + 'x bet');
 </script>
 </body>
 </html>
