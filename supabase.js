@@ -803,3 +803,5 @@ async triggerJackpot(gameId = null) {
   s.src = 'ck-agent.js';
   document.head.appendChild(s);
 })();
+
+})();
