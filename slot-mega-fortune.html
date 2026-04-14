@@ -1305,18 +1305,23 @@ function checkResolve(bet, currentNonce) {
   const payout = bet * totalMult;
   const prof = payout - bet;
 
-if (totalMult > 0) {
-  // ✅ Real mode: server už to zařídil v callGameServer
+ if (totalMult > 0) {
+  // ✅ Real mode: použij addWin s max win cap
   if (gameMode === 'real' && window.CK && currentBet > 0) {
-    // Server už přičetl výhru - NEDĚLEJ NIC
-    // Balance byl updatnut v callGameServer response
-    console.log('[Fortune] Win handled by server, balance:', bal);
+    const payoutSat = Math.floor(payout * 1e8);
     
-  } else {
-    // Demo mode: přičti lokálně
-    bal += payout;
-    demoBalance += payout;
-  }
+    // Přičti výhru přes addWin (aplikuje max win cap v DB)
+    window.CK.addWin(payoutSat, 'mega_fortune').then(result => {
+      if(result && result.ok){
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Fortune] addWin error:', err);
+    });
     
     // Log bet do DB
     window.CK.logBet('mega_fortune', 
@@ -1505,11 +1510,11 @@ function spinWheel() {
 // ✅ CAPPED JACKPOT PAYOUTS
 function processWheelWin(prize) {
   let won = 0;
-  const maxPayout = currentBet * MAX_WIN_MULTIPLIER;  // Can't win more than 1000x bet
+  const maxPayout = currentBet * MAX_WIN_MULTIPLIER;
   
   if (prize.value === 'mega') {
     won = Math.min(jpMega, maxPayout);
-    jpMega = 0.1;  // Reset to lower value
+    jpMega = 0.1;
     alert(`🏆 MEGA JACKPOT!\n\nYou won ${f8(won)} BTC!`);
   } else if (prize.value === 'midi') {
     won = Math.min(jpMidi, maxPayout * 0.1);
@@ -1520,14 +1525,32 @@ function processWheelWin(prize) {
     jpMini = 0.001;
     alert(`🥉 MINI JACKPOT!\n\nYou won ${f8(won)} BTC!`);
   } else {
-    // ✅ Cash prizes are now TINY (max $100 = 0.001 BTC)
     won = Math.min(prize.value / 100000, maxPayout * 0.001);
     alert(`💵 CASH PRIZE!\n\nYou won ${f8(won)} BTC!`);
   }
 
-  if (gameMode === 'real' && window.CK) {
-    bal += won;
-    realBalance += won;
+  if (gameMode === 'real' && window.CK && won > 0) {
+    const wonSat = Math.floor(won * 1e8);
+    
+    window.CK.addWin(wonSat, 'mega_fortune').then(result => {
+      if(result && result.ok){
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Fortune] Wheel win error:', err);
+    });
+    
+    window.CK.logBet('mega_fortune', 0, wonSat, 0, { 
+      type: 'bonus_wheel', 
+      prize: prize.label 
+    }).catch(err => {
+      console.warn('[Fortune] Wheel log error:', err);
+    });
+    
   } else {
     bal += won;
     demoBalance += won;
