@@ -323,6 +323,22 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   .bh-main{grid-template-columns:1fr!important;}
   .bh-divider{display:none!important;}
 }
+
+#headerUser {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.8rem;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.22);
+  border-radius: 6px;
+  display: none;
+}
+
+#headerUser.logged-in {
+  display: inline-block;
+}
 </style>
 </head>
 <body>
@@ -349,9 +365,12 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
   <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="promotions.html">Promotions</a></nav>
-  <div class="header-right">
-    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
-    <a href="deposit.html" class="btn-dep">Deposit</a>
+ <div class="header-right">
+  <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+  <span id="headerVip"></span>
+  <span id="headerUser" style="font-family:'Cinzel',serif;font-size:0.72rem;color:var(--text-dim);display:none;">👤 <span id="username">Guest</span></span>
+  <a href="deposit.html" class="btn-dep">Deposit</a>
+  <a href="login.html" class="btn-login" id="btnLogin">Login</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </header>
@@ -595,10 +614,20 @@ let demoBalance=DEMO_BAL,balance=DEMO_BAL;
     if(session){
       currentUser=session.user;
       const {data:prof}=await sb.from('profiles').select('username,balance').eq('id',currentUser.id).single();
-      if(prof){currentUser.username=prof.username||prof.email?.split('@')[0]||'Player';realBalance=parseFloat(prof.balance||0);}
+      if(prof){
+        currentUser.username=prof.username||prof.email?.split('@')[0]||'Player';
+        realBalance=parseFloat(prof.balance||0);
+        updateUserDisplay(); // ✅ PŘIDÁNO
+      }
     }
   }catch(e){console.warn('[Poker]',e.message);}
-  if(window.CK){const b=await CK.getBalance();if(b>0)realBalance=b;const gs=await CK.getGameSettings('poker');if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}}
+  if(window.CK){
+    const b=await CK.getBalance();
+    if(b>0)realBalance=b;
+    const gs=await CK.getGameSettings('poker');
+    if(gs){RTP=gs.rtp_pct/100;document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';}
+  }
+  updateUserDisplay(); // ✅ VOLEJ I KDYŽ NENÍ SESSION (zobrazí Guest/Login)
 })();
 
 async function sbLog(betSat,profitSat,mult,meta){
@@ -1179,6 +1208,44 @@ async function callGameServer(gameId, betBtc, options) {
     return await window.CK.callGameServer(gameId, betBtc, options);
   }
   return null;
+}
+
+// ═══════════════════════════════════════════
+// GAME SETTINGS LOADER — RTP/Edge z Supabase
+// ═══════════════════════════════════════════
+async function loadGameSettings(gameId){
+  // ... (existující kód) ...
+}
+
+
+// ═══════════════════════════════════════════════════════
+// SERVER GAME ENDPOINT - volá /api/game/play
+// ═══════════════════════════════════════════════════════
+async function callGameServer(gameId, betBtc, options) {
+  if (window.CK && window.CK.callGameServer) {
+    return await window.CK.callGameServer(gameId, betBtc, options);
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════
+// USERNAME DISPLAY - Zobrazí přihlášeného uživatele
+// ═══════════════════════════════════════════════════════
+function updateUserDisplay() {
+  const userEl = document.getElementById('headerUser');
+  const usernameEl = document.getElementById('username');
+  const loginBtn = document.getElementById('btnLogin');
+  
+  if (currentUser && currentUser.username) {
+    // Logged in
+    userEl.classList.add('logged-in');
+    usernameEl.textContent = currentUser.username;
+    if (loginBtn) loginBtn.style.display = 'none';
+  } else {
+    // Not logged in
+    userEl.classList.remove('logged-in');
+    if (loginBtn) loginBtn.style.display = '';
+  }
 }
 
 </script>
