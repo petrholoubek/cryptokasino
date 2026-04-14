@@ -909,16 +909,16 @@ setTimeout(()=>playBeep(f,.3),i*120);
 // ═══════════════════════════════════════════════════════
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
-const SYMS=[
-{k:'WILD',i:'🐉',n:'Dragon',w:2,m3:8,m4:30,m5:100,wild:true},        // ✅ Reduced & marked as wild
-{k:'SCATTER',i:'💰',n:'Treasure',w:3,m3:4,m4:12,m5:50},             // ✅ Reduced
-{k:'CROWN',i:'👑',n:'Crown',w:5,m3:6,m4:18,m5:50},                  // ✅ Reduced
-{k:'DIAMOND',i:'💎',n:'Diamond',w:6,m3:5,m4:15,m5:40},              // ✅ Reduced
-{k:'RUBY',i:'❤️',n:'Ruby',w:8,m3:4,m4:12,m5:35},                    // ✅ Reduced
-{k:'FIRE',i:'🔥',n:'Fire',w:10,m3:3,m4:10,m5:30},                   // ✅ Reduced
-{k:'EMERALD',i:'💚',n:'Emerald',w:12,m3:2,m4:8,m5:25},              // ✅ Reduced
-{k:'COIN',i:'🪙',n:'Gold Coin',w:15,m3:2,m4:6,m5:20},               // ✅ Reduced
-{k:'GEM',i:'💠',n:'Sapphire',w:18,m3:1,m4:5,m5:15}                  // ✅ Reduced
+const SYMS = [
+  { k: 'WILD', i: '🐉', n: 'Dragon', w: 1, m3: 8, m4: 30, m5: 100, wild: true },     // ✅ 1.4% - RAREST
+  { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2, m3: 4, m4: 12, m5: 50 },             // ✅ 2.9% - RARE
+  { k: 'CROWN', i: '👑', n: 'Crown', w: 3, m3: 6, m4: 18, m5: 50 },                  // ✅ 4.3% - UNCOMMON
+  { k: 'DIAMOND', i: '💎', n: 'Diamond', w: 5, m3: 5, m4: 15, m5: 40 },              // ✅ 7.1% - COMMON
+  { k: 'RUBY', i: '❤️', n: 'Ruby', w: 7, m3: 4, m4: 12, m5: 35 },                    // ✅ 10% - COMMON
+  { k: 'FIRE', i: '🔥', n: 'Fire', w: 10, m3: 3, m4: 10, m5: 30 },                   // ✅ 14.3% - VERY COMMON
+  { k: 'EMERALD', i: '💚', n: 'Emerald', w: 12, m3: 2, m4: 8, m5: 25 },              // ✅ 17.1% - VERY COMMON
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 15, m3: 2, m4: 6, m5: 20 },               // ✅ 21.4% - MOST COMMON
+  { k: 'GEM', i: '💠', n: 'Sapphire', w: 16, m3: 1, m4: 5, m5: 15 }                  // ✅ 22.9% - MOST COMMON
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
