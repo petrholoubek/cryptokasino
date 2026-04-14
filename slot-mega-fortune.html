@@ -1249,7 +1249,7 @@ const PAYLINES = [
   [1, 1, 0, 1, 1]   // M-shape
 ];
 
-function checkResolve(bet, currentNonce) {
+async function checkResolve(bet, currentNonce) {
   const scatterCnt = grid.flat().filter(c => c.sym.k === 'SCATTER').length;
 
   // ✅ BONUS WHEEL - Only 50% chance even with 3+ scatters
@@ -1305,38 +1305,39 @@ function checkResolve(bet, currentNonce) {
   const payout = bet * totalMult;
   const prof = payout - bet;
 
- if (totalMult > 0) {
+if (totalMult > 0) {
   // ✅ Real mode: použij addWin s max win cap
   if (gameMode === 'real' && window.CK && currentBet > 0) {
     const payoutSat = Math.floor(payout * 1e8);
     
-    // Přičti výhru přes addWin (aplikuje max win cap v DB)
-    window.CK.addWin(payoutSat, 'mega_fortune').then(result => {
+    try {
+      // ✅ AWAIT - počkej dokud se nepřičte výhra!
+      const result = await window.CK.addWin(payoutSat, 'mega_fortune');
+      
       if(result && result.ok){
-        window.CK.refreshBalance().then(newBal => {
-          realBalance = newBal;
-          bal = newBal;
-          updateBal();
-        });
+        // ✅ AWAIT - počkej na refresh balance
+        const newBal = await window.CK.refreshBalance();
+        realBalance = newBal;
+        bal = newBal;
+        updateBal();
       }
-    }).catch(err => {
-      console.warn('[Fortune] addWin error:', err);
-    });
-    
-    // Log bet do DB
-    window.CK.logBet('mega_fortune', 
-      Math.floor(currentBet * 1e8), 
-      Math.floor(prof * 1e8), 
-      totalMult, 
-      {
-        serverSeed: pfSS,
-        clientSeed: pfCS,
-        nonce: currentNonce,
-        paylines: PAYLINES.length
-      }
-    ).catch(err => {
-      console.warn('[Fortune] logBet error:', err);
-    });
+      
+      // Log bet do DB
+      await window.CK.logBet('mega_fortune', 
+        Math.floor(currentBet * 1e8), 
+        Math.floor(prof * 1e8), 
+        totalMult, 
+        {
+          serverSeed: pfSS,
+          clientSeed: pfCS,
+          nonce: currentNonce,
+          paylines: PAYLINES.length
+        }
+      );
+      
+    } catch(err) {
+      console.warn('[Fortune] addWin/logBet error:', err);
+    }
     
   } else {
     // Demo mode: přičti normálně
@@ -1344,9 +1345,9 @@ function checkResolve(bet, currentNonce) {
     demoBalance += payout;
   }
 
-    profit += prof;
-    if (prof > bestWin) bestWin = prof;
-    totalWins++;
+  profit += prof;
+  if (prof > bestWin) bestWin = prof;
+  totalWins++;
 
     winningCells.forEach(key => {
       const [col, row] = key.split('-').map(Number);
