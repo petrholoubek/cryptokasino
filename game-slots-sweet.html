@@ -1586,10 +1586,43 @@ console.log('🎰 VÝHRA:', {
 });
 
 if(totalMult > 0 && payout > 0){
-  if(gameMode === 'real' && window.CK){
-    bal += payout;
-    realBalance += payout;
+  // ✅ Real mode: použij addWin s max win cap
+  if(gameMode === 'real' && window.CK && currentBet > 0){
+    const payoutSat = Math.floor(payout * 1e8);
+    
+    // Přičti výhru přes addWin (aplikuje max win cap v DB)
+    window.CK.addWin(payoutSat, 'sweet_bonanza').then(result => {
+      if(result && result.ok){
+        // Update balance z DB
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Sweet] addWin error:', err);
+    });
+    
+    // Log bet do DB
+    window.CK.logBet('sweet_bonanza', 
+      Math.floor(currentBet * 1e8), 
+      Math.floor(prof * 1e8), 
+      totalMult, 
+      {
+        serverSeed: pfSS,
+        clientSeed: pfCS,
+        nonce: currentNonce,
+        clusters: clusters.length,
+        fsMode: fsMode,
+        mult: mult
+      }
+    ).catch(err => {
+      console.warn('[Sweet] logBet error:', err);
+    });
+    
   } else {
+    // Demo mode: přičti normálně
     bal += payout;
     demoBalance += payout;
   }
