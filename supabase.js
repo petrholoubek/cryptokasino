@@ -356,130 +356,174 @@
       }
     },
 
-    // ── Pricti vyhru — POUZE v real mode ─────────────
-    async addWin(satoshi) {
-      if (isDemoMode()) return { ok: true, demo: true };
-      if (!sb || !_session) return { ok: true, demo: true };
-      try {
-        const { data, error } = await sb.rpc('add_balance', {
-          p_user_id: _session.user.id, p_amount_sat: Math.floor(satoshi)
-        });
-        if (error) throw error;
-        _profile = null;
-        return { ok: true, new_balance: data };
-      } catch (e) {
-        console.warn('[CK] addWin error:', e.message);
-        return { ok: false, error: e.message };
+// ── Pricti vyhru — POUZE v real mode ─────────────
+async addWin(satoshi, gameId = null) {
+  if (isDemoMode()) return { ok: true, demo: true };
+  if (!sb || !_session) return { ok: true, demo: true };
+  try {
+    // ✅ Apply max win cap
+    let cappedSatoshi = Math.floor(satoshi);
+    if (gameId) {
+      const gameSettings = await this.getGameSettings(gameId);
+      const maxWinSat = Math.floor((gameSettings?.max_win_btc || 1.0) * 1e8);
+      if (cappedSatoshi > maxWinSat) {
+        console.warn('[CK] addWin capped:', (cappedSatoshi/1e8).toFixed(8), '→', (maxWinSat/1e8).toFixed(8), 'BTC');
+        cappedSatoshi = maxWinSat;
       }
-    },
+    }
+    
+    const { data, error } = await sb.rpc('add_balance', {
+      p_user_id: _session.user.id, 
+      p_amount_sat: cappedSatoshi
+    });
+    if (error) throw error;
+    _profile = null;
+    return { ok: true, new_balance: data };
+  } catch (e) {
+    console.warn('[CK] addWin error:', e.message);
+    return { ok: false, error: e.message };
+  }
+},
 
-    // ── Zapis sazku — POUZE v real mode ──────────────
-    async logBet(game, betSatoshi, profitSatoshi, multiplier = 0, meta = {}) {
-      if (isDemoMode()) return;
-      if (!sb || !_session) return;
-      try {
-        await sb.from('bets').insert({
-          user_id:        _session.user.id,
-          game,
-          bet_satoshi:    Math.floor(betSatoshi),
-          profit_satoshi: Math.floor(profitSatoshi),
-          multiplier:     parseFloat(multiplier) || 0,
-          meta,
-          created_at:     new Date().toISOString()
-        });
+// ── Zápis sázky — POUZE v real mode ──────────────
+async logBet(game, betSatoshi, profitSatoshi, multiplier = 0, meta = {}) {
+  if (isDemoMode()) return;
+  if (!sb || !_session) return;
+  try {
+    await sb.from('bets').insert({
+      user_id:        _session.user.id,
+      game,
+      bet_satoshi:    Math.floor(betSatoshi),
+      profit_satoshi: Math.floor(profitSatoshi),
+      multiplier:     parseFloat(multiplier) || 0,
+      meta,
+      created_at:     new Date().toISOString()
+    });
 
-        // Update game_settings statistiky
-        try {
-          const betBtc    = Math.floor(betSatoshi)    / 1e8;
-          const profitBtc = Math.floor(profitSatoshi) / 1e8;
-          const { data: gs } = await sb
-            .from('game_settings')
-            .select('total_bets_count, total_wagered_btc, total_paid_btc, house_profit_btc')
-            .eq('id', game)
-            .single();
-          if (gs) {
-            await sb.from('game_settings').update({
-              total_bets_count:  (parseInt(gs.total_bets_count)    || 0) + 1,
-              total_wagered_btc: (parseFloat(gs.total_wagered_btc) || 0) + betBtc,
-              total_paid_btc:    (parseFloat(gs.total_paid_btc)    || 0) + Math.max(0, profitBtc),
-              house_profit_btc:  (parseFloat(gs.house_profit_btc)  || 0) + (betBtc - Math.max(0, profitBtc)),
-              updated_at:        new Date().toISOString()
-            }).eq('id', game);
-          }
-        } catch (e2) { /* neni kriticke */ }
-
-        // VIP: update total_wagered_btc v profiles
-        // Trigger v DB to udela automaticky, ale pro jistotu taky tady
-        try {
-          const betBtc = Math.floor(betSatoshi) / 1e8;
-          const { data: prof } = await sb
-            .from('profiles')
-            .select('total_wagered_btc, vip_level')
-            .eq('id', _session.user.id)
-            .single();
-          if (prof) {
-            const newWagered = (parseFloat(prof.total_wagered_btc) || 0) + betBtc;
-            const newVipLevel = _calculateVipLevel(newWagered);
-            const updateData = { total_wagered_btc: newWagered };
-            // Povys VIP pokud je cas
-            if (newVipLevel !== prof.vip_level &&
-                (VIP_LEVELS[newVipLevel]?.order || 0) > (VIP_LEVELS[prof.vip_level]?.order || 0)) {
-              updateData.vip_level = newVipLevel;
-              updateData.vip_upgraded_at = new Date().toISOString();
-              console.log('[CK] VIP upgrade:', prof.vip_level, '→', newVipLevel);
-              // Refresh profilu po upgrade
-              _profile = null;
-              // Zobraz notifikaci hráči
-              _showVipUpgradeNotification(newVipLevel);
-            }
-            await sb.from('profiles').update(updateData).eq('id', _session.user.id);
-            if (updateData.vip_level) _profile = null;
-          }
-        } catch (e3) { /* VIP update neni kriticke */ }
-
-      } catch (e) {
-        console.warn('[CK] logBet error:', e.message);
+    // Update game_settings statistiky
+    try {
+      const betBtc    = Math.floor(betSatoshi)    / 1e8;
+      const profitBtc = Math.floor(profitSatoshi) / 1e8;
+      const { data: gs } = await sb
+        .from('game_settings')
+        .select('total_bets_count, total_wagered_btc, total_paid_btc, house_profit_btc')
+        .eq('id', game)
+        .single();
+      if (gs) {
+        await sb.from('game_settings').update({
+          total_bets_count:  (parseInt(gs.total_bets_count)    || 0) + 1,
+          total_wagered_btc: (parseFloat(gs.total_wagered_btc) || 0) + betBtc,
+          total_paid_btc:    (parseFloat(gs.total_paid_btc)    || 0) + Math.max(0, profitBtc),
+          house_profit_btc:  (parseFloat(gs.house_profit_btc)  || 0) + (betBtc - Math.max(0, profitBtc)),
+          updated_at:        new Date().toISOString()
+        }).eq('id', game);
       }
-    },
+    } catch (e2) { /* neni kriticke */ }
 
-    async placeBet(game, betSatoshi, profitSatoshi, multiplier = 0, meta = {}) {
-      if (isDemoMode()) return { ok: true, demo: true };
-      const deduct = await this.deductBet(betSatoshi);
-      if (!deduct.ok && !deduct.demo) return deduct;
-      if (profitSatoshi > 0) await this.addWin(profitSatoshi);
-      await this.logBet(game, betSatoshi, profitSatoshi - betSatoshi, multiplier, meta);
-      const newBal = await this.refreshBalance();
-      return { ok: true, new_balance: newBal };
-    },
-
-    // ── Jackpot ──────────────────────────────────────
-    async getJackpot() {
-      if (!sb) return 0.001;
-      try {
-        const { data } = await sb.from('jackpot').select('amount_satoshi').eq('id', 1).single();
-        return data ? parseFloat(data.amount_satoshi) / 1e8 : 0.001;
-      } catch { return 0.001; }
-    },
-
-    async triggerJackpot() {
-      if (isDemoMode()) return null;
-      if (!sb || !_session) return null;
-      try {
-        const jpBtc = await this.getJackpot();
-        await sb.rpc('add_balance', { p_user_id: _session.user.id, p_amount_sat: Math.floor(jpBtc * 1e8) });
-        await sb.from('jackpot').update({
-          amount_satoshi: 100000,
-          last_winner_id: _session.user.id,
-          last_won_at:    new Date().toISOString(),
-          updated_at:     new Date().toISOString()
-        }).eq('id', 1);
-        _profile = null;
-        return jpBtc;
-      } catch (e) {
-        console.warn('[CK] triggerJackpot error:', e.message);
-        return null;
+    // VIP: update total_wagered_btc v profiles
+    try {
+      const betBtc = Math.floor(betSatoshi) / 1e8;
+      const { data: prof } = await sb
+        .from('profiles')
+        .select('total_wagered_btc, vip_level')
+        .eq('id', _session.user.id)
+        .single();
+      if (prof) {
+        const newWagered = (parseFloat(prof.total_wagered_btc) || 0) + betBtc;
+        const newVipLevel = _calculateVipLevel(newWagered);
+        const updateData = { total_wagered_btc: newWagered };
+        // Povys VIP pokud je cas
+        if (newVipLevel !== prof.vip_level &&
+            (VIP_LEVELS[newVipLevel]?.order || 0) > (VIP_LEVELS[prof.vip_level]?.order || 0)) {
+          updateData.vip_level = newVipLevel;
+          updateData.vip_upgraded_at = new Date().toISOString();
+          console.log('[CK] VIP upgrade:', prof.vip_level, '→', newVipLevel);
+          _profile = null;
+          _showVipUpgradeNotification(newVipLevel);
+        }
+        await sb.from('profiles').update(updateData).eq('id', _session.user.id);
+        if (updateData.vip_level) _profile = null;
       }
-    },
+    } catch (e3) { /* VIP update neni kriticke */ }
+
+  } catch (e) {
+    console.warn('[CK] logBet error:', e.message);
+  }
+},
+
+async placeBet(game, betSatoshi, profitSatoshi, multiplier = 0, meta = {}) {
+  if (isDemoMode()) return { ok: true, demo: true };
+  const deduct = await this.deductBet(betSatoshi);
+  if (!deduct.ok && !deduct.demo) return deduct;
+  
+  // ✅ Apply max win cap before adding
+  let cappedProfit = profitSatoshi;
+  if (profitSatoshi > 0) {
+    const gameSettings = await this.getGameSettings(game);
+    const maxWinSat = Math.floor((gameSettings?.max_win_btc || 1.0) * 1e8);
+    const houseEdge = gameSettings?.house_edge_pct ? gameSettings.house_edge_pct / 100 : 0.03;
+    
+    // Apply house edge
+    const afterEdge = Math.floor(profitSatoshi * (1 - houseEdge));
+    
+    // Cap at max win
+    cappedProfit = Math.min(afterEdge, maxWinSat);
+    
+    if (cappedProfit < profitSatoshi) {
+      console.warn('[CK] placeBet capped:', (profitSatoshi/1e8).toFixed(8), '→', (cappedProfit/1e8).toFixed(8), 'BTC');
+    }
+    
+    await this.addWin(cappedProfit, game);
+  }
+  
+  await this.logBet(game, betSatoshi, cappedProfit - betSatoshi, multiplier, meta); // ✅ JEN TOTO!
+  const newBal = await this.refreshBalance();
+  return { ok: true, new_balance: newBal };
+},
+
+// ── Jackpot ──────────────────────────────────────
+async getJackpot() {
+  if (!sb) return 0.001;
+  try {
+    const { data } = await sb.from('jackpot').select('amount_satoshi').eq('id', 1).single();
+    return data ? parseFloat(data.amount_satoshi) / 1e8 : 0.001;
+  } catch { return 0.001; }
+},
+
+async triggerJackpot(gameId = null) {
+  if (isDemoMode()) return null;
+  if (!sb || !_session) return null;
+  try {
+    const jpBtc = await this.getJackpot();
+    
+    // ✅ Apply max win cap to jackpot
+    let cappedJpBtc = jpBtc;
+    if (gameId) {
+      const gameSettings = await this.getGameSettings(gameId);
+      const maxWin = gameSettings?.max_win_btc || 1.0;
+      if (jpBtc > maxWin) {
+        console.warn('[CK] Jackpot capped:', jpBtc.toFixed(8), '→', maxWin.toFixed(8), 'BTC');
+        cappedJpBtc = maxWin;
+      }
+    }
+    
+    await sb.rpc('add_balance', { 
+      p_user_id: _session.user.id, 
+      p_amount_sat: Math.floor(cappedJpBtc * 1e8) 
+    });
+    await sb.from('jackpot').update({
+      amount_satoshi: 100000,
+      last_winner_id: _session.user.id,
+      last_won_at:    new Date().toISOString(),
+      updated_at:     new Date().toISOString()
+    }).eq('id', 1);
+    _profile = null;
+    return cappedJpBtc;
+  } catch (e) {
+    console.warn('[CK] triggerJackpot error:', e.message);
+    return null;
+  }
+},
 
     async getBetHistory(game = null, limit = 20) {
       if (!sb || !_session) return [];
@@ -640,9 +684,8 @@
     },
 
 
-    // ── Server game endpoint ──────────────────────────
+   // ── Server game endpoint ──────────────────────────
     serverUrl: 'https://api.cryptokasino.io',
-
     async callGameServer(gameId, betBtc, options) {
       try {
         var token = null;
@@ -652,6 +695,32 @@
           if (sess && sess.data && sess.data.session) token = sess.data.session.access_token;
         }
         if (!token) throw new Error('No JWT token');
+        
+        // ✅ MAX WIN PROTECTION - client-side enforcement
+        if (options && (options.rawPayout || options.multiplier)) {
+          const gameSettings = await this.getGameSettings(gameId);
+          const maxWin = gameSettings?.max_win_btc || 1.0;
+          const houseEdge = gameSettings?.house_edge_pct ? gameSettings.house_edge_pct / 100 : 0.03;
+          
+          const rawPayout = options.rawPayout || (betBtc * (options.multiplier || 0));
+          const afterEdge = rawPayout * (1 - houseEdge);
+          const cappedPayout = Math.min(afterEdge, maxWin);
+          
+          // Enforce cap in options
+          options.cappedPayout = cappedPayout;
+          options.maxWinApplied = cappedPayout < rawPayout;
+          
+          console.log('[CK] Max win check:', {
+            game: gameId,
+            bet: betBtc.toFixed(5),
+            mult: options.multiplier,
+            raw: rawPayout.toFixed(5),
+            afterEdge: afterEdge.toFixed(5),
+            capped: cappedPayout.toFixed(5),
+            limited: options.maxWinApplied
+          });
+        }
+        
         var resp = await fetch('https://api.cryptokasino.io/api/game/play', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
@@ -668,7 +737,6 @@
         return null;
       }
     },
-
     getClient() { return sb; }
   };
 
