@@ -1055,15 +1055,15 @@ function snd(t) {
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS = [
-  { k: 'WILD', i: '🍾', n: 'Wild', w: 2, m3: 5, m4: 15, m5: 50, wild: true },
-  { k: 'SCATTER', i: '💎', n: 'Scatter', w: 3, m3: 0, m4: 0, m5: 0 },
-  { k: 'CAR', i: '🚗', n: 'Luxury Car', w: 4, m3: 4, m4: 12, m5: 40 },
-  { k: 'MONEY', i: '💵', n: 'Money', w: 5, m3: 3, m4: 10, m5: 30 },
-  { k: 'GIFT', i: '🎁', n: 'Gift', w: 6, m3: 2, m4: 8, m5: 25 },
-  { k: 'GLASSES', i: '🥂', n: 'Glasses', w: 7, m3: 2, m4: 6, m5: 20 },
-  { k: 'WATCH', i: '⌚', n: 'Watch', w: 9, m3: 1, m4: 5, m5: 15 },
-  { k: 'RING', i: '💍', n: 'Ring', w: 11, m3: 1, m4: 4, m5: 12 },
-  { k: 'COIN', i: '🪙', n: 'Coin', w: 13, m3: 1, m4: 3, m5: 10 }
+  { k: 'WILD', i: '🍾', n: 'Wild', w: 1, m3: 5, m4: 15, m5: 50, wild: true },        // ✅ 1.4% - RAREST
+  { k: 'SCATTER', i: '💎', n: 'Scatter', w: 2, m3: 0, m4: 0, m5: 0 },                // ✅ 2.9% - RARE
+  { k: 'CAR', i: '🚗', n: 'Luxury Car', w: 3, m3: 4, m4: 12, m5: 40 },               // ✅ 4.3% - UNCOMMON
+  { k: 'MONEY', i: '💵', n: 'Money', w: 5, m3: 3, m4: 10, m5: 30 },                  // ✅ 7.1% - COMMON
+  { k: 'GIFT', i: '🎁', n: 'Gift', w: 7, m3: 2, m4: 8, m5: 25 },                     // ✅ 10% - COMMON
+  { k: 'GLASSES', i: '🥂', n: 'Glasses', w: 10, m3: 2, m4: 6, m5: 20 },              // ✅ 14.3% - VERY COMMON
+  { k: 'WATCH', i: '⌚', n: 'Watch', w: 12, m3: 1, m4: 5, m5: 15 },                   // ✅ 17.1% - VERY COMMON
+  { k: 'RING', i: '💍', n: 'Ring', w: 14, m3: 1, m4: 4, m5: 12 },                    // ✅ 20% - MOST COMMON
+  { k: 'COIN', i: '🪙', n: 'Coin', w: 16, m3: 1, m4: 3, m5: 10 }                     // ✅ 22.9% - MOST COMMON
 ];
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
 function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
