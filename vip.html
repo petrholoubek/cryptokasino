@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -168,7 +168,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
+  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html" class="active">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a></nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
     <span class="vip-badge-header" id="headerVip" style="display:none"></span>
@@ -194,16 +194,16 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   <div class="vip-hero">
     <div class="vip-hero-tag">&#127942; Exclusive VIP Program</div>
     <h1>Play More. Earn More.</h1>
-    <p>Čím více hraješ, tím vyšší VIP level získáš — automaticky. Žádné přihlášky, žádné podmínky. Prostě hraj a sbírej výhody.</p>
+    <p>The more you play, the higher your VIP level — automatically. No applications, no conditions. Just play and collect benefits.</p>
   </div>
 
   <!-- PLAYER STATUS -->
   <div class="player-status" id="playerStatus">
     <div class="ps-not-logged" id="psNotLogged">
       <div class="ps-not-logged-icon">&#127942;</div>
-      <div class="ps-not-logged-title">Přihlas se a zjisti svůj VIP level</div>
-      <div class="ps-not-logged-sub">Tvůj VIP status se počítá automaticky podle objemu sázek.</div>
-      <a href="login.html" class="btn-primary">&#128272; Přihlásit se</a>
+      <div class="ps-not-logged-title">Login and Check Your VIP Level</div>
+      <div class="ps-not-logged-sub">Your VIP status is calculated automatically based on wagering volume.</div>
+      <a href="login.html" class="btn-primary">&#128272; Login</a>
     </div>
     <div id="psLogged" style="display:none">
       <div class="ps-header">
@@ -221,7 +221,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
       </div>
       <div class="ps-stats">
         <div class="ps-stat">
-          <div class="ps-stat-lbl">Celkem vsazeno</div>
+          <div class="ps-stat-lbl">Total Wagered</div>
           <div class="ps-stat-val" id="psTotalWagered">—</div>
         </div>
         <div class="ps-stat">
@@ -229,14 +229,14 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <div class="ps-stat-val" id="psCashback" style="color:var(--gold-light)">—</div>
         </div>
         <div class="ps-stat">
-          <div class="ps-stat-lbl">Max výběr/den</div>
+          <div class="ps-stat-lbl">Max Withdrawal/Day</div>
           <div class="ps-stat-val" id="psMaxWith" style="color:var(--blue)">—</div>
         </div>
       </div>
       <!-- PROGRESS BAR -->
       <div class="ps-progress" id="psProgress">
         <div class="ps-progress-header">
-          <span class="ps-progress-label" id="psProgressLabel">Pokrok do dalšího levelu</span>
+          <span class="ps-progress-label" id="psProgressLabel">Progress to Next Level</span>
           <span class="ps-progress-pct" id="psProgressPct">0%</span>
         </div>
         <div class="ps-progress-track">
@@ -251,18 +251,18 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
   </div>
 
   <!-- VIP LEVELS -->
-  <div class="levels-title">&#127942; VIP Úrovně</div>
+  <div class="levels-title">&#127942; VIP Levels</div>
   <div class="levels-grid" id="levelsGrid">
-    <!-- Renderováno JS -->
+    <!-- Rendered by JS -->
   </div>
 
   <!-- BENEFITS TABLE -->
   <div class="benefits-section">
-    <div class="levels-title">&#127381; Porovnání výhod</div>
+    <div class="levels-title">&#127381; Benefits Comparison</div>
     <table class="benefits-table">
       <thead>
         <tr>
-          <th>Výhoda</th>
+          <th>Benefit</th>
           <th style="color:#cd7f32">&#129350; Bronze</th>
           <th style="color:#adb5bd">&#129352; Silver</th>
           <th style="color:#D4A017">&#129351; Gold</th>
@@ -280,15 +280,15 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <td><span class="bt-val bt-gold">8%</span></td>
         </tr>
         <tr>
-          <td>Max výběr / den</td>
+          <td>Max Withdrawal / Day</td>
           <td><span class="bt-val">0.5 BTC</span></td>
           <td><span class="bt-val">1 BTC</span></td>
           <td><span class="bt-val">2 BTC</span></td>
           <td><span class="bt-val">5 BTC</span></td>
-          <td><span class="bt-val bt-diamond">Neomezeno</span></td>
+          <td><span class="bt-val bt-diamond">Unlimited</span></td>
         </tr>
         <tr>
-          <td>Reload bonus</td>
+          <td>Reload Bonus</td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-val bt-green">5%</span></td>
           <td><span class="bt-val bt-green">10%</span></td>
@@ -296,7 +296,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <td><span class="bt-val bt-green">20%</span></td>
         </tr>
         <tr>
-          <td>Rychlejší výběry</td>
+          <td>Faster Withdrawals</td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-check">✓</span></td>
@@ -304,7 +304,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <td><span class="bt-check">✓</span></td>
         </tr>
         <tr>
-          <td>Osobní manager</td>
+          <td>Personal Manager</td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
@@ -312,7 +312,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <td><span class="bt-check">✓</span></td>
         </tr>
         <tr>
-          <td>Exkluzivní turnaje</td>
+          <td>Exclusive Tournaments</td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
@@ -320,7 +320,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
           <td><span class="bt-check">✓</span></td>
         </tr>
         <tr>
-          <td>Speciální dárky</td>
+          <td>Special Gifts</td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
           <td><span class="bt-cross">✕</span></td>
@@ -333,35 +333,35 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 
   <!-- HOW IT WORKS -->
   <div class="how-section">
-    <div class="levels-title">&#9889; Jak to funguje</div>
+    <div class="levels-title">&#9889; How It Works</div>
     <div class="how-steps">
       <div class="how-step">
         <div class="how-step-num">01</div>
         <div class="how-step-icon">&#127918;</div>
-        <div class="how-step-title">Hraj hry</div>
-        <div class="how-step-desc">Každá sázka se počítá do tvého celkového objemu. Nezáleží na výhře nebo prohře — každá hra tě posouvá výš.</div>
+        <div class="how-step-title">Play Games</div>
+        <div class="how-step-desc">Every bet counts toward your total volume. Win or lose — every game moves you higher.</div>
       </div>
       <div class="how-step">
         <div class="how-step-num">02</div>
         <div class="how-step-icon">&#128200;</div>
-        <div class="how-step-title">Automatické povýšení</div>
-        <div class="how-step-desc">Jakmile dosáhneš potřebného objemu sázek, systém tě automaticky povýší. Žádné formuláře, žádné čekání.</div>
+        <div class="how-step-title">Automatic Promotion</div>
+        <div class="how-step-desc">Once you reach the required volume, the system promotes you automatically. No forms, no waiting.</div>
       </div>
       <div class="how-step">
         <div class="how-step-num">03</div>
         <div class="how-step-icon">&#127942;</div>
-        <div class="how-step-title">Užívej výhody</div>
-        <div class="how-step-desc">Cashback, bonusy, vyšší limity — vše se aktivuje okamžitě po povýšení. Diamond hráči mají přístup k osobnímu managerovi.</div>
+        <div class="how-step-title">Enjoy Benefits</div>
+        <div class="how-step-desc">Cashback, bonuses, higher limits — everything activates immediately after promotion. Diamond players get personal manager access.</div>
       </div>
     </div>
   </div>
 
   <!-- CTA -->
   <div class="vip-cta" id="ctaSection">
-    <h2>&#127942; Začni sbírat VIP body dnes</h2>
-    <p>Přihlas se a začni hrát. Tvůj VIP progress se počítá od první sázky.</p>
+    <h2>&#127942; Start Earning VIP Points Today</h2>
+    <p>Login and start playing. Your VIP progress counts from the first bet.</p>
     <div class="cta-btns">
-      <a href="casino.html" class="btn-primary">&#127918; Hrát hry</a>
+      <a href="casino.html" class="btn-primary">&#127918; Play Games</a>
       <a href="deposit.html" class="btn-gold">&#8383; Deposit BTC</a>
     </div>
   </div>
@@ -372,11 +372,11 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,0.15);pa
 
 <script>
 const VIP_LEVELS = [
-  {id:'bronze',  name:'Bronze',  icon:'&#129350;', color:'#cd7f32', minBtc:0.01, cashback:1,  maxWith:0.5,  reload:0,  benefits:['1% cashback na každou sázku','Přístup k Bronze turnajům','Priority support']},
-  {id:'silver',  name:'Silver',  icon:'&#129352;', color:'#adb5bd', minBtc:0.05, cashback:2,  maxWith:1.0,  reload:5,  benefits:['2% cashback','5% weekly reload bonus','Výběry do 12h','Exkluzivní Silver hry']},
-  {id:'gold',    name:'Gold',    icon:'&#129351;', color:'#D4A017', minBtc:0.20, cashback:3,  maxWith:2.0,  reload:10, benefits:['3% cashback','10% weekly reload','Výběry do 6h','Speciální Gold turnaje']},
-  {id:'platinum',name:'Platinum',icon:'&#128142;', color:'#e5e4e2', minBtc:0.50, cashback:5,  maxWith:5.0,  reload:15, benefits:['5% cashback','15% reload bonus','Výběry do 1h','Osobní account manager','Platinum lounge']},
-  {id:'diamond', name:'Diamond', icon:'&#128306;', color:'#60a5fa', minBtc:1.00, cashback:8,  maxWith:null, reload:20, benefits:['8% cashback','20% reload bonus','Okamžité výběry','Neomezené výběry','VIP manager 24/7','Exkluzivní dárky a bonusy']},
+  {id:'bronze',  name:'Bronze',  icon:'&#129350;', color:'#cd7f32', minBtc:0.01, cashback:1,  maxWith:0.5,  reload:0,  benefits:['1% cashback on every bet','Access to Bronze tournaments','Priority support']},
+  {id:'silver',  name:'Silver',  icon:'&#129352;', color:'#adb5bd', minBtc:0.05, cashback:2,  maxWith:1.0,  reload:5,  benefits:['2% cashback','5% weekly reload bonus','Withdrawals in 12h','Exclusive Silver games']},
+  {id:'gold',    name:'Gold',    icon:'&#129351;', color:'#D4A017', minBtc:0.20, cashback:3,  maxWith:2.0,  reload:10, benefits:['3% cashback','10% weekly reload','Withdrawals in 6h','Special Gold tournaments']},
+  {id:'platinum',name:'Platinum',icon:'&#128142;', color:'#e5e4e2', minBtc:0.50, cashback:5,  maxWith:5.0,  reload:15, benefits:['5% cashback','15% reload bonus','Withdrawals in 1h','Personal account manager','Platinum lounge']},
+  {id:'diamond', name:'Diamond', icon:'&#128306;', color:'#60a5fa', minBtc:1.00, cashback:8,  maxWith:null, reload:20, benefits:['8% cashback','20% reload bonus','Instant withdrawals','Unlimited withdrawals','VIP manager 24/7','Exclusive gifts and bonuses']},
 ];
 
 const VIP_ORDER = ['none','bronze','silver','gold','platinum','diamond'];
@@ -413,8 +413,8 @@ function renderLevels(currentLevel){
       <div class="lc-header">
         <div class="lc-icon">${lv.icon}</div>
         <div class="lc-name">${lv.name}</div>
-        <div class="lc-req">od ${lv.minBtc} BTC vsazeno</div>
-        ${isCurrent?'<div class="lc-current-tag">&#9989; Tvůj level</div>':''}
+        <div class="lc-req">from ${lv.minBtc} BTC wagered</div>
+        ${isCurrent?'<div class="lc-current-tag">&#9989; Your Level</div>':''}
       </div>
       <div class="lc-body">
         ${lv.benefits.map(b=>`<div class="lc-benefit"><span class="lc-benefit-icon">&#10003;</span><span>${b}</span></div>`).join('')}
@@ -452,7 +452,7 @@ async function loadPlayer(){
     return;
   }
 
-  // Zobraz player status
+  // Show player status
   document.getElementById('psNotLogged').style.display='none';
   document.getElementById('psLogged').style.display='block';
 
@@ -487,7 +487,7 @@ async function loadPlayer(){
   const wagered = parseFloat(prof.total_wagered_btc||0);
   document.getElementById('psTotalWagered').textContent = wagered.toFixed(5)+' BTC';
   document.getElementById('psCashback').textContent = (vipData?.cashback||0)+'%';
-  document.getElementById('psMaxWith').textContent = vipData?.maxWith ? vipData.maxWith+' BTC/den' : 'Neomezeno';
+  document.getElementById('psMaxWith').textContent = vipData?.maxWith ? vipData.maxWith+' BTC/day' : 'Unlimited';
 
   // Progress bar
   if(nextData){
@@ -496,26 +496,26 @@ async function loadPlayer(){
     const progress = Math.min(((wagered-currMin)/(nextMin-currMin))*100, 100);
     document.getElementById('psProgressFill').style.width = progress+'%';
     document.getElementById('psProgressPct').textContent = Math.round(progress)+'%';
-    document.getElementById('psProgressLabel').textContent = 'Pokrok do '+nextData.name;
+    document.getElementById('psProgressLabel').textContent = 'Progress to '+nextData.name;
     document.getElementById('psCurrentLevelLabel').textContent = (vipData?.name||'Member')+' ('+wagered.toFixed(4)+' BTC)';
     document.getElementById('psNextLevelLabel').textContent = nextData.name+' ('+nextData.minBtc+' BTC)';
-    // Potřeba vsadit ještě
+    // Need to wager more
     const need = Math.max(0, nextMin - wagered);
     if(need > 0){
-      document.getElementById('psProgressLabel').textContent = 'Ještě '+need.toFixed(4)+' BTC do '+nextData.name;
+      document.getElementById('psProgressLabel').textContent = need.toFixed(4)+' BTC more to '+nextData.name;
     }
   } else {
     // Diamond — max level
     document.getElementById('psProgressFill').style.width='100%';
     document.getElementById('psProgressFill').style.background='linear-gradient(to right,#1a4fd4,#60a5fa)';
     document.getElementById('psProgressPct').textContent='MAX';
-    document.getElementById('psProgressLabel').textContent='Dosáhl jsi nejvyššího VIP levelu!';
-    document.getElementById('psCurrentLevelLabel').textContent='&#128306; Diamond — Nejvyšší level';
+    document.getElementById('psProgressLabel').textContent='You reached the highest VIP level!';
+    document.getElementById('psCurrentLevelLabel').textContent='&#128306; Diamond — Highest Level';
     document.getElementById('psNextLevelLabel').textContent='';
   }
 
-  // CTA — pokud je přihlášen, změň text
-  document.getElementById('ctaSection').querySelector('h2').textContent = '&#127918; Pokračuj a povýš se na '+((nextData?.name)||'Diamond')+'!';
+  // CTA — if logged in, change text
+  document.getElementById('ctaSection').querySelector('h2').textContent = '&#127918; Keep Playing and Reach '+((nextData?.name)||'Diamond')+'!';
 }
 
 function hexToRgb(hex){
