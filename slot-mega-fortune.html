@@ -1186,31 +1186,19 @@ function doSpin(bet) {
   currentNonce = pfN;
   pfTick();
 
-  if (gameMode === 'real' && window.CK && bet > 0) {
-    window.CK.callGameServer(GAME_ID, bet, {
-      serverSeed: pfSS,
-      clientSeed: pfCS,
-      nonce: currentNonce
-    }).then(serverResult => {
-      if (serverResult && serverResult.ok) {
-        realBalance = serverResult.new_balance;
-        bal = serverResult.new_balance;
-        updateBal();
-        window.CK.refreshBalance();
-      }
-    }).catch(err => {
-      console.error('[Fortune] Server error:', err);
-    });
-  }
 
-  if (bet > 0) {
-    if (gameMode === 'real' && window.CK) {
-      realBalance -= bet;
-    } else {
-      demoBalance -= bet;
-    }
-    bal -= bet;
+
+if (bet > 0) {
+  if (gameMode === 'real' && window.CK) {
+    realBalance -= bet;
+    window.CK.deductBet(Math.floor(bet * 1e8)).catch(err => {
+      console.warn('[Fortune] deductBet error:', err);
+    });
+  } else {
+    demoBalance -= bet;
   }
+  bal -= bet;
+}
 
   totalSpins++;
   updateBal();
@@ -1317,14 +1305,44 @@ function checkResolve(bet, currentNonce) {
   const payout = bet * totalMult;
   const prof = payout - bet;
 
-  if (totalMult > 0) {
-    if (gameMode === 'real' && window.CK) {
-      bal += payout;
-      realBalance += payout;
-    } else {
-      bal += payout;
-      demoBalance += payout;
-    }
+ if (totalMult > 0) {
+  // ✅ Real mode: použij addWin s max win cap
+  if (gameMode === 'real' && window.CK && currentBet > 0) {
+    const payoutSat = Math.floor(payout * 1e8);
+    
+    // Přičti výhru přes addWin (aplikuje max win cap v DB)
+    window.CK.addWin(payoutSat, 'mega_fortune').then(result => {
+      if(result && result.ok){
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Fortune] addWin error:', err);
+    });
+    
+    // Log bet do DB
+    window.CK.logBet('mega_fortune', 
+      Math.floor(currentBet * 1e8), 
+      Math.floor(prof * 1e8), 
+      totalMult, 
+      {
+        serverSeed: pfSS,
+        clientSeed: pfCS,
+        nonce: currentNonce,
+        paylines: PAYLINES.length
+      }
+    ).catch(err => {
+      console.warn('[Fortune] logBet error:', err);
+    });
+    
+  } else {
+    // Demo mode: přičti normálně
+    bal += payout;
+    demoBalance += payout;
+  }
 
     profit += prof;
     if (prof > bestWin) bestWin = prof;
