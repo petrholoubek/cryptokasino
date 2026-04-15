@@ -908,16 +908,25 @@ setTimeout(()=>playBeep(f,.3),i*120);
 }
 
 const SYMS = [
-  { k: 'WILD', i: '🐉', n: 'Dragon', w: 1, m3: 5, m4: 15, m5: 50, wild: true },
-  { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2, m3: 3, m4: 8, m5: 25 },
-  { k: 'CROWN', i: '👑', n: 'Crown', w: 3, m3: 4, m4: 10, m5: 30 },
-  { k: 'DIAMOND', i: '💎', n: 'Diamond', w: 5, m3: 3, m4: 8, m5: 20 },
-  { k: 'RUBY', i: '❤️', n: 'Ruby', w: 7, m3: 3, m4: 7, m5: 18 },
-  { k: 'FIRE', i: '🔥', n: 'Fire', w: 10, m3: 2, m4: 6, m5: 15 },
-  { k: 'EMERALD', i: '💚', n: 'Emerald', w: 12, m3: 2, m4: 5, m5: 12 },
-  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 15, m3: 1.5, m4: 4, m5: 10 },
-  { k: 'GEM', i: '💠', n: 'Sapphire', w: 16, m3: 1, m4: 3, m5: 8 }
+  { k: 'WILD', i: '🐉', n: 'Dragon', w: 1,  m3: 3,   m4: 10,  m5: 25, wild: true },
+
+  { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2,  m3: 2,   m4: 5,   m5: 15 },
+
+  { k: 'CROWN', i: '👑', n: 'Crown', w: 3,  m3: 3,   m4: 8,   m5: 20 },
+
+  { k: 'DIAMOND', i: '💎', n: 'Diamond', w: 5,  m3: 2.5, m4: 6,   m5: 15 },
+
+  { k: 'RUBY', i: '❤️', n: 'Ruby', w: 7,  m3: 2,   m4: 5,   m5: 12 },
+
+  { k: 'FIRE', i: '🔥', n: 'Fire', w: 10, m3: 1.5, m4: 4,   m5: 10 },
+
+  { k: 'EMERALD', i: '💚', n: 'Emerald', w: 12, m3: 1.5, m4: 3.5, m5: 8 },
+
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 15, m3: 1.2, m4: 3,   m5: 6 },
+
+  { k: 'GEM', i: '💠', n: 'Sapphire', w: 18, m3: 1,   m4: 2.5, m5: 5 }
 ];
+
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
 
