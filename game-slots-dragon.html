@@ -816,7 +816,7 @@ return;
 }
 
 try{
-const gs=await window.CK.getGameSettings('dragons_treasure');
+const gs=await window.CK.getGameSettings('dragon_slots');
 if(gs){
 RTP=gs.rtp_pct/100;
 document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';
@@ -1179,11 +1179,11 @@ if(totalMult>0){
 if(gameMode==='real'&&window.CK&&currentBet>0){
 const payoutSat = Math.floor(payout * 1e8);
 try {
-await window.CK.addWin(payoutSat, 'dragons_treasure');
+await window.CK.addWin(payoutSat, 'dragon_slots');
 const newBal = await window.CK.refreshBalance();
 realBalance = newBal;
 bal = newBal;
-await window.CK.logBet('dragons_treasure', 
+await window.CK.logBet('dragon_slots', 
 Math.floor(currentBet * 1e8), 
 Math.floor(prof * 1e8), 
 totalMult, 
