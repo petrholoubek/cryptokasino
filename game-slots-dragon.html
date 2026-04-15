@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -1044,21 +1045,35 @@ currentBet=bet||currentBet;
 currentNonce=pfN;
 pfTick();
 
-// ✅ OPRAVA: Odstraněn callGameServer, přidán deductBet
-if(bet>0){
-if(gameMode==='real'&&window.CK){
-realBalance-=bet;
-window.CK.deductBet(Math.floor(bet * 1e8)).catch(err => {
-console.warn('[Dragon] deductBet error:', err);
-});
-}else{
-demoBalance-=bet;
+// ✅ PŘIDEJ TOHLE:
+if(gameMode==='real') {
+  callGameServer('dragon_slots', parseFloat(bet)||0, {
+    serverSeed: pfSS,
+    clientSeed: pfCS,
+    nonce: currentNonce
+  }).then(function(srv) {
+    if(srv) {
+      if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
+      if(typeof balance !== 'undefined') balance = srv.new_balance;
+      console.log('[SERVER] dragon_slots payout=' + srv.payout + ' profit=' + srv.profit);
+    }
+  }).catch(function(err){
+    console.warn('[SERVER] dragon_slots error:', err);
+  });
 }
-bal-=bet;
+
+if(bet>0){
+  if(gameMode==='real' && window.CK){
+    realBalance-=bet;
+  }else{
+    demoBalance-=bet;
+  }
+  bal-=bet;
 }
 
 totalSpins++;
 updateBal();
+
 document.getElementById('spinBtn').disabled=true;
 document.getElementById('spinBtn').textContent=fsMode?'🎁 Spinning...':'🐉 Spinning...';
 
@@ -1179,6 +1194,7 @@ if(gameMode==='real'&&window.CK&&currentBet>0){
 const payoutSat = Math.floor(payout * 1e8);
 try {
 await window.CK.addWin(payoutSat, 'dragon_slots');
+console.log('[CLIENT] dragon_slots mult=' + totalMult + ' payout=' + payout + ' profit=' + prof);
 const newBal = await window.CK.refreshBalance();
 realBalance = newBal;
 bal = newBal;
