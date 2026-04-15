@@ -1100,31 +1100,32 @@ finishSpin(baseBet, profit);
 
 function finishSpin(bet,profit){
   // FREE SPINS LOGIC
-  if(freeSpinMode && freeSpinsRemaining>0){
-    freeSpinsRemaining--;
-    
-    let badge=document.getElementById('fsBadge');
-    if(!badge){
-      badge=document.createElement('div');
-      badge.id='fsBadge';
-      badge.className='fs-badge';
-      document.getElementById('slotCabinet').appendChild(badge);
-    }
-    badge.textContent=`🎁 Free Spins: ${freeSpinsRemaining} | Mult: ${freeSpinMultiplier}×`;
-    badge.style.display='block';
-    
-    if(freeSpinsRemaining>0){
-      setTimeout(()=>doSpin(0),1800);
-      spinning=false;
-      return;
-    } else {
-      freeSpinMode=false;
-      freeSpinMultiplier=1;
-      badge.style.display='none';
-      playSound('win');
-      spawnP('big');
-    }
+if(freeSpinMode && freeSpinsRemaining > 0){
+  freeSpinsRemaining--;
+
+  let badge = document.getElementById('fsBadge');
+  if(!badge){
+    badge = document.createElement('div');
+    badge.id = 'fsBadge';
+    badge.className = 'fs-badge';
+    document.getElementById('slotCabinet').appendChild(badge);
   }
+
+  badge.textContent = `🎁 Free Spins: ${freeSpinsRemaining} | Mult: ${freeSpinMultiplier}×`;
+  badge.style.display = 'block';
+
+  if(freeSpinsRemaining > 0){
+    setTimeout(()=>doSpin(bet),1800); // ✅ FIX
+    spinning = false;
+    return;
+  } else {
+    freeSpinMode = false;
+    freeSpinMultiplier = 1;
+    badge.style.display = 'none';
+    playSound('win');
+    spawnP('big');
+  }
+}
 
   const autoOn=document.getElementById('autoToggle').checked;
   const maxSp=parseInt(document.getElementById('autoSpins').value)||20;
