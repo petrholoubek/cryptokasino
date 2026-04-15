@@ -1312,17 +1312,26 @@ setTimeout(()=>playBeep([523,659,784,1047,1318][i],.3),i*100);
 // ═══════════════════════════════════════════════════════
 // BALANCED SYMBOLS - Reduced multipliers & weights
 // ═══════════════════════════════════════════════════════
-const SYMS=[
-{k:'DIAMOND',i:'💎',n:'Diamond',w:1,m5:3,m8:6,m10:12,m12:25,m15:80,bomb:true},           // ✅ 1 (was 4) - RAREST
-{k:'LOLLIPOP',i:'🍭',n:'Lollipop',w:2,m5:2,m8:4,m10:8,m12:15,m15:40,scatter:true},        // ✅ 2 (was 5) - RARE
-{k:'CANDY',i:'🍬',n:'Candy',w:5,m5:1.5,m8:3,m10:6,m12:12,m15:30},                         // ✅ 5 (was 8) - UNCOMMON
-{k:'GRAPE',i:'🍇',n:'Grape',w:8,m5:1,m8:2,m10:4,m12:8,m15:20},                           // ✅ 8 (was 12) - COMMON
-{k:'BANANA',i:'🍌',n:'Banana',w:10,m5:1,m8:2,m10:4,m12:8,m15:20},                         // ✅ 10 (was 12) - COMMON
-{k:'MELON',i:'🍉',n:'Watermelon',w:12,m5:0.8,m8:1.5,m10:3,m12:6,m15:15},                  // ✅ 12 (was 15) - VERY COMMON
-{k:'HEART',i:'❤️',n:'Heart',w:15,m5:0.5,m8:1,m10:2,m12:4,m15:10},                        // ✅ 15 (was 18) - VERY COMMON
-{k:'BLUE',i:'💙',n:'Blue',w:18,m5:0.3,m8:0.8,m10:1.5,m12:3,m15:8},                       // ✅ 18 (was 20) - MOST COMMON
-{k:'GREEN',i:'💚',n:'Green',w:20,m5:0.2,m8:0.5,m10:1,m12:2,m15:6}                        // ✅ 20 (was 22) - MOST COMMON
+const SYMS = [
+  {k:'DIAMOND', i:'💎', n:'Diamond', w:1,  m5:2,   m8:4,   m10:8,   m12:15,  m15:40, bomb:true},
+
+  {k:'LOLLIPOP',i:'🍭', n:'Lollipop', w:2,  m5:1.5, m8:3,   m10:6,   m12:12,  m15:25, scatter:true},
+
+  {k:'CANDY',   i:'🍬', n:'Candy', w:5,  m5:1.2, m8:2.5, m10:5,   m12:10,  m15:20},
+
+  {k:'GRAPE',   i:'🍇', n:'Grape', w:8,  m5:1,   m8:2,   m10:4,   m12:8,   m15:16},
+
+  {k:'BANANA',  i:'🍌', n:'Banana', w:10, m5:1,   m8:2,   m10:4,   m12:8,   m15:16},
+
+  {k:'MELON',   i:'🍉', n:'Watermelon', w:12, m5:0.8, m8:1.5, m10:3,   m12:6,   m15:12},
+
+  {k:'HEART',   i:'❤️', n:'Heart', w:15, m5:0.5, m8:1,   m10:2,   m12:4,   m15:8},
+
+  {k:'BLUE',    i:'💙', n:'Blue', w:18, m5:0.3, m8:0.8, m10:1.5, m12:3,   m15:6},
+
+  {k:'GREEN',   i:'💚', n:'Green', w:20, m5:0.2, m8:0.5, m10:1,   m12:2,   m15:5}
 ];
+
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
 
@@ -1331,6 +1340,9 @@ let totalSpins=0,totalWag=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
 let autoEnabled=false,autoRemaining=0,autoStopWin=0,autoDelay=1000;
 let currentNonce=0;
 let currentBet=0;
+
+let tumbleCount = 0;
+const MAX_TUMBLES = 5;
 
 const ROWS=6,COLS=5,grid=[];
 const gridEl=document.getElementById('grid');
@@ -1452,6 +1464,7 @@ doSpin(bet);
 
 function doSpin(bet){
 spinning=true;
+tumbleCount = 0;
 currentBet=bet;
 currentNonce=pfN;
 pfTick();
@@ -1505,6 +1518,10 @@ setTimeout(()=>{checkResolve()},800);
 }
 
 function checkResolve(){
+if(tumbleCount >= MAX_TUMBLES){
+  finishSpin(currentBet);
+  return;
+}
 const scatterCnt=countSym('LOLLIPOP');
 
 // FREE SPINS - TRIGGER (✅ BALANCED - less free spins)
@@ -1542,58 +1559,66 @@ return;
 // ═══════════════════════════════════════════════════════
 // BALANCED CLUSTER PAYOUTS - Reduced significantly
 // ═══════════════════════════════════════════════════════
-let totalMult=0,bombMult=1;
+let totalWin = 0;
+
 clusters.forEach(cluster=>{
-const sym=cluster.sym;
-const count=cluster.cells.length;
-let m=0;
-if(count>=15)m=sym.m15||15;
-else if(count>=12)m=sym.m12||12;
-else if(count>=10)m=sym.m10||8;
-else if(count>=8)m=sym.m8||4;
-else if(count>=6)m=(sym.m8||4)*0.5;     // ✅ Was: 0.8
-else if(count>=5)m=(sym.m5||2)*0.6;     // ✅ Was: 1.2
-else if(count>=4)m=(sym.m5||2)*0.4;     // ✅ Was: 0.9
-else if(count>=3)m=(sym.m5||2)*0.3;     // ✅ Was: 0.7
-totalMult+=m||0;
+  const sym = cluster.sym;
+  const count = cluster.cells.length;
 
-// ✅ BALANCED BOMBS - Add instead of multiply
-cluster.cells.forEach(c=>{
-const cell=grid[c.r][c.c];
-if(cell.mult>1)bombMult+=cell.mult*0.5; // Was: bombMult *= cell.mult
+  let m = 0;
+  if(count>=15)m=sym.m15||15;
+  else if(count>=12)m=sym.m12||12;
+  else if(count>=10)m=sym.m10||8;
+  else if(count>=8)m=sym.m8||4;
+  else if(count>=6)m=(sym.m8||4)*0.5;
+  else if(count>=5)m=(sym.m5||2)*0.6;
+  else if(count>=4)m=(sym.m5||2)*0.4;
+  else if(count>=3)m=(sym.m5||2)*0.3;
+
+  // ✅ BOMBA = MAX (ne sčítání)
+  let bomb = 1;
+  cluster.cells.forEach(c=>{
+    const cell = grid[c.r][c.c];
+    if(cell.mult > bomb){
+      bomb = cell.mult;
+    }
+  });
+
+  totalWin += currentBet * m * bomb;
+
+  cluster.cells.forEach(c=>{
+    grid[c.r][c.c].el.classList.add('winning');
+  });
 });
 
-cluster.cells.forEach(c=>{grid[c.r][c.c].el.classList.add('winning')});
-});
 
-totalMult*=Math.min(bombMult,10); // ✅ Cap bomb bonus at 10x
+
 
 // ✅ BALANCED FREE SPINS MULTIPLIER - slower growth
 if(fsMode){
   mult=Math.min(20,mult+0.5); // ✅ Was: Math.min(100, mult+1)
-  totalMult*=Math.min(mult,20); // ✅ Cap at 20x
+  totalWin *= (1 + (mult - 1) * 0.5);
 }
 
-const payout = currentBet * totalMult;
+const payout = totalWin;
 const prof = payout - currentBet;
 
 console.log('🎰 VÝHRA:', {
   bet: currentBet,
-  totalMult: totalMult,
+  totalWin: totalWin,
   payout: payout,
   profit: prof,
   currentBalance: bal
 });
 
-if(totalMult > 0 && payout > 0){
-  // ✅ Real mode: použij addWin s max win cap
+if(payout > 0){
+
+  // ✅ Real mode
   if(gameMode === 'real' && window.CK && currentBet > 0){
     const payoutSat = Math.floor(payout * 1e8);
     
-    // Přičti výhru přes addWin (aplikuje max win cap v DB)
     window.CK.addWin(payoutSat, 'sweet_bonanza').then(result => {
       if(result && result.ok){
-        // Update balance z DB
         window.CK.refreshBalance().then(newBal => {
           realBalance = newBal;
           bal = newBal;
@@ -1604,11 +1629,11 @@ if(totalMult > 0 && payout > 0){
       console.warn('[Sweet] addWin error:', err);
     });
     
-    // Log bet do DB
-    window.CK.logBet('sweet_bonanza', 
+    window.CK.logBet(
+      'sweet_bonanza', 
       Math.floor(currentBet * 1e8), 
       Math.floor(prof * 1e8), 
-      totalMult, 
+      payout / currentBet, // ✅ místo totalMult
       {
         serverSeed: pfSS,
         clientSeed: pfCS,
@@ -1622,7 +1647,6 @@ if(totalMult > 0 && payout > 0){
     });
     
   } else {
-    // Demo mode: přičti normálně
     bal += payout;
     demoBalance += payout;
   }
@@ -1631,15 +1655,36 @@ if(totalMult > 0 && payout > 0){
   if(prof > bestWin) bestWin = prof;
   totalWins++;
 
-  const wt=document.getElementById('winText');
-  if(totalMult>=100){wt.textContent='🍭 MEGA WIN! 🍬';wt.className='win-text show mega';snd('fs');spawnP('mega')}
-  else if(totalMult>=30){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';snd('win');spawnP('big')}
-  else{wt.textContent='✨ WIN!';wt.className='win-text show small';snd('win');spawnP('small')}
-  document.getElementById('winAmt').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
+  const wt = document.getElementById('winText');
+
+  // ✅ podle násobku (payout / bet)
+  const multVal = payout / currentBet;
+
+  if(multVal >= 100){
+    wt.textContent='🍭 MEGA WIN! 🍬';
+    wt.className='win-text show mega';
+    snd('fs');
+    spawnP('mega');
+  }
+  else if(multVal >= 30){
+    wt.textContent='🏆 BIG WIN!';
+    wt.className='win-text show big';
+    snd('win');
+    spawnP('big');
+  }
+  else{
+    wt.textContent='✨ WIN!';
+    wt.className='win-text show small';
+    snd('win');
+    spawnP('small');
+  }
+
+  document.getElementById('winAmt').textContent =
+    `+${f5(prof)} BTC (${multVal.toFixed(1)}×)`;
+
   document.getElementById('lastWin').textContent='+'+f5(prof);
   document.getElementById('bestWin').textContent=f5(bestWin);
 }
-
 updateBal();
 
 setTimeout(()=>{
@@ -1692,6 +1737,7 @@ return cluster;
 }
 
 function tumble(clusters){
+tumbleCount++;
 tumbling=true;
 clusters.forEach(cluster=>{
 cluster.cells.forEach(c=>{
