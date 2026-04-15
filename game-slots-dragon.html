@@ -933,6 +933,7 @@ function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)re
 let bal=1,spinning=false,fsRem=0,fsMode=false,fsMult=1;
 let totalSpins=0,totalWins=0,totalLosses=0,bestWin=0,profit=0;
 let currentNonce=0,currentBet=0;
+let lastServerResult = null;
 let autoEnabled=false,autoRemaining=0,autoStopWin=0,autoDelay=1000;
 
 const ROWS=3,COLS=5,grid=[];
@@ -1055,25 +1056,27 @@ pfTick();
 
 // ✅ PŘIDEJ TOHLE:
 if(gameMode==='real') {
-  callGameServer('dragon_slots', parseFloat(bet)||0, {
-    serverSeed: pfSS,
-    clientSeed: pfCS,
-    nonce: currentNonce
-  }).then(function(srv) {
-    if(srv) {
-      if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
-      if(typeof balance !== 'undefined') balance = srv.new_balance;
-      console.log('[SERVER] dragon_slots payout=' + srv.payout + ' profit=' + srv.profit);
-    }
-  }).catch(function(err){
-    console.warn('[SERVER] dragon_slots error:', err);
-  });
+callGameServer('dragon_slots', parseFloat(bet)||0, {
+  serverSeed: pfSS,
+  clientSeed: pfCS,
+  nonce: currentNonce
+}).then(function(srv) {
+  if(srv) {
+    lastServerResult = srv;
+
+    realBalance = srv.new_balance;
+    bal = srv.new_balance;
+
+    console.log('[SERVER]', srv);
+  }
+}).catch(function(err){
+  console.warn('[SERVER] dragon_slots error:', err);
+});
 }
 
 if(bet>0){
   if(gameMode==='real' && window.CK){
-    realBalance-=bet;
-  }else{
+     }else{
     demoBalance-=bet;
   }
   bal-=bet;
@@ -1187,14 +1190,23 @@ totalMult*=Math.min(fsMult,5);
 }
 
 if(totalMult===0){
+// 🔥 SERVER vs DEMO výpočet
+let payout = 0;
+let prof = 0;
+
+if(gameMode === 'real' && lastServerResult){
+  payout = lastServerResult.payout;
+  prof = lastServerResult.profit;
+  totalMult = lastServerResult.mult || totalMult;
+} else {
+  payout = (fsMode?currentBet:bet)*totalMult;
+  prof = payout-(fsMode?0:bet);
+}
 if(bet>0&&!fsMode)totalLosses++;
 updateBal();
 finishSpin(bet);
 return;
 }
-
-const payout=(fsMode?currentBet:bet)*totalMult;
-const prof=payout-(fsMode?0:bet);
 
 // Server už se postaral o real mode!
 if(totalMult>0){
@@ -1223,6 +1235,8 @@ document.getElementById('bestWin').textContent=f5(bestWin);
 }
 
 updateBal();
+
+lastServerResult = null;
 setTimeout(()=>finishSpin(bet),2000);
 }
 
