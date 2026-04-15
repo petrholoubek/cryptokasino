@@ -1366,19 +1366,19 @@ if (gameMode === 'real' && window.CK) {
   
      
   // Cap at max win
-  const cappedPayout = Math.min(afterEdge, maxWin);
-  
-  payout = cappedPayout;
-  prof = cappedPayout - (fsMode ? 0 : bet);
-  
-  // ✅ Server already updated balance, just sync
-  bal = realBalance;
-  
+const cappedPayout = Math.min(rawPayout, maxWin);
+
+payout = cappedPayout;
+prof = cappedPayout - (fsMode ? 0 : bet);
+
+// ✅ Server already updated balance, just sync
+bal = realBalance;
+
 } else {
   // Demo mode - no caps
   payout = rawPayout;
   prof = rawPayout - (fsMode ? 0 : bet);
-  
+
   bal += payout;
   demoBalance += payout;
 }
