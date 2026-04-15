@@ -868,15 +868,27 @@ setTimeout(()=>playBeep(f,.3),i*120);
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS=[
-{k:'WILD',i:'💎',n:'Wild',w:1,m3:50,wild:true},          // ✅ 1 (was 2) - RAREST
-{k:'SCATTER',i:'🎰',n:'Scatter',w:2,m3:30},              // ✅ 2 (was 3) - RARE
-{k:'SEVEN',i:'7️⃣',n:'Lucky 7',w:3,m3:25,c:'#ec4899'},   // ✅ 3 (was 4) - UNCOMMON
-{k:'DICE',i:'🎲',n:'Dice',w:5,m3:20,c:'#ec4899'},        // ✅ 5 (was 5) - COMMON
-{k:'CLUB',i:'♣️',n:'Club',w:7,m3:15,c:'#00ffff'},        // ✅ 7 (was 6) - COMMON
-{k:'COIN',i:'🪙',n:'Coin',w:10,m3:12,c:'#fbbf24'},       // ✅ 10 (was 7) - VERY COMMON
-{k:'HEART',i:'💜',n:'Heart',w:12,m3:10,c:'#c084fc'},     // ✅ 12 (was 8) - VERY COMMON
-{k:'STAR',i:'⭐',n:'Star',w:16,m3:8,c:'#fbbf24'}         // ✅ 16 (was 10) - MOST COMMON
+  // 🔥 WILD – helper, ne payout king
+  {k:'WILD',i:'💎',n:'Wild',w:1,m3:20,wild:true},
+
+  // ❗ SCATTER – bez výhry
+  {k:'SCATTER',i:'🎰',n:'Scatter',w:2,m3:0,scatter:true},
+
+  // 🔥 HIGH
+  {k:'SEVEN',i:'7️⃣',n:'Lucky 7',w:3,m3:15,c:'#ec4899'},
+
+  // ⚖️ MID
+  {k:'DICE',i:'🎲',n:'Dice',w:5,m3:12,c:'#ec4899'},
+  {k:'CLUB',i:'♣️',n:'Club',w:7,m3:10,c:'#00ffff'},
+
+  // 📉 LOW
+  {k:'COIN',i:'🪙',n:'Coin',w:10,m3:8,c:'#fbbf24'},
+  {k:'HEART',i:'💜',n:'Heart',w:12,m3:6,c:'#c084fc'},
+
+  // 📉 VERY LOW
+  {k:'STAR',i:'⭐',n:'Star',w:16,m3:5,c:'#fbbf24'}
 ];
+
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[7]}
 
@@ -1122,42 +1134,67 @@ finishSpin(bet);
 return;
 }
 
-const payout=bet*totalMult;
-const prof=payout-bet;
+const rawPayout = bet * totalMult;
+const MAX_WIN = bet * 50;
 
-if(totalMult>0){
-if(gameMode==='real'&&window.CK){
-bal+=payout;
-realBalance+=payout;
-}else{
-bal+=payout;
-demoBalance+=payout;
-}
+const payout = Math.min(rawPayout, MAX_WIN);
+const prof = payout - bet;
 
-profit+=prof;
-if(prof>bestWin)bestWin=prof;
-totalWins++;
+if(totalMult > 0){
 
-winningCells.forEach(key=>{
-const[col,row]=key.split('-').map(Number);
-grid[col][row].el.classList.add('win');
-});
+  if(gameMode === 'real' && window.CK){
+    bal = realBalance;
+  } else {
+    bal += payout;
+    demoBalance += payout;
+  }
 
-const reels=document.querySelectorAll('.reel');
-reels.forEach((reel,idx)=>{
-const hasWin=[...winningCells].some(k=>k.startsWith(idx+'-'));
-if(hasWin)reel.classList.add('win');
-});
+  profit += prof;
+  if(prof > bestWin) bestWin = prof;
+  totalWins++;
 
-document.getElementById('slotCabinet').classList.add('win');
-const wt=document.getElementById('winText');
-if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';snd('jackpot');spawnP('mega')}
-else if(totalMult>=30){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';snd('win');spawnP('big')}
-else{wt.textContent='✨ WIN!';wt.className='win-text show small';snd('win');spawnP('small')}
-document.getElementById('winAmount').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
-document.getElementById('lastWin').textContent='+'+f5(prof);
-document.getElementById('bestWin').textContent=f5(bestWin);
-}
+  winningCells.forEach(key=>{
+    const [col,row] = key.split('-').map(Number);
+    grid[col][row].el.classList.add('win');
+  });
+
+  const reels=document.querySelectorAll('.reel');
+  reels.forEach((reel,idx)=>{
+    const hasWin=[...winningCells].some(k=>k.startsWith(idx+'-'));
+    if(hasWin)reel.classList.add('win');
+  });
+
+  // ✅ 👉 TADY TO VLOŽ
+  document.getElementById('slotCabinet').classList.add('win');
+
+  const wt=document.getElementById('winText');
+
+  if(totalMult>=100){
+    wt.textContent='💎 MEGA WIN!';
+    wt.className='win-text show mega';
+    snd('jackpot');
+    spawnP('mega');
+  }
+  else if(totalMult>=30){
+    wt.textContent='🏆 BIG WIN!';
+    wt.className='win-text show big';
+    snd('win');
+    spawnP('big');
+  }
+  else{
+    wt.textContent='✨ WIN!';
+    wt.className='win-text show small';
+    snd('win');
+    spawnP('small');
+  }
+
+  document.getElementById('winAmount').textContent=`+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
+  document.getElementById('lastWin').textContent='+'+f5(prof);
+  document.getElementById('bestWin').textContent=f5(bestWin);
+
+} // ✅ až TADY končí if(totalMult > 0)
+
+
 
 updateBal();
 setTimeout(()=>finishSpin(bet),2000);
@@ -1243,4 +1280,3 @@ updateBal();
 console.log('🌃 Neon City BALANCED loaded!');
 </script>
 </body>
-</html>
