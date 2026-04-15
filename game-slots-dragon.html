@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -791,10 +792,9 @@ nav{display:none}
 <script src="supabase.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
-// DRAGON'S TREASURE - FIXED VERSION
-// ✅ Správné game ID: dragon_treasure (bez S)
-// ✅ Client-driven pattern (deductBet + addWin)
-// ✅ Max win caps aktivní
+// DRAGON'S TREASURE - MINIMAL FIX
+// Jen změna callGameServer → deductBet + addWin
+// Vše ostatní BEZE ZMĚNY!
 // ══════════════════════════════════════════════════════════════
 
 let currentUser=null,realBalance=0,RTP=0.965;
@@ -816,8 +816,7 @@ return;
 }
 
 try{
-// ✅ OPRAVA: Změněno z 'dragons_treasure' na 'dragon_treasure'
-const gs=await window.CK.getGameSettings('dragon_treasure');
+const gs=await window.CK.getGameSettings('dragons_treasure');
 if(gs){
 RTP=gs.rtp_pct/100;
 document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';
@@ -909,9 +908,6 @@ setTimeout(()=>playBeep(f,.3),i*120);
 }
 }
 
-// ═══════════════════════════════════════════════════════
-// BALANCED SYMBOLS - Reduced multipliers
-// ═══════════════════════════════════════════════════════
 const SYMS = [
   { k: 'WILD', i: '🐉', n: 'Dragon', w: 1, m3: 8, m4: 30, m5: 100, wild: true },
   { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2, m3: 4, m4: 12, m5: 50 },
@@ -989,7 +985,6 @@ function doubleBet(){setBet(Math.min(bal/10,(parseFloat(document.getElementById(
 function maxBet(){setBet(Math.min(bal/10,.01))}
 function clearBet(){setBet(.001)}
 
-// ══ AUTO SPIN ══
 function toggleAuto(){
 autoEnabled=document.getElementById('autoToggle').checked;
 const settings=document.getElementById('autoSettings');
@@ -1050,17 +1045,17 @@ currentBet=bet||currentBet;
 currentNonce=pfN;
 pfTick();
 
-// ✅ OPRAVA: Client-driven pattern místo callGameServer
+// ✅ OPRAVA: Odstraněn callGameServer, přidán deductBet
 if(bet>0){
-  if(gameMode==='real' && window.CK){
-    realBalance-=bet;
-    window.CK.deductBet(Math.floor(bet * 1e8)).catch(err => {
-      console.warn('[Dragon] deductBet error:', err);
-    });
-  }else{
-    demoBalance-=bet;
-  }
-  bal-=bet;
+if(gameMode==='real'&&window.CK){
+realBalance-=bet;
+window.CK.deductBet(Math.floor(bet * 1e8)).catch(err => {
+console.warn('[Dragon] deductBet error:', err);
+});
+}else{
+demoBalance-=bet;
+}
+bal-=bet;
 }
 
 totalSpins++;
@@ -1097,7 +1092,6 @@ setTimeout(()=>{checkResolve(bet,currentNonce)},400);
 },1200);
 }
 
-// ══ 10 PAYLINES ══
 const PAYLINES=[
 [1,1,1,1,1],
 [0,0,0,0,0],
@@ -1180,40 +1174,28 @@ return;
 const payout=(fsMode?currentBet:bet)*totalMult;
 const prof=payout-(fsMode?0:bet);
 
-// ✅ OPRAVA: Použij addWin s await
+// ✅ OPRAVA: Přidán addWin + logBet
 if(totalMult>0){
-  if(gameMode==='real' && window.CK && currentBet > 0){
-    const payoutSat = Math.floor(payout * 1e8);
-    
-    try {
-      const result = await window.CK.addWin(payoutSat, 'dragon_treasure');
-      
-      if(result && result.ok){
-        const newBal = await window.CK.refreshBalance();
-        realBalance = newBal;
-        bal = newBal;
-        updateBal();
-      }
-      
-      await window.CK.logBet('dragon_treasure', 
-        Math.floor(currentBet * 1e8), 
-        Math.floor(prof * 1e8), 
-        totalMult, 
-        {
-          serverSeed: pfSS,
-          clientSeed: pfCS,
-          nonce: currentNonce
-        }
-      );
-      
-    } catch(err) {
-      console.warn('[Dragon] addWin/logBet error:', err);
-    }
-    
-  } else {
-    bal += payout;
-    demoBalance += payout;
-  }
+if(gameMode==='real'&&window.CK&&currentBet>0){
+const payoutSat = Math.floor(payout * 1e8);
+try {
+await window.CK.addWin(payoutSat, 'dragons_treasure');
+const newBal = await window.CK.refreshBalance();
+realBalance = newBal;
+bal = newBal;
+await window.CK.logBet('dragons_treasure', 
+Math.floor(currentBet * 1e8), 
+Math.floor(prof * 1e8), 
+totalMult, 
+{serverSeed:pfSS,clientSeed:pfCS,nonce:currentNonce}
+);
+} catch(err) {
+console.warn('[Dragon] addWin/logBet error:', err);
+}
+}else{
+bal+=payout;
+demoBalance+=payout;
+}
 
 profit+=prof;
 if(prof>bestWin)bestWin=prof;
@@ -1314,7 +1296,7 @@ setTimeout(()=>{spinning=false;document.getElementById('spinBtn').disabled=false
 }
 
 updateBal();
-console.log('🐉 Dragon\'s Treasure FIXED & BALANCED loaded!');
+console.log('🐉 Dragon\'s Treasure - MINIMAL FIX loaded!');
 </script>
 
 </body>
