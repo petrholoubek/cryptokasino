@@ -977,18 +977,32 @@ function snd(t) {
 
 // SYMBOLS - WILD WEST
 const SYMS = [
-  { k: 'HAT', i: '🤠', n: 'Cowboy Hat', w: 3, m3: 200 },
-  { k: 'STAR', i: '⭐', n: 'Sheriff Star', w: 4, m3: 100 },
-  { k: 'GUN', i: '🔫', n: 'Revolver', w: 5, m3: 80 },
-  { k: 'WHISKY', i: '🥃', n: 'Whisky', w: 6, m3: 60 },
-  { k: 'GOLD', i: '💰', n: 'Gold Bag', w: 7, m3: 50 },
-  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 8, m3: 40 },
-  { k: 'CHIP', i: '🎲', n: 'Poker Chip', w: 10, m3: 30 },
-  { k: 'SHOE', i: '🐴', n: 'Horseshoe', w: 12, m3: 20 },
-  { k: 'CACTUS', i: '🌵', n: 'Cactus', w: 14, m3: 10 }
+  { k: 'HAT', i: '🤠', n: 'Cowboy Hat', w: 2, m3: 25 },
+  { k: 'STAR', i: '⭐', n: 'Sheriff Star', w: 1, m3: 0, scatter: true }, // ✅ TADY ČÁRKA
+
+  { k: 'GUN', i: '🔫', n: 'Revolver', w: 4, m3: 15 },
+  { k: 'WHISKY', i: '🥃', n: 'Whisky', w: 5, m3: 12 },
+  { k: 'GOLD', i: '💰', n: 'Gold Bag', w: 6, m3: 10 },
+
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 8, m3: 8 },
+  { k: 'CHIP', i: '🎲', n: 'Poker Chip', w: 10, m3: 6 },
+
+  { k: 'SHOE', i: '🐴', n: 'Horseshoe', w: 12, m3: 5 },
+  { k: 'CACTUS', i: '🌵', n: 'Cactus', w: 14, m3: 4 }
 ];
+
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
-function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
+function randSym() {
+  let r = Math.random() * TW;
+
+  for (const s of SYMS) {
+    r -= s.w;
+    if (r <= 0) return s;
+  }
+
+  // fallback (nikdy by neměl nastat, ale jistota)
+  return SYMS[SYMS.length - 1];
+}
 
 let bal = 1, spinning = false;
 let totalSpins = 0, totalWins = 0, totalLosses = 0, bestWin = 0, profit = 0;
@@ -1206,14 +1220,17 @@ function checkResolve(bet, currentNonce) {
   const payout = bet * totalMult;
   const prof = payout - bet;
 
-  if (totalMult > 0) {
-    if (gameMode === 'real' && window.CK) {
-      bal += payout;
-      realBalance += payout;
-    } else {
-      bal += payout;
-      demoBalance += payout;
-    }
+ if (totalMult > 0) {
+
+  if (gameMode === 'real' && window.CK) {
+    // ❗ SERVER už to spočítal
+    bal = realBalance;
+
+  } else {
+    // DEMO mode
+    bal += payout;
+    demoBalance += payout;
+  }
 
     profit += prof;
     if (prof > bestWin) bestWin = prof;
@@ -1282,7 +1299,7 @@ function triggerDuel() {
   
   setTimeout(() => {
     const win = Math.random() > 0.5;
-    const mult = win ? (2 + Math.random() * 3) : 1.0; // 2x-5x or 1x
+    const mult = win ? (1.5 + Math.random() * 1.5) : 1.0; // max 3x 
     
     if (win) {
       cowboy.classList.add('winner');
@@ -1337,12 +1354,11 @@ function triggerGoldRush(bet) {
       
       if (pickedCount === 3) {
         if (gameMode === 'real' && window.CK) {
-          bal += totalWin;
-          realBalance += totalWin;
-        } else {
-          bal += totalWin;
-          demoBalance += totalWin;
-        }
+  bal = realBalance;
+} else {
+  bal += totalWin;
+  demoBalance += totalWin;
+}
         
         profit += totalWin;
         if (totalWin > bestWin) bestWin = totalWin;
