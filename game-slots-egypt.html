@@ -754,6 +754,7 @@ let totalSpinsCount=0,totalWins=0,totalWagered=0,biggestWin=0,sessionProfit=0,fr
 let freeSpinsRemaining=0,freeSpinMode=false,freeSpinMultiplier=1;
 let lastBet = 0;
 let chartData=[],currentGrid=[];
+let serverResult = null;
 
 function f5(n){return parseFloat(n||0).toFixed(5);}
 function f8(n){return parseFloat(n||0).toFixed(8);}
@@ -787,22 +788,34 @@ function doSpin(bet){
   const currentNonce = pfN;
   pfTick();
   
-  if(gameMode==='real') {
-    callGameServer('egypt_gold', parseFloat(bet)||0, {
-      serverSeed: pfSS,
-      clientSeed: pfCS,
-      nonce: currentNonce
-    }).then(function(srv) {
-      if(srv) {
-        if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
-        if(typeof balance !== 'undefined') balance = srv.new_balance;
-        console.log('[SERVER] egypt_gold payout=' + srv.payout + ' profit=' + srv.profit);
-      }
-    }).catch(function(err){
-      console.warn('[SERVER] egypt_gold error:', err);
-    });
-    sbDeduct(Math.round((bet||0)*1e8));realBalance-=bet||0;
-  }
+if(gameMode==='real') {
+
+  serverResult = null; // ✅ reset před spinem
+
+  callGameServer('egypt_gold', parseFloat(bet)||0, {
+    serverSeed: pfSS,
+    clientSeed: pfCS,
+    nonce: currentNonce
+  }).then(function(srv) {
+
+    if(srv){
+
+      serverResult = srv; // ✅ ULOŽENÍ
+
+      if(typeof realBalance !== 'undefined') realBalance = srv.new_balance;
+      if(typeof balance !== 'undefined') balance = srv.new_balance;
+
+      console.log('[SERVER] egypt_gold payout=' + srv.payout + ' profit=' + srv.profit);
+    }
+
+  }).catch(function(err){
+    console.warn('[SERVER] egypt_gold error:', err);
+  });
+
+  sbDeduct(Math.round((bet||0)*1e8));
+  realBalance -= bet || 0;
+
+}
   else demoBalance-=bet;
   balance-=bet;totalWagered+=bet;totalSpinsCount++;
   document.getElementById('totalSpins').textContent=totalSpinsCount;
@@ -955,20 +968,28 @@ const baseBet = freeSpinMode ? lastBet : bet;
 var _egypt_he = (window._houseEdge_egypt_gold || 0.035);
 var _egypt_em = totalMult > 1 ? (1 + ((totalMult - 1) * (1 - _egypt_he))) : totalMult;
 
-// ❗ BEZ zaokrouhlování (stabilnější)
 const rawPayout = baseBet * _egypt_em;
 
 var _egypt_max = window._maxWin_egypt_gold || 0.5;
 
-// ❗ cap zůstává stejný
-const payout = Math.min(rawPayout, baseBet + _egypt_max);
+// ✅ JEDINÝ BLOK PRO PAYOUT
+let payout = 0, profit = 0;
 
-const profit = payout - baseBet;
+if(gameMode === 'real'){
+  if(serverResult){
+    payout = serverResult.payout;
+    profit = serverResult.profit;
+  } else {
+    console.warn("⚠ serverResult missing → fallback 0");
+  }
+} else {
+  payout = Math.min(rawPayout, baseBet + _egypt_max);
+  profit = payout - baseBet;
+}
 
 if(totalMult > 0){
 
   if(gameMode === 'real'){
-    // ❗ SERVER už přičetl výhru → NESMÍŠ přičítat znovu
     balance = realBalance;
   } else {
     balance += payout;
