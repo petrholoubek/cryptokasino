@@ -1187,39 +1187,22 @@ return;
 const payout=(fsMode?currentBet:bet)*totalMult;
 const prof=payout-(fsMode?0:bet);
 
-// ✅ OPRAVA: Přidán addWin + logBet
+// Server už se postaral o real mode!
 if(totalMult>0){
-if(gameMode==='real'&&window.CK&&currentBet>0){
-const payoutSat = Math.floor(payout * 1e8);
-try {
-await window.CK.addWin(payoutSat, 'dragon_slots');
-console.log('[CLIENT] dragon_slots mult=' + totalMult + ' payout=' + payout + ' profit=' + prof);
-const newBal = await window.CK.refreshBalance();
-realBalance = newBal;
-bal = newBal;
-await window.CK.logBet('dragon_slots', 
-Math.floor(currentBet * 1e8), 
-Math.floor(prof * 1e8), 
-totalMult, 
-{serverSeed:pfSS,clientSeed:pfCS,nonce:currentNonce}
-);
-} catch(err) {
-console.warn('[Dragon] addWin/logBet error:', err);
-}
-}else{
-bal+=payout;
-demoBalance+=payout;
-}
-
-profit+=prof;
-if(prof>bestWin)bestWin=prof;
-totalWins++;
-
-winningCells.forEach(key=>{
-const[col,row]=key.split('-').map(Number);
-grid[col][row].el.classList.add('winning');
-gridEl.children[col].classList.add('winning');
-});
+  if(gameMode==='demo'){
+    bal+=payout;
+    demoBalance+=payout;
+  }
+  
+  profit+=prof;
+  if(prof>bestWin)bestWin=prof;
+  totalWins++;
+  
+  winningCells.forEach(key=>{
+    const[col,row]=key.split('-').map(Number);
+    grid[col][row].el.classList.add('winning');
+    gridEl.children[col].classList.add('winning');
+  });
 
 const wt=document.getElementById('winText');
 if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';snd('win');spawnP('mega')}
