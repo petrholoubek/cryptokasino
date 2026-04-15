@@ -1208,6 +1208,19 @@ finishSpin(bet);
 return;
 }
 
+// 🔥 DEFINICE PRO VÝHRU
+let payout = 0;
+let prof = 0;
+
+if(gameMode === 'real' && lastServerResult){
+  payout = lastServerResult.payout;
+  prof = lastServerResult.profit;
+  totalMult = lastServerResult.mult || totalMult;
+} else {
+  payout = (fsMode?currentBet:bet) * totalMult;
+  prof = payout - (fsMode?0:bet);
+}
+
 // Server už se postaral o real mode!
 if(totalMult>0){
   if(gameMode==='demo'){
