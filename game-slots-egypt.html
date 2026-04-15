@@ -554,27 +554,21 @@ const DEMO_BAL=1.0;
 let demoBalance=DEMO_BAL,balance=DEMO_BAL;
 
 // ══ 13 EGYPTSKÝCH SYMBOLŮ - OPRAVENÉ VÁHY PRO ČASTĚJŠÍ VÝHRY ══
-const SYMBOLS = [
-  {key:'WILD', img:'images/pharaon.png', name:'Pharaoh', w:3, m3:6, m4:20, m5:80, wild:true},
-
-  {key:'SCATTER', img:'images/kniha.png', name:'Book', w:3, m3:0, m4:0, m5:0, scatter:true},
-
-  {key:'PYRAMID', img:'images/pyramida.png', name:'Pyramid', w:8, m3:5, m4:12, m5:60},
-  {key:'EYE', img:'images/oko.png', name:'Eye of Ra', w:10, m3:4, m4:10, m5:45},
-
-  {key:'ANUBIS', img:'images/anubis.png', name:'Anubis', w:12, m3:3, m4:8, m5:30},
-  {key:'HORUS', img:'images/horus.png', name:'Horus', w:12, m3:3, m4:8, m5:30},
-  {key:'BASTET', img:'images/bastet.png', name:'Bastet', w:12, m3:3, m4:8, m5:30},
-
-  {key:'TABLET', img:'images/tablet.png', name:'Tablet', w:16, m3:2, m4:6, m5:20},
-  {key:'SCEPTER', img:'images/zezlo.png', name:'Scepter', w:16, m3:2, m4:6, m5:20},
-
-  {key:'ANKH', img:'images/ankh.png', name:'Ankh', w:20, m3:2, m4:5, m5:15},
-  {key:'RUBY', img:'images/rubin.png', name:'Ruby', w:22, m3:1.5, m4:4, m5:12},
-  {key:'EMERALD', img:'images/smaragd.png', name:'Emerald', w:22, m3:1.5, m4:4, m5:12},
-  {key:'RING', img:'images/prsten.png', name:'Ring', w:24, m3:1, m4:3, m5:10}
+const SYMBOLS=[
+  {key:'WILD',    img:'images/pharaon.png', name:'Pharaoh',  w:5,  m3:10,  m4:50,  m5:200},
+  {key:'SCATTER', img:'images/kniha.png',   name:'Book',     w:6,  m3:5,   m4:20,  m5:100},
+  {key:'PYRAMID', img:'images/pyramida.png',name:'Pyramid',  w:10, m3:5,   m4:15,  m5:80},
+  {key:'EYE',     img:'images/oko.png',     name:'Eye of Ra',w:12, m3:4,   m4:12,  m5:60},
+  {key:'ANUBIS',  img:'images/anubis.png',  name:'Anubis',   w:14, m3:3,   m4:10,  m5:50},
+  {key:'HORUS',   img:'images/horus.png',   name:'Horus',    w:14, m3:3,   m4:10,  m5:50},
+  {key:'BASTET',  img:'images/bastet.png',  name:'Bastet',   w:14, m3:3,   m4:10,  m5:50},
+  {key:'TABLET',  img:'images/tablet.png',  name:'Tablet',   w:16, m3:2,   m4:8,   m5:40},
+  {key:'SCEPTER', img:'images/zezlo.png',   name:'Scepter',  w:16, m3:2,   m4:8,   m5:40},
+  {key:'ANKH',    img:'images/ankh.png',    name:'Ankh',     w:18, m3:2,   m4:6,   m5:30},
+  {key:'RUBY',    img:'images/rubin.png',   name:'Ruby',     w:20, m3:1.5, m4:4,   m5:20},
+  {key:'EMERALD', img:'images/smaragd.png', name:'Emerald',  w:20, m3:1.5, m4:4,   m5:20},
+  {key:'RING',    img:'images/prsten.png',  name:'Ring',     w:25, m3:1,   m4:3,   m5:15}
 ];
-
 const TOTAL_W=SYMBOLS.reduce((a,b)=>a+b.w,0);
 
 function randSym(){
@@ -783,7 +777,6 @@ function startFreeSpins(){
 }
 
 function doSpin(bet){
-if(bet > 0) lastBet = bet;
   spinning=true;
   const currentNonce = pfN;
   pfTick();
@@ -894,33 +887,16 @@ function resolveResult(bet, currentNonce){
     return;
   }
 
- // VÝPOČET VÝHER - OPRAVENO PRO ČASTĚJŠÍ VÝHRY
-rows.forEach((row,rowIdx)=>{
-  if(!activePaylines.has(rowIdx+1))return;
-  const first=row[0];
-  if(first.key==='SCATTER')return;
-  
-  // Počítej stejné symboly od začátku
-  let count=1;
-  for(let i=1;i<NUM_REELS;i++){
-    const current=row[i];
-    // WILD nahrazuje COKOLIV
-    if(current.key==='WILD'){
-      count++;
-      continue;
+  // VÝPOČET VÝHER
+  rows.forEach((row,rowIdx)=>{
+    if(!activePaylines.has(rowIdx+1))return;
+    const first=row[0];
+    if(first.key==='SCATTER')return;
+    let count=1;
+    for(let i=1;i<NUM_REELS;i++){
+      if(row[i].key===first.key||row[i].key==='WILD')count++;
+      else break;
     }
-    // Pokud first je WILD, akceptuj jakýkoliv symbol
-    if(first.key==='WILD'){
-      count++;
-      continue;
-    }
-    // Normální shoda
-    if(current.key===first.key){
-      count++;
-    } else {
-      break;
-    }
-  }
     let mult=0;
     if(count===5)mult=first.m5;
     else if(count===4)mult=first.m4;
@@ -950,104 +926,54 @@ rows.forEach((row,rowIdx)=>{
   if(scatterCount>=5){setTimeout(()=>{triggerJackpot(bet);},300);return;}
 
   // ═══ OPRAVA: Použít reálnou sázku i pro free spiny ═══
-let lastBet = 0;
-  const baseBet = freeSpinMode ? lastBet : bet;
-
-// house edge (např. 3.5 %)
-const houseEdge = window._houseEdge_egypt_gold || 0.035;
-
-// upravený multiplier
-const effectiveMult = totalMult > 1
-  ? (1 + (totalMult - 1) * (1 - houseEdge))
-  : totalMult;
-
-// raw výhra
-const rawPayout = baseBet * effectiveMult;
-
-// max win cap
-const maxWin = window._maxWin_egypt_gold || 0.5;
-
-// finální payout
-const payout = Math.min(rawPayout, baseBet + maxWin);
-
-// profit
-const profit = payout - baseBet;
-
-if(totalMult > 0){
-
-  if(gameMode === 'real'){
-    balance = realBalance;
-  } else {
-    balance += payout;
-    demoBalance += payout;
+  let baseBet = bet;
+  if(freeSpinMode && bet === 0) {
+    baseBet = parseFloat(document.getElementById('betInput').value) || 0.001;
   }
 
-  totalWins++;
-  if(profit > biggestWin) biggestWin = profit;
+  var _egypt_he=(window._houseEdge_egypt_gold||0.035);
+  var _egypt_em=totalMult>1?(1+((totalMult-1)*(1-_egypt_he))):totalMult;
+  var _egypt_raw=parseFloat((baseBet*_egypt_em).toFixed(7));
+  var _egypt_max=window._maxWin_egypt_gold||0.5;
+  const payout=Math.min(_egypt_raw,baseBet+_egypt_max);
+  const profit=payout-baseBet;
 
-  [...winningReelSet].forEach(ri=>{
-    reelEls[ri]?.classList.add('win-reel');
-    const inner = reelInners[ri];
-    const syms = [...inner.children].slice(4,4+NUM_ROWS);
-
-    syms.forEach(sym=>{
-      const midSym = syms[Math.floor(NUM_ROWS/2)];
-      if(sym === midSym || totalMult > 20){
-        sym.classList.add('sym-win');
-      }
+  if(totalMult>0){
+    if(gameMode==='real'){balance+=payout;realBalance+=payout;sbAddWin(Math.round(payout*1e8));}
+    else{balance+=payout;demoBalance+=payout;}
+    totalWins++;if(profit>biggestWin)biggestWin=profit;
+    [...winningReelSet].forEach(ri=>{
+      reelEls[ri]?.classList.add('win-reel');
+      const inner=reelInners[ri];
+      const syms=[...inner.children].slice(4,4+NUM_ROWS);
+      syms.forEach(sym=>{
+        const midSym=syms[Math.floor(NUM_ROWS/2)];
+        if(sym===midSym||totalMult>20){
+          sym.classList.add('sym-win');
+        }
+      });
     });
-  });
 
-  // ✅ UI JE UVNITŘ IF
-  document.getElementById('slotCabinet').classList.add('win-cabinet');
-
-  const wt=document.getElementById('winText');
-  if(totalMult>=100){
-    wt.textContent='💎 MEGA WIN!';
-    wt.className='win-text show mega';
-    playSound('jackpot');
-    spawnP('jackpot');
-  }
-  else if(totalMult>=20){
-    wt.textContent='🏆 BIG WIN!';
-    wt.className='win-text show big';
-    playSound('win');
-    spawnP('big');
-  }
-  else{
-    wt.textContent='✨ WIN!';
-    wt.className='win-text show small';
-    playSound('win');
-    spawnP('small');
-  }
-
-  document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
-  document.getElementById('winAmount').style.color='var(--green)';
-
-  const mb=document.getElementById('winMultBadge');
-  if(freeSpinMode && freeSpinMultiplier > 1){
-    mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
+    document.getElementById('slotCabinet').classList.add('win-cabinet');
+    const wt=document.getElementById('winText');
+    if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';playSound('jackpot');spawnP('jackpot');}
+    else if(totalMult>=20){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';playSound('win');spawnP('big');}
+    else{wt.textContent='✨ WIN!';wt.className='win-text show small';playSound('win');spawnP('small');}
+    document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
+    document.getElementById('winAmount').style.color='var(--green)';
+    const mb=document.getElementById('winMultBadge');
+    if(freeSpinMode && freeSpinMultiplier > 1){
+      mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
+    } else {
+      mb.textContent=totalMult+'×';
+    }
+    mb.className='win-mult-badge show';
+    document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';document.getElementById('lastWin').style.color='var(--green)';
   } else {
-    mb.textContent=totalMult+'×';
+    playSound('lose');spawnP('lose');
+    const wt=document.getElementById('winText');wt.textContent='No Win';wt.className='win-text show lose';
+    document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';document.getElementById('lastWin').style.color='var(--red)';
   }
-  mb.className='win-mult-badge show';
-
-  document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';
-  document.getElementById('lastWin').style.color='var(--green)';
-
-} else {
-
-  playSound('lose');
-  spawnP('lose');
-
-  const wt=document.getElementById('winText');
-  wt.textContent='No Win';
-  wt.className='win-text show lose';
-
-  document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';
-  document.getElementById('lastWin').style.color='var(--red');
-
-}
 
   sessionProfit+=profit;updateBal();updateStats();chartData.push(profit);if(chartData.length>40)chartData.shift();updateChart();
   addHistory(midRow,baseBet,totalMult,profit);
@@ -1235,6 +1161,5 @@ document.addEventListener('DOMContentLoaded', function(){
   });if(typeof setMode==='function')setMode('demo');},{once:true});
 if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
 </script>
-
 </body>
 </html>
