@@ -541,8 +541,6 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 
 <footer><p>© 2026 CryptoKasino · 18+ · Play Responsibly · <a href="casino.html" style="color:var(--gold)">← Back to Casino</a></p></footer>
 <script>
-
-console.log("START SCRIPT");
 // ══════════════════════════════════════════════════════════════
 // EGYPT GOLD SLOTS - DNA CRYPTOKASINO + EGYPTSKÉ SYMBOLY
 // ══════════════════════════════════════════════════════════════
@@ -576,7 +574,6 @@ const SYMBOLS = [
   {key:'EMERALD', img:'images/smaragd.png', name:'Emerald', w:22, m3:1.5, m4:4, m5:12},
   {key:'RING', img:'images/prsten.png', name:'Ring', w:24, m3:1, m4:3, m5:10}
 ];
-
 const TOTAL_W=SYMBOLS.reduce((a,b)=>a+b.w,0);
 
 function randSym(){
@@ -686,106 +683,18 @@ function playSound(t){
   }catch(e){}
 }
 
-// SAFE PARTICLE SYSTEM (NO CRASH)
-
-const pC = document.getElementById('particleCanvas');
-const pCtx = pC ? pC.getContext('2d') : null;
-
-let particles = [];
-
-if(pC && pCtx){
-
-  function resizeP(){
-    pC.width = window.innerWidth;
-    pC.height = window.innerHeight;
-  }
-
-  resizeP();
-  window.addEventListener('resize', resizeP);
-
-  function spawnP(type){
-    const cx = window.innerWidth/2;
-    const cy = window.innerHeight*0.4;
-
-    const cfg = {
-      jackpot:{count:200,cols:['#F5C842','#fff','#fb923c','#4ade80','#a855f7'],sz:[4,14]},
-      big:{count:100,cols:['#F5C842','#4ade80','#fff'],sz:[3,10]},
-      small:{count:45,cols:['#F5C842','#fff'],sz:[2,7]},
-      lose:{count:18,cols:['#f87171'],sz:[2,5]}
-    };
-
-    const c = cfg[type] || cfg.small;
-
-    for(let i=0;i<c.count;i++){
-      const a = Math.random()*Math.PI*2;
-      const s = Math.random()*16+4;
-
-      particles.push({
-        x: cx+(Math.random()-.5)*170,
-        y: cy,
-        vx: Math.cos(a)*s,
-        vy: Math.sin(a)*s-4,
-        sz: Math.random()*(c.sz[1]-c.sz[0])+c.sz[0],
-        col: c.cols[Math.floor(Math.random()*c.cols.length)],
-        life: 1,
-        decay: Math.random()*.016+.007,
-        gravity: .48,
-        rot: Math.random()*Math.PI*2,
-        rotV: (Math.random()-.5)*.15
-      });
-    }
-  }
-
-  function drawStar(c,x,y,r,col){
-    c.beginPath();
-    for(let i=0;i<5;i++){
-      const a=(i*Math.PI*2)/5-Math.PI/2;
-      const b=a+Math.PI/5;
-      c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);
-      c.lineTo(x+Math.cos(b)*(r*.4),y+Math.sin(b)*(r*.4));
-    }
-    c.closePath();
-    c.fillStyle=col;
-    c.fill();
-  }
-
-  function animP(){
-    pCtx.clearRect(0,0,pC.width,pC.height);
-
-    particles = particles.filter(p=>p.life>0);
-
-    particles.forEach(p=>{
-      p.x+=p.vx;
-      p.y+=p.vy;
-      p.vy+=p.gravity;
-      p.life-=p.decay;
-      p.rot+=p.rotV;
-
-      pCtx.save();
-      pCtx.globalAlpha=p.life;
-      pCtx.translate(p.x,p.y);
-      pCtx.rotate(p.rot);
-
-      if(Math.random()>.5){
-        drawStar(pCtx,0,0,p.sz,p.col);
-      } else {
-        pCtx.beginPath();
-        pCtx.arc(0,0,p.sz,0,Math.PI*2);
-        pCtx.fillStyle=p.col;
-        pCtx.fill();
-      }
-
-      pCtx.restore();
-    });
-
-    requestAnimationFrame(animP);
-  }
-
-  animP();
-
-} else {
-  console.warn("⚠ particleCanvas not found → particles disabled");
+const pC=document.getElementById('particleCanvas'),pCtx=pC.getContext('2d');let particles=[];
+function resizeP(){pC.width=window.innerWidth;pC.height=window.innerHeight;}resizeP();window.addEventListener('resize',resizeP);
+function spawnP(type){
+  const cx=window.innerWidth/2,cy=window.innerHeight*.4;
+  const cfg={jackpot:{count:200,cols:['#F5C842','#fff','#fb923c','#4ade80','#a855f7'],sz:[4,14]},big:{count:100,cols:['#F5C842','#4ade80','#fff'],sz:[3,10]},small:{count:45,cols:['#F5C842','#fff'],sz:[2,7]},lose:{count:18,cols:['#f87171'],sz:[2,5]}};
+  const c=cfg[type]||cfg.small;
+  for(let i=0;i<c.count;i++){const a=Math.random()*Math.PI*2,s=Math.random()*16+4;particles.push({x:cx+(Math.random()-.5)*170,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-4,sz:Math.random()*(c.sz[1]-c.sz[0])+c.sz[0],col:c.cols[Math.floor(Math.random()*c.cols.length)],life:1,decay:Math.random()*.016+.007,gravity:.48,rot:Math.random()*Math.PI*2,rotV:(Math.random()-.5)*.15});}
 }
+function drawStar(c,x,y,r,col){c.beginPath();for(let i=0;i<5;i++){const a=(i*Math.PI*2)/5-Math.PI/2,b=a+Math.PI/5;c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);c.lineTo(x+Math.cos(b)*(r*.4),y+Math.sin(b)*(r*.4));}c.closePath();c.fillStyle=col;c.fill();}
+function animP(){pCtx.clearRect(0,0,pC.width,pC.height);particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;p.rot+=p.rotV;pCtx.save();pCtx.globalAlpha=p.life;pCtx.translate(p.x,p.y);pCtx.rotate(p.rot);if(Math.random()>.5)drawStar(pCtx,0,0,p.sz,p.col);else{pCtx.beginPath();pCtx.arc(0,0,p.sz,0,Math.PI*2);pCtx.fillStyle=p.col;pCtx.fill();}pCtx.restore();});requestAnimationFrame(animP);}
+animP();
+
 const NUM_REELS=5,NUM_ROWS=3,SYM_H=90;
 const reelEls=[],reelInners=[];
 const reelsContainer=document.getElementById('reelsContainer');
@@ -844,7 +753,6 @@ let spinning=false,autoCount=0,autoRunning=false;
 let totalSpinsCount=0,totalWins=0,totalWagered=0,biggestWin=0,sessionProfit=0,freeSpins=0;
 let freeSpinsRemaining=0,freeSpinMode=false,freeSpinMultiplier=1;
 let chartData=[],currentGrid=[];
-let lastBet = 0;
 
 function f5(n){return parseFloat(n||0).toFixed(5);}
 function f8(n){return parseFloat(n||0).toFixed(8);}
@@ -859,7 +767,7 @@ function doubleBet(){setBet(Math.min(balance,(parseFloat(document.getElementById
 function maxBet(){setBet(Math.min(balance,.1));}
 function clearBet(){setBet(.001);}
 
-window.handleSpin = function(){
+function handleSpin(){
   if(spinning)return;
   const bet=parseFloat(document.getElementById('betInput').value);
   if(!bet||bet<=0){alert('Enter bet amount!');return;}
@@ -874,7 +782,6 @@ function startFreeSpins(){
 }
 
 function doSpin(bet){
-if(bet > 0) lastBet = bet;
   spinning=true;
   const currentNonce = pfN;
   pfTick();
@@ -985,33 +892,16 @@ function resolveResult(bet, currentNonce){
     return;
   }
 
- // VÝPOČET VÝHER - OPRAVENO PRO ČASTĚJŠÍ VÝHRY
-rows.forEach((row,rowIdx)=>{
-  if(!activePaylines.has(rowIdx+1))return;
-  const first=row[0];
-  if(first.key==='SCATTER')return;
-  
-  // Počítej stejné symboly od začátku
-  let count=1;
-  for(let i=1;i<NUM_REELS;i++){
-    const current=row[i];
-    // WILD nahrazuje COKOLIV
-    if(current.key==='WILD'){
-      count++;
-      continue;
+  // VÝPOČET VÝHER
+  rows.forEach((row,rowIdx)=>{
+    if(!activePaylines.has(rowIdx+1))return;
+    const first=row[0];
+    if(first.key==='SCATTER')return;
+    let count=1;
+    for(let i=1;i<NUM_REELS;i++){
+      if(row[i].key===first.key||row[i].key==='WILD')count++;
+      else break;
     }
-    // Pokud first je WILD, akceptuj jakýkoliv symbol
-    if(first.key==='WILD'){
-      count++;
-      continue;
-    }
-    // Normální shoda
-    if(current.key===first.key){
-      count++;
-    } else {
-      break;
-    }
-  }
     let mult=0;
     if(count===5)mult=first.m5;
     else if(count===4)mult=first.m4;
@@ -1040,108 +930,55 @@ rows.forEach((row,rowIdx)=>{
 
   if(scatterCount>=5){setTimeout(()=>{triggerJackpot(bet);},300);return;}
 
- // ═══ BASE BET (FIX FREE SPINS) ═══
-const baseBet = freeSpinMode ? lastBet : bet;
-
-// house edge
-const houseEdge = window._houseEdge_egypt_gold || 0.035;
-
-// upravený multiplier
-const effectiveMult = totalMult > 1
-  ? (1 + (totalMult - 1) * (1 - houseEdge))
-  : totalMult;
-
-// raw výhra
-const rawPayout = baseBet * effectiveMult;
-
-// max win cap
-const maxWin = window._maxWin_egypt_gold || 0.5;
-
-// finální payout
-const payout = Math.min(rawPayout, baseBet + maxWin);
-
-// profit
-const profit = payout - baseBet;
-
-
-// ═══ WIN LOGIC ═══
-if(totalMult > 0){
-
-  if(gameMode === 'real'){
-    balance = realBalance;
-  } else {
-    balance += payout;
-    demoBalance += payout;
+  // ═══ OPRAVA: Použít reálnou sázku i pro free spiny ═══
+  let baseBet = bet;
+  if(freeSpinMode && bet === 0) {
+    baseBet = parseFloat(document.getElementById('betInput').value) || 0.001;
   }
 
-  totalWins++;
-  if(profit > biggestWin) biggestWin = profit;
+  var _egypt_he=(window._houseEdge_egypt_gold||0.035);
+  var _egypt_em=totalMult>1?(1+((totalMult-1)*(1-_egypt_he))):totalMult;
+  var _egypt_raw=parseFloat((baseBet*_egypt_em).toFixed(7));
+  var _egypt_max=window._maxWin_egypt_gold||0.5;
+  const payout=Math.min(_egypt_raw,baseBet+_egypt_max);
+  const profit=payout-baseBet;
 
-  [...winningReelSet].forEach(ri=>{
-    reelEls[ri]?.classList.add('win-reel');
-
-    const inner = reelInners[ri];
-    const syms = [...inner.children].slice(4,4+NUM_ROWS);
-
-    const midIndex = Math.floor(NUM_ROWS/2);
-
-    syms.forEach((sym,i)=>{
-      if(i === midIndex || totalMult > 20){
-        sym.classList.add('sym-win');
-      }
+  if(totalMult>0){
+    if(gameMode==='real'){balance+=payout;realBalance+=payout;sbAddWin(Math.round(payout*1e8));}
+    else{balance+=payout;demoBalance+=payout;}
+    totalWins++;if(profit>biggestWin)biggestWin=profit;
+    [...winningReelSet].forEach(ri=>{
+      reelEls[ri]?.classList.add('win-reel');
+      const inner=reelInners[ri];
+      const syms=[...inner.children].slice(4,4+NUM_ROWS);
+      syms.forEach(sym=>{
+        const midSym=syms[Math.floor(NUM_ROWS/2)];
+        if(sym===midSym||totalMult>20){
+          sym.classList.add('sym-win');
+        }
+      });
     });
-  });
 
-  // ✅ UI JE TADY UVNITŘ
-  document.getElementById('slotCabinet').classList.add('win-cabinet');
-
-  const wt=document.getElementById('winText');
-
-  if(totalMult>=100){
-    wt.textContent='💎 MEGA WIN!';
-    wt.className='win-text show mega';
-    playSound('jackpot');
-    spawnP('jackpot');
-  }
-  else if(totalMult>=20){
-    wt.textContent='🏆 BIG WIN!';
-    wt.className='win-text show big';
-    playSound('win');
-    spawnP('big');
-  }
-  else{
-    wt.textContent='✨ WIN!';
-    wt.className='win-text show small';
-    playSound('win');
-    spawnP('small');
-  }
-
-  document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
-  document.getElementById('winAmount').style.color='var(--green)';
-
-  const mb=document.getElementById('winMultBadge');
-  if(freeSpinMode && freeSpinMultiplier > 1){
-    mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
+    document.getElementById('slotCabinet').classList.add('win-cabinet');
+    const wt=document.getElementById('winText');
+    if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';playSound('jackpot');spawnP('jackpot');}
+    else if(totalMult>=20){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';playSound('win');spawnP('big');}
+    else{wt.textContent='✨ WIN!';wt.className='win-text show small';playSound('win');spawnP('small');}
+    document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
+    document.getElementById('winAmount').style.color='var(--green)';
+    const mb=document.getElementById('winMultBadge');
+    if(freeSpinMode && freeSpinMultiplier > 1){
+      mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
+    } else {
+      mb.textContent=totalMult+'×';
+    }
+    mb.className='win-mult-badge show';
+    document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';document.getElementById('lastWin').style.color='var(--green)';
   } else {
-    mb.textContent=totalMult+'×';
+    playSound('lose');spawnP('lose');
+    const wt=document.getElementById('winText');wt.textContent='No Win';wt.className='win-text show lose';
+    document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';document.getElementById('lastWin').style.color='var(--red)';
   }
-  mb.className='win-mult-badge show';
-
-  document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';
-  document.getElementById('lastWin').style.color='var(--green)';
-
-} else {
-
-  playSound('lose');
-  spawnP('lose');
-
-  const wt=document.getElementById('winText');
-  wt.textContent='No Win';
-  wt.className='win-text show lose';
-
-  document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';
-  document.getElementById('lastWin').style.color='var(--red');
-}
 
   sessionProfit+=profit;updateBal();updateStats();chartData.push(profit);if(chartData.length>40)chartData.shift();updateChart();
   addHistory(midRow,baseBet,totalMult,profit);
@@ -1328,9 +1165,6 @@ document.addEventListener('DOMContentLoaded', function(){
     console.log('[GS] egypt_gold settings applied from DB');
   });if(typeof setMode==='function')setMode('demo');},{once:true});
 if(document.readyState!=='loading'){setTimeout(function(){if(typeof setMode==='function')setMode('demo');},10);}
-
-console.log("END SCRIPT");
 </script>
-
 </body>
 </html>
