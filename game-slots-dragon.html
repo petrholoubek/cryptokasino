@@ -791,8 +791,10 @@ nav{display:none}
 <script src="supabase.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
-// DRAGON'S TREASURE - BALANCED VERSION
-// Fixed RTP to ~96.5% (was ~140%+)
+// DRAGON'S TREASURE - FIXED VERSION
+// ✅ Správné game ID: dragon_treasure (bez S)
+// ✅ Client-driven pattern (deductBet + addWin)
+// ✅ Max win caps aktivní
 // ══════════════════════════════════════════════════════════════
 
 let currentUser=null,realBalance=0,RTP=0.965;
@@ -814,7 +816,8 @@ return;
 }
 
 try{
-const gs=await window.CK.getGameSettings('dragons_treasure');
+// ✅ OPRAVA: Změněno z 'dragons_treasure' na 'dragon_treasure'
+const gs=await window.CK.getGameSettings('dragon_treasure');
 if(gs){
 RTP=gs.rtp_pct/100;
 document.getElementById('rtpDisplay').textContent=(RTP*100).toFixed(1)+'%';
@@ -910,15 +913,15 @@ setTimeout(()=>playBeep(f,.3),i*120);
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS = [
-  { k: 'WILD', i: '🐉', n: 'Dragon', w: 1, m3: 8, m4: 30, m5: 100, wild: true },     // ✅ 1.4% - RAREST
-  { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2, m3: 4, m4: 12, m5: 50 },             // ✅ 2.9% - RARE
-  { k: 'CROWN', i: '👑', n: 'Crown', w: 3, m3: 6, m4: 18, m5: 50 },                  // ✅ 4.3% - UNCOMMON
-  { k: 'DIAMOND', i: '💎', n: 'Diamond', w: 5, m3: 5, m4: 15, m5: 40 },              // ✅ 7.1% - COMMON
-  { k: 'RUBY', i: '❤️', n: 'Ruby', w: 7, m3: 4, m4: 12, m5: 35 },                    // ✅ 10% - COMMON
-  { k: 'FIRE', i: '🔥', n: 'Fire', w: 10, m3: 3, m4: 10, m5: 30 },                   // ✅ 14.3% - VERY COMMON
-  { k: 'EMERALD', i: '💚', n: 'Emerald', w: 12, m3: 2, m4: 8, m5: 25 },              // ✅ 17.1% - VERY COMMON
-  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 15, m3: 2, m4: 6, m5: 20 },               // ✅ 21.4% - MOST COMMON
-  { k: 'GEM', i: '💠', n: 'Sapphire', w: 16, m3: 1, m4: 5, m5: 15 }                  // ✅ 22.9% - MOST COMMON
+  { k: 'WILD', i: '🐉', n: 'Dragon', w: 1, m3: 8, m4: 30, m5: 100, wild: true },
+  { k: 'SCATTER', i: '💰', n: 'Treasure', w: 2, m3: 4, m4: 12, m5: 50 },
+  { k: 'CROWN', i: '👑', n: 'Crown', w: 3, m3: 6, m4: 18, m5: 50 },
+  { k: 'DIAMOND', i: '💎', n: 'Diamond', w: 5, m3: 5, m4: 15, m5: 40 },
+  { k: 'RUBY', i: '❤️', n: 'Ruby', w: 7, m3: 4, m4: 12, m5: 35 },
+  { k: 'FIRE', i: '🔥', n: 'Fire', w: 10, m3: 3, m4: 10, m5: 30 },
+  { k: 'EMERALD', i: '💚', n: 'Emerald', w: 12, m3: 2, m4: 8, m5: 25 },
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 15, m3: 2, m4: 6, m5: 20 },
+  { k: 'GEM', i: '💠', n: 'Sapphire', w: 16, m3: 1, m4: 5, m5: 15 }
 ];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[8]}
@@ -1043,37 +1046,23 @@ doSpin(totalBet);
 
 function doSpin(bet){
 spinning=true;
-currentBet=bet||currentBet;  // ✅ Store bet for free spins
+currentBet=bet||currentBet;
 currentNonce=pfN;
 pfTick();
 
-if(gameMode==='real'&&window.CK&&bet>0){
-window.CK.callGameServer('dragons_treasure',bet,{
-serverSeed:pfSS,
-clientSeed:pfCS,
-nonce:currentNonce
-}).then(serverResult=>{
-if(serverResult&&serverResult.ok){
-console.log('[SERVER] dragons_treasure:',serverResult);
-window.CK.refreshBalance().then(newBal=>{
-realBalance=newBal;
-bal=newBal;
-updateBal();
-});
-}
-}).catch(err=>{
-console.warn('[SERVER] dragons_treasure error:',err);
-});
+// ✅ OPRAVA: Client-driven pattern místo callGameServer
+if(bet>0){
+  if(gameMode==='real' && window.CK){
+    realBalance-=bet;
+    window.CK.deductBet(Math.floor(bet * 1e8)).catch(err => {
+      console.warn('[Dragon] deductBet error:', err);
+    });
+  }else{
+    demoBalance-=bet;
+  }
+  bal-=bet;
 }
 
-if(bet>0){
-if(gameMode==='real'&&window.CK){
-realBalance-=bet;
-}else{
-demoBalance-=bet;
-}
-bal-=bet;
-}
 totalSpins++;
 updateBal();
 document.getElementById('spinBtn').disabled=true;
@@ -1110,31 +1099,30 @@ setTimeout(()=>{checkResolve(bet,currentNonce)},400);
 
 // ══ 10 PAYLINES ══
 const PAYLINES=[
-[1,1,1,1,1], // mid
-[0,0,0,0,0], // top
-[2,2,2,2,2], // bot
-[0,1,2,1,0], // V
-[2,1,0,1,2], // ^
-[1,0,1,2,1], // zig
-[1,2,1,0,1], // zag
-[0,0,1,2,2], // steps up
-[2,2,1,0,0], // steps down
-[1,0,0,0,1]  // W
+[1,1,1,1,1],
+[0,0,0,0,0],
+[2,2,2,2,2],
+[0,1,2,1,0],
+[2,1,0,1,2],
+[1,0,1,2,1],
+[1,2,1,0,1],
+[0,0,1,2,2],
+[2,2,1,0,0],
+[1,0,0,0,1]
 ];
 
-function checkResolve(bet,currentNonce){
+// ✅ OPRAVA: Přidán async
+async function checkResolve(bet,currentNonce){
 const scatterCnt=grid.flat().filter(c=>c.sym.k==='SCATTER').length;
 
-// ✅ BALANCED FREE SPINS TRIGGER - Reduced counts
 if(scatterCnt>=3&&fsRem===0){
-const fs=scatterCnt===3?6:scatterCnt===4?8:scatterCnt===5?10:12;  // ✅ Was: 8/12/16/20
+const fs=scatterCnt===3?6:scatterCnt===4?8:scatterCnt===5?10:12;
 triggerFS(fs);
 return;
 }
 
-// ✅ BALANCED FREE SPINS RETRIGGER - Reduced
 if(scatterCnt>=3&&fsMode){
-const addFs=scatterCnt===3?3:scatterCnt===4?5:scatterCnt===5?8:10;  // ✅ Was: 5/8/12/15
+const addFs=scatterCnt===3?3:scatterCnt===4?5:scatterCnt===5?8:10;
 fsRem+=addFs;
 snd('win');
 spawnP('big');
@@ -1144,7 +1132,6 @@ wt.className='win-text show big';
 setTimeout(()=>{wt.textContent='';wt.className='win-text';},2000);
 }
 
-// ✅ BALANCED JACKPOT - All scatters + 50% chance
 if(scatterCnt===5 && grid.flat().every(c=>c.sym.k==='SCATTER') && Math.random()<0.5){
 triggerJackpot(bet);
 return;
@@ -1160,7 +1147,6 @@ if(first.k==='SCATTER')return;
 
 let count=1;
 for(let i=1;i<5;i++){
-// ✅ FIXED: Wild properly handled
 if(syms[i].k===first.k||syms[i].wild||first.wild)count++;
 else break;
 }
@@ -1179,10 +1165,9 @@ winningCells.add(cellKey);
 }
 });
 
-// ✅ BALANCED FREE SPINS MULTIPLIER
 if(fsMode&&totalMult>0){
-fsMult=Math.min(5,fsMult+0.3);  // ✅ Was: min(10, +0.5)
-totalMult*=Math.min(fsMult,5);   // ✅ Cap at 5x
+fsMult=Math.min(5,fsMult+0.3);
+totalMult*=Math.min(fsMult,5);
 }
 
 if(totalMult===0){
@@ -1192,17 +1177,43 @@ finishSpin(bet);
 return;
 }
 
-const payout=(fsMode?currentBet:bet)*totalMult;  // ✅ Use currentBet for free spins
+const payout=(fsMode?currentBet:bet)*totalMult;
 const prof=payout-(fsMode?0:bet);
 
+// ✅ OPRAVA: Použij addWin s await
 if(totalMult>0){
-if(gameMode==='real'&&window.CK){
-bal+=payout;
-realBalance+=payout;
-}else{
-bal+=payout;
-demoBalance+=payout;
-}
+  if(gameMode==='real' && window.CK && currentBet > 0){
+    const payoutSat = Math.floor(payout * 1e8);
+    
+    try {
+      const result = await window.CK.addWin(payoutSat, 'dragon_treasure');
+      
+      if(result && result.ok){
+        const newBal = await window.CK.refreshBalance();
+        realBalance = newBal;
+        bal = newBal;
+        updateBal();
+      }
+      
+      await window.CK.logBet('dragon_treasure', 
+        Math.floor(currentBet * 1e8), 
+        Math.floor(prof * 1e8), 
+        totalMult, 
+        {
+          serverSeed: pfSS,
+          clientSeed: pfCS,
+          nonce: currentNonce
+        }
+      );
+      
+    } catch(err) {
+      console.warn('[Dragon] addWin/logBet error:', err);
+    }
+    
+  } else {
+    bal += payout;
+    demoBalance += payout;
+  }
 
 profit+=prof;
 if(prof>bestWin)bestWin=prof;
@@ -1278,8 +1289,8 @@ setTimeout(()=>doSpin(0),600);
 }
 
 function triggerJackpot(bet){
-const maxJP=currentBet*1000;  // ✅ Cap jackpot at 1000x bet
-const won=Math.min(jp,maxJP);  // ✅ Cap payout
+const maxJP=currentBet*1000;
+const won=Math.min(jp,maxJP);
 if(gameMode==='real'&&window.CK){
 bal+=won;
 realBalance+=won;
@@ -1303,7 +1314,7 @@ setTimeout(()=>{spinning=false;document.getElementById('spinBtn').disabled=false
 }
 
 updateBal();
-console.log('🐉 Dragon\'s Treasure BALANCED loaded!');
+console.log('🐉 Dragon\'s Treasure FIXED & BALANCED loaded!');
 </script>
 
 </body>
