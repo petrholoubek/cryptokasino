@@ -1208,17 +1208,47 @@ finishSpin(bet);
 return;
 }
 
-// 🔥 DEFINICE PRO VÝHRU
+// 🔥 DEFINICE PRO VÝHRU + BOOST
 let payout = 0;
 let prof = 0;
 
 if(gameMode === 'real' && lastServerResult){
+
   payout = lastServerResult.payout;
-  prof = lastServerResult.profit;
-  totalMult = lastServerResult.mult || totalMult;
+
+  // 🚀 BOOST výher (hlavní věc)
+  if(payout > 0){
+    payout *= 1.2; // 🔥 +20%
+  }
+
+  // 🧠 anti-dead spin
+  if(payout > 0 && payout < currentBet * 0.3){
+    payout = currentBet * (0.3 + Math.random()*0.5);
+  }
+
+  prof = payout - currentBet;
+
+  totalMult = payout / currentBet;
+
 } else {
+
   payout = (fsMode?currentBet:bet) * totalMult;
+
+  // 🚀 BOOST i pro demo
+  if(payout > 0){
+    payout *= 1.2;
+  }
+
+  if(payout > 0 && payout < bet * 0.3){
+    payout = bet * (0.3 + Math.random()*0.5);
+  }
+
   prof = payout - (fsMode?0:bet);
+}
+
+// 🎯 náhodný boost (pocit štěstí)
+if(Math.random() < 0.1){
+  payout *= 1.5;
 }
 
 // Server už se postaral o real mode!
