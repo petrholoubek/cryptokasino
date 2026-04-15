@@ -1039,22 +1039,6 @@ if(totalMult > 0){
     spawnP('small');
   }
 
-  document.getElementById('winAmount').textContent = `+${f5(profit)} BTC`;
-  document.getElementById('winAmount').style.color = 'var(--green)';
-
-  const mb = document.getElementById('winMultBadge');
-
-  if(freeSpinMode && freeSpinMultiplier > 1){
-    mb.textContent = totalMult + '× (FS: ' + (freeSpinMultiplier-1) + '×)';
-  } else {
-    mb.textContent = totalMult + '×';
-  }
-
-  mb.className = 'win-mult-badge show';
-
-  document.getElementById('lastWin').textContent = '+' + f5(profit) + ' BTC';
-  document.getElementById('lastWin').style.color = 'var(--green)';
-
 } else {
 
   playSound('lose');
@@ -1064,11 +1048,28 @@ if(totalMult > 0){
   wt.textContent = 'No Win';
   wt.className = 'win-text show lose';
 
-  document.getElementById('lastWin').textContent = '-' + f5(baseBet) + ' BTC';
-  document.getElementById('lastWin').style.color = 'var(--red');
-
 }
 
+// ✅ SPOLEČNÁ UI ČÁST (mimo IF/ELSE)
+
+const mb = document.getElementById('winMultBadge');
+
+if(freeSpinMode && freeSpinMultiplier > 1){
+  mb.textContent = totalMult + '× (FS: ' + (freeSpinMultiplier-1) + '×)';
+} else {
+  mb.textContent = totalMult + '×';
+}
+
+mb.className = 'win-mult-badge show';
+
+// ✅ lastWin správně podle výsledku
+document.getElementById('lastWin').textContent =
+  (profit > 0 ? '+' : '-') + f5(Math.abs(profit)) + ' BTC';
+
+document.getElementById('lastWin').style.color =
+  profit > 0 ? 'var(--green)' : 'var(--red)';
+
+// ✅ další logika
 sessionProfit += profit;
 updateBal();
 updateStats();
