@@ -890,16 +890,26 @@ function snd(t) {
 // BALANCED SYMBOLS - Reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS = [
-  { k: 'AXE', i: '⚔️', n: 'Battle Axe', w: 1, m3: 8, m4: 30, m5: 100, wild: true },   // ✅ Highest payout = RAREST
-  { k: 'RUNE', i: '🔱', n: 'Rune Stone', w: 2, m3: 4, m4: 15, m5: 60 },               // ✅ High payout = RARE
-  { k: 'HELMET', i: '🪖', n: 'Viking Helmet', w: 3, m3: 6, m4: 20, m5: 70 },          // ✅ Medium-high = UNCOMMON
-  { k: 'SWORD', i: '🗡️', n: 'Nordic Sword', w: 5, m3: 5, m4: 15, m5: 50 },           // ✅ Medium = COMMON
-  { k: 'SHIELD', i: '🛡️', n: 'War Shield', w: 7, m3: 4, m4: 12, m5: 40 },            // ✅ Medium-low = MORE COMMON
-  { k: 'HORN', i: '📯', n: 'War Horn', w: 10, m3: 3, m4: 10, m5: 35 },                // ✅ Low = VERY COMMON
-  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 12, m3: 2, m4: 8, m5: 30 },                // ✅ Low = VERY COMMON
-  { k: 'HAMMER', i: '🔨', n: 'Thor Hammer', w: 14, m3: 2, m4: 6, m5: 25 },            // ✅ Lowest = MOST COMMON
-  { k: 'LIGHTNING', i: '⚡', n: 'Lightning', w: 16, m3: 1, m4: 5, m5: 20 }             // ✅ Lowest = MOST COMMON
+  // 🔥 WILD – silný, ale ne extrémní payout
+  { k: 'AXE', i: '⚔️', n: 'Battle Axe', w: 1, m3: 6, m4: 20, m5: 50, wild: true },
+
+  // 🔥 HIGH SYMBOLS (vzácné)
+  { k: 'RUNE', i: '🔱', n: 'Rune Stone', w: 2, m3: 4, m4: 12, m5: 45 },
+  { k: 'HELMET', i: '🪖', n: 'Viking Helmet', w: 3, m3: 5, m4: 15, m5: 50 },
+
+  // ⚖️ MID SYMBOLS
+  { k: 'SWORD', i: '🗡️', n: 'Nordic Sword', w: 5, m3: 4, m4: 12, m5: 40 },
+  { k: 'SHIELD', i: '🛡️', n: 'War Shield', w: 7, m3: 3, m4: 10, m5: 30 },
+
+  // 📉 LOW SYMBOLS (časté výhry)
+  { k: 'HORN', i: '📯', n: 'War Horn', w: 10, m3: 2.5, m4: 8, m5: 25 },
+  { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 12, m3: 2, m4: 6, m5: 20 },
+
+  // 📉 VERY LOW (nejčastější)
+  { k: 'HAMMER', i: '🔨', n: 'Thor Hammer', w: 14, m3: 1.5, m4: 5, m5: 18 },
+  { k: 'LIGHTNING', i: '⚡', n: 'Lightning', w: 16, m3: 1, m4: 4, m5: 15 }
 ];
+
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
 function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
 
@@ -1153,6 +1163,49 @@ function checkResolve(bet, currentNonce) {
   const prof = payout - (fsMode ? 0 : bet);
 
   if (totalMult > 0) {
+
+  if (gameMode === 'real' && window.CK && currentBet > 0) {
+    const payoutSat = Math.floor(payout * 1e8);
+
+    window.CK.addWin(payoutSat, GAME_ID).then(result => {
+      if (result && result.ok) {
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Viking] addWin error:', err);
+    });
+
+    // LOG do DB
+    window.CK.logBet(
+      GAME_ID,
+      Math.floor(currentBet * 1e8),
+      Math.floor(prof * 1e8),
+      totalMult,
+      {
+        serverSeed: pfSS,
+        clientSeed: pfCS,
+        nonce: currentNonce,
+        runeMult: runeMult,
+        fsMode: fsMode
+      }
+    ).catch(err => {
+      console.warn('[Viking] logBet error:', err);
+    });
+
+  } else {
+    // DEMO
+    bal += payout;
+    demoBalance += payout;
+  }
+
+  profit += prof;
+  if (prof > bestWin) bestWin = prof;
+  totalWins++;
+
     if (gameMode === 'real' && window.CK) {
       bal += payout;
       realBalance += payout;
