@@ -1600,7 +1600,9 @@ if(fsMode){
   totalWin *= (1 + (mult - 1) * 0.5);
 }
 
-const payout = totalWin;
+const MAX_WIN = currentBet * 50;
+const payout = Math.min(totalWin, MAX_WIN);
+
 const prof = payout - currentBet;
 
 console.log('🎰 VÝHRA:', {
