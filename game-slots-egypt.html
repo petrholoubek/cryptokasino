@@ -752,6 +752,7 @@ setInterval(()=>{jackpot+=0.00000001+Math.random()*.000001;document.getElementBy
 let spinning=false,autoCount=0,autoRunning=false;
 let totalSpinsCount=0,totalWins=0,totalWagered=0,biggestWin=0,sessionProfit=0,freeSpins=0;
 let freeSpinsRemaining=0,freeSpinMode=false,freeSpinMultiplier=1;
+let lastBet = 0;
 let chartData=[],currentGrid=[];
 
 function f5(n){return parseFloat(n||0).toFixed(5);}
@@ -897,11 +898,29 @@ function resolveResult(bet, currentNonce){
     if(!activePaylines.has(rowIdx+1))return;
     const first=row[0];
     if(first.key==='SCATTER')return;
-    let count=1;
-    for(let i=1;i<NUM_REELS;i++){
-      if(row[i].key===first.key||row[i].key==='WILD')count++;
-      else break;
-    }
+  let count = 1;
+
+// správná logika WILD
+let base = first.key === 'WILD' ? null : first.key;
+
+for(let i=1;i<NUM_REELS;i++){
+  const cur = row[i];
+
+  if(cur.key === 'WILD'){
+    count++;
+    continue;
+  }
+
+  if(!base){
+    base = cur.key;
+    count++;
+    continue;
+  }
+
+  if(cur.key === base){
+    count++;
+  } else break;
+}
     let mult=0;
     if(count===5)mult=first.m5;
     else if(count===4)mult=first.m4;
@@ -931,66 +950,128 @@ function resolveResult(bet, currentNonce){
   if(scatterCount>=5){setTimeout(()=>{triggerJackpot(bet);},300);return;}
 
   // ═══ OPRAVA: Použít reálnou sázku i pro free spiny ═══
-  let baseBet = bet;
-  if(freeSpinMode && bet === 0) {
-    baseBet = parseFloat(document.getElementById('betInput').value) || 0.001;
-  }
+const baseBet = freeSpinMode ? lastBet : bet;
 
-  var _egypt_he=(window._houseEdge_egypt_gold||0.035);
-  var _egypt_em=totalMult>1?(1+((totalMult-1)*(1-_egypt_he))):totalMult;
-  var _egypt_raw=parseFloat((baseBet*_egypt_em).toFixed(7));
-  var _egypt_max=window._maxWin_egypt_gold||0.5;
-  const payout=Math.min(_egypt_raw,baseBet+_egypt_max);
-  const profit=payout-baseBet;
+var _egypt_he = (window._houseEdge_egypt_gold || 0.035);
+var _egypt_em = totalMult > 1 ? (1 + ((totalMult - 1) * (1 - _egypt_he))) : totalMult;
 
-  if(totalMult>0){
-    if(gameMode==='real'){balance+=payout;realBalance+=payout;sbAddWin(Math.round(payout*1e8));}
-    else{balance+=payout;demoBalance+=payout;}
-    totalWins++;if(profit>biggestWin)biggestWin=profit;
-    [...winningReelSet].forEach(ri=>{
-      reelEls[ri]?.classList.add('win-reel');
-      const inner=reelInners[ri];
-      const syms=[...inner.children].slice(4,4+NUM_ROWS);
-      syms.forEach(sym=>{
-        const midSym=syms[Math.floor(NUM_ROWS/2)];
-        if(sym===midSym||totalMult>20){
-          sym.classList.add('sym-win');
-        }
-      });
-    });
+// ❗ BEZ zaokrouhlování (stabilnější)
+const rawPayout = baseBet * _egypt_em;
 
-    document.getElementById('slotCabinet').classList.add('win-cabinet');
-    const wt=document.getElementById('winText');
-    if(totalMult>=100){wt.textContent='💎 MEGA WIN!';wt.className='win-text show mega';playSound('jackpot');spawnP('jackpot');}
-    else if(totalMult>=20){wt.textContent='🏆 BIG WIN!';wt.className='win-text show big';playSound('win');spawnP('big');}
-    else{wt.textContent='✨ WIN!';wt.className='win-text show small';playSound('win');spawnP('small');}
-    document.getElementById('winAmount').textContent=`+${f5(profit)} BTC`;
-    document.getElementById('winAmount').style.color='var(--green)';
-    const mb=document.getElementById('winMultBadge');
-    if(freeSpinMode && freeSpinMultiplier > 1){
-      mb.textContent=totalMult+'× (FS: '+(freeSpinMultiplier-1)+'×)';
-    } else {
-      mb.textContent=totalMult+'×';
-    }
-    mb.className='win-mult-badge show';
-    document.getElementById('lastWin').textContent='+'+f5(profit)+' BTC';document.getElementById('lastWin').style.color='var(--green)';
+var _egypt_max = window._maxWin_egypt_gold || 0.5;
+
+// ❗ cap zůstává stejný
+const payout = Math.min(rawPayout, baseBet + _egypt_max);
+
+const profit = payout - baseBet;
+
+if(totalMult > 0){
+
+  if(gameMode === 'real'){
+    // ❗ SERVER už přičetl výhru → NESMÍŠ přičítat znovu
+    balance = realBalance;
   } else {
-    playSound('lose');spawnP('lose');
-    const wt=document.getElementById('winText');wt.textContent='No Win';wt.className='win-text show lose';
-    document.getElementById('lastWin').textContent='-'+f5(baseBet)+' BTC';document.getElementById('lastWin').style.color='var(--red)';
+    balance += payout;
+    demoBalance += payout;
   }
 
-  sessionProfit+=profit;updateBal();updateStats();chartData.push(profit);if(chartData.length>40)chartData.shift();updateChart();
-  addHistory(midRow,baseBet,totalMult,profit);
-  if(gameMode==='real' && baseBet > 0)sbLog(Math.round(baseBet*1e8),Math.round(profit*1e8),totalMult,{
-    symbols:midRow.map(s=>s.key),
-    serverSeed:pfSS,
-    clientSeed:pfCS,
-    nonce:currentNonce,
-    freeSpinMode:freeSpinMode
+  totalWins++;
+  if(profit > biggestWin) biggestWin = profit;
+
+  [...winningReelSet].forEach(ri=>{
+    reelEls[ri]?.classList.add('win-reel');
+
+    const inner = reelInners[ri];
+    const syms = [...inner.children].slice(4,4+NUM_ROWS);
+
+    const midIndex = Math.floor(NUM_ROWS/2);
+
+    syms.forEach((sym,i)=>{
+      if(i === midIndex || totalMult > 20){
+        sym.classList.add('sym-win');
+      }
+    });
   });
 
-  finishSpin(baseBet,profit);
+  document.getElementById('slotCabinet').classList.add('win-cabinet');
+
+  const wt = document.getElementById('winText');
+
+  if(totalMult >= 100){
+    wt.textContent='💎 MEGA WIN!';
+    wt.className='win-text show mega';
+    playSound('jackpot');
+    spawnP('jackpot');
+  }
+  else if(totalMult >= 20){
+    wt.textContent='🏆 BIG WIN!';
+    wt.className='win-text show big';
+    playSound('win');
+    spawnP('big');
+  }
+  else{
+    wt.textContent='✨ WIN!';
+    wt.className='win-text show small';
+    playSound('win');
+    spawnP('small');
+  }
+
+  document.getElementById('winAmount').textContent = `+${f5(profit)} BTC`;
+  document.getElementById('winAmount').style.color = 'var(--green)';
+
+  const mb = document.getElementById('winMultBadge');
+
+  if(freeSpinMode && freeSpinMultiplier > 1){
+    mb.textContent = totalMult + '× (FS: ' + (freeSpinMultiplier-1) + '×)';
+  } else {
+    mb.textContent = totalMult + '×';
+  }
+
+  mb.className = 'win-mult-badge show';
+
+  document.getElementById('lastWin').textContent = '+' + f5(profit) + ' BTC';
+  document.getElementById('lastWin').style.color = 'var(--green)';
+
+} else {
+
+  playSound('lose');
+  spawnP('lose');
+
+  const wt = document.getElementById('winText');
+  wt.textContent = 'No Win';
+  wt.className = 'win-text show lose';
+
+  document.getElementById('lastWin').textContent = '-' + f5(baseBet) + ' BTC';
+  document.getElementById('lastWin').style.color = 'var(--red');
+
+}
+
+sessionProfit += profit;
+updateBal();
+updateStats();
+
+chartData.push(profit);
+if(chartData.length > 40) chartData.shift();
+updateChart();
+
+addHistory(midRow, baseBet, totalMult, profit);
+
+if(gameMode === 'real' && baseBet > 0){
+  sbLog(
+    Math.round(baseBet*1e8),
+    Math.round(profit*1e8),
+    totalMult,
+    {
+      symbols: midRow.map(s=>s.key),
+      serverSeed: pfSS,
+      clientSeed: pfCS,
+      nonce: currentNonce,
+      freeSpinMode: freeSpinMode
+    }
+  );
+}
+
+finishSpin(baseBet, profit);
 }
 
 function finishSpin(bet,profit){
