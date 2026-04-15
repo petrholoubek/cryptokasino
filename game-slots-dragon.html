@@ -1311,6 +1311,13 @@ setTimeout(()=>{spinning=false;document.getElementById('spinBtn').disabled=false
 
 updateBal();
 console.log('🐉 Dragon\'s Treasure - MINIMAL FIX loaded!');
+
+async function callGameServer(gameId, betBtc, options) {
+  if (window.CK && window.CK.callGameServer) {
+    return await window.CK.callGameServer(gameId, betBtc, options);
+  }
+  return null;
+}
 </script>
 
 </body>
