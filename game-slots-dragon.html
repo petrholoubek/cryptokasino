@@ -1151,7 +1151,7 @@ else if(count===4)mult=first.m4;
 else if(count===3)mult=first.m3;
 
 if(mult>0){
-totalMult+=mult;
+  if(mult > totalMult) totalMult = mult;
 for(let i=0;i<count;i++){
 const cellKey=`${i}-${line[i]}`;
 winningCells.add(cellKey);
