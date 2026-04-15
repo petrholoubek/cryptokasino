@@ -1049,16 +1049,26 @@ setTimeout(()=>playBeep(f,.25),i*100);
 // BALANCED SYMBOLS - Heavily reduced multipliers
 // ═══════════════════════════════════════════════════════
 const SYMS=[
-{k:'PHARAOH',i:'👑',n:'Pharaoh',w:1,m3:8,m4:25,m5:80},
-{k:'BOOK',i:'📖',n:'Book',w:2,m3:4,m4:12,m5:60,scatter:true},
-{k:'ANUBIS',i:'🐕',n:'Anubis',w:3,m3:6,m4:20,m5:60},
-{k:'EYE',i:'👁️',n:'Eye of Ra',w:5,m3:5,m4:15,m5:50},
-{k:'SCARAB',i:'🪲',n:'Scarab',w:7,m3:4,m4:12,m5:40},
-{k:'VASE',i:'🏺',n:'Vase',w:10,m3:3,m4:10,m5:35},
-{k:'AMULET',i:'💎',n:'Amulet',w:12,m3:2,m4:8,m5:30},
-{k:'ANKH',i:'🔱',n:'Ankh',w:16,m3:2,m4:6,m5:25}
-];
+  // 🔥 TOP SYMBOL (rarita + kontrola)
+  {k:'PHARAOH',i:'👑',n:'Pharaoh',w:1,m3:6,m4:20,m5:50},
 
+  // ❗ SCATTER – BEZ payoutu
+  {k:'BOOK',i:'📖',n:'Book',w:2,m3:0,m4:0,m5:0,scatter:true},
+
+  // 🔥 HIGH
+  {k:'ANUBIS',i:'🐕',n:'Anubis',w:3,m3:5,m4:15,m5:45},
+
+  // ⚖️ MID
+  {k:'EYE',i:'👁️',n:'Eye of Ra',w:5,m3:4,m4:12,m5:40},
+  {k:'SCARAB',i:'🪲',n:'Scarab',w:7,m3:3,m4:10,m5:30},
+
+  // 📉 LOW
+  {k:'VASE',i:'🏺',n:'Vase',w:10,m3:2.5,m4:8,m5:25},
+  {k:'AMULET',i:'💎',n:'Amulet',w:12,m3:2,m4:6,m5:20},
+
+  // 📉 VERY LOW
+  {k:'ANKH',i:'🔱',n:'Ankh',w:16,m3:1.5,m4:5,m5:15}
+];
 const TW=SYMS.reduce((a,b)=>a+b.w,0);
 function randSym(){let r=Math.random()*TW;for(const s of SYMS){r-=s.w;if(r<=0)return s}return SYMS[7]}
 
@@ -1186,14 +1196,14 @@ function doSpin(bet) {
     });
   }
 
-  if (bet > 0) {
-    if (gameMode === 'real' && window.CK) {
-      realBalance -= bet;
-    } else {
-      demoBalance -= bet;
-    }
+ if (bet > 0) {
+  if (gameMode === 'real') {
+    // ✅ NIC – server řeší balance
+  } else {
+    demoBalance -= bet;
     bal -= bet;
   }
+}
 
   totalSpins++;
   updateBal();
@@ -1354,9 +1364,7 @@ if (gameMode === 'real' && window.CK) {
   const maxWin = gameSettings?.max_win_btc || 1.0;
   const houseEdge = gameSettings?.house_edge_pct ? gameSettings.house_edge_pct / 100 : 0.03;
   
-  // Apply house edge
-  const afterEdge = rawPayout * (1 - houseEdge);
-  
+     
   // Cap at max win
   const cappedPayout = Math.min(afterEdge, maxWin);
   
@@ -1375,7 +1383,49 @@ if (gameMode === 'real' && window.CK) {
   demoBalance += payout;
 }
 
-if(totalMult>0){
+if (totalMult > 0) {
+
+  if (gameMode === 'real' && window.CK && currentBet > 0) {
+    const payoutSat = Math.floor(payout * 1e8);
+
+    window.CK.addWin(payoutSat, GAME_ID).then(result => {
+      if (result && result.ok) {
+        window.CK.refreshBalance().then(newBal => {
+          realBalance = newBal;
+          bal = newBal;
+          updateBal();
+        });
+      }
+    }).catch(err => {
+      console.warn('[Book] addWin error:', err);
+    });
+
+    // ✅ LOG DO DB
+    window.CK.logBet(
+      GAME_ID,
+      Math.floor(currentBet * 1e8),
+      Math.floor(prof * 1e8),
+      totalMult,
+      {
+        serverSeed: pfSS,
+        clientSeed: pfCS,
+        nonce: currentNonce,
+        fsMode: fsMode,
+        expandSymbol: expandSym ? expandSym.k : null
+      }
+    ).catch(err => {
+      console.warn('[Book] logBet error:', err);
+    });
+
+  } else {
+    // DEMO
+    bal += payout;
+    demoBalance += payout;
+  }
+
+  profit += prof;
+  if (prof > bestWin) bestWin = prof;
+  totalWins++;
 
 winningCells.forEach(key=>{
 const[col,row]=key.split('-').map(Number);
