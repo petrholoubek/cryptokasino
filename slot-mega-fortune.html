@@ -1071,6 +1071,7 @@ function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.
 let bal = 1, spinning = false, wheelActive = false;
 let totalSpins = 0, totalWins = 0, totalLosses = 0, bestWin = 0, profit = 0;
 let currentNonce = 0, currentBet = 0;
+let lastServerResult = null;
 let autoEnabled = false, autoRemaining = 0, autoStopWin = 0, autoDelay = 1000;
 
 const ROWS = 3, COLS = 5, grid = [];
@@ -1185,6 +1186,24 @@ function doSpin(bet) {
   currentBet = bet;  // ✅ Store bet for max win calculation
   currentNonce = pfN;
   pfTick();
+
+// 🔥 SERVER CALL (REAL MODE)
+if (gameMode === 'real' && window.CK) {
+  callGameServer('mega_fortune', bet, {
+    serverSeed: pfSS,
+    clientSeed: pfCS,
+    nonce: currentNonce
+  }).then(srv => {
+    if (srv) {
+      lastServerResult = srv;
+      realBalance = srv.new_balance;
+      bal = srv.new_balance;
+      console.log('[SERVER]', srv);
+    }
+  }).catch(err => {
+    console.warn('[SERVER] mega_fortune error:', err);
+  });
+}
 
 
 
@@ -1302,8 +1321,18 @@ async function checkResolve(bet, currentNonce) {
     return;
   }
 
-  const payout = bet * totalMult;
-  const prof = payout - bet;
+ let payout = 0;
+let prof = 0;
+
+// 🔥 SERVER má prioritu
+if (gameMode === 'real' && lastServerResult) {
+  payout = lastServerResult.payout;
+  prof = lastServerResult.profit;
+  totalMult = lastServerResult.mult || totalMult;
+} else {
+  payout = bet * totalMult;
+  prof = payout - bet;
+}
 
 if (totalMult > 0) {
   // ✅ Real mode: použij addWin s max win cap
@@ -1372,6 +1401,7 @@ if (totalMult > 0) {
 
   updateBal();
   setTimeout(() => finishSpin(bet), 2000);
+lastServerResult = null;
 }
 
 function finishSpin(bet) {
@@ -1570,6 +1600,13 @@ function processWheelWin(prize) {
 
 updateBal();
 console.log('💎 Mega Fortune ULTRA BALANCED loaded! Max win: ' + MAX_WIN_MULTIPLIER + 'x bet');
+
+async function callGameServer(gameId, betBtc, options) {
+  if (window.CK && window.CK.callGameServer) {
+    return await window.CK.callGameServer(gameId, betBtc, options);
+  }
+  return null;
+}
 </script>
 </body>
 </html>
