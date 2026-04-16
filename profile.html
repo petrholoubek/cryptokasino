@@ -6,11 +6,8 @@
 <title>My Profile – CryptoKasino</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#000d33">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <style>
 :root{--gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,.6);--dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;--green:#4ade80;--red:#f87171;--blue:#60a5fa;--purple:#a855f7;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -82,7 +79,6 @@ nav a{color:var(--text-dim);text-decoration:none;transition:color .2s;}nav a:hov
 .not-logged-icon{font-size:4rem;margin-bottom:1rem;}
 .not-logged-title{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--gold-light);margin-bottom:.6rem;}
 .not-logged-sub{font-size:.88rem;color:var(--text-dim);margin-bottom:2rem;}
-/* VIP Progress */
 .vip-progress-wrap{padding:1.2rem 1.3rem;}
 .vip-bar-bg{background:rgba(255,255,255,.06);border-radius:20px;height:8px;margin:.6rem 0 .3rem;overflow:hidden;}
 .vip-bar{height:100%;border-radius:20px;transition:width 1s ease;}
@@ -96,8 +92,6 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
 </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
@@ -117,6 +111,7 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </div>
 </header>
+
 <div class="mobile-menu" id="mobileMenu">
   <a href="casino.html">&#127918; Casino</a>
   <a href="live.html">&#128247; Live</a>
@@ -151,7 +146,6 @@ const VIP_ICONS={none:'&#128100;',bronze:'&#129350;',silver:'&#129352;',gold:'&#
 const VIP_CASHBACK={none:0,bronze:1,silver:2,gold:3,platinum:5,diamond:8};
 
 async function loadProfile(){
-  // Pouzij existujici CK.sb misto vytvareni noveho klienta
   var tries=0;
   while(!window.CK&&tries<50){await new Promise(r=>setTimeout(r,100));tries++;}
   const sb=window.CK?.sb;
@@ -183,7 +177,6 @@ async function loadProfile(){
   const cashback=VIP_CASHBACK[vipLevel]||0;
   const cashbackEarned=parseFloat(prof.cashback_earned_btc||0);
 
-  // VIP Progress
   let vipPct=100,toNext=0,vipProgressHtml='';
   if(nextLevel){
     const cm=VIP_LEVELS[vipLevel]||0,nm=VIP_LEVELS[nextLevel];
@@ -220,7 +213,6 @@ async function loadProfile(){
       :`<div style="text-align:center;font-family:'Cinzel',serif;font-size:.78rem;color:var(--blue)">&#128306; Maximum VIP Level Achieved! Congratulations!</div>`}
     </div>`;
 
-  // Bets
   let betsHtml='<div class="empty-state">No bets yet. <a href="casino.html" style="color:var(--gold)">Start playing!</a></div>';
   if(totalBets>0){
     betsHtml='<div class="bet-hdr"><span>Game</span><span>Bet</span><span>Multi</span><span>Profit</span><span>Time</span></div><div>';
@@ -231,7 +223,6 @@ async function loadProfile(){
     betsHtml+='</div>';
   }
 
-  // Deposits
   let depsHtml='<div class="empty-state">No deposits yet. <a href="deposit.html" style="color:var(--gold)">Make your first deposit &#8594;</a></div>';
   if(deps&&deps.length>0){
     depsHtml='<div class="dep-hdr"><span>Amount</span><span>Status</span><span>TX</span><span>Date</span></div><div>';
@@ -239,6 +230,59 @@ async function loadProfile(){
       depsHtml+=`<div class="dep-row"><span style="font-family:'Cinzel',serif;font-size:.75rem;color:var(--green)">+${f8(d.amount_btc)} BTC</span><span><span class="dep-status ${d.status}">${d.status}</span></span><span style="font-family:monospace;font-size:.62rem;color:var(--text-dim)">${d.txid?d.txid.substring(0,12)+'...':'&#8212;'}</span><span style="font-size:.65rem;color:var(--text-dim)">${timeAgo(d.created_at)}</span></div>`;
     });
     depsHtml+='</div>';
+  }
+
+  // ═══ NAČTI AFFILIATE DATA ═══
+  let affiliateHtml = '';
+  try {
+    const {data:affiliate} = await sb.from('affiliates').select('*').eq('user_id',session.user.id).maybeSingle();
+    
+    if (affiliate) {
+      const playerCount = affiliate.total_referrals || 0;
+      const earned = parseFloat(affiliate.total_earned_btc || affiliate.total_commission_btc || 0);
+      let tier = 'Standard', commissionPct = 25;
+      
+      if (playerCount >= 50) { tier = 'Gold'; commissionPct = 35; }
+      else if (playerCount >= 10) { tier = 'Silver'; commissionPct = 30; }
+      
+      affiliateHtml = `
+      <div class="section" id="affiliateSection">
+        <div class="section-hdr">
+          <div class="section-title">&#129309; Affiliate Program</div>
+          <a href="affiliate.html" style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-decoration:none;">View Dashboard &#8594;</a>
+        </div>
+        <div style="padding:1.2rem 1.3rem;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1rem;">
+            <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;">Total Players</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--blue);">${playerCount}</div>
+            </div>
+            <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;">Total Earned</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--green);">${f5(earned)}</div>
+            </div>
+            <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;">Commission</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--purple);">${commissionPct}%</div>
+            </div>
+            <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:.9rem;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;">Tier</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);">${tier}</div>
+            </div>
+          </div>
+          <div style="background:rgba(60,120,255,.05);border:1px solid rgba(60,120,255,.15);border-radius:8px;padding:.9rem;display:flex;align-items:center;gap:1rem;">
+            <div style="font-size:2rem;">🔗</div>
+            <div style="flex:1;">
+              <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem;">Your Referral Code</div>
+              <div style="font-family:monospace;font-size:.85rem;color:var(--gold-light);">${affiliate.ref_code || affiliate.affiliate_code || 'N/A'}</div>
+            </div>
+            <a href="affiliate.html" style="font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold);text-decoration:none;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.25);padding:.55rem 1.2rem;border-radius:8px;white-space:nowrap;">Dashboard &#8594;</a>
+          </div>
+        </div>
+      </div>`;
+    }
+  } catch(e) {
+    console.warn('[Profile Affiliate]', e.message);
   }
 
   page.innerHTML=`
@@ -268,6 +312,7 @@ async function loadProfile(){
       </div>
       ${vipProgressHtml}
     </div>
+    ${affiliateHtml}
     <div class="section">
       <div class="section-hdr">
         <div class="section-title">&#127919; Recent Bets</div>
@@ -283,17 +328,14 @@ async function loadProfile(){
       ${depsHtml}
     </div>`;
 
-  // Header balance
   const hb=document.getElementById('headerBal');
   if(hb) hb.textContent=f8(prof.balance)+' BTC';
-  // Hide login btn
   const lb=document.getElementById('loginBtn');
   if(lb) lb.style.display='none';
 }
 
 loadProfile();
 
-// Hamburger
 document.addEventListener('DOMContentLoaded',function(){
   var h=document.getElementById('hamburger');
   if(h) h.addEventListener('click',function(){
@@ -307,12 +349,6 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   });
 });
-</script>
-
-
-</body>
-</html>
-<script>
 
 async function pfLoadSeeds(){
   try{
@@ -329,18 +365,16 @@ async function pfLoadSeeds(){
   }catch(e){}
 }
 async function pfChangeClientSeed(){
-  var ns = prompt('Nový Client Seed (prázdné = náhodný):');
+  var ns = prompt('New Client Seed (empty = random):');
   if(ns===null)return;
   var sess = await window.CK?.getSession?.();
   if(!sess)return;
   await fetch('https://api.cryptokasino.io/api/game/seeds/rotate',{method:'POST',headers:{'Authorization':'Bearer '+sess.access_token,'Content-Type':'application/json'},body:JSON.stringify({clientSeed:ns||undefined})});
   pfLoadSeeds();
-  alert('✅ Client Seed změněn!');
+  alert('✅ Client Seed changed!');
 }
 setTimeout(pfLoadSeeds, 2000);
 
-
-// Injektuj PF sekci do stranky
 function injectPFSection() {
   var existing = document.getElementById('pfSection');
   if (existing) return;
@@ -353,3 +387,5 @@ function injectPFSection() {
 
 setTimeout(function(){injectPFSection();pfLoadSeeds();}, 2500);
 </script>
+</body>
+</html>
