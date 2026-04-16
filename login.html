@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
 <!-- PWA manifest -->
 <link rel="manifest" href="/site.webmanifest">
-<!-- Theme color (mobilní horní lišta) -->
+<!-- Theme color (mobile top bar) -->
 <meta name="theme-color" content="#000d33">
 <title>Login – CryptoKasino</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,13 +132,68 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .forgot-desc{font-size:0.82rem;color:var(--text-dim);margin-bottom:1.2rem;line-height:1.6;}
 .magic-panel{display:none;padding:0 1.5rem 2rem;}
 .magic-panel.show{display:block;}
-/* Demo badge pro neprihlasene */
+/* Demo badge for non-logged-in users */
 .demo-play-bar{background:rgba(10,30,80,0.6);border:1px solid rgba(60,120,255,0.25);border-radius:10px;padding:0.85rem 1rem;margin:0 1.5rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:0.8rem;}
 .dpb-text{font-family:'Cinzel',serif;font-size:0.68rem;color:#93c5fd;line-height:1.5;}
 .dpb-text strong{color:#60a5fa;}
 .dpb-btn{background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);color:#93c5fd;padding:0.4rem 0.9rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.62rem;font-weight:700;cursor:pointer;white-space:nowrap;text-decoration:none;}
 .dpb-btn:hover{background:rgba(37,99,235,0.25);}
-@media(max-width:500px){header{padding:0 1rem;}.auth-card{border-radius:16px;}.auth-tabs{margin:0 1rem 1rem;}.auth-body{padding:0 1rem 1.5rem;}.demo-play-bar{margin:0 1rem 1rem;}.features-strip{padding:0.8rem 1rem;}}
+/* Referral code banner */
+.ref-code-banner{
+  background:linear-gradient(135deg, rgba(212,160,23,0.15), rgba(245,200,66,0.1));
+  border:1px solid rgba(212,160,23,0.4);
+  border-radius:10px;
+  padding:1rem;
+  margin:0 1.5rem 1rem;
+  display:none;
+  align-items:center;
+  gap:0.8rem;
+  animation:refGlow 2s ease-in-out infinite;
+}
+.ref-code-banner.show{display:flex;}
+@keyframes refGlow{
+  0%, 100%{box-shadow:0 0 20px rgba(212,160,23,0.2);}
+  50%{box-shadow:0 0 30px rgba(212,160,23,0.4);}
+}
+.rcb-icon{
+  font-size:1.8rem;
+  flex-shrink:0;
+}
+.rcb-text{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:0.2rem;
+}
+.rcb-text strong{
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;
+  letter-spacing:0.1em;
+  color:var(--gold-light);
+  text-transform:uppercase;
+}
+.rcb-text span{
+  font-family:'Crimson Text',serif;
+  font-size:1.1rem;
+  color:#fff;
+  font-weight:600;
+}
+.rcb-bonus{
+  font-family:'Cinzel',serif;
+  font-size:0.65rem;
+  color:var(--text-dim);
+  text-align:right;
+}
+@media(max-width:500px){
+  header{padding:0 1rem;}
+  .auth-card{border-radius:16px;}
+  .auth-tabs{margin:0 1rem 1rem;}
+  .auth-body{padding:0 1rem 1.5rem;}
+  .demo-play-bar{margin:0 1rem 1rem;}
+  .ref-code-banner{margin:0 1rem 1rem;flex-direction:column;text-align:center;}
+  .rcb-bonus{text-align:center;}
+  .features-strip{padding:0.8rem 1rem;}
+}
 </style>
 </head>
 <body>
@@ -161,10 +216,20 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
       <div class="auth-logo-sub">Sign in to play &amp; withdraw your winnings</div>
     </div>
 
-    <!-- Demo play bar - neprihlaseni mohou hrat zdarma -->
+    <!-- Demo play bar - non-logged users can play for free -->
     <div class="demo-play-bar">
-      <div class="dpb-text"><strong>&#127918; Demo zdarma</strong> — Hraj bez registrace s virtuálními BTC!</div>
-      <a href="casino.html" class="dpb-btn">&#9654; Hrát demo</a>
+      <div class="dpb-text"><strong>&#127918; Free Demo</strong> — Play without registration using virtual BTC!</div>
+      <a href="casino.html" class="dpb-btn">&#9654; Play Demo</a>
+    </div>
+
+    <!-- Referral code banner -->
+    <div class="ref-code-banner" id="refCodeBanner">
+      <div class="rcb-icon">🎁</div>
+      <div class="rcb-text">
+        <strong>Referral code applied!</strong>
+        <span id="refCodeValue">LOADING...</span>
+      </div>
+      <div class="rcb-bonus">Sign up now to get your welcome bonus!</div>
     </div>
 
     <div class="auth-tabs">
@@ -238,7 +303,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
             <span class="field-icon" id="usernameIcon">&#128526;</span>
           </div>
           <div class="field-error" id="regUsernameErr"></div>
-          <div class="field-hint">3–20 chars, letters, numbers and _ only</div>
+          <div class="field-hint">3–20 characters, letters, numbers and _ only</div>
         </div>
 
         <div class="field">
@@ -347,7 +412,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 <script>
 // ════════════════════════════════════════
 // CRYPTOKASINO — login.html
-// Supabase auth: login, register, google, magic link, forgot password
+// Supabase auth: login, register, google, magic link, forgot password, affiliate tracking
 // ════════════════════════════════════════
 
 const SUPABASE_URL     = 'https://cckybsbawnsbvxwloxcr.supabase.co';
@@ -356,10 +421,31 @@ const SUPABASE_ANON_KEY= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Uz prihlaseny? -> redirect
+// Already logged in? -> redirect
 (async function() {
   const { data: { session } } = await sb.auth.getSession();
   if (session) window.location.href = 'casino.html';
+})();
+
+// ══ AFFILIATE REF TRACKING - CHECK URL ══
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  
+  if(ref){
+    // Save to localStorage (valid for 30 days)
+    localStorage.setItem('ck_ref', ref);
+    localStorage.setItem('ck_ref_ts', Date.now().toString());
+    console.log('[Affiliate] Ref code saved:', ref);
+    
+    // Show banner
+    const banner = document.getElementById('refCodeBanner');
+    const codeValue = document.getElementById('refCodeValue');
+    if(banner && codeValue){
+      codeValue.textContent = ref.toUpperCase();
+      banner.classList.add('show');
+    }
+  }
 })();
 
 // ══ AMBIENT PARTICLES ══
@@ -511,7 +597,6 @@ async function submitLogin() {
 }
 
 // ══ REGISTER ══
-// OPRAVA: po registraci updatujeme username v profiles tabulce
 async function submitRegister() {
   clearAlerts();
   const username = document.getElementById('regUsername').value.trim();
@@ -546,7 +631,7 @@ async function submitRegister() {
 
   setLoading('registerBtn', true);
 
-  // 1. Vytvor ucet v Supabase Auth
+  // 1. Create account in Supabase Auth
   const { data, error } = await sb.auth.signUp({
     email,
     password,
@@ -564,9 +649,7 @@ async function submitRegister() {
     return;
   }
 
-  // 2. Updatuj username v profiles tabulce
-  // Trigger handle_new_user() vytvori profil s username z emailu
-  // My ho hned updatujeme na zadany username
+  // 2. Update username in profiles table + track affiliate
   if (data.user) {
     try {
       await sb.from('profiles').upsert({
@@ -576,21 +659,22 @@ async function submitRegister() {
         balance:  0,
         status:   'active'
       }, { onConflict: 'id' });
+      
+      // ✅ AFFILIATE TRACKING:
+      await trackAffiliateIfNeeded(data.user.id);
+      
     } catch (e) {
-      console.warn('Profile username update:', e.message);
-      // Neni kriticke - trigger uz profil vytvoril
+      console.warn('Profile update error:', e.message);
     }
   }
 
   setLoading('registerBtn', false);
 
-  // 3. Zobraz vysledek
+  // 3. Show result
   if (data.user && !data.session) {
-    // Email potvrzeni je vyzadovano
     showAlert('loginAlert', 'loginAlertMsg', 'success',
       '📧 Account created! Check your email to confirm your account. Then sign in.');
   } else if (data.session) {
-    // Rovnou prihlaseny (email confirmation vypnuto v Supabase)
     showAlert('loginAlert', 'loginAlertMsg', 'success',
       '🎉 Welcome to CryptoKasino, ' + username + '! Redirecting...');
     setTimeout(() => window.location.href = 'casino.html', 1500);
@@ -639,46 +723,42 @@ async function submitMagicLink() {
   else showAlert('magicAlert', 'magicAlertMsg', 'success', '✨ Magic link sent! Check your email and click the link.');
 }
 
-// ══ AFFILIATE REF TRACKING ══
-(function(){
-  // Uloz ?ref= kod z URL do localStorage (platí 30 dní)
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if(ref){
-    localStorage.setItem('ck_ref', ref);
-    localStorage.setItem('ck_ref_ts', Date.now().toString());
-    console.log('[Affiliate] Ref code saved:', ref);
-  }
-})();
-
-// Po prihlaseni/registraci - napoj hrace na affiliate
+// ══ AFFILIATE TRACKING ══
 async function trackAffiliateIfNeeded(userId){
   try{
     const ref = localStorage.getItem('ck_ref');
     const ts = parseInt(localStorage.getItem('ck_ref_ts')||'0');
+    
+    // Check if ref exists and hasn't expired (30 days)
     if(!ref) return;
     if(Date.now() - ts > 30*24*60*60*1000){
       localStorage.removeItem('ck_ref');
       localStorage.removeItem('ck_ref_ts');
       return;
     }
-    if(window.sb){
-      await window.sb.rpc('track_affiliate_conversion',{
+    
+    // Call SQL function to track conversion
+    if(sb){
+      await sb.rpc('track_affiliate_conversion',{
         p_player_id: userId,
         p_ref_code: ref
       });
+      
+      // Clean up after successful tracking
       localStorage.removeItem('ck_ref');
       localStorage.removeItem('ck_ref_ts');
       console.log('[Affiliate] Conversion tracked for ref:', ref);
     }
-  }catch(e){ console.warn('[Affiliate] Tracking error:', e.message); }
+  }catch(e){ 
+    console.warn('[Affiliate] Tracking error:', e.message); 
+  }
 }
 
-// Spust tracking po nacteni stranky (pokud je uzivatel prihlasen)
+// Run tracking after page loads (if user is already logged in)
 document.addEventListener('DOMContentLoaded', async function(){
-  if(window.sb){
-    const {data:{session}} = await window.sb.auth.getSession();
-    if(session) trackAffiliateIfNeeded(session.user.id);
+  if(sb){
+    const {data:{session}} = await sb.auth.getSession();
+    if(session) await trackAffiliateIfNeeded(session.user.id);
   }
 });
 </script>
