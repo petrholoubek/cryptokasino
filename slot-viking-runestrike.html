@@ -738,8 +738,8 @@ header nav a:hover{color:var(--orange-light)}
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// VIKING RUNESTRIKE - BALANCED VERSION
-// Fixed RTP to ~96.5% (was ~140%+)
+// VIKING RUNESTRIKE - SERVER-AUTHORITATIVE VERSION
+// Frontend displays only what server says
 // ══════════════════════════════════════════════════════════════
 
 const GAME_ID = 'viking_runestrike';
@@ -886,37 +886,34 @@ function snd(t) {
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// BALANCED SYMBOLS - Reduced multipliers
-// ═══════════════════════════════════════════════════════
+// SYMBOLS (for demo mode only)
 const SYMS = [
-  // 🔥 WILD – silný, ale ne extrémní payout
   { k: 'AXE', i: '⚔️', n: 'Battle Axe', w: 1, m3: 6, m4: 20, m5: 50, wild: true },
-
-  // 🔥 HIGH SYMBOLS (vzácné)
   { k: 'RUNE', i: '🔱', n: 'Rune Stone', w: 2, m3: 4, m4: 12, m5: 45 },
   { k: 'HELMET', i: '🪖', n: 'Viking Helmet', w: 3, m3: 5, m4: 15, m5: 50 },
-
-  // ⚖️ MID SYMBOLS
   { k: 'SWORD', i: '🗡️', n: 'Nordic Sword', w: 5, m3: 4, m4: 12, m5: 40 },
   { k: 'SHIELD', i: '🛡️', n: 'War Shield', w: 7, m3: 3, m4: 10, m5: 30 },
-
-  // 📉 LOW SYMBOLS (časté výhry)
   { k: 'HORN', i: '📯', n: 'War Horn', w: 10, m3: 2.5, m4: 8, m5: 25 },
   { k: 'COIN', i: '🪙', n: 'Gold Coin', w: 12, m3: 2, m4: 6, m5: 20 },
-
-  // 📉 VERY LOW (nejčastější)
   { k: 'HAMMER', i: '🔨', n: 'Thor Hammer', w: 14, m3: 1.5, m4: 5, m5: 18 },
   { k: 'LIGHTNING', i: '⚡', n: 'Lightning', w: 16, m3: 1, m4: 4, m5: 15 }
 ];
 
 const TW = SYMS.reduce((a, b) => a + b.w, 0);
-function randSym() { let r = Math.random() * TW; for (const s of SYMS) { r -= s.w; if (r <= 0) return s } return SYMS[8] }
+function randSym() { 
+  let r = Math.random() * TW; 
+  for (const s of SYMS) { 
+    r -= s.w; 
+    if (r <= 0) return s 
+  } 
+  return SYMS[8];
+}
 
-let bal = 1, spinning = false, fsRem = 0, fsMode = false;
-let runeMult = 1.0;
-let stickyWilds = [];
-let currentBet = 0;
+function getSymByKey(key) {
+  return SYMS.find(s => s.k === key) || SYMS[0];
+}
+
+let bal = 1, spinning = false;
 let totalSpins = 0, totalWins = 0, totalLosses = 0, bestWin = 0, profit = 0;
 let currentNonce = 0;
 let autoEnabled = false, autoRemaining = 0, autoStopWin = 0, autoDelay = 1000;
@@ -945,26 +942,65 @@ for (let c = 0; c < COLS; c++) {
 }
 
 // PARTICLES
-const pC = document.getElementById('particles'), pCtx = pC.getContext('2d'); let particles = [];
-function resizeP() { pC.width = window.innerWidth; pC.height = window.innerHeight } resizeP(); window.addEventListener('resize', resizeP);
+const pC = document.getElementById('particles'), pCtx = pC.getContext('2d'); 
+let particles = [];
+function resizeP() { pC.width = window.innerWidth; pC.height = window.innerHeight } 
+resizeP(); 
+window.addEventListener('resize', resizeP);
+
 function spawnP(type) {
   const cx = window.innerWidth / 2, cy = window.innerHeight * .4;
-  const cfg = { mega: { count: 300, cols: ['#FF8C42', '#FF6B1A', '#fff'], sz: [6, 20] }, big: { count: 150, cols: ['#FF8C42', '#fff'], sz: [4, 12] }, small: { count: 60, cols: ['#FF6B1A', '#fff'], sz: [2, 8] } };
+  const cfg = { 
+    mega: { count: 300, cols: ['#FF8C42', '#FF6B1A', '#fff'], sz: [6, 20] }, 
+    big: { count: 150, cols: ['#FF8C42', '#fff'], sz: [4, 12] }, 
+    small: { count: 60, cols: ['#FF6B1A', '#fff'], sz: [2, 8] } 
+  };
   const c = cfg[type] || cfg.small;
-  for (let i = 0; i < c.count; i++) { const a = Math.random() * Math.PI * 2, s = Math.random() * 18 + 5; particles.push({ x: cx + (Math.random() - .5) * 200, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 5, sz: Math.random() * (c.sz[1] - c.sz[0]) + c.sz[0], col: c.cols[Math.floor(Math.random() * c.cols.length)], life: 1, decay: Math.random() * .018 + .008, gravity: .5 }) }
+  for (let i = 0; i < c.count; i++) { 
+    const a = Math.random() * Math.PI * 2, s = Math.random() * 18 + 5; 
+    particles.push({ 
+      x: cx + (Math.random() - .5) * 200, 
+      y: cy, 
+      vx: Math.cos(a) * s, 
+      vy: Math.sin(a) * s - 5, 
+      sz: Math.random() * (c.sz[1] - c.sz[0]) + c.sz[0], 
+      col: c.cols[Math.floor(Math.random() * c.cols.length)], 
+      life: 1, 
+      decay: Math.random() * .018 + .008, 
+      gravity: .5 
+    });
+  }
 }
-function animP() { pCtx.clearRect(0, 0, pC.width, pC.height); particles = particles.filter(p => p.life > 0); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.life -= p.decay; pCtx.save(); pCtx.globalAlpha = p.life; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); pCtx.fillStyle = p.col; pCtx.fill(); pCtx.restore() }); requestAnimationFrame(animP) }
+
+function animP() { 
+  pCtx.clearRect(0, 0, pC.width, pC.height); 
+  particles = particles.filter(p => p.life > 0); 
+  particles.forEach(p => { 
+    p.x += p.vx; 
+    p.y += p.vy; 
+    p.vy += p.gravity; 
+    p.life -= p.decay; 
+    pCtx.save(); 
+    pCtx.globalAlpha = p.life; 
+    pCtx.beginPath(); 
+    pCtx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); 
+    pCtx.fillStyle = p.col; 
+    pCtx.fill(); 
+    pCtx.restore();
+  }); 
+  requestAnimationFrame(animP);
+}
 animP();
 
 function f5(n) { return parseFloat(n || 0).toFixed(5) }
 function f8(n) { return parseFloat(n || 0).toFixed(8) }
+
 function updateBal() {
   document.getElementById('bal').textContent = f8(bal);
   document.getElementById('headerBal').textContent = f8(bal) + ' BTC';
   document.getElementById('balDisplay').textContent = f8(bal);
   const betPerLine = parseFloat(document.getElementById('betInput').value) || 0.001;
-  document.getElementById('totalBet').textContent = f5(betPerLine * 10);  // ✅ 10 paylines (was 20)
-  document.getElementById('runeMult').textContent = runeMult.toFixed(1) + '×';
+  document.getElementById('totalBet').textContent = f5(betPerLine * 10);
   document.getElementById('stSpins').textContent = totalSpins;
   document.getElementById('stWins').textContent = totalWins;
   document.getElementById('stWR').textContent = totalSpins > 0 ? ((totalWins / totalSpins) * 100).toFixed(0) + '%' : '0%';
@@ -972,10 +1008,11 @@ function updateBal() {
   profEl.textContent = (profit >= 0 ? '+' : '') + f5(profit);
   profEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
 }
+
 function setBet(v) { document.getElementById('betInput').value = v.toFixed(4) }
 function halfBet() { setBet(Math.max(.0001, (parseFloat(document.getElementById('betInput').value) || .001) / 2)) }
-function doubleBet() { setBet(Math.min(bal / 10, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }  // ✅ bal/10 for 10 paylines (was bal/20)
-function maxBet() { setBet(Math.min(bal / 10, .01)) }  // ✅ bal/10 for 10 paylines (was bal/20)
+function doubleBet() { setBet(Math.min(bal / 10, (parseFloat(document.getElementById('betInput').value) || .001) * 2)) }
+function maxBet() { setBet(Math.min(bal / 10, .01)) }
 function clearBet() { setBet(.001) }
 
 // AUTO SPIN
@@ -998,314 +1035,242 @@ function handleSpin() {
   snd('spin');
   if (spinning) return;
   
-  if (fsRem > 0) {
-    doSpin(0);
+  const betPerLine = parseFloat(document.getElementById('betInput').value);
+  const totalBet = betPerLine * 10;
+  if (!betPerLine || betPerLine <= 0) { alert('Enter bet!'); return }
+  if (totalBet > bal) { 
+    alert('Insufficient balance!'); 
+    autoEnabled = false; 
+    document.getElementById('autoToggle').checked = false; 
+    toggleAuto(); 
     return;
   }
-  
-  const betPerLine = parseFloat(document.getElementById('betInput').value);
-  const totalBet = betPerLine * 10;  // ✅ 10 paylines (was 20)
-  if (!betPerLine || betPerLine <= 0) { alert('Enter bet!'); return }
-  if (totalBet > bal) { alert('Insufficient balance!'); autoEnabled = false; document.getElementById('autoToggle').checked = false; toggleAuto(); return }
   doSpin(totalBet);
 }
 
 function doSpin(bet) {
   spinning = true;
-  currentBet = bet || currentBet;  // ✅ Store bet for free spins
   currentNonce = pfN;
   pfTick();
 
+  // ✅ REAL MODE: Let server decide everything
   if (gameMode === 'real' && window.CK && bet > 0) {
+    // Odečti sázku lokálně (pro okamžitou UI reakci)
+    bal -= bet;
+    realBalance -= bet;
+    totalSpins++;
+    updateBal();
+    
+    document.getElementById('spinBtn').disabled = true;
+    document.getElementById('spinBtn').textContent = '⚔️ Spinning...';
+    document.getElementById('slotCabinet').classList.add('spinning');
+    
+    clearWinDisplay();
+    
+    // Call server
     window.CK.callGameServer(GAME_ID, bet, {
       serverSeed: pfSS,
       clientSeed: pfCS,
       nonce: currentNonce
     }).then(serverResult => {
+      console.log('[Viking] Server result:', serverResult);
+      
       if (serverResult && serverResult.ok) {
+        // ✅ Update balance from server
         realBalance = serverResult.new_balance;
         bal = serverResult.new_balance;
         updateBal();
-        window.CK.refreshBalance();
+        
+        // ✅ Update grid from server
+        if (serverResult.result && serverResult.result.grid) {
+          setGridFromServer(serverResult.result.grid);
+        }
+        
+        // ✅ Show win ONLY if server says so
+        const serverMult = serverResult.mult || 0;
+        const serverPayout = serverResult.payout || 0;
+        const serverProfit = serverResult.profit || 0;
+        
+        setTimeout(() => {
+          if (serverPayout > 0 && serverMult > 0) {
+            // WIN!
+            totalWins++;
+            profit += serverProfit;
+            if (serverProfit > bestWin) bestWin = serverProfit;
+            
+            showWinAnimation(serverPayout, serverMult, serverProfit);
+            
+            setTimeout(() => finishSpin(bet), 2000);
+          } else {
+            // LOSS
+            totalLosses++;
+            finishSpin(bet);
+          }
+          updateBal();
+        }, 1200);
+      } else {
+        console.error('[Viking] Server error:', serverResult);
+        finishSpin(bet);
       }
     }).catch(err => {
       console.error('[Viking] Server error:', err);
+      // Vrať sázku při chybě
+      bal += bet;
+      realBalance += bet;
+      updateBal();
+      finishSpin(bet);
     });
-  }
-
-  if (bet > 0) {
-    if (gameMode === 'real' && window.CK) {
-      realBalance -= bet;
-    } else {
-      demoBalance -= bet;
-    }
+    
+  } else {
+    // ✅ DEMO MODE: Use local calculation
+    demoBalance -= bet;
     bal -= bet;
+    totalSpins++;
+    updateBal();
+    
+    document.getElementById('spinBtn').disabled = true;
+    document.getElementById('spinBtn').textContent = '⚔️ Spinning...';
+    document.getElementById('slotCabinet').classList.add('spinning');
+    
+    clearWinDisplay();
+    
+    setTimeout(() => {
+      // Generate random grid
+      grid.forEach(col => {
+        col.forEach(cell => {
+          const sym = randSym();
+          cell.sym = sym;
+          cell.el.innerHTML = `<div class="sym-icon">${sym.i}</div><div class="sym-name">${sym.n}</div>`;
+        });
+      });
+      
+      // Calculate demo win (simplified)
+      const demoResult = calculateDemoWin(bet);
+      
+      setTimeout(() => {
+        if (demoResult.payout > 0) {
+          totalWins++;
+          demoBalance += demoResult.payout;
+          bal += demoResult.payout;
+          profit += demoResult.profit;
+          if (demoResult.profit > bestWin) bestWin = demoResult.profit;
+          
+          showWinAnimation(demoResult.payout, demoResult.mult, demoResult.profit);
+          
+          setTimeout(() => finishSpin(bet), 2000);
+        } else {
+          totalLosses++;
+          finishSpin(bet);
+        }
+        updateBal();
+      }, 400);
+    }, 1200);
   }
+}
 
-  totalSpins++;
-  updateBal();
+// ✅ Set grid from server response
+function setGridFromServer(serverGrid) {
+  // serverGrid format: [ ['SYM1','SYM2','SYM3'], [...], [...], [...], [...] ]
+  // 5 columns, 3 rows each
   
-  document.getElementById('spinBtn').disabled = true;
-  document.getElementById('spinBtn').textContent = fsMode ? '⚔️ Free Spin...' : '⚔️ Spinning...';
-  document.getElementById('slotCabinet').classList.add('spinning');
-  document.getElementById('slotCabinet').classList.remove('win');
+  serverGrid.forEach((column, colIdx) => {
+    column.forEach((symKey, rowIdx) => {
+      const sym = getSymByKey(symKey);
+      grid[colIdx][rowIdx].sym = sym;
+      grid[colIdx][rowIdx].el.innerHTML = `<div class="sym-icon">${sym.i}</div><div class="sym-name">${sym.n}</div>`;
+      grid[colIdx][rowIdx].el.classList.remove('win');
+    });
+  });
+}
 
+// ✅ Clear win display
+function clearWinDisplay() {
   const wt = document.getElementById('winText');
   wt.className = 'win-text';
   wt.textContent = '';
   document.getElementById('winAmount').textContent = '';
-
-  const reels = document.querySelectorAll('.reel');
-  reels.forEach(r => {
-    r.classList.remove('win');
-    r.classList.add('spinning');
-  });
-
-  setTimeout(() => {
-    grid.forEach((col, c) => {
-      col.forEach((cell, r) => {
-        // ✅ NO STICKY WILDS - always generate new symbols
-        const sym = randSym();
-        cell.sym = sym;
-        cell.el.innerHTML = `<div class="sym-icon">${sym.i}</div><div class="sym-name">${sym.n}</div>`;
-        cell.el.classList.remove('win', 'sticky');
-      });
-      reels[c].classList.remove('spinning');
-      snd('stop');
-    });
-
-    setTimeout(() => { checkResolve(bet, currentNonce) }, 400);
-  }, 1200);
-}
-
-// ✅ 10 PAYLINES - Reduced from 20 for balanced RTP
-const PAYLINES = [
-  [1, 1, 1, 1, 1], // mid
-  [0, 0, 0, 0, 0], // top
-  [2, 2, 2, 2, 2], // bot
-  [0, 1, 2, 1, 0], // V
-  [2, 1, 0, 1, 2], // ^
-  [1, 0, 1, 2, 1], // zig
-  [1, 2, 1, 0, 1], // zag
-  [0, 0, 1, 2, 2], // steps up
-  [2, 2, 1, 0, 0], // steps down
-  [1, 0, 0, 0, 1]  // W
-];
-
-function checkResolve(bet, currentNonce) {
-  const runeCnt = grid.flat().filter(c => c.sym.k === 'RUNE').length;
-
-  // ✅ BALANCED RUNE MULTIPLIER - Fixed values only
-  if (runeCnt >= 3 && !fsMode) {
-    if (runeCnt === 3) runeMult = 2.0;       // ✅ 2x for 3 runes
-    else if (runeCnt === 4) runeMult = 3.0;  // ✅ 3x for 4 runes
-    else runeMult = 5.0;                     // ✅ 5x for 5 runes (was 2-10x random!)
-    snd('lightning');
-    spawnP('big');
-    updateBal();
-  }
-
-  // ✅ FREE SPINS TRIGGER - Reduced from 10 to 6 spins
-  if (runeCnt >= 3 && fsRem === 0) {
-    triggerFS(6);  // ✅ Was: 10
-    return;
-  }
-
-  // ✅ FREE SPINS RETRIGGER - Only +3 spins
-  if (runeCnt >= 3 && fsMode) {
-    fsRem += 3;  // ✅ Was: +10
-    snd('lightning');
-    spawnP('big');
-  }
-
-  let totalMult = 0;
-  const winningCells = new Set();
-
-  PAYLINES.forEach(line => {
-    const syms = line.map((row, col) => grid[col][row].sym);
-    const first = syms[0];
-    if (first.k === 'RUNE') return;
-
-    let count = 1;
-    for (let i = 1; i < 5; i++) {
-      // ✅ FIXED: Wild properly handled
-      if (syms[i].k === first.k || syms[i].wild || first.wild) count++;
-      else break;
-    }
-
-    let mult = 0;
-    if (count === 5) mult = first.m5;
-    else if (count === 4) mult = first.m4;
-    else if (count === 3) mult = first.m3;
-
-    if (mult > 0) {
-      totalMult += mult;
-      for (let i = 0; i < count; i++) {
-        const cellKey = `${i}-${line[i]}`;
-        winningCells.add(cellKey);
-      }
-    }
-  });
-
-  // ✅ Apply Rune Multiplier (capped at 5x)
-  if (totalMult > 0 && runeMult > 1) {
-    totalMult *= Math.min(runeMult, 5);  // ✅ Cap at 5x max
-  }
-
-  if (totalMult === 0) {
-    if (bet > 0 && !fsMode) totalLosses++;
-    updateBal();
-    finishSpin(bet);
-    return;
-  }
-
-  const payout = currentBet * totalMult;  // ✅ Always use currentBet
-  const prof = payout - (fsMode ? 0 : bet);
-
-  if (totalMult > 0) {
-
-  if (gameMode === 'real' && window.CK && currentBet > 0) {
-    const payoutSat = Math.floor(payout * 1e8);
-
-    window.CK.addWin(payoutSat, GAME_ID).then(result => {
-      if (result && result.ok) {
-        window.CK.refreshBalance().then(newBal => {
-          realBalance = newBal;
-          bal = newBal;
-          updateBal();
-        });
-      }
-    }).catch(err => {
-      console.warn('[Viking] addWin error:', err);
-    });
-
-    // LOG do DB
-    window.CK.logBet(
-      GAME_ID,
-      Math.floor(currentBet * 1e8),
-      Math.floor(prof * 1e8),
-      totalMult,
-      {
-        serverSeed: pfSS,
-        clientSeed: pfCS,
-        nonce: currentNonce,
-        runeMult: runeMult,
-        fsMode: fsMode
-      }
-    ).catch(err => {
-      console.warn('[Viking] logBet error:', err);
-    });
-
-  } else {
-    // DEMO
-    bal += payout;
-    demoBalance += payout;
-  }
-
-  profit += prof;
-  if (prof > bestWin) bestWin = prof;
-  totalWins++;
-
-    if (gameMode === 'real' && window.CK) {
-      bal += payout;
-      realBalance += payout;
-    } else {
-      bal += payout;
-      demoBalance += payout;
-    }
-
-    profit += prof;
-    if (prof > bestWin) bestWin = prof;
-    totalWins++;
-
-    winningCells.forEach(key => {
-      const [col, row] = key.split('-').map(Number);
-      grid[col][row].el.classList.add('win');
-    });
-
-    const reels = document.querySelectorAll('.reel');
-    reels.forEach((reel, idx) => {
-      const hasWin = [...winningCells].some(k => k.startsWith(idx + '-'));
-      if (hasWin) reel.classList.add('win');
-    });
-
-    document.getElementById('slotCabinet').classList.add('win');
-    const wt = document.getElementById('winText');
-    if (totalMult >= 100) { wt.textContent = '⚔️ VALHALLA WIN!'; wt.className = 'win-text show mega'; snd('lightning'); spawnP('mega') }
-    else if (totalMult >= 30) { wt.textContent = '🛡️ BIG WIN!'; wt.className = 'win-text show big'; snd('win'); spawnP('big') }
-    else { wt.textContent = '⚡ WIN!'; wt.className = 'win-text show small'; snd('win'); spawnP('small') }
-    document.getElementById('winAmount').textContent = `+${f5(prof)} BTC (${totalMult.toFixed(1)}×)`;
-    document.getElementById('lastWin').textContent = '+' + f5(prof);
-    document.getElementById('bestWin').textContent = f5(bestWin);
-  }
-
-  updateBal();
-  setTimeout(() => finishSpin(bet), 2000);
-}
-
-function finishSpin(bet) {
-  spinning = false;
-  document.getElementById('spinBtn').disabled = false;
-  document.getElementById('slotCabinet').classList.remove('spinning', 'win');
-
-  const reels = document.querySelectorAll('.reel');
-  reels.forEach(r => r.classList.remove('win', 'spinning'));
-
-  // ✅ Reset multiplier if not in free spins
-  if (!fsMode) {
-    runeMult = 1.0;
-    updateBal();
-  }
-
-  if (fsRem > 0) {
-    fsRem--;
-    // ✅ BALANCED: Slower multiplier growth
-    if (fsMode) runeMult = Math.min(runeMult + 0.2, 3.5);  // ✅ Was: +0.5, max unlimited
-    updateBal();
-    if (fsRem === 0) { fsMode = false; stickyWilds = []; runeMult = 1.0; }
-    document.getElementById('spinBtn').textContent = fsRem > 0 ? `⚔️ Free Spin (${fsRem} left)` : '⚔️ SPIN';
-    setTimeout(() => doSpin(0), 1200);
-  } else {
-    document.getElementById('spinBtn').textContent = '⚔️ SPIN';
-
-    if (autoEnabled && bet > 0) {
-      if (autoRemaining < 999999) autoRemaining--;
-      if (autoStopWin > 0 && profit >= autoStopWin) {
-        document.getElementById('autoToggle').checked = false;
-        toggleAuto();
-        alert('🎉 Target win reached!');
-        return;
-      }
-      if (autoRemaining > 0 || autoRemaining > 999999) {
-        setTimeout(() => handleSpin(), autoDelay);
-      }
-    }
-  }
-
+  document.getElementById('slotCabinet').classList.remove('win');
+  
   grid.forEach(col => {
     col.forEach(cell => cell.el.classList.remove('win'));
   });
 }
 
-// ✅ BALANCED FREE SPINS TRIGGER
-function triggerFS(count) {
-  fsRem = count;
-  fsMode = true;
-  runeMult = 1.0;  // ✅ Start at 1.0 (was 2.0, then 1.5)
-  stickyWilds = [];  // ✅ No sticky wilds anymore!
+// ✅ Show win animation
+function showWinAnimation(payout, mult, profit) {
+  document.getElementById('slotCabinet').classList.add('win');
   
-  snd('lightning');
-  spawnP('mega');
+  const wt = document.getElementById('winText');
+  if (mult >= 100) { 
+    wt.textContent = '⚔️ VALHALLA WIN!'; 
+    wt.className = 'win-text show mega'; 
+    snd('lightning'); 
+    spawnP('mega');
+  } else if (mult >= 30) { 
+    wt.textContent = '🛡️ BIG WIN!'; 
+    wt.className = 'win-text show big'; 
+    snd('win'); 
+    spawnP('big');
+  } else { 
+    wt.textContent = '⚡ WIN!'; 
+    wt.className = 'win-text show small'; 
+    snd('win'); 
+    spawnP('small');
+  }
   
-  setTimeout(() => {
-    spinning = false;
-    document.getElementById('spinBtn').disabled = false;
-    setTimeout(() => doSpin(0), 600);
-  }, 2000);
+  document.getElementById('winAmount').textContent = `+${f5(profit)} BTC (${mult.toFixed(1)}×)`;
+  document.getElementById('lastWin').textContent = '+' + f5(profit);
+  document.getElementById('bestWin').textContent = f5(bestWin);
+}
+
+// ✅ Calculate demo win (simplified local calculation)
+function calculateDemoWin(bet) {
+  const mid = grid.map(col => col[1].sym); // Middle row
+  
+  let count = 1;
+  const first = mid[0];
+  
+  for (let i = 1; i < 5; i++) {
+    if (mid[i].k === first.k || mid[i].wild || first.wild) {
+      count++;
+    } else {
+      break;
+    }
+  }
+  
+  let mult = 0;
+  if (count === 5) mult = first.m5 || 0;
+  else if (count === 4) mult = first.m4 || 0;
+  else if (count === 3) mult = first.m3 || 0;
+  
+  const payout = mult > 0 ? bet * mult : 0;
+  const profit = payout - bet;
+  
+  return { payout, mult, profit };
+}
+
+function finishSpin(bet) {
+  spinning = false;
+  document.getElementById('spinBtn').disabled = false;
+  document.getElementById('spinBtn').textContent = '⚔️ SPIN';
+  document.getElementById('slotCabinet').classList.remove('spinning', 'win');
+
+  if (autoEnabled && bet > 0) {
+    if (autoRemaining < 999999) autoRemaining--;
+    if (autoStopWin > 0 && profit >= autoStopWin) {
+      document.getElementById('autoToggle').checked = false;
+      toggleAuto();
+      alert('🎉 Target win reached!');
+      return;
+    }
+    if (autoRemaining > 0 || autoRemaining > 999999) {
+      setTimeout(() => handleSpin(), autoDelay);
+    }
+  }
 }
 
 updateBal();
-console.log('⚔️ Viking Runestrike BALANCED loaded!');
+console.log('⚔️ Viking Runestrike SERVER-AUTHORITATIVE loaded!');
 </script>
 </body>
 </html>
