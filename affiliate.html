@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Affiliate Program – CryptoKasino</title>
+<link rel="icon" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
@@ -126,6 +127,8 @@ nav a.active{color:var(--gold-light);}
 .badge-green{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.25);}
 .badge-orange{background:rgba(251,146,60,0.1);color:var(--orange);border:1px solid rgba(251,146,60,0.25);}
 .badge-blue{background:rgba(96,165,250,0.1);color:var(--blue);border:1px solid rgba(96,165,250,0.25);}
+.badge-silver{background:rgba(173,181,189,0.1);color:#adb5bd;border:1px solid rgba(173,181,189,0.25);}
+.badge-gold{background:rgba(212,160,23,0.1);color:var(--gold-light);border:1px solid rgba(212,160,23,0.25);}
 
 /* ALERT */
 .al{border-radius:8px;padding:0.7rem 0.9rem;margin-bottom:0.9rem;font-size:0.85rem;display:none;align-items:center;gap:0.5rem;}
@@ -154,101 +157,67 @@ nav a.active{color:var(--gold-light);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
 
-/* CHART */
-#earningsChart{width:100%;height:120px;display:block;border-radius:8px;}
-
 /* MODAL */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:500;display:none;align-items:center;justify-content:center;}
 .modal-ov.show{display:flex;}
 .modal{background:rgba(5,15,50,0.99);border:1px solid rgba(60,120,255,0.3);border-radius:20px;padding:2rem;max-width:480px;width:95%;}
 .modal-title{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:#93c5fd;margin-bottom:1.2rem;}
 
-/* AI CHAT */
-#aiChatBtn{position:fixed;bottom:2rem;right:2rem;z-index:500;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1a4fd4,#3b82f6);border:none;cursor:pointer;box-shadow:0 0 25px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all 0.3s;animation:chatPulse 3s ease-in-out infinite;}
-#aiChatBtn:hover{transform:scale(1.1);}
-@keyframes chatPulse{0%,100%{box-shadow:0 0 25px rgba(59,130,246,0.5);}50%{box-shadow:0 0 45px rgba(59,130,246,0.8);}}
-.chat-notif{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--green);border-radius:50%;border:2px solid var(--dark);font-size:0.5rem;font-family:'Cinzel',serif;font-weight:700;color:#000;display:flex;align-items:center;justify-content:center;}
-
-#aiChatWindow{position:fixed;bottom:6.5rem;right:2rem;z-index:500;width:380px;max-width:calc(100vw - 2rem);background:rgba(2,6,20,0.99);border:1px solid rgba(60,120,255,0.35);border-radius:20px;box-shadow:0 0 60px rgba(20,60,200,0.4);display:none;flex-direction:column;overflow:hidden;}
-#aiChatWindow.open{display:flex;animation:chatOpen 0.3s cubic-bezier(0.34,1.56,0.64,1);}
-@keyframes chatOpen{from{opacity:0;transform:scale(0.85) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
-
-.chat-header{padding:1rem 1.2rem;background:linear-gradient(135deg,rgba(26,79,212,0.3),rgba(59,130,246,0.15));border-bottom:1px solid rgba(60,120,255,0.2);display:flex;align-items:center;gap:0.8rem;}
-.chat-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a4fd4,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.chat-header-info{flex:1;}
-.chat-header-name{font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;color:var(--text);}
-.chat-header-status{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:0.3rem;margin-top:0.1rem;}
-.chat-close{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1.1rem;padding:0.2rem;transition:color 0.2s;flex-shrink:0;}
-.chat-close:hover{color:var(--text);}
-
-.chat-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.8rem;max-height:340px;min-height:200px;}
-.chat-messages::-webkit-scrollbar{width:3px;}
-.chat-messages::-webkit-scrollbar-thumb{background:rgba(60,120,255,0.2);}
-
-.chat-msg{display:flex;gap:0.5rem;align-items:flex-end;animation:msgIn 0.3s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.chat-msg.user{flex-direction:row-reverse;}
-.msg-avatar{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.75rem;}
-.msg-avatar.ai{background:linear-gradient(135deg,#1a4fd4,#3b82f6);}
-.msg-avatar.user{background:rgba(212,160,23,0.2);border:1px solid rgba(212,160,23,0.3);color:var(--gold-light);}
-.msg-bubble{max-width:80%;padding:0.65rem 0.9rem;border-radius:14px;font-size:0.85rem;line-height:1.6;}
-.chat-msg.ai .msg-bubble{background:rgba(30,60,140,0.3);border:1px solid rgba(60,120,255,0.2);color:var(--text);border-bottom-left-radius:4px;}
-.chat-msg.user .msg-bubble{background:linear-gradient(135deg,rgba(26,79,212,0.4),rgba(59,130,246,0.25));border:1px solid rgba(60,120,255,0.3);color:var(--text);border-bottom-right-radius:4px;}
-.msg-time{font-family:'Cinzel',serif;font-size:0.48rem;color:var(--text-dim);margin-top:0.2rem;text-align:right;}
-
-.typing-indicator{display:flex;gap:4px;align-items:center;padding:0.5rem 0;}
-.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:typingDot 1.2s infinite;}
-.typing-dot:nth-child(2){animation-delay:0.2s;}
-.typing-dot:nth-child(3){animation-delay:0.4s;}
-@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-6px);opacity:1;}}
-
-.chat-quick{padding:0.5rem 1rem;display:flex;gap:0.4rem;flex-wrap:wrap;border-top:1px solid rgba(60,120,255,0.1);}
-.quick-btn{background:rgba(60,120,255,0.08);border:1px solid rgba(60,120,255,0.2);color:#93c5fd;padding:0.25rem 0.65rem;border-radius:12px;font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.quick-btn:hover{background:rgba(60,120,255,0.18);color:var(--blue);}
-
-.chat-input-row{display:flex;gap:0.5rem;padding:0.8rem 1rem;border-top:1px solid rgba(60,120,255,0.15);}
-#chatInput{flex:1;background:rgba(5,15,50,0.8);border:1px solid rgba(60,120,255,0.2);border-radius:10px;padding:0.55rem 0.8rem;font-family:'Crimson Text',serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s;}
-#chatInput:focus{border-color:var(--blue);}
-#chatInput::placeholder{color:var(--text-dim);}
-#chatSend{background:linear-gradient(135deg,#1a4fd4,#3b82f6);border:none;border-radius:10px;padding:0 0.9rem;color:#fff;cursor:pointer;font-size:1rem;transition:all 0.2s;flex-shrink:0;}
-#chatSend:hover{transform:scale(1.05);}
-#chatSend:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-
-@media(max-width:768px){.channels-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}.status-grid{grid-template-columns:1fr;}}
-@media(max-width:640px){header{padding:0 1rem;height:52px;}nav,.btn-login,.btn-dep,.status-text{display:none;}.hamburger{display:flex;}.page{padding:1.5rem 0.8rem 4rem;}#aiChatWindow{right:0.5rem;bottom:5.5rem;width:calc(100vw - 1rem);}#aiChatBtn{bottom:1.5rem;right:1rem;}}
+@media(max-width:768px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .tier-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  header{padding:0 1rem;height:52px;}
+  nav,.btn-login,.btn-dep{display:none;}
+  .hamburger{display:flex;}
+  .page{padding:1.5rem 0.8rem 4rem;}
+}
 </style>
 </head>
 <body>
 
 <header>
   <a href="index.html" class="logo"><div class="logo-icon">&#8383;</div><span>Crypto</span><span>Kasino</span></a>
-  <nav><a href="casino.html">Casino</a><a href="live.html">Live</a><a href="sports.html">Sports</a><a href="vip.html">VIP</a><a href="promotions.html">Promotions</a><a href="affiliate.html">Affiliate</a><a href="verify.html" style="color:#4ade80;">&#9989; Provably Fair</a></nav>
+  <nav>
+    <a href="casino.html">Casino</a>
+    <a href="affiliate.html" class="active">Affiliate</a>
+  </nav>
   <div class="header-right">
     <span class="btc-bal" id="headerBal" style="display:none">0.00000000 BTC</span>
-    <span id="headerVip"></span>
-    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="deposit.html" class="btn-dep" style="display:none" id="depositBtn">Deposit</a>
     <a href="login.html" class="btn-login" id="loginBtn">Login</a>
     <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="casino.html">Casino</a><a href="live.html">Live</a>
-  <a href="sports.html">Sports</a><a href="vip.html">&#127942; VIP</a>
-  <a href="promotions.html">Promotions</a>
-  <a href="affiliate.html">&#129309; Affiliate</a><div class="mobile-menu-btns"><a href="deposit.html" class="btn-dep">Deposit</a><a href="login.html" class="btn-login">Login</a></div>
+  <a href="casino.html">Casino</a>
+  <a href="affiliate.html">&#129309; Affiliate</a>
+  <div class="mobile-menu-btns">
+    <a href="deposit.html" class="btn-dep">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+  </div>
 </div>
 
-<!-- PAYOUT MODAL -->
+<!-- PAYOUT REQUEST MODAL -->
 <div class="modal-ov" id="payoutModal">
   <div class="modal">
     <div class="modal-title">&#128184; Request Payout</div>
     <div id="payoutAl" class="al"></div>
-    <div class="fld"><label>Your BTC Address</label><input type="text" id="payoutAddr" placeholder="bc1q..."></div>
-    <div class="fld"><label>Amount (BTC) — Available: <span id="payoutAvail">0.00000</span></label><input type="number" id="payoutAmt" placeholder="0.001" step="0.0001" min="0.001"></div>
+    <div class="fld">
+      <label>Your BTC Address</label>
+      <input type="text" id="payoutAddr" placeholder="bc1q...">
+    </div>
+    <div class="fld">
+      <label>Amount (BTC) — Available: <span id="payoutAvail">0.00000</span></label>
+      <input type="number" id="payoutAmt" placeholder="0.001" step="0.0001" min="0.001">
+    </div>
     <div style="display:flex;gap:0.8rem;margin-top:1rem;">
-      <button class="btn btn-gold" style="flex:1" onclick="submitPayout()">&#128184; Request</button>
-      <button class="btn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);" onclick="document.getElementById('payoutModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-gold" style="flex:1" onclick="submitPayout()">&#128184; Request Payout</button>
+      <button class="btn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);" onclick="closePayoutModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -259,11 +228,11 @@ nav a.active{color:var(--gold-light);}
   <div class="hero">
     <div class="hero-tag">&#129309; Partner Program</div>
     <h1>Earn with Us</h1>
-    <p>Refer players and earn up to <strong style="color:var(--gold-light)">35% of their losses</strong> — for life. No limits, weekly BTC payouts.</p>
+    <p>Refer players and earn up to <strong style="color:var(--gold-light)">35% revenue share</strong> — for life. No limits, weekly BTC payouts.</p>
   </div>
 
   <!-- TIER CARDS -->
-  <div class="section-title">&#127942; Commission Structure</div>
+  <div class="section-title">&#127942; Commission Tiers</div>
   <div class="tier-grid">
     <div class="tier-card tier-standard">
       <div class="tier-icon">&#129309;</div>
@@ -280,7 +249,7 @@ nav a.active{color:var(--gold-light);}
     <div class="tier-card tier-gold">
       <div class="tier-icon">&#129351;</div>
       <div class="tier-name">Gold</div>
-      <div class="tier-commission">50%</div>
+      <div class="tier-commission">35%</div>
       <div class="tier-req">50+ active players</div>
     </div>
   </div>
@@ -292,64 +261,37 @@ nav a.active{color:var(--gold-light);}
       <div class="how-num">01</div>
       <div class="how-icon">&#128221;</div>
       <div class="how-title">Sign Up</div>
-      <div class="how-desc">Create your affiliate account and get a unique ref code and tracking link.</div>
+      <div class="how-desc">Create your affiliate account and get a unique referral code.</div>
     </div>
     <div class="how-step">
       <div class="how-num">02</div>
       <div class="how-icon">&#128279;</div>
       <div class="how-title">Share Your Link</div>
-      <div class="how-desc">Share your link on social media, forums or Telegram.</div>
+      <div class="how-desc">Share your link on social media, forums, or Telegram groups.</div>
     </div>
     <div class="how-step">
       <div class="how-num">03</div>
       <div class="how-icon">&#127918;</div>
-      <div class="how-title">Players Play</div>
-      <div class="how-desc">Every player who joins via your link is permanently tied to your account.</div>
+      <div class="how-title">Players Sign Up</div>
+      <div class="how-desc">Every player who joins via your link is permanently tied to you.</div>
     </div>
     <div class="how-step">
       <div class="how-num">04</div>
       <div class="how-icon">&#8383;</div>
       <div class="how-title">Get Paid in BTC</div>
-      <div class="how-desc">We automatically pay your commission in BTC every week.</div>
+      <div class="how-desc">Earn commission on your players' activity. Paid weekly in BTC.</div>
     </div>
   </div>
 
-  <!-- AFFILIATE PANEL / REGISTER -->
+  <!-- NOT LOGGED IN -->
   <div id="notLoggedSection" style="display:none">
     <div class="card">
-      <div class="card-hdr"><span class="card-title">&#128272; Login to Access</span></div>
+      <div class="card-hdr"><span class="card-title">&#128272; Login Required</span></div>
       <div class="card-body" style="text-align:center;padding:2.5rem;">
         <div style="font-size:3rem;margin-bottom:1rem">&#129309;</div>
         <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-bottom:0.7rem">Join the Affiliate Program</div>
-        <div style="font-size:0.88rem;color:var(--text-dim);margin-bottom:1.5rem">Sign in and register your affiliate account. Free, instant.</div>
-        <a href="login.html" class="btn btn-blue">&#128272; Sign In</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- REGISTER FORM -->
-  <div id="registerSection" style="display:none">
-    <div class="card">
-      <div class="card-hdr"><span class="card-title">&#129309; Affiliate Registration</span></div>
-      <div class="card-body">
-        <div id="regAl" class="al"></div>
-        <div class="g2">
-          <div class="fld"><label>Affiliate Username</label><input type="text" id="regUsername" placeholder="Your name / nickname"></div>
-          <div class="fld"><label>Email</label><input type="email" id="regEmail" placeholder="email@example.com"></div>
-        </div>
-        <div class="fld"><label>BTC Address for Payouts</label><input type="text" id="regBtc" placeholder="bc1q..."></div>
-        <div class="fld"><label>How do you plan to promote us?</label>
-          <select id="regPromo">
-            <option value="">Select...</option>
-            <option value="social">Social Media (Instagram, TikTok...)</option>
-            <option value="youtube">YouTube / Twitch</option>
-            <option value="telegram">Telegram skupiny</option>
-            <option value="forum">Fóra a komunity</option>
-            <option value="website">Own website / blog</option>
-            <option value="other">Jiné</option>
-          </select>
-        </div>
-        <button class="btn btn-gold btn-full" onclick="registerAffiliate()">&#129309; Register as Affiliate</button>
+        <div style="font-size:0.88rem;color:var(--text-dim);margin-bottom:1.5rem;max-width:400px;margin-left:auto;margin-right:auto">Sign in to access your affiliate dashboard. Registration is free and takes less than a minute.</div>
+        <a href="login.html" class="btn btn-blue">&#128272; Sign In to Continue</a>
       </div>
     </div>
   </div>
@@ -359,22 +301,38 @@ nav a.active{color:var(--gold-light);}
 
     <!-- STATS -->
     <div class="stats-row">
-      <div class="stat-box sb-gold"><div class="stat-icon">&#8383;</div><div class="stat-lbl">Total Earned</div><div class="stat-val" id="dTotalEarned">0.00000</div></div>
-      <div class="stat-box sb-green"><div class="stat-icon">&#9203;</div><div class="stat-lbl">Pending Payout</div><div class="stat-val" id="dPending">0.00000</div></div>
-      <div class="stat-box sb-blue"><div class="stat-icon">&#128101;</div><div class="stat-lbl">Players Referred</div><div class="stat-val" id="dPlayers">0</div></div>
-      <div class="stat-box sb-purple"><div class="stat-icon">&#127919;</div><div class="stat-lbl">Provize</div><div class="stat-val" id="dCommission">25%</div></div>
+      <div class="stat-box sb-gold">
+        <div class="stat-icon">&#8383;</div>
+        <div class="stat-lbl">Total Earned</div>
+        <div class="stat-val" id="dTotalEarned">0.00000</div>
+      </div>
+      <div class="stat-box sb-green">
+        <div class="stat-icon">&#9203;</div>
+        <div class="stat-lbl">Available Balance</div>
+        <div class="stat-val" id="dPending">0.00000</div>
+      </div>
+      <div class="stat-box sb-blue">
+        <div class="stat-icon">&#128101;</div>
+        <div class="stat-lbl">Total Players</div>
+        <div class="stat-val" id="dPlayers">0</div>
+      </div>
+      <div class="stat-box sb-purple">
+        <div class="stat-icon">&#127919;</div>
+        <div class="stat-lbl">Commission Rate</div>
+        <div class="stat-val" id="dCommission">25%</div>
+      </div>
     </div>
 
     <!-- REF LINK -->
     <div class="card">
       <div class="card-hdr">
         <span class="card-title">&#128279; Your Referral Link</span>
-        <span class="badge badge-green" id="tierBadge">Standard</span>
+        <span class="badge" id="tierBadge">Standard</span>
       </div>
       <div class="card-body">
         <div class="ref-box">
-          <span class="ref-link" id="refLink">https://cryptokasino.io/?ref=...</span>
-          <button class="copy-btn" id="copyBtn" onclick="copyRefLink()">&#128203; Kopírovat</button>
+          <span class="ref-link" id="refLink">Loading...</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyRefLink()">&#128203; Copy</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">
           <button class="btn" style="background:rgba(29,161,242,0.1);border:1px solid rgba(29,161,242,0.25);color:#1da1f2;font-size:0.62rem;" onclick="shareTwitter()">&#120143; Twitter</button>
@@ -386,35 +344,30 @@ nav a.active{color:var(--gold-light);}
 
     <!-- TABS -->
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('stats',this)">&#128202; Statistics</button>
-      <button class="tab" onclick="switchTab('players',this)">&#128101; Playeri</button>
+      <button class="tab active" onclick="switchTab('overview',this)">&#128202; Overview</button>
+      <button class="tab" onclick="switchTab('players',this)">&#128101; Players</button>
       <button class="tab" onclick="switchTab('payouts',this)">&#128184; Payouts</button>
       <button class="tab" onclick="switchTab('settings',this)">&#9881;&#65039; Settings</button>
     </div>
 
-    <!-- STATS TAB -->
-    <div class="tab-content active" id="tab-stats">
+    <!-- OVERVIEW TAB -->
+    <div class="tab-content active" id="tab-overview">
       <div class="card">
-        <div class="card-hdr"><span class="card-title">&#128200; Earnings — Last 30 Days</span></div>
+        <div class="card-hdr"><span class="card-title">&#128200; Performance Stats</span></div>
         <div class="card-body">
-          <canvas id="earningsChart"></canvas>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:1rem;">
-            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
-              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Kliky</div>
-              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.2rem;" id="dClicks">0</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+            <div style="background:rgba(30,60,140,0.1);border-radius:8px;padding:1rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;">Total Clicks</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--text);" id="dClicks">0</div>
             </div>
-            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
-              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Registrations</div>
-              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--blue);margin-top:0.2rem;" id="dRegs">0</div>
+            <div style="background:rgba(30,60,140,0.1);border-radius:8px;padding:1rem;">
+              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;">Conversion Rate</div>
+              <div style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--gold-light);" id="dConvRate">0%</div>
             </div>
-            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
-              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Depositors</div>
-              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--green);margin-top:0.2rem;" id="dDepositors">0</div>
-            </div>
-            <div style="text-align:center;background:rgba(30,60,140,0.1);border-radius:8px;padding:0.8rem;">
-              <div style="font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Conversion Rate</div>
-              <div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.2rem;" id="dConvRate">0%</div>
-            </div>
+          </div>
+          <div style="margin-top:1.5rem;padding:1rem;background:rgba(60,120,255,0.05);border:1px solid rgba(60,120,255,0.15);border-radius:10px;">
+            <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.5rem;">💡 Pro Tip</div>
+            <div style="font-size:0.85rem;color:var(--text);line-height:1.6;">Share your referral link on social media and crypto communities to maximize your earnings. The more players you refer, the higher your commission tier!</div>
           </div>
         </div>
       </div>
@@ -423,11 +376,23 @@ nav a.active{color:var(--gold-light);}
     <!-- PLAYERS TAB -->
     <div class="tab-content" id="tab-players">
       <div class="card">
-        <div class="card-hdr"><span class="card-title">&#128101; Your Players</span><button class="btn" style="padding:0.3rem 0.7rem;font-size:0.6rem;background:rgba(60,120,255,0.1);border:1px solid rgba(60,120,255,0.25);color:#93c5fd;" onclick="loadPlayers()">Refresh</button></div>
+        <div class="card-hdr">
+          <span class="card-title">&#128101; Your Referred Players</span>
+          <button class="btn" style="padding:0.3rem 0.7rem;font-size:0.6rem;background:rgba(60,120,255,0.1);border:1px solid rgba(60,120,255,0.25);color:#93c5fd;" onclick="loadPlayers()">&#8635; Refresh</button>
+        </div>
         <div class="card-body" style="padding:0;overflow-x:auto;">
           <table class="tbl">
-            <thead><tr><th>Player</th><th>Registrations</th><th>Wagered</th><th>Your Commission</th><th>Status</th></tr></thead>
-            <tbody id="playersTbl"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">No players yet</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Joined</th>
+                <th>Balance</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="playersTbl">
+              <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-dim);">No players referred yet</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -437,16 +402,25 @@ nav a.active{color:var(--gold-light);}
     <div class="tab-content" id="tab-payouts">
       <div class="card">
         <div class="card-hdr">
-          <span class="card-title">&#128184; Payouts</span>
-          <button class="btn btn-gold" style="padding:0.4rem 1rem;font-size:0.65rem;" onclick="document.getElementById('payoutModal').classList.add('show');document.getElementById('payoutAvail').textContent=document.getElementById('dPending').textContent">&#128184; Request Payout</button>
+          <span class="card-title">&#128184; Payout History</span>
+          <button class="btn btn-gold" style="padding:0.4rem 1rem;font-size:0.65rem;" onclick="openPayoutModal()">&#128184; Request Payout</button>
         </div>
         <div class="card-body">
           <div style="background:rgba(60,120,255,0.06);border:1px solid rgba(60,120,255,0.15);border-radius:10px;padding:1rem;margin-bottom:1rem;">
-            <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;">Payouts se provádějí každý pátek automaticky na tvoji BTC adresu. Min. výplata: 0.001 BTC.</div>
+            <div style="font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;">Payouts are processed automatically every Friday to your BTC address. Minimum payout: 0.001 BTC.</div>
           </div>
           <table class="tbl">
-            <thead><tr><th>Date</th><th>Amount</th><th>BTC Adresa</th><th>TXID</th><th>Status</th></tr></thead>
-            <tbody id="payoutsTbl"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">No payouts yet</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>TX ID</th>
+              </tr>
+            </thead>
+            <tbody id="payoutsTbl">
+              <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-dim);">No payouts yet</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -458,8 +432,18 @@ nav a.active{color:var(--gold-light);}
         <div class="card-hdr"><span class="card-title">&#9881;&#65039; Account Settings</span></div>
         <div class="card-body">
           <div id="settAl" class="al"></div>
-          <div class="fld"><label>BTC Address for Payouts</label><input type="text" id="settBtc" placeholder="bc1q..."></div>
-          <div class="fld"><label>Email</label><input type="email" id="settEmail" placeholder="email@example.com" readonly style="opacity:0.6"></div>
+          <div class="fld">
+            <label>BTC Payout Address</label>
+            <input type="text" id="settBtc" placeholder="bc1q...">
+          </div>
+          <div class="fld">
+            <label>Email</label>
+            <input type="email" id="settEmail" readonly style="opacity:0.6;cursor:not-allowed;">
+          </div>
+          <div class="fld">
+            <label>Referral Code</label>
+            <input type="text" id="settRefCode" readonly style="opacity:0.6;cursor:not-allowed;">
+          </div>
           <button class="btn btn-blue btn-full" onclick="saveSettings()">&#128190; Save Settings</button>
         </div>
       </div>
@@ -469,457 +453,377 @@ nav a.active{color:var(--gold-light);}
 
 </div>
 
-
-<button id="aiChatBtn" title="AI Support Chat">
-  &#129302;
-  <div class="chat-notif" id="chatNotif">1</div>
-</button>
-
-<div id="aiChatWindow">
-  <div class="chat-header">
-    <div class="chat-avatar">&#129302;</div>
-    <div class="chat-header-info">
-      <div class="chat-header-name">Kasey &mdash; AI Support</div>
-      <div class="chat-header-status"><div class="status-dot"></div>Online &middot; Replies instantly</div>
-    </div>
-    <button class="chat-close" id="chatCloseBtn">&#10005;</button>
-  </div>
-  <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-quick" id="quickReplies">
-    <button class="quick-btn" data-msg="How do I deposit BTC?">&#8383; Deposit</button>
-    <button class="quick-btn" data-msg="How do withdrawals work?">&#11014; Withdraw</button>
-    <button class="quick-btn" data-msg="Tell me about the VIP program">&#127942; VIP</button>
-    <button class="quick-btn" data-msg="What games do you have?">&#127918; Games</button>
-    <button class="quick-btn" data-msg="Is the casino provably fair?">&#128272; Fair</button>
-  </div>
-  <div class="chat-input-row">
-    <input type="text" id="chatInput" placeholder="Type your question...">
-    <button id="chatSend">&#10148;</button>
-  </div>
-</div>
-
-<footer><p>&#169; 2026 CryptoKasino &middot; Affiliate Program &middot; <a href="terms.html">Terms</a> &middot; <a href="support.html">Support</a></p></footer>
-
-<footer><p>&#169; 2026 CryptoKasino &middot; Affiliate Program &middot; <a href="terms.html">Terms</a> &middot; <a href="support.html">Support</a></p></footer>
-
 <script>
-(function() {
-  var chatOpen = false;
-  var chatHistory = [];
-  var isTyping = false;
+// ════════════════════════════════════════
+// AFFILIATE DASHBOARD
+// ════════════════════════════════════════
 
-  var SYSTEM_PROMPT = `You are Kasey, the official AI support agent for CryptoKasino (www.cryptokasino.io). Be helpful, friendly and professional. Use emojis naturally. Answer in the same language the user writes in.
+const SUPABASE_URL = 'https://cckybsbawnsbvxwloxcr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
 
-CASINO: Bitcoin only | 16+ games + Sports | Provably Fair | Jackpot ~21 BTC
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-CURRENT GAMES: Crash, Slots, Roulette, Poker, Dice, Blackjack, Plinko, Mines, CrazyTime, Wheel, Jackpot, Baccarat, Craps, Keno, HiLo, Sports Betting
+let currentUser = null;
+let affiliateData = null;
 
-NEW GAMES (just launched):
-- Dragon Tower 🐉: 9-floor tower, choose safe tiles, avoid dragons. Easy/Medium/Hard. Max 3786x. Cash out anytime.
-- Video Poker 🃏: Jacks or Better. Hold & Draw mechanics. Royal Flush = 800x. RTP 98%.
-
-COMING SOON:
-- Egypt Gold Slots 🏺 (progressive multipliers)
-- Neon City Slots 🌆 (wilds and free spins)
-- Dragon Slots 🐲 (jackpot bonus round)
-- More games being added regularly — we grow fast!
-
-GAME RULES: Crash=cash out before crash | Slots=match symbols | Roulette=0-36 Red/Black 2x | Blackjack=beat dealer 21 | Dice=over/under | Plinko=up to 100x | Mines=avoid mines cash out | Baccarat=Player/Banker/Tie | Keno=pick 1-10 from 80 | HiLo=higher/lower | Sports=odds 1.72-3.80x | Dragon Tower=climb floors avoid dragons | Video Poker=hold best cards draw
-
-DEPOSITS: Unique BTC address | 1 confirmation | No minimum
-WITHDRAWALS: Min 0.001 BTC | Fee 0.00005 BTC | Instant automated
-WELCOME BONUS: 50% first deposit, max 0.001 BTC, auto-credited
-VIP: Bronze(5%)→Silver(10%)→Gold(15%)→Diamond(20%)→Royal(25%+manager)
-Based on wagered: 0.1→0.5→2.0→5.0→10.0 BTC
-AFFILIATE: 25-35% commission | Friday BTC payouts | affiliate@cryptokasino.io
-PROVABLY FAIR: SHA-256 | Verify at verify.html | Change client seed in profile
-JACKPOT: ~21 BTC progressive, grows with every bet
-SUPPORT: support@cryptokasino.io
-
-Do NOT share internal credentials or server details. Do NOT guarantee winnings.`
-
-  function toggleChat() {
-    chatOpen = !chatOpen;
-    var win = document.getElementById('aiChatWindow');
-    var notif = document.getElementById('chatNotif');
-    if (chatOpen) {
-      win.classList.add('open');
-      if (notif) notif.style.display = 'none';
-      if (chatHistory.length === 0) {
-        setTimeout(function() {
-          addMessage('ai', 'Hey! I\'m **Kasey** 🤝 Ask me about commissions, payouts, tracking links, or how to maximize your affiliate earnings!');
-        }, 300);
+// ══ INIT ══
+(async function() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    
+    if (session) {
+      currentUser = session.user;
+      document.getElementById('headerBal').style.display = '';
+      document.getElementById('depositBtn').style.display = '';
+      document.getElementById('loginBtn').style.display = 'none';
+      
+      // Load balance
+      const { data: profile } = await sb.from('profiles').select('balance').eq('id', currentUser.id).single();
+      if (profile) {
+        document.getElementById('headerBal').textContent = parseFloat(profile.balance || 0).toFixed(8) + ' BTC';
       }
-      setTimeout(function() {
-        var inp = document.getElementById('chatInput');
-        if (inp) inp.focus();
-      }, 400);
-    } else {
-      win.classList.remove('open');
-    }
-  }
-
-  function addMessage(role, text) {
-    var container = document.getElementById('chatMessages');
-    var div = document.createElement('div');
-    div.className = 'chat-msg ' + role;
-    var now = new Date().toLocaleTimeString('en', {hour:'2-digit', minute:'2-digit'});
-    var content = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br>');
-    div.innerHTML = '<div class="msg-avatar ' + role + '">' + (role === 'ai' ? '&#129302;' : '&#128100;') + '</div>' +
-      '<div><div class="msg-bubble">' + content + '</div><div class="msg-time">' + now + '</div></div>';
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function showTyping() {
-    var container = document.getElementById('chatMessages');
-    var div = document.createElement('div');
-    div.className = 'chat-msg ai';
-    div.id = 'typingIndicator';
-    div.innerHTML = '<div class="msg-avatar ai">&#129302;</div><div class="msg-bubble" style="padding:0.5rem 0.9rem;"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function removeTyping() {
-    var el = document.getElementById('typingIndicator');
-    if (el) el.remove();
-  }
-
-  async function sendMessage() {
-    var input = document.getElementById('chatInput');
-    if (!input) return;
-    var text = input.value.trim();
-    if (!text || isTyping) return;
-    input.value = '';
-    addMessage('user', text);
-    chatHistory.push({role: 'user', content: text});
-    isTyping = true;
-    showTyping();
-    try {
-      var response = await fetch('https://api.cryptokasino.io/api/chat', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({system: SYSTEM_PROMPT, messages: chatHistory})
-      });
-      var data = await response.json();
-      removeTyping();
-      if (data.content && data.content[0]) {
-        var reply = data.content[0].text;
-        chatHistory.push({role: 'assistant', content: reply});
-        addMessage('ai', reply);
-      }
-    } catch(e) {
-      removeTyping();
-      addMessage('ai', 'Sorry, I\'m having trouble connecting. Email us at affiliate@cryptokasino.io ✉️');
-    }
-    isTyping = false;
-    var btn = document.getElementById('chatSend');
-    if (btn) btn.disabled = false;
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    // Chat toggle button
-    var btn = document.getElementById('aiChatBtn');
-    if (btn) btn.addEventListener('click', toggleChat);
-
-    // Close button - both id and class
-    var closeBtn = document.getElementById('chatCloseBtn');
-    if (!closeBtn) closeBtn = document.querySelector('.chat-close');
-    if (closeBtn) closeBtn.addEventListener('click', toggleChat);
-
-    // Send button
-    var sendBtn = document.getElementById('chatSend');
-    if (sendBtn) sendBtn.addEventListener('click', sendMessage);
-
-    // Enter key
-    var inp = document.getElementById('chatInput');
-    if (inp) inp.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-    });
-
-    // Quick reply buttons
-    document.querySelectorAll('.quick-btn[data-msg]').forEach(function(qb) {
-      qb.addEventListener('click', function() {
-        var inp = document.getElementById('chatInput');
-        if (inp) {
-          inp.value = qb.getAttribute('data-msg');
-          if (!chatOpen) toggleChat();
-          setTimeout(sendMessage, 100);
-        }
-      });
-    });
-  });
-
-})();
-</script>
-
-<script>
-const SB_URL='https://cckybsbawnsbvxwloxcr.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
-let sb=null,currentUser=null,affiliateData=null;
-
-(async function(){
-  try{
-    // Pouzij sdileny CK.sb misto vlastniho klienta
-    var tries=0;
-    while(!window.CK&&tries<50){await new Promise(r=>setTimeout(r,100));tries++;}
-    sb=window.CK?.sb;
-    if(!sb){console.warn('[Affiliate] CK.sb nedostupny');return;}
-    const {data:{session}}=await sb.auth.getSession();
-    if(session){
-      currentUser=session.user;
-      document.getElementById('headerBal').style.display='';
-      document.getElementById('loginBtn').style.display='none';
-      if(window.CK){
-        const b=await CK.getBalance();
-        document.getElementById('headerBal').textContent=b.toFixed(8)+' BTC';
-      }
+      
       await loadAffiliate();
     } else {
-      document.getElementById('notLoggedSection').style.display='block';
+      document.getElementById('notLoggedSection').style.display = 'block';
     }
-  }catch(e){console.warn('[Affiliate]',e.message);document.getElementById('notLoggedSection').style.display='block';}
+  } catch(e) {
+    console.warn('[Affiliate]', e.message);
+    document.getElementById('notLoggedSection').style.display = 'block';
+  }
 })();
 
-async function loadAffiliate(){
-  if(!sb||!currentUser)return;
-  try{
-    const {data}=await sb.from('affiliates').select('*').eq('user_id',currentUser.id).maybeSingle();
-    if(data){
-      affiliateData=data;
-      showDashboard(data);
+// ══ LOAD AFFILIATE DATA ══
+async function loadAffiliate() {
+  if (!sb || !currentUser) return;
+  
+  try {
+    const { data: affiliate } = await sb
+      .from('affiliates')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    
+    if (affiliate) {
+      affiliateData = affiliate;
+      showDashboard(affiliate);
     } else {
-      // Neni affiliate - zobraz registracni formular
-      document.getElementById('registerSection').style.display='block';
-      // Pre-fill email
-      document.getElementById('regEmail').value=currentUser.email||'';
+      // User doesn't have affiliate account - create one automatically
+      await createAffiliateAccount();
     }
-  }catch(e){
-    document.getElementById('registerSection').style.display='block';
-    document.getElementById('regEmail').value=currentUser.email||'';
+  } catch(e) {
+    console.warn('[Affiliate Load]', e.message);
+    await createAffiliateAccount();
   }
 }
 
-function showDashboard(aff){
-  document.getElementById('registerSection').style.display='none';
-  document.getElementById('dashboardSection').style.display='block';
-
-  const refLink=`https://www.cryptokasino.io/?ref=${aff.ref_code}`;
-  document.getElementById('refLink').textContent=refLink;
-  document.getElementById('dTotalEarned').textContent=parseFloat(aff.total_earned_btc||0).toFixed(5);
-  document.getElementById('dPending').textContent=parseFloat(aff.pending_btc||0).toFixed(5);
-  document.getElementById('dPlayers').textContent=aff.total_registrations||0;
-  document.getElementById('dCommission').textContent=(aff.commission_pct||25)+'%';
-  document.getElementById('dClicks').textContent=aff.total_clicks||0;
-  document.getElementById('dRegs').textContent=aff.total_registrations||0;
-  document.getElementById('dDepositors').textContent=aff.total_depositors||0;
-  const conv=aff.total_clicks>0?((aff.total_registrations||0)/(aff.total_clicks)*100).toFixed(1)+'%':'0%';
-  document.getElementById('dConvRate').textContent=conv;
-
-  // Tier badge
-  const tierColors={standard:'badge-blue',silver:'badge-blue',gold:'badge-green'};
-  const tierBadge=document.getElementById('tierBadge');
-  tierBadge.className='badge badge-'+(tierColors[aff.tier]||'badge-blue');
-  tierBadge.textContent=aff.tier?.toUpperCase()||'STANDARD';
-
-  // Settings pre-fill
-  document.getElementById('settBtc').value=aff.btc_address||'';
-  document.getElementById('settEmail').value=currentUser.email||'';
-  document.getElementById('payoutAvail').textContent=parseFloat(aff.pending_btc||0).toFixed(5);
-
-  drawEarningsChart();
-  loadPlayers();
-  loadPayouts();
-}
-
-async function registerAffiliate(){
-  const username=document.getElementById('regUsername').value.trim();
-  const email=document.getElementById('regEmail').value.trim();
-  const btc=document.getElementById('regBtc').value.trim();
-  const promo=document.getElementById('regPromo').value;
-
-  if(!username||!email||!btc){showAl('regAl','err','Please fill in all required fields');return;}
-  if(!btc.match(/^(bc1|1|3)[a-zA-HJ-NP-Z0-9]{25,62}$/)){showAl('regAl','err','Invalid BTC address');return;}
-
-  // Vygeneruj ref code
-  const refCode=username.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0,8)+(Math.floor(Math.random()*99)+1);
-
-  try{
-    const {data,error}=await sb.from('affiliates').insert({
-      user_id:currentUser.id,
-      username,email,
-      btc_address:btc,
-      ref_code:refCode,
-      commission_pct:25,
-      tier:'standard',
-      status:'active'
+// ══ CREATE AFFILIATE ACCOUNT ══
+async function createAffiliateAccount() {
+  try {
+    // Get username from profiles
+    const { data: profile } = await sb.from('profiles').select('username, email').eq('id', currentUser.id).single();
+    
+    const username = profile?.username || currentUser.email?.split('@')[0] || 'USER';
+    const email = profile?.email || currentUser.email;
+    
+    // Generate unique referral code
+    const refCode = username.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8) + Math.floor(Math.random() * 9999);
+    
+    const { data, error } = await sb.from('affiliates').insert({
+      user_id: currentUser.id,
+      affiliate_code: refCode,
+      total_referrals: 0,
+      total_commission_btc: 0
     }).select().single();
-
-    if(error)throw error;
-    affiliateData=data;
-    showAl('regAl','ok','✅ Registrations úspěšná! Vítej v programu!');
-    setTimeout(()=>showDashboard(data),1500);
-  }catch(e){
-    if(e.message.includes('unique'))showAl('regAl','err','Username or email already exists');
-    else showAl('regAl','err','Chyba: '+e.message);
+    
+    if (error) throw error;
+    
+    affiliateData = data;
+    showDashboard(data);
+  } catch(e) {
+    console.error('[Create Affiliate]', e.message);
+    showAlert('settAl', 'err', 'Error creating affiliate account: ' + e.message);
   }
 }
 
-async function loadPlayers(){
-  if(!affiliateData||!sb)return;
-  try{
-    const {data}=await sb.from('affiliate_conversions')
-      .select('*,profiles(username,balance)')
-      .eq('affiliate_id',affiliateData.id)
-      .order('registered_at',{ascending:false})
-      .limit(20);
+// ══ SHOW DASHBOARD ══
+async function showDashboard(aff) {
+  document.getElementById('notLoggedSection').style.display = 'none';
+  document.getElementById('dashboardSection').style.display = 'block';
+  
+  // Referral link
+  const refLink = `https://cryptokasino.io/login.html?ref=${aff.affiliate_code}`;
+  document.getElementById('refLink').textContent = refLink;
+  
+  // Stats
+  document.getElementById('dTotalEarned').textContent = parseFloat(aff.total_commission_btc || 0).toFixed(5);
+  document.getElementById('dPending').textContent = parseFloat(aff.total_commission_btc || 0).toFixed(5);
+  document.getElementById('dPlayers').textContent = aff.total_referrals || 0;
+  
+  // Calculate commission tier
+  const playerCount = aff.total_referrals || 0;
+  let tier = 'standard';
+  let commissionPct = 25;
+  
+  if (playerCount >= 50) {
+    tier = 'gold';
+    commissionPct = 35;
+  } else if (playerCount >= 10) {
+    tier = 'silver';
+    commissionPct = 30;
+  }
+  
+  document.getElementById('dCommission').textContent = commissionPct + '%';
+  
+  // Tier badge
+  const tierBadge = document.getElementById('tierBadge');
+  tierBadge.className = 'badge badge-' + tier;
+  tierBadge.textContent = tier.toUpperCase();
+  
+  // Load clicks (from affiliate_clicks table)
+  const { data: clicks } = await sb.from('affiliate_clicks').select('*', { count: 'exact' }).eq('affiliate_code', aff.affiliate_code);
+  const totalClicks = clicks?.length || 0;
+  document.getElementById('dClicks').textContent = totalClicks;
+  
+  // Conversion rate
+  const convRate = totalClicks > 0 ? ((playerCount / totalClicks) * 100).toFixed(1) : '0';
+  document.getElementById('dConvRate').textContent = convRate + '%';
+  
+  // Settings
+  document.getElementById('settEmail').value = currentUser.email || '';
+  document.getElementById('settRefCode').value = aff.affiliate_code;
+  document.getElementById('settBtc').value = aff.btc_address || '';
+  
+  // Load players and payouts
+  await loadPlayers();
+  await loadPayouts();
+}
 
-    const tbody=document.getElementById('playersTbl');
-    if(!data||!data.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">No players yet</td></tr>';return;}
-
-    tbody.innerHTML=data.map(c=>{
-      const date=new Date(c.registered_at).toLocaleDateString('cs-CZ');
-      const wagered=parseFloat(c.total_wagered_btc||0).toFixed(5);
-      const comm=parseFloat(c.commission_earned_btc||0).toFixed(5);
-      const statusCls={registered:'badge-blue',depositor:'badge-green',active:'badge-green'}[c.status]||'badge-blue';
+// ══ LOAD PLAYERS ══
+async function loadPlayers() {
+  if (!affiliateData || !sb) return;
+  
+  try {
+    // Get players referred by this affiliate
+    const { data: players } = await sb
+      .from('profiles')
+      .select('id, username, balance, created_at')
+      .eq('referred_by', currentUser.id)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    
+    const tbody = document.getElementById('playersTbl');
+    
+    if (!players || !players.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-dim);">No players referred yet. Share your link to start earning!</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = players.map(p => {
+      const date = new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const balance = parseFloat(p.balance || 0).toFixed(5);
+      const status = parseFloat(p.balance) > 0 ? 'active' : 'registered';
+      const statusClass = status === 'active' ? 'badge-green' : 'badge-blue';
+      
       return `<tr>
-        <td style="font-family:'Cinzel',serif;font-size:0.75rem">${c.profiles?.username||'—'}</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.75rem">${p.username || '—'}</td>
         <td style="font-size:0.78rem;color:var(--text-dim)">${date}</td>
-        <td style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold)">${wagered} BTC</td>
-        <td style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--green)">+${comm} BTC</td>
-        <td><span class="badge ${statusCls}">${c.status||'registered'}</span></td>
+        <td style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold)">${balance} BTC</td>
+        <td><span class="badge ${statusClass}">${status}</span></td>
       </tr>`;
     }).join('');
-  }catch(e){console.warn('[Players]',e.message);}
+    
+    // Update total referrals count
+    if (players.length !== affiliateData.total_referrals) {
+      await sb.from('affiliates').update({ total_referrals: players.length }).eq('user_id', currentUser.id);
+      affiliateData.total_referrals = players.length;
+      document.getElementById('dPlayers').textContent = players.length;
+    }
+  } catch(e) {
+    console.warn('[Load Players]', e.message);
+  }
 }
 
-async function loadPayouts(){
-  if(!affiliateData||!sb)return;
-  try{
-    const {data}=await sb.from('affiliate_payouts')
-      .select('*').eq('affiliate_id',affiliateData.id)
-      .order('created_at',{ascending:false}).limit(20);
-
-    const tbody=document.getElementById('payoutsTbl');
-    if(!data||!data.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-dim);">No payouts yet</td></tr>';return;}
-
-    tbody.innerHTML=data.map(p=>{
-      const date=new Date(p.created_at).toLocaleDateString('cs-CZ');
-      const addr=p.btc_address?p.btc_address.slice(0,12)+'...'+p.btc_address.slice(-6):'—';
-      const txid=p.txid?`<a href="https://mempool.space/tx/${p.txid}" target="_blank" style="color:#93c5fd;font-size:0.7rem">${p.txid.slice(0,12)}...</a>`:'—';
-      const statusCls={paid:'badge-green',pending:'badge-orange'}[p.status]||'badge-blue';
+// ══ LOAD PAYOUTS ══
+async function loadPayouts() {
+  if (!affiliateData || !sb) return;
+  
+  try {
+    const { data: payouts } = await sb
+      .from('affiliate_payouts')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    
+    const tbody = document.getElementById('payoutsTbl');
+    
+    if (!payouts || !payouts.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-dim);">No payouts yet. Request your first payout when you have at least 0.001 BTC!</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = payouts.map(p => {
+      const date = new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const statusClass = p.status === 'paid' ? 'badge-green' : 'badge-orange';
+      const txid = p.txid ? `<a href="https://mempool.space/tx/${p.txid}" target="_blank" style="color:#93c5fd;font-size:0.7rem">${p.txid.slice(0, 12)}...</a>` : '—';
+      
       return `<tr>
         <td style="font-size:0.78rem;color:var(--text-dim)">${date}</td>
         <td style="font-family:'Cinzel',serif;color:var(--green)">${parseFloat(p.amount_btc).toFixed(5)} BTC</td>
-        <td style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">${addr}</td>
+        <td><span class="badge ${statusClass}">${p.status}</span></td>
         <td>${txid}</td>
-        <td><span class="badge ${statusCls}">${p.status}</span></td>
       </tr>`;
     }).join('');
-  }catch(e){console.warn('[Payouts]',e.message);}
+  } catch(e) {
+    console.warn('[Load Payouts]', e.message);
+  }
 }
 
-async function submitPayout(){
-  const addr=document.getElementById('payoutAddr').value.trim();
-  const amt=parseFloat(document.getElementById('payoutAmt').value);
-  const avail=parseFloat(affiliateData?.pending_btc||0);
+// ══ PAYOUT MODAL ══
+function openPayoutModal() {
+  document.getElementById('payoutModal').classList.add('show');
+  document.getElementById('payoutAvail').textContent = document.getElementById('dPending').textContent;
+}
 
-  if(!addr||!amt){showAl('payoutAl','err','Enter address and amount');return;}
-  if(amt<0.001){showAl('payoutAl','err','Minimum is 0.001 BTC');return;}
-  if(amt>avail){showAl('payoutAl','err','Insufficient funds');return;}
+function closePayoutModal() {
+  document.getElementById('payoutModal').classList.remove('show');
+}
 
-  try{
+async function submitPayout() {
+  const addr = document.getElementById('payoutAddr').value.trim();
+  const amt = parseFloat(document.getElementById('payoutAmt').value);
+  const avail = parseFloat(affiliateData?.total_commission_btc || 0);
+  
+  if (!addr || !amt) {
+    showAlert('payoutAl', 'err', '⚠️ Enter address and amount');
+    return;
+  }
+  
+  if (!addr.match(/^(bc1|1|3)[a-zA-HJ-NP-Z0-9]{25,62}$/)) {
+    showAlert('payoutAl', 'err', '⚠️ Invalid BTC address');
+    return;
+  }
+  
+  if (amt < 0.001) {
+    showAlert('payoutAl', 'err', '⚠️ Minimum payout is 0.001 BTC');
+    return;
+  }
+  
+  if (amt > avail) {
+    showAlert('payoutAl', 'err', '⚠️ Insufficient balance');
+    return;
+  }
+  
+  try {
+    // Create payout request
     await sb.from('affiliate_payouts').insert({
-      affiliate_id:affiliateData.id,
-      amount_btc:amt,
-      btc_address:addr,
-      status:'pending',
-      period_end:new Date().toISOString().split('T')[0]
+      user_id: currentUser.id,
+      amount_btc: amt,
+      status: 'pending'
     });
-    await sb.from('affiliates').update({pending_btc:avail-amt}).eq('id',affiliateData.id);
-    showAl('payoutAl','ok','✅ Request received! We will pay on Friday.');
-    affiliateData.pending_btc=avail-amt;
-    document.getElementById('dPending').textContent=(avail-amt).toFixed(5);
-  }catch(e){showAl('payoutAl','err','Chyba: '+e.message);}
+    
+    // Update affiliate balance
+    await sb.from('affiliates').update({
+      total_commission_btc: avail - amt
+    }).eq('user_id', currentUser.id);
+    
+    showAlert('payoutAl', 'ok', '✅ Payout request submitted! We will process it on Friday.');
+    
+    affiliateData.total_commission_btc = avail - amt;
+    document.getElementById('dPending').textContent = (avail - amt).toFixed(5);
+    
+    setTimeout(() => {
+      closePayoutModal();
+      loadPayouts();
+    }, 2000);
+  } catch(e) {
+    showAlert('payoutAl', 'err', '❌ Error: ' + e.message);
+  }
 }
 
-async function saveSettings(){
-  const btc=document.getElementById('settBtc').value.trim();
-  if(!btc){showAl('settAl','err','Enter BTC address');return;}
-  try{
-    await sb.from('affiliates').update({btc_address:btc,updated_at:new Date().toISOString()}).eq('id',affiliateData.id);
-    showAl('settAl','ok','✅ Settings uloženo');
-  }catch(e){showAl('settAl','err','Chyba: '+e.message);}
+// ══ SAVE SETTINGS ══
+async function saveSettings() {
+  const btc = document.getElementById('settBtc').value.trim();
+  
+  if (!btc) {
+    showAlert('settAl', 'err', '⚠️ Enter BTC address');
+    return;
+  }
+  
+  if (!btc.match(/^(bc1|1|3)[a-zA-HJ-NP-Z0-9]{25,62}$/)) {
+    showAlert('settAl', 'err', '⚠️ Invalid BTC address');
+    return;
+  }
+  
+  try {
+    await sb.from('affiliates').update({
+      btc_address: btc
+    }).eq('user_id', currentUser.id);
+    
+    showAlert('settAl', 'ok', '✅ Settings saved successfully!');
+  } catch(e) {
+    showAlert('settAl', 'err', '❌ Error: ' + e.message);
+  }
 }
 
-function copyRefLink(){
-  const link=document.getElementById('refLink').textContent;
-  navigator.clipboard.writeText(link).then(()=>{
-    const btn=document.getElementById('copyBtn');
-    btn.textContent='✓ Zkopírováno!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 Kopírovat';btn.classList.remove('copied');},2500);
+// ══ COPY REF LINK ══
+function copyRefLink() {
+  const link = document.getElementById('refLink').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy';
+      btn.classList.remove('copied');
+    }, 2500);
   });
 }
 
-function shareTwitter(){
-  const link=encodeURIComponent(document.getElementById('refLink').textContent);
-  window.open(`https://twitter.com/intent/tweet?text=Hraju%20na%20CryptoKasino%20-%20Bitcoin%20kasino%20s%20provably%20fair%20hrami!%20Registruj%20se%20přes%20můj%20link%3A%20${link}`,'_blank');
-}
-function shareWhatsapp(){
-  const link=encodeURIComponent(document.getElementById('refLink').textContent);
-  window.open(`https://wa.me/?text=Zkus%20CryptoKasino%20-%20Bitcoin%20kasino!%20${link}`,'_blank');
-}
-function shareTelegram(){
-  const link=encodeURIComponent(document.getElementById('refLink').textContent);
-  window.open(`https://t.me/share/url?url=${link}&text=Registruj%20se%20na%20CryptoKasino!`,'_blank');
+// ══ SHARE FUNCTIONS ══
+function shareTwitter() {
+  const link = encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://twitter.com/intent/tweet?text=Join%20CryptoKasino%20-%20Bitcoin%20casino%20with%20provably%20fair%20games!%20Sign%20up%20via%20my%20link:%20${link}`, '_blank');
 }
 
-function switchTab(name,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+function shareWhatsapp() {
+  const link = encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://wa.me/?text=Try%20CryptoKasino%20-%20Bitcoin%20casino!%20${link}`, '_blank');
+}
+
+function shareTelegram() {
+  const link = encodeURIComponent(document.getElementById('refLink').textContent);
+  window.open(`https://t.me/share/url?url=${link}&text=Join%20CryptoKasino!`, '_blank');
+}
+
+// ══ SWITCH TABS ══
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
 }
 
-function showAl(id,type,msg){
-  const el=document.getElementById(id);
-  if(!el)return;
-  el.className='al al-'+(type==='ok'?'ok':type==='err'?'err':'info')+' show';
-  el.textContent=msg;
-  setTimeout(()=>el.classList.remove('show'),5000);
+// ══ SHOW ALERT ══
+function showAlert(id, type, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'al al-' + (type === 'ok' ? 'ok' : type === 'err' ? 'err' : 'info') + ' show';
+  el.textContent = msg;
+  setTimeout(() => el.classList.remove('show'), 5000);
 }
 
-function drawEarningsChart(){
-  const c=document.getElementById('earningsChart');
-  if(!c)return;
-  const cx=c.getContext('2d');c.width=c.offsetWidth;c.height=120;
-  const W=c.width,H=c.height;cx.clearRect(0,0,W,H);
-  // Demo data - posledních 14 dní
-  const days=14;const data=Array.from({length:days},()=>Math.random()*0.002);
-  const mx=Math.max(...data,0.001);
-  cx.strokeStyle='rgba(60,120,255,0.08)';cx.lineWidth=1;
-  for(let i=1;i<=4;i++){const y=H*i/4;cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}
-  cx.beginPath();data.forEach((v,i)=>{const x=(i/(days-1))*W,y=H-(v/mx)*(H-10)-5;i===0?cx.moveTo(x,y):cx.lineTo(x,y);});
-  cx.strokeStyle='#60a5fa';cx.lineWidth=2;cx.lineJoin='round';cx.stroke();
-  cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();
-  const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(96,165,250,0.2)');g.addColorStop(1,'rgba(96,165,250,0)');cx.fillStyle=g;cx.fill();
-  // Labels
-  cx.fillStyle='rgba(136,152,204,0.6)';cx.font='9px Cinzel,serif';cx.textAlign='center';
-  [-13,-6,0].forEach(d=>{const i=days-1+d;const x=(i/(days-1))*W;const date=new Date(Date.now()+d*86400000);cx.fillText(date.getDate()+'.'+(date.getMonth()+1)+'.',x,H-2);});
-}
-
-// Hamburger
-document.addEventListener('DOMContentLoaded',function(){
-  const h=document.getElementById('hamburger');
-  if(h)h.addEventListener('click',function(){
+// ══ HAMBURGER ══
+document.addEventListener('DOMContentLoaded', function() {
+  const h = document.getElementById('hamburger');
+  if (h) h.addEventListener('click', function() {
     document.getElementById('mobileMenu').classList.toggle('open');
     h.classList.toggle('active');
   });
-  document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',function(){
+  
+  document.querySelectorAll('.mobile-menu a').forEach(a => a.addEventListener('click', function() {
     document.getElementById('mobileMenu').classList.remove('open');
     document.getElementById('hamburger').classList.remove('active');
   }));
