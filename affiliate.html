@@ -653,7 +653,7 @@ async function loadPayouts() {
     const { data: payouts } = await sb
       .from('affiliate_payouts')
       .select('*')
-      .eq('user_id', currentUser.id)
+      .eq('affiliate_id', currentUser.id)
       .order('created_at', { ascending: false })
       .limit(20);
     
@@ -719,7 +719,7 @@ async function submitPayout() {
   try {
     // Create payout request
     await sb.from('affiliate_payouts').insert({
-      user_id: currentUser.id,
+      affiliate_id: currentUser.id,
       amount_btc: amt,
       status: 'pending'
     });
