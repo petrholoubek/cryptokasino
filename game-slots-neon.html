@@ -813,10 +813,15 @@ let gameSettings = null;
       currentUser.username = username;
       console.log('[Neon] User:', username, 'Balance:', realBalance.toFixed(8));
       
-      document.getElementById('loginBtn').style.display = 'none';
-      document.getElementById('depositBtn').style.display = 'block';
-      document.getElementById('userMenu').style.display = 'block';
-      document.getElementById('username').textContent = username.toUpperCase();
+   const loginBtn = document.getElementById('loginBtn');
+const depositBtn = document.getElementById('depositBtn');
+const userMenu = document.getElementById('userMenu');
+const usernameEl = document.getElementById('username');
+
+if (loginBtn) loginBtn.style.display = 'none';
+if (depositBtn) depositBtn.style.display = 'block';
+if (userMenu) userMenu.style.display = 'block';
+if (usernameEl) usernameEl.textContent = username.toUpperCase();
     } catch (e) {
       console.warn('[Neon] User load error:', e.message);
     }
