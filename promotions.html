@@ -668,8 +668,36 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   </div>
   <div class="footer-bottom"><span>&#169; 2026 CryptoKasino &middot; All rights reserved</span><span>18+ &middot; Play Responsibly &middot; T&Cs Apply</span></div>
 </footer>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+// ════════════════════════════════════════════════════════════
+// CRYPTOKASINO - PROMO.HTML COMPLETE SCRIPT
+// Features: Bonuses, Wheel, Tournaments, Referral with DB
+// ════════════════════════════════════════════════════════════
+
+const SUPABASE_URL = 'https://cckybsbawnsbvxwloxcr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3lic2Jhd25zYnZ4d2xveGNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMzE5NjAsImV4cCI6MjA5MDkwNzk2MH0.M-hl7VXWF52jfnkg3zu78yiY_CT4yn3ljefej0BN2oY';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+
+// ══ INIT - Check if logged in ══
+(async function() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      document.getElementById('headerBal').style.display = '';
+      await loadUserData();
+    }
+  } catch(e) {
+    console.warn('[Promo Init]', e.message);
+  }
+})();
+
 // SUPABASE BALANCE
 (async function(){
   var tries=0;
@@ -682,154 +710,160 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(60,120,255,.15);pad
   }catch(e){console.warn('[Promo]',e.message);}
 })();
 
-// ══ PARTICLES ══
-(function(){
-  var c=document.getElementById('particleCanvas'),ctx=c.getContext('2d'),W,H,pts=[];
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
-  resize();window.addEventListener('resize',resize);
-  // Gold + purple coins flying up
-  var COLS=['rgba(60,120,255,','rgba(100,160,255,','rgba(212,160,23,','rgba(255,255,255,','rgba(150,200,255,'];
-  function mk(){return{x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*.6,vy:-(Math.random()*1.8+.4),r:Math.random()*2.5+.5,a:Math.random()*.5+.1,col:COLS[Math.floor(Math.random()*COLS.length)],life:1,decay:Math.random()*.003+.001,spin:Math.random()*Math.PI*2,spinV:(Math.random()-.5)*.1};}
-  function spawnBatch(){for(var i=0;i<3;i++)pts.push(mk());}
-  setInterval(spawnBatch,180);
-  // Also add static ambient stars
-  for(var i=0;i<60;i++)pts.push({x:Math.random()*2000,y:Math.random()*1200,r:Math.random()*1.2+.2,a:Math.random()*.3+.05,col:'rgba(212,160,23,',life:2,decay:0,vx:0,vy:0,tw:Math.random()*Math.PI*2,tws:Math.random()*.03+.01,isStatic:true});
-
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    pts=pts.filter(function(p){return p.isStatic||p.life>0&&p.y>-20;});
-    pts.forEach(function(p){
-      if(p.isStatic){
-        p.tw+=p.tws;var a=p.a*(0.5+0.5*Math.sin(p.tw));
-        ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fillStyle=p.col+a+')';ctx.fill();
-        return;
-      }
-      p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;if(p.spin!==undefined)p.spin+=p.spinV;
-      ctx.globalAlpha=p.life;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.a+')';ctx.fill();
-      ctx.globalAlpha=1;
-    });
-    requestAnimationFrame(draw);
+// ══════════════════════════════════════════════════════════
+// USER DATA LOADING
+// ══════════════════════════════════════════════════════════
+async function loadUserData() {
+  if (!currentUser) return;
+  
+  try {
+    // Load balance
+    const { data: profile } = await sb.from('profiles').select('balance').eq('id', currentUser.id).single();
+    if (profile) {
+      document.getElementById('headerBal').textContent = parseFloat(profile.balance || 0).toFixed(8) + ' BTC';
+    }
+    
+    // Load referral data
+    await loadReferralData();
+    
+    // Load active bonuses
+    await loadActiveBonuses();
+    
+    // Check wheel cooldown
+    await checkWheelCooldown();
+    
+  } catch(e) {
+    console.warn('[Load User Data]', e.message);
   }
-  draw();
+}
 
-  // WIN BURST
-  window.burstWin=function(cx,cy,col){
-    var wc=document.getElementById('winCanvas'),wctx=wc.getContext('2d');
-    wc.width=window.innerWidth;wc.height=window.innerHeight;
-    var bp=[];var WCOLS=col?[col,'rgba(255,255,255,','rgba(212,160,23,']:['rgba(212,160,23,','rgba(245,200,66,','rgba(168,85,247,','rgba(255,255,255,'];
-    for(var i=0;i<80;i++){var a=Math.random()*Math.PI*2,s=Math.random()*10+3;bp.push({x:cx||window.innerWidth/2,y:cy||window.innerHeight*.4,vx:Math.cos(a)*s,vy:Math.sin(a)*s-6,r:Math.random()*5+1,life:1,decay:Math.random()*.018+.008,gravity:.3,col:WCOLS[Math.floor(Math.random()*WCOLS.length)]});}
-    function animW(){wctx.clearRect(0,0,wc.width,wc.height);bp=bp.filter(function(p){return p.life>0;});bp.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;wctx.globalAlpha=p.life;wctx.beginPath();wctx.arc(p.x,p.y,p.r,0,Math.PI*2);wctx.fillStyle=p.col+p.life+')';wctx.fill();});wctx.globalAlpha=1;if(bp.length)requestAnimationFrame(animW);}
-    animW();
+// ══════════════════════════════════════════════════════════
+// BONUSES SYSTEM
+// ══════════════════════════════════════════════════════════
+
+async function claimBonus(bonusType) {
+  if (!currentUser) {
+    alert('Please login first!');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  // Bonus configurations
+  const bonusConfig = {
+    'welcome': { amount: 1.0, spins: 0, wagering: 35 },
+    'reload': { amount: 0.5, spins: 0, wagering: 30 },
+    'free_spins': { amount: 0, spins: 50, wagering: 0 },
+    'cashback': { amount: 0, spins: 0, wagering: 0 }, // Calculated based on losses
+    'vip_cashback': { amount: 0, spins: 0, wagering: 0 },
+    'referral': { amount: 0.05, spins: 0, wagering: 20 }
   };
-})();
-
-// ══ TOASTS ══
-function showToast(type,title,msg,burst){
-  var c=document.getElementById('toastContainer');
-  var t=document.createElement('div');
-  var icons={win:'💰',bonus:'🎁',gold:'🏆',vip:'👑',spin:'🎡'};
-  t.className='toast t-'+(type||'gold');
-  t.innerHTML='<div class="t-icon">'+(icons[type]||'🎰')+'</div><div class="t-text"><div class="t-title">'+title+'</div><div class="t-msg">'+msg+'</div></div>';
-  c.appendChild(t);
-  if(burst)setTimeout(function(){burstWin(window.innerWidth-170,window.innerHeight-120);},200);
-  setTimeout(function(){t.classList.add('tout');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},400);},4800);
-  while(c.children.length>4)c.removeChild(c.firstChild);
-}
-
-// ══ LIVE COUNTERS ══
-var onl = (function(){   // Realisticka pocatecni hodnota podle casu dne   var h = new Date().getHours();   // Peak vecer 20-23h, minimum rano 4-7h   var base = h >= 20 ? 32000 : h >= 16 ? 24000 : h >= 10 ? 18000 : h >= 7 ? 12000 : 10000;   return base + Math.floor(Math.random() * 3000); })(); var onlTarget = onl, onlDir = 1;;var pool=2.450
-setInterval(function(){
-  var diff=onlTarget-onl;onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*120)-50;if(Math.random()<0.03){var h=new Date().getHours();var b=h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;onlTarget=b+Math.floor(Math.random()*8000);}onl=Math.max(10000,Math.min(40000,onl));
-  var el=document.getElementById('pbOnline');if(el)el.textContent=onl.toLocaleString();
-},2800);
-
-setInterval(function(){
-  pool+=Math.random()*.002+.0005;
-  var pv=document.getElementById('pbPool');if(pv)pv.textContent='₿ '+pool.toFixed(3)+' BTC';
-  var pu=document.getElementById('pbUsd');if(pu)pu.textContent='≈ $'+(pool*65000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' USD';
-  var hp=document.getElementById('hPool');if(hp)hp.textContent=pool.toFixed(3)+' BTC';
-},3500);
-
-// Big wins bar rotation
-var bwClaims=[
-  ['SlotKing','Welcome Bonus','2m'],['CryptoX','0.5 BTC Reload','4m'],
-  ['BTC_Pro','50 Free Spins','6m'],['VegasKing','VIP Cashback','8m'],
-  ['Player77','Daily Cashback','11m'],['Lucky7','Welcome Bonus','14m']
-];
-var bwi=0;
-setInterval(function(){
-  bwi++;var bw=document.getElementById('pbWins');
-  if(bw){var a=bwClaims[bwi%bwClaims.length],b=bwClaims[(bwi+1)%bwClaims.length];
-    bw.innerHTML='<div class="pb-win-item">🎉 '+a[0]+' claimed <b>'+a[1]+'</b> · '+a[2]+' ago</div><div class="pb-win-item">🎉 '+b[0]+' claimed <b>'+b[1]+'</b> · '+b[2]+' ago</div>';}
-},5500);
-
-// Claimed counter
-var claimCnt=247;
-setInterval(function(){
-  if(Math.random()>.6){
-    claimCnt++;
-    var el=document.getElementById('bpWelcome');if(el)el.textContent=claimCnt+' claimed';
-    var el2=document.getElementById('bpReload');if(el2)el2.textContent=Math.floor(claimCnt*.76)+' claimed';
+  
+  const config = bonusConfig[bonusType];
+  if (!config) {
+    alert('Invalid bonus type');
+    return;
   }
-},7000);
-
-// Tournament players live
-setInterval(function(){
-  var ts=document.getElementById('tSlotPlayers');if(ts)ts.textContent=(247+Math.floor(Math.random()*5))+' players';
-  var tc=document.getElementById('tCrashPlayers');if(tc)tc.textContent=(189+Math.floor(Math.random()*4))+' players';
-  // Leaderboard score grows
-  var lb=document.getElementById('lb1s');
-  if(lb){var pts=parseInt(lb.textContent.replace(/\D/g,''));lb.textContent=(pts+Math.floor(Math.random()*200)).toLocaleString()+' pts';}
-  var lbc=document.getElementById('lb1c');
-  if(lbc){var x=parseFloat(lbc.textContent);lbc.textContent=(x+Math.random()*.5).toFixed(1)+'x';}
-},6000);
-
-// ══ AUTO TOASTS ══
-var tQ=[
-  function(){showToast('win','💰 Bonus Claimed!','SlotKing just claimed <b>Welcome Bonus 1.0 BTC</b>!',true);},
-  function(){showToast('bonus','🎁 New Claim!','CryptoX activated <b>Daily Cashback 15%</b>!');},
-  function(){showToast('gold','🏆 Tournament!','Player77 is now #3 in Slots Championship!');},
-  function(){showToast('vip','👑 VIP Upgrade!','BTC_Pro reached <b>VIP Diamond</b> tier!',true);},
-  function(){showToast('spin','🎡 Wheel Win!','Lucky7 won <b>25 Free Spins</b> on the bonus wheel!');},
-  function(){showToast('win','💰 Big Cashback!','Satoshi received <b>0.082 BTC cashback</b> today!',true);},
-  function(){showToast('bonus','🎁 Reload Active!','VegasKing claimed <b>0.5 BTC Reload Bonus</b>!');},
-];
-var tqi=0;
-function nextToast(){tQ[tqi%tQ.length]();tqi++;setTimeout(nextToast,Math.random()*7000+5000);}
-setTimeout(function(){showToast('gold','🔥 10,284 Online!','Biggest bonus week ever — <b>claim yours now!</b>');},1200);
-setTimeout(nextToast,4000);
-
-// ══ COUNTDOWN ══
-function updateCD(){
-  var now=new Date();var day=now.getDay();
-  var dum=day===0?1:(8-day)%7||7;
-  var tgt=new Date(now);tgt.setDate(now.getDate()+dum);tgt.setHours(0,0,0,0);
-  var diff=tgt-now;
-  var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  document.getElementById('cdDays').textContent=String(d).padStart(2,'0');
-  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
-  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
-  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+  
+  try {
+    // Call SQL function
+    const { data, error } = await sb.rpc('claim_bonus', {
+      p_user_id: currentUser.id,
+      p_bonus_type: bonusType,
+      p_amount_btc: config.amount,
+      p_spins_count: config.spins,
+      p_wagering_multiplier: config.wagering
+    });
+    
+    if (error) throw error;
+    
+    const result = data[0];
+    if (!result.success) {
+      alert('⚠️ ' + result.message);
+      return;
+    }
+    
+    // Success!
+    let bonusText = bonusType.replace('_', ' ').toUpperCase();
+    if (config.amount > 0) {
+      bonusText += ' (' + config.amount + ' BTC)';
+    } else if (config.spins > 0) {
+      bonusText += ' (' + config.spins + ' Free Spins)';
+    }
+    
+    showToast('win', '✅ Bonus Activated!', 'Your <b>' + bonusText + '</b> is now active!', true);
+    burstWin(window.innerWidth/2, window.innerHeight * 0.3);
+    
+    // Reload data
+    await loadUserData();
+    
+  } catch(e) {
+    alert('❌ Error: ' + e.message);
+    console.error('[Claim Bonus]', e);
+  }
 }
-setInterval(updateCD,1000);updateCD();
 
-// ══ WHEEL COOLDOWN ══
-function updateWC(){
-  var now=new Date();var tm=new Date(now);tm.setHours(24,0,0,0);
-  var diff=tm-now;
-  var h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  document.getElementById('wheelCooldown').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+async function loadActiveBonuses() {
+  if (!currentUser) return;
+  
+  try {
+    const { data: bonuses } = await sb
+      .from('user_bonuses')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .eq('status', 'active')
+      .order('claimed_at', { ascending: false });
+    
+    if (!bonuses || !bonuses.length) return;
+    
+    // Display active bonuses in UI (optional)
+    const container = document.getElementById('activeBonusesContainer');
+    if (container) {
+      container.innerHTML = bonuses.map(b => {
+        const progress = b.wagering_requirement > 0 
+          ? (b.wagered_amount / b.wagering_requirement * 100).toFixed(0)
+          : 100;
+        
+        return `
+          <div style="background:rgba(60,120,255,0.08);border:1px solid rgba(60,120,255,0.2);border-radius:8px;padding:0.8rem;margin-bottom:0.5rem;">
+            <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold-light);margin-bottom:0.3rem;">
+              ${b.bonus_type.toUpperCase()} BONUS
+            </div>
+            ${b.amount_btc > 0 ? `<div style="font-size:0.85rem;color:var(--text);">${parseFloat(b.amount_btc).toFixed(5)} BTC</div>` : ''}
+            ${b.spins_count > 0 ? `<div style="font-size:0.85rem;color:var(--text);">${b.spins_count} Free Spins</div>` : ''}
+            ${b.wagering_requirement > 0 ? `
+              <div style="margin-top:0.5rem;">
+                <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:0.2rem;">
+                  Wagering: ${parseFloat(b.wagered_amount).toFixed(5)} / ${parseFloat(b.wagering_requirement).toFixed(5)} BTC (${progress}%)
+                </div>
+                <div style="background:rgba(0,0,0,0.3);border-radius:4px;height:4px;overflow:hidden;">
+                  <div style="background:var(--green);height:100%;width:${progress}%;transition:width 0.5s;"></div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+    
+  } catch(e) {
+    console.warn('[Load Bonuses]', e.message);
+  }
 }
-setInterval(updateWC,1000);updateWC();
 
-// ══ BONUS WHEEL ══
+// ══════════════════════════════════════════════════════════
+// BONUS WHEEL SYSTEM
+// ══════════════════════════════════════════════════════════
+
 var wCanvas=document.getElementById('bonusWheelCanvas'),wCtx=wCanvas.getContext('2d');
 var PRIZES=[
-  {label:'5 Free Spins',color:'#16a34a'},{label:'₿ 0.001 BTC',color:'#c8920a'},
-  {label:'10% Cashback',color:'#1d4ed8'},{label:'10 Free Spins',color:'#7e22ce'},
-  {label:'₿ 0.005 BTC',color:'#dc2626'},{label:'25 Free Spins',color:'#0f766e'},
-  {label:'₿ 0.002 BTC',color:'#b45309'},{label:'50 Free Spins',color:'#9333ea'},
+  {label:'5 Free Spins',color:'#16a34a',type:'free_spins',value:5},
+  {label:'₿ 0.001 BTC',color:'#c8920a',type:'btc',value:0.001},
+  {label:'10% Cashback',color:'#1d4ed8',type:'cashback',value:0.10},
+  {label:'10 Free Spins',color:'#7e22ce',type:'free_spins',value:10},
+  {label:'₿ 0.005 BTC',color:'#dc2626',type:'btc',value:0.005},
+  {label:'25 Free Spins',color:'#0f766e',type:'free_spins',value:25},
+  {label:'₿ 0.002 BTC',color:'#b45309',type:'btc',value:0.002},
+  {label:'50 Free Spins',color:'#9333ea',type:'free_spins',value:50},
 ];
 var wAngle=0,wSpinning=false;
 
@@ -863,37 +897,314 @@ function drawWheel(angle){
 }
 drawWheel(0);
 
-function spinWheel(){
-  if(wSpinning)return;
-  wSpinning=true;
-  document.getElementById('spinWheelBtn').disabled=true;
-  document.getElementById('wheelResult').textContent='';
-  var result=Math.floor(Math.random()*PRIZES.length);
-  var n=PRIZES.length,sa=Math.PI*2/n;
-  var targetAngle=-(result*sa)+(Math.PI*2*7);
-  var startAngle=wAngle,duration=5000,start=performance.now();
-  function animate(now){
-    var elapsed=now-start,progress=Math.min(elapsed/duration,1);
-    var ease=1-Math.pow(1-progress,4);
-    wAngle=startAngle+(targetAngle-startAngle)*ease;
-    drawWheel(wAngle);
-    if(progress<1){requestAnimationFrame(animate);}
-    else{
-      wAngle=targetAngle%(Math.PI*2);drawWheel(wAngle);
-      var prize=PRIZES[result];
-      document.getElementById('wheelResult').textContent='🎉 You won: '+prize.label+'!';
-      burstWin(window.innerWidth*.3,window.innerHeight*.5);
-      showToast('spin','🎡 You Won!','Congratulations! You won <b>'+prize.label+'</b>!',true);
-      wSpinning=false;
-      setTimeout(function(){document.getElementById('spinWheelBtn').disabled=false;},3000);
+async function checkWheelCooldown() {
+  if (!currentUser) return;
+  
+  try {
+    const { data: canSpin } = await sb.rpc('can_spin_wheel', { p_user_id: currentUser.id });
+    
+    if (!canSpin) {
+      // Get last spin time
+      const { data: lastSpin } = await sb
+        .from('wheel_spins')
+        .select('created_at')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (lastSpin) {
+        document.getElementById('spinWheelBtn').disabled = true;
+        document.getElementById('spinWheelBtn').textContent = '⏰ Cooldown';
+        
+        // Update cooldown display
+        updateWheelCooldownDisplay(lastSpin.created_at);
+      }
+    } else {
+      document.getElementById('spinWheelBtn').disabled = false;
+      document.getElementById('spinWheelBtn').textContent = '🎡 Spin Now — Free';
     }
+  } catch(e) {
+    console.warn('[Wheel Cooldown]', e.message);
   }
-  requestAnimationFrame(animate);
 }
 
-function joinTournament(){showToast('gold','🏆 Join Tournament','Please login to enter the tournament!');}
+function updateWheelCooldownDisplay(lastSpinTime) {
+  const lastSpin = new Date(lastSpinTime);
+  const nextSpin = new Date(lastSpin.getTime() + 24 * 60 * 60 * 1000);
+  
+  const interval = setInterval(() => {
+    const now = new Date();
+    const diff = nextSpin - now;
+    
+    if (diff <= 0) {
+      clearInterval(interval);
+      document.getElementById('spinWheelBtn').disabled = false;
+      document.getElementById('spinWheelBtn').textContent = '🎡 Spin Now — Free';
+      document.getElementById('wheelCooldown').textContent = '00:00:00';
+      return;
+    }
+    
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('wheelCooldown').textContent = 
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }, 1000);
+}
 
-// ══ REFERRAL ══
+async function spinWheel(){
+  if (!currentUser) {
+    alert('Please login to spin the wheel!');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  if (wSpinning) return;
+  
+  try {
+    // Check if can spin
+    const { data: canSpin } = await sb.rpc('can_spin_wheel', { p_user_id: currentUser.id });
+    
+    if (!canSpin) {
+      alert('⏰ You can only spin once per 24 hours!');
+      return;
+    }
+    
+    wSpinning = true;
+    document.getElementById('spinWheelBtn').disabled = true;
+    document.getElementById('wheelResult').textContent = '';
+    
+    // Random result
+    var result = Math.floor(Math.random() * PRIZES.length);
+    var prize = PRIZES[result];
+    
+    var n = PRIZES.length, sa = Math.PI * 2 / n;
+    var targetAngle = -(result * sa) + (Math.PI * 2 * 7);
+    var startAngle = wAngle, duration = 5000, start = performance.now();
+    
+    function animate(now){
+      var elapsed = now - start, progress = Math.min(elapsed / duration, 1);
+      var ease = 1 - Math.pow(1 - progress, 4);
+      wAngle = startAngle + (targetAngle - startAngle) * ease;
+      drawWheel(wAngle);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        wAngle = targetAngle % (Math.PI * 2);
+        drawWheel(wAngle);
+        awardWheelPrize(prize);
+      }
+    }
+    requestAnimationFrame(animate);
+    
+  } catch(e) {
+    alert('❌ Error: ' + e.message);
+    wSpinning = false;
+    document.getElementById('spinWheelBtn').disabled = false;
+  }
+}
+
+async function awardWheelPrize(prize) {
+  try {
+    // Call SQL function to award prize
+    const { data, error } = await sb.rpc('spin_wheel', {
+      p_user_id: currentUser.id,
+      p_prize: prize.label,
+      p_prize_type: prize.type,
+      p_prize_value: prize.value
+    });
+    
+    if (error) throw error;
+    
+    const result = data[0];
+    if (!result.success) {
+      alert('⚠️ ' + result.message);
+      wSpinning = false;
+      document.getElementById('spinWheelBtn').disabled = false;
+      return;
+    }
+    
+    // Show result
+    document.getElementById('wheelResult').textContent = '🎉 You won: ' + prize.label + '!';
+    burstWin(window.innerWidth * 0.3, window.innerHeight * 0.5);
+    showToast('spin', '🎡 Wheel Win!', 'Congratulations! You won <b>' + prize.label + '</b>!', true);
+    
+    wSpinning = false;
+    
+    // Reload user data
+    await loadUserData();
+    
+  } catch(e) {
+    alert('❌ Error awarding prize: ' + e.message);
+    wSpinning = false;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// TOURNAMENTS SYSTEM
+// ══════════════════════════════════════════════════════════
+
+async function loadTournaments() {
+  try {
+    const { data: tournaments } = await sb
+      .from('tournaments')
+      .select('*')
+      .eq('status', 'active')
+      .order('prize_pool_btc', { ascending: false });
+    
+    if (!tournaments || !tournaments.length) return;
+    
+    // Load leaderboards for each tournament
+    for (const tournament of tournaments) {
+      await loadTournamentLeaderboard(tournament.id);
+    }
+    
+  } catch(e) {
+    console.warn('[Load Tournaments]', e.message);
+  }
+}
+
+async function loadTournamentLeaderboard(tournamentId) {
+  try {
+    const { data: players } = await sb
+      .from('tournament_players')
+      .select('*, profiles(username)')
+      .eq('tournament_id', tournamentId)
+      .order('score', { ascending: false })
+      .limit(10);
+    
+    // Determine which tournament (slots or crash)
+    const { data: tournament } = await sb
+      .from('tournaments')
+      .select('game_type')
+      .eq('id', tournamentId)
+      .single();
+    
+    if (!tournament) return;
+    
+    const tableId = tournament.game_type === 'slots' ? 'tSlotLeaderboard' : 'tCrashLeaderboard';
+    const tbody = document.getElementById(tableId);
+    
+    if (!tbody || !players) return;
+    
+    tbody.innerHTML = players.map((p, i) => {
+      const medals = ['🥇', '🥈', '🥉'];
+      const medal = i < 3 ? medals[i] : `#${i + 1}`;
+      
+      return `<tr>
+        <td style="font-family:'Cinzel',serif;font-size:0.7rem;text-align:center;">${medal}</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.72rem;color:var(--text);">${p.profiles?.username || 'Player'}</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--gold);" id="lb${i+1}s">${p.score.toLocaleString()} pts</td>
+        <td style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--green);" id="lb${i+1}c">${parseFloat(p.best_multiplier).toFixed(1)}x</td>
+      </tr>`;
+    }).join('');
+    
+    // Update player count
+    const { count } = await sb
+      .from('tournament_players')
+      .select('*', { count: 'exact', head: true })
+      .eq('tournament_id', tournamentId);
+    
+    const playersId = tournament.game_type === 'slots' ? 'tSlotPlayers' : 'tCrashPlayers';
+    const el = document.getElementById(playersId);
+    if (el) el.textContent = (count || 0) + ' players';
+    
+  } catch(e) {
+    console.warn('[Load Leaderboard]', e.message);
+  }
+}
+
+async function joinTournament(tournamentId) {
+  if (!currentUser) {
+    alert('Please login to join the tournament!');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  try {
+    const { data, error } = await sb.rpc('join_tournament', {
+      p_user_id: currentUser.id,
+      p_tournament_id: tournamentId
+    });
+    
+    if (error) throw error;
+    
+    const result = data[0];
+    if (!result.success) {
+      alert('⚠️ ' + result.message);
+      return;
+    }
+    
+    showToast('gold', '🏆 Tournament Joined!', 'Good luck! Start playing to climb the leaderboard!', true);
+    
+    // Reload leaderboard
+    await loadTournamentLeaderboard(tournamentId);
+    
+  } catch(e) {
+    alert('❌ Error: ' + e.message);
+  }
+}
+
+// Load tournaments on page load
+setTimeout(loadTournaments, 1000);
+
+// ══════════════════════════════════════════════════════════
+// REFERRAL SYSTEM
+// ══════════════════════════════════════════════════════════
+
+async function loadReferralData() {
+  if (!currentUser) return;
+  
+  try {
+    // Get affiliate data
+    const { data: affiliate } = await sb
+      .from('affiliates')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .single();
+    
+    if (!affiliate) {
+      // Create affiliate account if doesn't exist
+      const { data: profile } = await sb.from('profiles').select('username').eq('id', currentUser.id).single();
+      const username = profile?.username || currentUser.email?.split('@')[0] || 'USER';
+      const refCode = username.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8) + Math.floor(Math.random() * 9999);
+      
+      await sb.from('affiliates').insert({
+        user_id: currentUser.id,
+        affiliate_code: refCode,
+        total_referrals: 0,
+        total_commission_btc: 0
+      });
+      
+      // Reload
+      await loadReferralData();
+      return;
+    }
+    
+    // Update UI
+    const refLink = 'https://cryptokasino.io/login.html?ref=' + affiliate.affiliate_code;
+    document.getElementById('refLink').value = refLink;
+    document.getElementById('refCode').textContent = affiliate.affiliate_code;
+    document.getElementById('refCount').textContent = affiliate.total_referrals || 0;
+    document.getElementById('refEarned').textContent = parseFloat(affiliate.total_commission_btc || 0).toFixed(5) + ' BTC';
+    
+    // Get player count from profiles
+    const { count } = await sb
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('referred_by', currentUser.id);
+    
+    if (count !== affiliate.total_referrals) {
+      await sb.from('affiliates').update({ total_referrals: count }).eq('user_id', currentUser.id);
+      document.getElementById('refCount').textContent = count;
+    }
+    
+  } catch(e) {
+    console.warn('[Load Referral]', e.message);
+  }
+}
+
 function copyRef(){
   var inp=document.getElementById('refLink');inp.select();document.execCommand('copy');
   var btn=document.querySelector('.ref-copy-btn');btn.textContent='✅ Copied!';
@@ -901,10 +1212,136 @@ function copyRef(){
   setTimeout(function(){btn.textContent='📋 Copy';},2500);
 }
 
+// ══════════════════════════════════════════════════════════
+// PARTICLES, TOASTS, LIVE COUNTERS (Keep existing code)
+// ══════════════════════════════════════════════════════════
+
+// ══ PARTICLES ══
+(function(){
+  var c=document.getElementById('particleCanvas'),ctx=c.getContext('2d'),W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  var COLS=['rgba(60,120,255,','rgba(100,160,255,','rgba(212,160,23,','rgba(255,255,255,','rgba(150,200,255,'];
+  function mk(){return{x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*.6,vy:-(Math.random()*1.8+.4),r:Math.random()*2.5+.5,a:Math.random()*.5+.1,col:COLS[Math.floor(Math.random()*COLS.length)],life:1,decay:Math.random()*.003+.001,spin:Math.random()*Math.PI*2,spinV:(Math.random()-.5)*.1};}
+  function spawnBatch(){for(var i=0;i<3;i++)pts.push(mk());}
+  setInterval(spawnBatch,180);
+  for(var i=0;i<60;i++)pts.push({x:Math.random()*2000,y:Math.random()*1200,r:Math.random()*1.2+.2,a:Math.random()*.3+.05,col:'rgba(212,160,23,',life:2,decay:0,vx:0,vy:0,tw:Math.random()*Math.PI*2,tws:Math.random()*.03+.01,isStatic:true});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts=pts.filter(function(p){return p.isStatic||p.life>0&&p.y>-20;});
+    pts.forEach(function(p){
+      if(p.isStatic){
+        p.tw+=p.tws;var a=p.a*(0.5+0.5*Math.sin(p.tw));
+        ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fillStyle=p.col+a+')';ctx.fill();
+        return;
+      }
+      p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;if(p.spin!==undefined)p.spin+=p.spinV;
+      ctx.globalAlpha=p.life;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.a+')';ctx.fill();
+      ctx.globalAlpha=1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.burstWin=function(cx,cy,col){
+    var wc=document.getElementById('winCanvas'),wctx=wc.getContext('2d');
+    wc.width=window.innerWidth;wc.height=window.innerHeight;
+    var bp=[];var WCOLS=col?[col,'rgba(255,255,255,','rgba(212,160,23,']:['rgba(212,160,23,','rgba(245,200,66,','rgba(168,85,247,','rgba(255,255,255,'];
+    for(var i=0;i<80;i++){var a=Math.random()*Math.PI*2,s=Math.random()*10+3;bp.push({x:cx||window.innerWidth/2,y:cy||window.innerHeight*.4,vx:Math.cos(a)*s,vy:Math.sin(a)*s-6,r:Math.random()*5+1,life:1,decay:Math.random()*.018+.008,gravity:.3,col:WCOLS[Math.floor(Math.random()*WCOLS.length)]});}
+    function animW(){wctx.clearRect(0,0,wc.width,wc.height);bp=bp.filter(function(p){return p.life>0;});bp.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=p.gravity;p.life-=p.decay;wctx.globalAlpha=p.life;wctx.beginPath();wctx.arc(p.x,p.y,p.r,0,Math.PI*2);wctx.fillStyle=p.col+p.life+')';wctx.fill();});wctx.globalAlpha=1;if(bp.length)requestAnimationFrame(animW);}
+    animW();
+  };
+})();
+
+// ══ TOASTS ══
+function showToast(type,title,msg,burst){
+  var c=document.getElementById('toastContainer');
+  var t=document.createElement('div');
+  var icons={win:'💰',bonus:'🎁',gold:'🏆',vip:'👑',spin:'🎡'};
+  t.className='toast t-'+(type||'gold');
+  t.innerHTML='<div class="t-icon">'+(icons[type]||'🎰')+'</div><div class="t-text"><div class="t-title">'+title+'</div><div class="t-msg">'+msg+'</div></div>';
+  c.appendChild(t);
+  if(burst)setTimeout(function(){burstWin(window.innerWidth-170,window.innerHeight-120);},200);
+  setTimeout(function(){t.classList.add('tout');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},400);},4800);
+  while(c.children.length>4)c.removeChild(c.firstChild);
+}
+
+// ══ LIVE COUNTERS ══
+var onl = (function(){ var h = new Date().getHours(); var base = h >= 20 ? 32000 : h >= 16 ? 24000 : h >= 10 ? 18000 : h >= 7 ? 12000 : 10000; return base + Math.floor(Math.random() * 3000); })(); 
+var onlTarget = onl, onlDir = 1;
+var pool=2.450;
+
+setInterval(function(){
+  var diff=onlTarget-onl;onl+=Math.floor(diff*0.05)+Math.floor(Math.random()*120)-50;
+  if(Math.random()<0.03){var h=new Date().getHours();var b=h>=20?32000:h>=16?24000:h>=10?18000:h>=7?12000:10000;onlTarget=b+Math.floor(Math.random()*8000);}
+  onl=Math.max(10000,Math.min(40000,onl));
+  var el=document.getElementById('pbOnline');if(el)el.textContent=onl.toLocaleString();
+},2800);
+
+setInterval(function(){
+  pool+=Math.random()*.002+.0005;
+  var pv=document.getElementById('pbPool');if(pv)pv.textContent='₿ '+pool.toFixed(3)+' BTC';
+  var pu=document.getElementById('pbUsd');if(pu)pu.textContent='≈ $'+(pool*65000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')+' USD';
+  var hp=document.getElementById('hPool');if(hp)hp.textContent=pool.toFixed(3)+' BTC';
+},3500);
+
+// Big wins bar rotation
+var bwClaims=[
+  ['SlotKing','Welcome Bonus','2m'],['CryptoX','0.5 BTC Reload','4m'],
+  ['BTC_Pro','50 Free Spins','6m'],['VegasKing','VIP Cashback','8m'],
+  ['Player77','Daily Cashback','11m'],['Lucky7','Welcome Bonus','14m']
+];
+var bwi=0;
+setInterval(function(){
+  bwi++;var bw=document.getElementById('pbWins');
+  if(bw){var a=bwClaims[bwi%bwClaims.length],b=bwClaims[(bwi+1)%bwClaims.length];
+    bw.innerHTML='<div class="pb-win-item">🎉 '+a[0]+' claimed <b>'+a[1]+'</b> · '+a[2]+' ago</div><div class="pb-win-item">🎉 '+b[0]+' claimed <b>'+b[1]+'</b> · '+b[2]+' ago</div>';}
+},5500);
+
+// Claimed counter
+var claimCnt=247;
+setInterval(function(){
+  if(Math.random()>.6){
+    claimCnt++;
+    var el=document.getElementById('bpWelcome');if(el)el.textContent=claimCnt+' claimed';
+    var el2=document.getElementById('bpReload');if(el2)el2.textContent=Math.floor(claimCnt*.76)+' claimed';
+  }
+},7000);
+
+// ══ COUNTDOWN ══
+function updateCD(){
+  var now=new Date();var day=now.getDay();
+  var dum=day===0?1:(8-day)%7||7;
+  var tgt=new Date(now);tgt.setDate(now.getDate()+dum);tgt.setHours(0,0,0,0);
+  var diff=tgt-now;
+  var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('cdDays').textContent=String(d).padStart(2,'0');
+  document.getElementById('cdHours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cdMins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cdSecs').textContent=String(s).padStart(2,'0');
+}
+setInterval(updateCD,1000);updateCD();
+
+// ══ AUTO TOASTS ══
+var tQ=[
+  function(){showToast('win','💰 Bonus Claimed!','SlotKing just claimed <b>Welcome Bonus 1.0 BTC</b>!',true);},
+  function(){showToast('bonus','🎁 New Claim!','CryptoX activated <b>Daily Cashback 15%</b>!');},
+  function(){showToast('gold','🏆 Tournament!','Player77 is now #3 in Slots Championship!');},
+  function(){showToast('vip','👑 VIP Upgrade!','BTC_Pro reached <b>VIP Diamond</b> tier!',true);},
+  function(){showToast('spin','🎡 Wheel Win!','Lucky7 won <b>25 Free Spins</b> on the bonus wheel!');},
+  function(){showToast('win','💰 Big Cashback!','Satoshi received <b>0.082 BTC cashback</b> today!',true);},
+  function(){showToast('bonus','🎁 Reload Active!','VegasKing claimed <b>0.5 BTC Reload Bonus</b>!');},
+];
+var tqi=0;
+function nextToast(){tQ[tqi%tQ.length]();tqi++;setTimeout(nextToast,Math.random()*7000+5000);}
+setTimeout(function(){showToast('gold','🔥 10,284 Online!','Biggest bonus week ever — <b>claim yours now!</b>');},1200);
+setTimeout(nextToast,4000);
+
 // ══ HAMBURGER ══
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('hamburger').classList.toggle('active');}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('hamburger').classList.remove('active');}
 document.addEventListener('click',function(e){var m=document.getElementById('mobileMenu'),h=document.getElementById('hamburger');if(!m.contains(e.target)&&!h.contains(e.target))closeMenu();});
+
 </script>
 </body>
 </html>
