@@ -337,6 +337,15 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
           <div class="field-error" id="regPwConfErr"></div>
         </div>
 
+<div class="field">
+          <label class="field-label">Referral Code (Optional)</label>
+          <div class="field-wrap">
+            <input type="text" class="field-input" id="refCodeInput" placeholder="Enter referral code (optional)" style="text-transform:uppercase">
+            <span class="field-icon">🎁</span>
+          </div>
+          <div class="field-hint">Have a referral code? Enter it here!</div>
+        </div>
+
         <div class="terms-wrap">
           <input type="checkbox" id="termsCheck">
           <div class="terms-text">I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>. I understand that gambling involves risk.</div>
@@ -441,10 +450,21 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // Show banner
     const banner = document.getElementById('refCodeBanner');
     const codeValue = document.getElementById('refCodeValue');
-    if(banner && codeValue){
+  if(banner && codeValue){
       codeValue.textContent = ref.toUpperCase();
       banner.classList.add('show');
     }
+    
+    // ✅ PŘIDEJ TOHLE:
+    setTimeout(() => {
+      const input = document.getElementById('refCodeInput');
+      if (input) {
+        input.value = ref.toUpperCase();
+        input.readOnly = true;
+        input.style.opacity = '0.8';
+      }
+    }, 100);
+    // ✅ KONEC
   }
 })();
 
@@ -726,7 +746,12 @@ async function submitMagicLink() {
 // ══ AFFILIATE TRACKING ══
 async function trackAffiliateIfNeeded(userId){
   try{
-    const ref = localStorage.getItem('ck_ref');
+    // ✅ ZMĚŇ TENTO ŘÁDEK:
+    const manualRef = document.getElementById('refCodeInput')?.value.trim();
+    const storedRef = localStorage.getItem('ck_ref');
+    const ref = manualRef || storedRef;
+    // ✅ KONEC ZMĚNY
+    
     const ts = parseInt(localStorage.getItem('ck_ref_ts')||'0');
     
     // Check if ref exists and hasn't expired (30 days)
