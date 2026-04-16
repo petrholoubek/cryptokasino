@@ -532,7 +532,7 @@ async function createAffiliateAccount() {
     
     const { data, error } = await sb.from('affiliates').insert({
       user_id: currentUser.id,
-      affiliate_code: refCode,
+      ref_code: refCode,
       total_referrals: 0,
       total_commission_btc: 0
     }).select().single();
@@ -553,7 +553,7 @@ async function showDashboard(aff) {
   document.getElementById('dashboardSection').style.display = 'block';
   
   // Referral link
-  const refLink = `https://cryptokasino.io/login.html?ref=${aff.affiliate_code}`;
+  const refLink = `https://cryptokasino.io/login.html?ref=${aff.ref_code}`;
   document.getElementById('refLink').textContent = refLink;
   
   // Stats
@@ -583,8 +583,8 @@ async function showDashboard(aff) {
   
   // Load clicks (from affiliate_clicks table)
   let totalClicks = 0;
-  if (aff.affiliate_code) {
-    const { data: clicks } = await sb.from('affiliate_clicks').select('*', { count: 'exact' }).eq('affiliate_code', aff.affiliate_code);
+  if (aff.ref_code) {
+    const { data: clicks } = await sb.from('affiliate_clicks').select('*', { count: 'exact' }).eq('affiliate_code', aff.ref_code);
     totalClicks = clicks?.length || 0;
   }
   document.getElementById('dClicks').textContent = totalClicks;
@@ -595,7 +595,7 @@ async function showDashboard(aff) {
   
   // Settings
   document.getElementById('settEmail').value = currentUser.email || '';
-  document.getElementById('settRefCode').value = aff.affiliate_code;
+  document.getElementById('settRefCode').value = aff.ref_code;
   document.getElementById('settBtc').value = aff.btc_address || '';
   
   // Load players and payouts
