@@ -582,8 +582,11 @@ async function showDashboard(aff) {
   tierBadge.textContent = tier.toUpperCase();
   
   // Load clicks (from affiliate_clicks table)
-  const { data: clicks } = await sb.from('affiliate_clicks').select('*', { count: 'exact' }).eq('affiliate_code', aff.affiliate_code);
-  const totalClicks = clicks?.length || 0;
+  let totalClicks = 0;
+  if (aff.affiliate_code) {
+    const { data: clicks } = await sb.from('affiliate_clicks').select('*', { count: 'exact' }).eq('affiliate_code', aff.affiliate_code);
+    totalClicks = clicks?.length || 0;
+  }
   document.getElementById('dClicks').textContent = totalClicks;
   
   // Conversion rate
