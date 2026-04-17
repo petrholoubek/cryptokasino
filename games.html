@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Games – CryptoKasino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
+  --dark:#020610;--text:#e8e8ff;--text-dim:#8898cc;
+  --green:#4ade80;--red:#f87171;--blue:#60a5fa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Crimson Text',serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%, #0a2a6e 0%, #061440 35%, #020818 65%, #000510 100%);pointer-events:none;z-index:0;}
+
+header{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(2,6,20,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(60,120,255,0.25);box-shadow:0 2px 30px rgba(20,60,200,0.2);}
+.logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-weight:900;font-size:1.25rem;letter-spacing:0.05em;}
+.logo-icon{width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:900;box-shadow:0 0 16px var(--gold-glow);}
+.logo span:first-of-type{color:var(--gold-light);}.logo span:last-of-type{color:#fff;}
+nav{display:flex;gap:2.5rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;}
+nav a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+nav a:hover,nav a.active{color:var(--gold-light);}
+.header-right{display:flex;align-items:center;gap:1rem;}
+.btn-deposit{background:var(--gold);color:#000;border:none;padding:0.45rem 1.2rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 0 20px rgba(212,160,23,0.5);transition:all 0.2s;}
+.btn-deposit:hover{background:var(--gold-light);}
+.btn-login{background:transparent;color:var(--text);border:1px solid rgba(60,120,255,0.35);padding:0.45rem 1.2rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.7rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.btn-login:hover{border-color:var(--blue);color:var(--blue);}
+
+.page-hero{position:relative;z-index:1;padding:3rem 1.5rem 2rem;text-align:center;}
+.page-hero h1{font-family:'Cinzel',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:var(--gold-light);text-shadow:0 0 40px rgba(212,160,23,0.5);letter-spacing:0.08em;margin-bottom:0.5rem;}
+.page-hero p{color:var(--text-dim);font-size:0.95rem;letter-spacing:0.08em;}
+.breadcrumb{display:flex;align-items:center;justify-content:center;gap:0.5rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--text-dim);margin-bottom:1rem;}
+.breadcrumb a{color:var(--text-dim);text-decoration:none;}
+.breadcrumb a:hover{color:var(--gold-light);}
+
+.filter-bar{position:relative;z-index:1;max-width:1300px;margin:0 auto 2rem;padding:0 1.2rem;display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;}
+.filter-tab{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.55rem 1.4rem;border-radius:10px;background:rgba(3,10,40,0.7);border:1px solid rgba(60,120,255,0.25);color:var(--text-dim);cursor:pointer;transition:all 0.3s;}
+.filter-tab:hover{border-color:rgba(100,160,255,0.5);color:var(--text);}
+.filter-tab.active{background:linear-gradient(135deg,rgba(30,80,220,0.35),rgba(60,120,255,0.25));border-color:rgba(100,160,255,0.8);color:#fff;box-shadow:0 0 25px rgba(60,120,255,0.3);}
+
+.games-section{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 1.2rem 4rem;}
+.games-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+
+.game-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;background:#050d2a;border:1px solid rgba(60,120,255,0.2);box-shadow:0 4px 20px rgba(10,30,120,0.3);transition:all 0.35s ease;aspect-ratio:3/4;}
+.game-card:hover{transform:translateY(-10px) scale(1.03);}
+.game-card::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);transform:skewX(-15deg);transition:left 0.6s ease;z-index:2;pointer-events:none;}
+.game-card:hover::before{left:200%;}
+
+.game-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;filter:brightness(0.95) saturate(1.3);}
+.game-card:hover .game-img{transform:scale(1.08);filter:brightness(1.1) saturate(1.5);}
+
+/* Fallback když není obrázek */
+.game-img-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,#050d2a,#0a1540);}
+
+.game-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 25%,rgba(3,8,30,0.5) 60%,rgba(2,6,20,0.97) 100%);}
+
+.game-badge{position:absolute;top:0.8rem;left:0.8rem;font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:20px;font-weight:700;backdrop-filter:blur(10px);z-index:3;}
+.badge-hot{background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);}
+.badge-new{background:rgba(34,197,94,0.2);color:#86efac;border:1px solid rgba(34,197,94,0.4);}
+.badge-live{background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);animation:badgePulse 1.2s infinite;}
+.badge-jackpot{background:rgba(251,191,36,0.2);color:#fde68a;border:1px solid rgba(251,191,36,0.45);animation:jpBadge 2s ease-in-out infinite;}
+@keyframes badgePulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+@keyframes jpBadge{0%,100%{box-shadow:0 0 6px rgba(251,191,36,0.4);}50%{box-shadow:0 0 16px rgba(251,191,36,0.9);}}
+
+.game-rtp{position:absolute;top:0.8rem;right:0.8rem;font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.1em;padding:0.3rem 0.7rem;border-radius:20px;background:rgba(3,10,40,0.75);border:1px solid rgba(60,120,255,0.3);color:var(--blue);z-index:3;}
+
+.game-info{position:absolute;bottom:0;left:0;right:0;padding:1.2rem;z-index:3;}
+.game-provider{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(150,180,255,0.55);margin-bottom:0.2rem;}
+.game-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:900;color:#fff;letter-spacing:0.06em;line-height:1.2;text-shadow:0 0 20px rgba(255,255,255,0.3);}
+.game-card:hover .game-name{color:var(--gold-light);text-shadow:0 0 30px rgba(212,160,23,0.7);}
+.game-desc{font-size:0.7rem;color:var(--text-dim);margin-top:0.2rem;}
+.play-btn{display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.7rem;background:linear-gradient(135deg,#1a4fd4,#3b82f6);color:#fff;padding:0.5rem 1.4rem;border-radius:8px;font-family:'Cinzel',serif;font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:all 0.3s;border:none;cursor:pointer;}
+.game-card:hover .play-btn{opacity:1;transform:translateY(0);}
+
+.gc-slots:hover{border-color:rgba(212,160,23,0.8)!important;box-shadow:0 0 60px rgba(212,160,23,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
+.gc-table:hover{border-color:rgba(34,197,94,0.8)!important;box-shadow:0 0 60px rgba(34,197,94,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
+.gc-dice:hover{border-color:rgba(6,182,212,0.8)!important;box-shadow:0 0 60px rgba(6,182,212,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
+.gc-roulette:hover{border-color:rgba(239,68,68,0.8)!important;box-shadow:0 0 60px rgba(239,68,68,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,8,0.92);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{position:relative;width:95vw;max-width:1280px;height:90vh;background:#020610;border:2px solid rgba(60,120,255,0.4);border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(60,120,255,0.3);transform:scale(0.94);transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);display:flex;flex-direction:column;}
+.modal-overlay.open .modal-box{transform:scale(1);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1.2rem;background:rgba(3,10,40,0.98);border-bottom:1px solid rgba(60,120,255,0.25);flex-shrink:0;}
+.modal-title{font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;color:var(--gold-light);letter-spacing:0.08em;}
+.modal-provider{font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-dim);letter-spacing:0.15em;margin-left:0.8rem;}
+.modal-header-left{display:flex;align-items:center;}
+.modal-actions{display:flex;align-items:center;gap:0.6rem;}
+.modal-btn{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;border:1px solid rgba(60,120,255,0.3);background:rgba(20,50,150,0.2);color:var(--text-dim);transition:all 0.2s;}
+.modal-btn:hover{border-color:rgba(100,160,255,0.6);color:#fff;}
+.modal-btn.btn-fs{background:rgba(212,160,23,0.15);border-color:rgba(212,160,23,0.4);color:var(--gold-light);}
+.modal-close{width:32px;height:32px;border-radius:8px;border:1px solid rgba(239,68,68,0.35);background:rgba(239,68,68,0.1);color:#f87171;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.2s;}
+.modal-close:hover{background:rgba(239,68,68,0.25);border-color:rgba(239,68,68,0.7);}
+.modal-iframe-wrap{position:relative;flex:1;}
+.modal-iframe{width:100%;height:100%;border:none;display:block;background:#000;}
+.modal-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#020610;z-index:5;}
+.loading-spinner{width:50px;height:50px;border:3px solid rgba(60,120,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.9s linear infinite;margin-bottom:1rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;}
+.loading-game-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.4rem;}
+
+@media(max-width:1024px){.games-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:768px){
+  .games-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem;}
+  header{padding:0 1rem;}nav{display:none;}
+  .modal-box{width:100vw;height:100vh;border-radius:0;border:none;}
+}
+@media(max-width:480px){.games-grid{grid-template-columns:repeat(2,1fr);gap:0.6rem;}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">&#8383;</div>
+    <span>Crypto</span><span>Kasino</span>
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="games.html" class="active">Games</a>
+    <a href="live.html">Live</a>
+    <a href="sports.html">Sports</a>
+    <a href="promotions.html">Promotions</a>
+  </nav>
+  <div class="header-right">
+    <a href="deposit.html" class="btn-deposit">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span>›</span>
+    <span style="color:var(--gold-light)">Games</span>
+  </div>
+  <h1>🎰 Casino Games</h1>
+  <p>Play premium BGaming titles — fully animated, instant demo mode</p>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-tab active" onclick="filterGames('all',this)">🎮 All Games</div>
+  <div class="filter-tab" onclick="filterGames('slots',this)">🎰 Slots</div>
+  <div class="filter-tab" onclick="filterGames('table',this)">🃏 Table</div>
+  <div class="filter-tab" onclick="filterGames('roulette',this)">🎡 Roulette</div>
+  <div class="filter-tab" onclick="filterGames('dice',this)">🎲 Dice</div>
+</div>
+
+<div class="games-section">
+  <div class="games-grid" id="gamesGrid"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-title" id="modalTitle">Game</div>
+        <div class="modal-provider" id="modalProvider">BGaming</div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn btn-fs" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      </div>
+    </div>
+    <div class="modal-iframe-wrap">
+      <div class="modal-loading" id="modalLoading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Game</div>
+        <div class="loading-game-name" id="loadingName"></div>
+      </div>
+      <iframe id="gameIframe" class="modal-iframe" src="" allow="fullscreen" onload="iframeLoaded()"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+var GAMES = [
+  {
+    id: 'clash-of-gods',
+    name: 'Clash of Gods',
+    provider: 'BGaming',
+    category: 'slots',
+    badge: 'hot',
+    rtp: '96.7%',
+    img: 'images/clash-of-gods.jpg',
+    emoji: '⚡',
+    url: 'https://clash-of-gods-demo.publishing.bgaming-system.com/?token=6c602ed8b7b2445808ee8b49c310f990',
+    desc: 'Epic mythology slot'
+  },
+  {
+    id: 'joker-x-love',
+    name: 'Joker X Love',
+    provider: 'BGaming',
+    category: 'slots',
+    badge: 'new',
+    rtp: '96.1%',
+    img: 'images/joker-x-love.jpg',
+    emoji: '🃏',
+    url: 'https://demo.bgaming-network.com/games/JokerXLove/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzMzMzB9LCJleHAiOjE3OTIyNTU5MTN9.lwBMNymLxOvkgo-vB806dkrNrGOYoHm2YU44qSPojYA',
+    desc: 'Classic joker vibes'
+  },
+  {
+    id: 'face-off',
+    name: 'Face Off',
+    provider: 'BGaming',
+    category: 'slots',
+    badge: 'new',
+    rtp: '96.4%',
+    img: 'images/face-off.jpg',
+    emoji: '🥊',
+    url: 'https://demo.bgaming-network.com/games/FaceOff/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzM3ODh9LCJleHAiOjE3OTIyNTU5NjV9.vZhJULqhU3Y-nfrnJu-FU3KWG_bAleEobooaJ0GZ85Y',
+    desc: 'Action-packed slots'
+  },
+  {
+    id: 'totally-hot',
+    name: 'Totally Hot',
+    provider: 'BGaming',
+    category: 'slots',
+    badge: 'hot',
+    rtp: '96.8%',
+    img: 'images/totally-hot.jpg',
+    emoji: '🔥',
+    url: 'https://demo.bgaming-network.com/games/TotallyHot/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NDY4MDR9LCJleHAiOjE3OTIyNTc0ODd9.MhGKvH3vUaRmFvwQKEan0eY3ukAM4wuFqCSgQJs_FYc',
+    desc: 'Sizzling fruit slots'
+  },
+  {
+    id: 'surrender-blackjack',
+    name: 'Surrender Blackjack',
+    provider: 'BGaming',
+    category: 'table',
+    badge: 'live',
+    rtp: '99.6%',
+    img: 'images/surrender-blackjack.jpg',
+    emoji: '♠️',
+    url: 'https://demo.bgaming-network.com/games/SurrenderMultihandBlackjack/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NTkwMDR9LCJleHAiOjE3OTIyNTg5MjZ9.Xd7vFC47g8WD56GInHLhQVGniBJIdS8gbjIVlhI50HA',
+    desc: 'Multihand Blackjack'
+  },
+  {
+    id: 'rocket-dice',
+    name: 'Rocket Dice',
+    provider: 'BGaming',
+    category: 'dice',
+    badge: 'new',
+    rtp: '97.0%',
+    img: 'images/rocket-dice.jpg',
+    emoji: '🚀',
+    url: 'https://demo.bgaming-network.com/games/RocketDice/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzcyNDN9LCJleHAiOjE3OTIyNTYzNDh9.9x-EywJ__lPmzFx5DSZz1W225EbKRCZaSZng_y5LDOo',
+    desc: 'Provably fair dice'
+  },
+  {
+    id: 'royal-roulette',
+    name: 'Royal Roulette 500X',
+    provider: 'BGaming',
+    category: 'roulette',
+    badge: 'jackpot',
+    rtp: '97.3%',
+    img: 'images/royal-roulette.jpg',
+    emoji: '🎡',
+    url: 'https://demo.bgaming-network.com/games/RoyalRoulette500X/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NDA3ODJ9LCJleHAiOjE3OTIyNTY3NjJ9.C8DNzwDFxBvtzCYxiJi28y0a2n3TRMI8yg6na2PQKCc',
+    desc: 'Royal Roulette 500X multiplier'
+  }
+];
+
+function getBadgeHtml(badge) {
+  if(badge==='hot') return '<div class="game-badge badge-hot">🔥 Hot</div>';
+  if(badge==='new') return '<div class="game-badge badge-new">✨ New</div>';
+  if(badge==='live') return '<div class="game-badge badge-live">● Live</div>';
+  if(badge==='jackpot') return '<div class="game-badge badge-jackpot">🏆 JP</div>';
+  return '';
+}
+
+function renderGames(filter) {
+  var grid = document.getElementById('gamesGrid');
+  var list = filter==='all' ? GAMES : GAMES.filter(function(g){return g.category===filter;});
+  grid.innerHTML = '';
+  list.forEach(function(game, i) {
+    var card = document.createElement('div');
+    card.className = 'game-card gc-'+game.category;
+    card.onclick = function(){ openGame(game); };
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.innerHTML =
+      getBadgeHtml(game.badge)+
+      '<div class="game-rtp">RTP '+game.rtp+'</div>'+
+      '<img class="game-img" src="'+game.img+'" alt="'+game.name+'" '+
+        'onerror="this.outerHTML=\'<div class=game-img-fallback>'+game.emoji+'</div>\'">' +
+      '<div class="game-overlay"></div>'+
+      '<div class="game-info">'+
+        '<div class="game-provider">'+game.provider+'</div>'+
+        '<div class="game-name">'+game.name+'</div>'+
+        '<div class="game-desc">'+game.desc+'</div>'+
+        '<button class="play-btn">▶ Play Now</button>'+
+      '</div>';
+    grid.appendChild(card);
+    setTimeout(function(c){
+      c.style.transition='opacity 0.4s ease,transform 0.4s ease';
+      c.style.opacity='1';
+      c.style.transform='translateY(0)';
+    }, i*80, card);
+  });
+}
+
+function filterGames(cat, el) {
+  document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  renderGames(cat);
+}
+
+function openGame(game) {
+  document.getElementById('modalTitle').textContent = game.name;
+  document.getElementById('modalProvider').textContent = game.provider+' · Demo Mode';
+  document.getElementById('loadingName').textContent = game.name;
+  document.getElementById('modalLoading').style.display = 'flex';
+  document.getElementById('gameIframe').src = '';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('gameIframe').src = game.url; }, 200);
+}
+
+function iframeLoaded() {
+  document.getElementById('modalLoading').style.display = 'none';
+}
+
+function closeModal(e) {
+  if(e.target===document.getElementById('modalOverlay')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(function(){ document.getElementById('gameIframe').src=''; }, 300);
+}
+
+function toggleFullscreen() {
+  var box = document.getElementById('modalBox');
+  if(!document.fullscreenElement) { box.requestFullscreen&&box.requestFullscreen(); }
+  else { document.exitFullscreen&&document.exitFullscreen(); }
+}
+
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModalBtn(); });
+
+renderGames('all');
+</script>
+</body>
+</html>
