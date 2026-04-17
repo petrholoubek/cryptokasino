@@ -596,6 +596,54 @@ header{
   .sym-icon{font-size:1.5rem}
   .jackpot-value{font-size:2rem}
 }
+
+header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1rem 2rem !important;
+  background: rgba(10, 14, 39, 0.95) !important;
+  border-bottom: 2px solid #00ffff !important;
+  flex-wrap: nowrap !important;
+  gap: 1rem !important;
+}
+
+header .logo {
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+#userMenu {
+  display: none !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+}
+
+#userMenu.show {
+  display: flex !important;
+}
+
+.btc-bal {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+#loginBtn, #depositBtn {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+#userMenu {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#userMenu.show {
+  display: flex !important;
+}
 </style>
 </head>
 <body>
@@ -605,9 +653,27 @@ header{
 <canvas id="particles"></canvas>
 
 <!-- HEADER -->
-<header>
+<header style="display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(10,14,39,0.95);border-bottom:2px solid #00ffff">
   <a href="index.html" class="logo">🌃 NEON CITY</a>
-  <span class="btc-bal" id="headerBal">1.00000000 BTC</span>
+  
+  <!-- User Menu (logged in) -->
+  <div id="userMenu" style="display:none">
+    <div style="color:#00ffff;font-size:0.9rem;display:flex;align-items:center;gap:0.5rem">
+      <span>👤</span>
+      <span id="username">USER</span>
+    </div>
+    <span class="btc-bal" id="headerBal">0.00000000 BTC</span>
+    <button id="depositBtn" onclick="window.location.href='deposit.html'" 
+            style="padding:0.5rem 1.5rem;background:#fbbf24;color:#0a0e27;border:none;border-radius:0.5rem;cursor:pointer;font-weight:bold;font-size:0.9rem">
+      💰 DEPOSIT
+    </button>
+  </div>
+  
+  <!-- Login Button (logged out) -->
+  <button id="loginBtn" onclick="window.location.href='login.html'" 
+          style="padding:0.5rem 1.5rem;background:#00ffff;color:#0a0e27;border:none;border-radius:0.5rem;cursor:pointer;font-weight:bold;font-size:0.9rem">
+    🔐 LOGIN
+  </button>
 </header>
 
 <!-- GAME HEADER -->
@@ -820,7 +886,9 @@ const usernameEl = document.getElementById('username');
 
 if (loginBtn) loginBtn.style.display = 'none';
 if (depositBtn) depositBtn.style.display = 'block';
-if (userMenu) userMenu.style.display = 'block';
+if (userMenu) {
+  userMenu.style.display = 'flex';  // ✅ FLEX místo BLOCK!
+}
 if (usernameEl) usernameEl.textContent = username.toUpperCase();
     } catch (e) {
       console.warn('[Neon] User load error:', e.message);
