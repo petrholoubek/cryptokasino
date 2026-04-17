@@ -51,8 +51,6 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 
 .game-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;filter:brightness(0.95) saturate(1.3);}
 .game-card:hover .game-img{transform:scale(1.08);filter:brightness(1.1) saturate(1.5);}
-
-/* Fallback když není obrázek */
 .game-img-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,#050d2a,#0a1540);}
 
 .game-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 25%,rgba(3,8,30,0.5) 60%,rgba(2,6,20,0.97) 100%);}
@@ -80,7 +78,6 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 .gc-dice:hover{border-color:rgba(6,182,212,0.8)!important;box-shadow:0 0 60px rgba(6,182,212,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 .gc-roulette:hover{border-color:rgba(239,68,68,0.8)!important;box-shadow:0 0 60px rgba(239,68,68,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,8,0.92);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-box{position:relative;width:95vw;max-width:1280px;height:90vh;background:#020610;border:2px solid rgba(60,120,255,0.4);border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(60,120,255,0.3);transform:scale(0.94);transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);display:flex;flex-direction:column;}
@@ -159,7 +156,7 @@ nav a:hover,nav a.active{color:var(--gold-light);}
     <div class="modal-header">
       <div class="modal-header-left">
         <div class="modal-title" id="modalTitle">Game</div>
-        <div class="modal-provider" id="modalProvider">BGaming</div>
+        <div class="modal-provider" id="modalProvider">BGaming · Demo Mode</div>
       </div>
       <div class="modal-actions">
         <button class="modal-btn btn-fs" onclick="toggleFullscreen()">⛶ Fullscreen</button>
@@ -172,12 +169,16 @@ nav a:hover,nav a.active{color:var(--gold-light);}
         <div class="loading-text">Loading Game</div>
         <div class="loading-game-name" id="loadingName"></div>
       </div>
-      <iframe id="gameIframe" class="modal-iframe" src="" allow="fullscreen" onload="iframeLoaded()"></iframe>
+      <iframe id="gameIframe" class="modal-iframe" src="" allow="fullscreen"></iframe>
     </div>
   </div>
 </div>
 
 <script>
+// ═══════════════════════════════════════
+// PERMANENTNÍ URL — nikdy nevyprší!
+// formát: /play/[HRA]/FUN?server=demo
+// ═══════════════════════════════════════
 var GAMES = [
   {
     id: 'clash-of-gods',
@@ -188,7 +189,7 @@ var GAMES = [
     rtp: '96.7%',
     img: 'images/clash-of-gods.jpg',
     emoji: '⚡',
-    url: 'https://clash-of-gods-demo.publishing.bgaming-system.com/?token=6c602ed8b7b2445808ee8b49c310f990',
+    url: 'https://demo.bgaming-network.com/play/ClashOfGods/FUN?server=demo',
     desc: 'Epic mythology slot'
   },
   {
@@ -200,7 +201,7 @@ var GAMES = [
     rtp: '96.1%',
     img: 'images/joker-x-love.jpg',
     emoji: '🃏',
-    url: 'https://demo.bgaming-network.com/games/JokerXLove/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzMzMzB9LCJleHAiOjE3OTIyNTU5MTN9.lwBMNymLxOvkgo-vB806dkrNrGOYoHm2YU44qSPojYA',
+    url: 'https://demo.bgaming-network.com/play/JokerXLove/FUN?server=demo',
     desc: 'Classic joker vibes'
   },
   {
@@ -212,7 +213,7 @@ var GAMES = [
     rtp: '96.4%',
     img: 'images/face-off.jpg',
     emoji: '🥊',
-    url: 'https://demo.bgaming-network.com/games/FaceOff/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzM3ODh9LCJleHAiOjE3OTIyNTU5NjV9.vZhJULqhU3Y-nfrnJu-FU3KWG_bAleEobooaJ0GZ85Y',
+    url: 'https://demo.bgaming-network.com/play/FaceOff/FUN?server=demo',
     desc: 'Action-packed slots'
   },
   {
@@ -224,7 +225,7 @@ var GAMES = [
     rtp: '96.8%',
     img: 'images/totally-hot.jpg',
     emoji: '🔥',
-    url: 'https://demo.bgaming-network.com/games/TotallyHot/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NDY4MDR9LCJleHAiOjE3OTIyNTc0ODd9.MhGKvH3vUaRmFvwQKEan0eY3ukAM4wuFqCSgQJs_FYc',
+    url: 'https://demo.bgaming-network.com/play/TotallyHot/FUN?server=demo',
     desc: 'Sizzling fruit slots'
   },
   {
@@ -236,7 +237,7 @@ var GAMES = [
     rtp: '99.6%',
     img: 'images/surrender-blackjack.jpg',
     emoji: '♠️',
-    url: 'https://demo.bgaming-network.com/games/SurrenderMultihandBlackjack/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NTkwMDR9LCJleHAiOjE3OTIyNTg5MjZ9.Xd7vFC47g8WD56GInHLhQVGniBJIdS8gbjIVlhI50HA',
+    url: 'https://demo.bgaming-network.com/play/SurrenderMultihandBlackjack/FUN?server=demo',
     desc: 'Multihand Blackjack'
   },
   {
@@ -248,7 +249,7 @@ var GAMES = [
     rtp: '97.0%',
     img: 'images/rocket-dice.jpg',
     emoji: '🚀',
-    url: 'https://demo.bgaming-network.com/games/RocketDice/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5MzcyNDN9LCJleHAiOjE3OTIyNTYzNDh9.9x-EywJ__lPmzFx5DSZz1W225EbKRCZaSZng_y5LDOo',
+    url: 'https://demo.bgaming-network.com/play/RocketDice/FUN?server=demo',
     desc: 'Provably fair dice'
   },
   {
@@ -260,7 +261,7 @@ var GAMES = [
     rtp: '97.3%',
     img: 'images/royal-roulette.jpg',
     emoji: '🎡',
-    url: 'https://demo.bgaming-network.com/games/RoyalRoulette500X/FUN?launch_token=eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InB0X2lkIjoyNzc5NDA3ODJ9LCJleHAiOjE3OTIyNTY3NjJ9.C8DNzwDFxBvtzCYxiJi28y0a2n3TRMI8yg6na2PQKCc',
+    url: 'https://demo.bgaming-network.com/play/RoyalRoulette500X/FUN?server=demo',
     desc: 'Royal Roulette 500X multiplier'
   }
 ];
@@ -318,11 +319,14 @@ function openGame(game) {
   document.getElementById('gameIframe').src = '';
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(function(){ document.getElementById('gameIframe').src = game.url; }, 200);
-}
-
-function iframeLoaded() {
-  document.getElementById('modalLoading').style.display = 'none';
+  setTimeout(function(){
+    document.getElementById('gameIframe').src = game.url;
+    // Auto-hide loading po 4 sekundách jako backup
+    setTimeout(function(){
+      var loading = document.getElementById('modalLoading');
+      if(loading) loading.style.display = 'none';
+    }, 4000);
+  }, 200);
 }
 
 function closeModal(e) {
@@ -342,6 +346,12 @@ function toggleFullscreen() {
 }
 
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModalBtn(); });
+
+// Skryj loading když se iframe načte
+document.getElementById('gameIframe').addEventListener('load', function(){
+  var loading = document.getElementById('modalLoading');
+  if(loading) loading.style.display = 'none';
+});
 
 renderGames('all');
 </script>
