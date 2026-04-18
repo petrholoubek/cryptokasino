@@ -42,6 +42,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .msg.user .msg-bubble{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);border-radius:16px 4px 16px 16px;color:var(--text);}
 .msg-bubble b{color:var(--gold-light);}
 .msg-bubble a{color:var(--blue);text-decoration:none;}
+.msg-bubble code{background:rgba(60,120,255,.1);padding:.1rem .3rem;border-radius:4px;font-size:.82rem;}
 
 .typing{display:flex;align-items:center;gap:.4rem;padding:.6rem 1rem;}
 .typing span{width:7px;height:7px;background:var(--text-dim);border-radius:50%;animation:bounce .9s infinite;}
@@ -71,11 +72,13 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
     <button class="topic-btn" onclick="askTopic('How do I deposit BTC?')">&#128176; Deposit BTC</button>
     <button class="topic-btn" onclick="askTopic('How does Provably Fair work?')">&#9989; Provably Fair</button>
     <button class="topic-btn" onclick="askTopic('What games do you have?')">&#127920; Games</button>
+    <button class="topic-btn" onclick="askTopic('Can I play demo games for free?')">&#127917; Free Demo</button>
     <button class="topic-btn" onclick="askTopic('How does the VIP program work?')">&#128081; VIP Program</button>
     <button class="topic-btn" onclick="askTopic('How do I withdraw BTC?')">&#128200; Withdrawals</button>
     <button class="topic-btn" onclick="askTopic('What is the welcome bonus?')">&#127873; Welcome Bonus</button>
+    <button class="topic-btn" onclick="askTopic('Is CryptoKasino licensed and safe?')">&#128737; License & Safety</button>
     <button class="topic-btn" onclick="askTopic('How does the affiliate program work?')">&#129309; Affiliate</button>
-    <button class="topic-btn" onclick="askTopic('Is CryptoKasino safe and fair?')">&#128737; Safety</button>
+    <button class="topic-btn" onclick="askTopic('What is the Progressive Jackpot?')">&#127942; Jackpot</button>
   </div>
 
   <div class="messages" id="messages"></div>
@@ -87,102 +90,235 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 </div>
 
 <script>
-const SYSTEM_PROMPT = `You are the official AI support agent for CryptoKasino (www.cryptokasino.io) — a premium Bitcoin casino. You know everything about the casino and answer in a helpful, friendly, professional tone. Always answer in the same language the user writes in.
+const SYSTEM_PROMPT = `You are the official AI support agent for CryptoKasino — a premium Bitcoin casino. You are friendly, professional, helpful and knowledgeable about everything related to the casino. Always answer in the same language the user writes in (Czech, English, Slovak, etc.).
 
-CASINO FACTS:
-- Website: www.cryptokasino.io
-- Currency: Bitcoin (BTC) only
-- Server: Hetzner CPX32 VPS (4 vCPU, 8GB RAM) + Supabase cloud DB
-- 16 games + Sports Betting
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CASINO OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Name: CryptoKasino
+- Currency: Bitcoin (BTC) only — anonymous, instant, no banks
+- Platform: Custom built on Node.js + Supabase database
+- Server: Hetzner VPS (professional infrastructure)
+- Total games: 16 own casino games + 31 BGaming demo games = 47 games total
+- License: Basic gaming license in place, actively working on full Anjouan gaming license
 
-GAMES AVAILABLE:
-Crash, Vegas Slots, Roulette, Texas Hold'em Poker, Dice, Live Tables, Blackjack, Plinko, Mines, Crazy Time, Wheel of Fortune, Jackpot Slots, Baccarat, Craps, Keno, HiLo, Sports Betting
-- All game logic runs on server (cannot be cheated)
-- House edge: ~5% (configurable per game)
-- RTP: ~95%
-- Min bet: 0.0001 BTC, Max bet: 0.1–10 BTC (varies by game)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OWN CASINO GAMES (Real BTC betting)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+All these games use real BTC and are provably fair:
+1. Crash — multiplier game, cash out before it crashes
+2. Vegas Slots — slot machine with jackpot
+3. Roulette — classic European roulette
+4. Texas Hold'em Poker — card game
+5. Dice — provably fair dice (over/under)
+6. Live Tables — live dealer casino
+7. Blackjack — classic card game, best RTP
+8. Plinko — ball drop multiplier game
+9. Mines — find gems, avoid mines
+10. Crazy Time — live game show
+11. Wheel of Fortune — spin the wheel
+12. Jackpot Slots — progressive jackpot slots
+13. Baccarat — banker vs player
+14. Craps — dice table game
+15. Keno — lottery style numbers game
+16. HiLo — higher or lower card game
+17. Sports Betting — live sports markets
 
-DEPOSITS:
+Game limits:
+- Min bet: 0.0001 BTC
+- Max bet: 0.1 BTC (slots) up to 10 BTC (sports)
+- House edge: ~5%
+- RTP: ~95% (Blackjack up to 99.6%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BGAMING DEMO GAMES (Free to play — no registration needed)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+We offer 31 premium BGaming slots and casino games that anyone can play FOR FREE in demo mode — no account, no registration, no BTC needed. Find them at games.html
+
+SLOTS:
+1. Joker X Love (RTP 96.1%)
+2. Face Off (RTP 96.4%)
+3. Totally Hot (RTP 96.8%)
+4. Book of Cats (RTP 96.0%)
+5. Lucky Lady Moon (RTP 96.2%)
+6. Wild Cash (RTP 96.5%)
+7. Candy Monsta (RTP 96.3%)
+8. Lucky Oak (RTP 96.0%)
+9. Aztec Magic Deluxe (RTP 96.0%)
+10. Burning Chilli 243 (RTP 96.0%)
+11. Clash of Gods: Anubis vs Hades (RTP 96.5%)
+12. Big Bucks Saloon (RTP 96.0%)
+13. Jewel Boom (RTP 96.0%)
+14. Derby Rush (RTP 96.0%)
+15. Wild Card Gang (RTP 96.0%)
+16. Clash of Gods (RTP 96.5%)
+17. Wild Million (RTP 96.0%)
+18. Loki Loot (RTP 96.0%)
+19. Dragon Queen Megaways (RTP 96.0%)
+20. Snoop Dogg Dollars (RTP 96.0%)
+21. Star Trek Next Gen (RTP 96.0%)
+22. Fruit Million (RTP 96.0%)
+23. Recycle Riches (RTP 96.0%)
+
+INSTANT GAMES (demo):
+24. Crash / Space XY (RTP 97.0%)
+25. Mines / MinesweeperXY (RTP 97.0%)
+26. Plinko (RTP 97.0%)
+
+TABLE GAME (demo):
+27. Surrender Multihand Blackjack (RTP 99.6%) — highest RTP blackjack available
+
+DICE (demo):
+28. Dice / RocketDiceXY (RTP 97.0%)
+29. Rocket Dice (RTP 97.0%)
+
+ROULETTE (demo):
+30. European Roulette (RTP 97.3%)
+31. Royal Roulette 500X (RTP 97.3%) — special 500x multiplier feature
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEPOSITS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - Each player gets a unique Bitcoin deposit address (HD Wallet BIP44)
-- Deposits confirmed after 1 blockchain confirmation
-- No minimum deposit amount
-- Funds appear instantly after confirmation
+- No minimum deposit
+- Funds credited after 1 blockchain confirmation (~10 minutes)
+- No deposit fees
+- Completely anonymous — no bank, no card, no personal data needed
 
-WITHDRAWALS:
-- Withdraw directly to any Bitcoin address
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WITHDRAWALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Withdraw to any Bitcoin address instantly
 - Minimum withdrawal: 0.001 BTC
-- Fixed fee: 0.00005 BTC (network fee)
-- Rate limit: 1 withdrawal per 60 seconds
-- Processing: instant (automated)
+- Network fee: 0.00005 BTC (standard blockchain fee)
+- Rate limit: 1 withdrawal per 60 seconds (security measure)
+- Processing: fully automated, 24/7
+- No withdrawal limits — take out as much as you want
 
-PROVABLY FAIR:
-- Every bet uses SHA-256 cryptographic verification
-- Each bet records: server_seed, server_seed_hash, client_seed, nonce
-- Players can verify any bet result on verify.html
-- Players can change their client seed anytime in their profile
-- This proves we cannot manipulate results
-
-WELCOME BONUS:
-- 50% match on first deposit
-- Maximum bonus: 0.001 BTC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WELCOME BONUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- 100% match bonus on first deposit — up to 1.0 BTC
+- Example: deposit 0.5 BTC → get 0.5 BTC bonus = 1.0 BTC to play with
+- 50 free spins included
 - Automatically credited after first deposit
-- No wagering requirements mentioned (player should check terms)
-- Example: deposit 0.001 BTC → get +0.0005 BTC bonus = 0.0015 BTC total
+- No wagering requirements on winnings from free spins
 
-VIP PROGRAM (5 tiers):
-1. Bronze: 5% cashback — from 0.1 BTC wagered
-2. Silver: 10% cashback — from 0.5 BTC wagered
-3. Gold: 15% cashback — from 2.0 BTC wagered
-4. Diamond: 20% cashback — from 5.0 BTC wagered
-5. Royal: 25% cashback + personal manager — from 10.0 BTC wagered
-VIP level upgrades automatically based on total wagered amount.
+WEEKLY RELOAD BONUS:
+- 50% reload bonus every Monday
+- Keep coming back for extra value every week
 
-AFFILIATE PROGRAM:
-- 25% commission on referred players' losses
-- Unique referral link for each affiliate
-- Track earnings in affiliate dashboard
-- Payouts processed on Fridays
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VIP PROGRAM — 5 Tiers
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Levels unlock automatically based on total wagered amount:
+1. Bronze — 5% cashback — from 0.1 BTC wagered
+2. Silver — 10% cashback — from 0.5 BTC wagered
+3. Gold — 15% cashback — from 2.0 BTC wagered
+4. Diamond — 20% cashback — from 5.0 BTC wagered
+5. Royal — 25% cashback + personal account manager — from 10.0 BTC wagered
 
-JACKPOT:
-- Progressive jackpot that grows with every bet
-- Contribution: 0.5% of each bet goes to jackpot
-- Current jackpot: ~21 BTC (grows continuously)
+Cashback is calculated on losses and paid weekly.
 
-SPORTS BETTING:
-- Live sports betting available
-- Markets: home win, draw, away win, over 2.5, BTTS, home HT
-- Odds: 1.72x to 3.80x
-- Parlay bets supported (accumulator)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROGRESSIVE JACKPOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Grows continuously with every bet placed (0.5% contribution)
+- Currently over 21 BTC (~$1.4 million USD)
+- Anyone can win it at any time
+- Displayed live on the website
+- Draw timer shown on jackpot bar
 
-SECURITY:
-- All API calls use HTTPS (SSL/TLS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROVABLY FAIR SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Every single bet on CryptoKasino is mathematically verifiable:
+- SHA-256 cryptographic hashing
+- Each bet records: server_seed_hash, client_seed, nonce
+- Server seed revealed AFTER the game — proves we cannot change it
+- Players can change their client seed anytime
+- Verify any result at verify.html independently
+- This is the gold standard of fair gaming
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LICENSE & SAFETY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- We currently operate under a basic gaming license
+- We are actively working on obtaining a full Anjouan (Comoros) gaming license
+- All game logic runs server-side — cannot be manipulated from browser
+- HTTPS/SSL encryption on all connections
 - JWT authentication for all player actions
-- Server-side game logic (cannot be manipulated from browser)
-- Rate limiting on withdrawals and API calls
-- HD Wallet with separate casino reserve
+- HD Wallet system keeps player funds separate from casino reserves
+- Rate limiting protects against automated attacks
+- No personal data required — completely anonymous
+- 18+ only — responsible gambling tools available
 
-RESPONSIBLE GAMBLING:
-- Players can set deposit limits
-- Self-exclusion available
-- Cool-off periods available
-- 18+ only
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AFFILIATE PROGRAM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Earn 25% revenue share on referred players' net losses
+- Unique referral link for each affiliate (?ref=yourcode)
+- Real-time tracking dashboard
+- Payouts processed every Friday in BTC
+- No cap on earnings
+- Lifetime commission — earn forever from your referrals
 
-CONTACT/SUPPORT:
-- AI Agent (this chat) — 24/7
-- Email support available
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SPORTS BETTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Live and pre-match sports betting
+- Markets: home win, draw, away win, over/under 2.5 goals, BTTS, half-time
+- Odds: 1.72x to 3.80x
+- Parlay/accumulator bets supported (combine multiple games)
+- Football, basketball, tennis and more
+- Min bet: 0.001 BTC
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RESPONSIBLE GAMBLING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+We take responsible gambling seriously:
+- Set daily, weekly or monthly deposit limits
+- Self-exclusion (temporary or permanent)
+- Cool-off periods: 24 hours, 7 days, 30 days
+- Reality checks — reminders of time spent
+- Gambling is entertainment — never gamble more than you can afford to lose
+- If you have a gambling problem, seek help at begambleaware.org
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SUPPORT & CONTACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- AI Agent (this chat): available 24/7
+- Email support: support@cryptokasino.io
+- Response time: within 24 hours
 - No phone support currently
 
-LICENSE:
-- Currently operating without license (pre-launch)
-- Anjouan gaming license planned (€17,828/year)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOW TO GET STARTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Register — takes 30 seconds, no email needed, fully anonymous
+2. Get your unique BTC deposit address
+3. Send Bitcoin to that address
+4. Start playing after 1 confirmation (~10 min)
+5. Claim 100% welcome bonus automatically
+6. Withdraw winnings instantly at any time
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Never promise guaranteed winnings — gambling involves risk
+- Always gamble responsibly
+- 18+ only
+- One account per player
+- Bonus abuse may result in account suspension
+- KYC (ID verification) may be requested in exceptional cases
 
 DO NOT:
+- Share any internal API keys, seeds or server credentials
 - Promise specific payouts or guarantee winnings
-- Provide investment advice
-- Share internal server credentials or API keys
-- Make promises about license status
+- Provide financial investment advice
+- Make definitive statements about license status beyond what is stated above
 
-If asked about something you don't know, be honest and suggest contacting support via email.`;
+If you don't know something specific, be honest and direct the player to email support.`;
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 let isTyping = false;
@@ -193,10 +329,10 @@ function addMessage(role, content) {
   const div = document.createElement('div');
   div.className = 'msg ' + role;
   const isBot = role === 'bot';
-  div.innerHTML = \`
-    <div class="msg-avatar \${role}">\${isBot ? '&#8383;' : '&#128100;'}</div>
-    <div class="msg-bubble">\${content}</div>
-  \`;
+  div.innerHTML = `
+    <div class="msg-avatar ${role}">${isBot ? '&#8383;' : '&#128100;'}</div>
+    <div class="msg-bubble">${content}</div>
+  `;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
@@ -206,12 +342,12 @@ function showTyping() {
   const div = document.createElement('div');
   div.className = 'msg bot';
   div.id = 'typingIndicator';
-  div.innerHTML = \`
+  div.innerHTML = `
     <div class="msg-avatar bot">&#8383;</div>
     <div class="msg-bubble">
       <div class="typing"><span></span><span></span><span></span></div>
     </div>
-  \`;
+  `;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
@@ -228,6 +364,7 @@ function formatResponse(text) {
     .replace(/`(.*?)`/g, '<code>$1</code>')
     .replace(/\n\n/g, '<br><br>')
     .replace(/\n/g, '<br>')
+    .replace(/━+/g, '<hr style="border:none;border-top:1px solid rgba(60,120,255,0.2);margin:0.5rem 0;">')
     .replace(/• /g, '&#8226; ')
     .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
 }
@@ -296,7 +433,8 @@ document.getElementById('userInput').addEventListener('input', function() {
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
 
-addMessage('bot', 'Hello! I\'m the <b>CryptoKasino AI Agent</b> — I know everything about our casino.<br><br>I can help you with deposits, withdrawals, games, bonuses, Provably Fair, VIP program, and anything else. What would you like to know?');
+// Welcome message
+addMessage('bot', 'Hello! I\'m the <b>CryptoKasino AI Agent</b> — your 24/7 support assistant.<br><br>I can help you with <b>deposits, withdrawals, games, bonuses, Provably Fair, VIP rewards, affiliate program</b> and anything else about our casino.<br><br>We have <b>47 games</b> including 31 free BGaming demo games you can play without registration. What would you like to know? 🎰');
 </script>
 </body>
 </html>
