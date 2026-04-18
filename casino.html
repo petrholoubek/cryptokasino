@@ -350,7 +350,7 @@ nav a.active{color:var(--gold-light);border-bottom:2px solid var(--gold);}
 .resp-btn:hover{background:rgba(74,222,128,0.18);}
 
 /* FOOTER */
-footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-top:2rem;}
+footer{border-top:1px solid rgba(212,160,23,0.1);padding:2.5rem 1.5rem;margin-top:2rem;}
 .footer-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
 .footer-brand h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:900;color:var(--gold-light);margin-bottom:0.7rem;}
 .footer-brand p{font-size:0.85rem;color:var(--text-dim);line-height:1.7;margin-bottom:0.8rem;}
@@ -387,10 +387,165 @@ footer{position:relative;z-index:2;border-top:1px solid rgba(212,160,23,0.1);pad
 .loading-text{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;}
 .loading-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.4rem;}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.live-layout{grid-template-columns:1fr;}.games-grid{grid-template-columns:repeat(3,1fr);}.promo-grid{grid-template-columns:1fr 1fr;}.promo-card.main-promo{grid-column:1/-1;}.footer-inner{grid-template-columns:1fr 1fr;}.vip-levels{grid-template-columns:repeat(3,1fr);}.pf-layout{grid-template-columns:1fr;}.how-grid{grid-template-columns:repeat(2,1fr);}.info-banner{grid-template-columns:repeat(2,1fr);}.demo-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:768px){.games-grid{grid-template-columns:repeat(2,1fr);}.vip-levels{grid-template-columns:1fr 1fr;}.alerts-row{grid-template-columns:1fr;}.important-section{grid-template-columns:1fr;}}
-@media(max-width:640px){header{padding:0 1rem;height:54px;}nav,.btc-bal,.btn-login,.btn-dep{display:none;}.hamburger{display:flex;}.main{padding:1.2rem 0.8rem 4rem;}.promo-grid{grid-template-columns:1fr;}.games-grid{grid-template-columns:1fr 1fr;gap:0.7rem;}.jackpot-bar{flex-wrap:wrap;gap:0.5rem;justify-content:center;padding:0.5rem 1rem;}.footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}.footer-brand{grid-column:1/-1;}.resp-btns{margin-left:0;}.how-grid{grid-template-columns:1fr;}.demo-grid{grid-template-columns:1fr 1fr;gap:0.7rem;}}
+/* ═══ RESPONSIVE ═══ */
+
+/* TABLET */
+@media(max-width:1100px){
+  .live-layout{grid-template-columns:1fr;}
+  .games-grid{grid-template-columns:repeat(3,1fr);}
+  .promo-grid{grid-template-columns:1fr 1fr;}
+  .promo-card.main-promo{grid-column:1/-1;}
+  .footer-inner{grid-template-columns:1fr 1fr;}
+  .vip-levels{grid-template-columns:repeat(3,1fr);}
+  .pf-layout{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:repeat(2,1fr);}
+  .info-banner{grid-template-columns:repeat(2,1fr);}
+  .demo-grid{grid-template-columns:repeat(2,1fr);}
+  .important-section{grid-template-columns:1fr 1fr;}
+}
+
+/* TABLET SMALL */
+@media(max-width:768px){
+  .games-grid{grid-template-columns:repeat(2,1fr);}
+  .vip-levels{grid-template-columns:1fr 1fr;}
+  .alerts-row{grid-template-columns:1fr;}
+  .important-section{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .jackpot-bar{flex-wrap:wrap;gap:0.5rem;justify-content:center;padding:0.6rem 1rem;}
+  .jb-amount{font-size:1.3rem;}
+  header{padding:0 1rem;}
+  .promo-grid{grid-template-columns:1fr 1fr;}
+  .promo-card.main-promo{grid-column:1/-1;}
+}
+
+/* MOBILE */
+@media(max-width:640px){
+  /* Header */
+  header{padding:0 1rem;height:54px;}
+  nav,.btc-bal,.btn-login,.btn-dep{display:none;}
+  .hamburger{display:flex;}
+
+  /* Main */
+  .main{padding:1rem 0.7rem 4rem;}
+
+  /* Jackpot */
+  .jackpot-bar{flex-wrap:wrap;gap:0.4rem;justify-content:center;padding:0.5rem 0.8rem;}
+  .jb-amount{font-size:1.1rem;}
+  .jb-label{font-size:0.48rem;}
+  .jb-btn{font-size:0.55rem;padding:0.28rem 0.8rem;}
+
+  /* Ticker */
+  .live-ticker{padding:0.45rem 0.8rem;}
+
+  /* Alerts */
+  .alerts-row{grid-template-columns:1fr;gap:0.7rem;}
+  .hf-text{font-size:0.75rem;}
+  .sb-text{font-size:0.75rem;}
+
+  /* Promo */
+  .promo-grid{grid-template-columns:1fr;gap:0.7rem;}
+  .promo-card{padding:1.1rem;}
+  .promo-title{font-size:1rem;}
+  .promo-desc{font-size:0.78rem;}
+  .promo-icon{font-size:1.8rem;margin-bottom:0.5rem;}
+
+  /* Demo cards */
+  .demo-grid{grid-template-columns:1fr 1fr;gap:0.6rem;}
+  .demo-name{font-size:0.9rem;}
+  .demo-desc{display:none;}
+  .demo-play-btn{font-size:0.55rem;padding:0.3rem 0.8rem;}
+
+  /* Info banner */
+  .info-banner{grid-template-columns:1fr;gap:0.5rem;padding:1rem;}
+  .info-icon{font-size:1.6rem;margin-bottom:0.3rem;}
+  .info-title{font-size:0.65rem;}
+  .info-desc{font-size:0.7rem;}
+
+  /* Sec title */
+  .sec-title{font-size:0.62rem;letter-spacing:0.18em;margin-bottom:0.8rem;}
+
+  /* Games grid */
+  .games-grid{grid-template-columns:1fr 1fr;gap:0.6rem;}
+  .game-name{font-size:0.95rem;}
+  .game-cat{font-size:0.48rem;}
+  .game-limits{font-size:0.5rem;}
+  .game-play-btn{font-size:0.52rem;padding:0.25rem 0.7rem;}
+
+  /* Cat tabs */
+  .cat-tabs{gap:0.4rem;}
+  .cat-tab{font-size:0.55rem;padding:0.35rem 0.7rem;}
+
+  /* How to play */
+  .how-grid{grid-template-columns:1fr;gap:1.2rem;}
+  .how-section{padding:1.5rem 1rem;}
+  .how-step-title{font-size:0.8rem;}
+  .how-step-desc{font-size:0.75rem;}
+  .how-step-icon{font-size:2rem;}
+
+  /* Important info */
+  .important-section{grid-template-columns:1fr;gap:0.7rem;}
+  .imp-title{font-size:0.72rem;}
+  .imp-list li{font-size:0.75rem;}
+  .imp-icon{font-size:1.5rem;}
+
+  /* Live feed */
+  .live-layout{grid-template-columns:1fr;}
+  .bet-row{grid-template-columns:auto 1fr auto auto;gap:0.5rem;padding:0.4rem 0.6rem;}
+  .bet-row-user{font-size:0.65rem;}
+  .bet-row-game{font-size:0.56rem;}
+  .bet-row-amount{font-size:0.65rem;}
+  .bet-row-profit{font-size:0.65rem;}
+
+  /* PF section */
+  .pf-layout{grid-template-columns:1fr;}
+  .pf-section{padding:1.5rem 1rem;}
+  .pf-text h2{font-size:1.3rem;}
+  .pf-text p{font-size:0.82rem;}
+
+  /* VIP */
+  .vip-section{padding:1.5rem 1rem;}
+  .vip-levels{grid-template-columns:1fr 1fr;gap:0.6rem;}
+  .vip-heading{font-size:1.4rem;}
+  .vip-desc{font-size:0.82rem;}
+  .vip-level{padding:0.8rem 0.5rem;}
+  .vip-level-icon{font-size:1.6rem;}
+  .vip-level-name{font-size:0.58rem;}
+  .vip-level-bonus{font-size:0.78rem;}
+  .vip-level-min{font-size:0.55rem;}
+
+  /* Responsible */
+  .resp-bar{padding:0.9rem 1rem;gap:0.8rem;}
+  .resp-btns{margin-left:0;flex-wrap:wrap;}
+  .resp-btn{font-size:0.6rem;padding:0.35rem 0.7rem;}
+
+  /* Footer */
+  .footer-inner{grid-template-columns:1fr 1fr;gap:1.2rem;}
+  .footer-brand{grid-column:1/-1;}
+  .footer-brand p{font-size:0.78rem;}
+  .footer-col h4{font-size:0.62rem;}
+  .footer-col a{font-size:0.78rem;}
+  .footer-bottom{flex-direction:column;align-items:center;text-align:center;gap:0.4rem;font-size:0.65rem;}
+  .footer-licenses{justify-content:center;}
+
+  /* Modal */
+  .modal-box{width:100vw;height:100vh;border-radius:0;border:none;}
+  .modal-header{padding:0.5rem 0.8rem;}
+  .modal-title{font-size:0.75rem;}
+}
+
+/* SMALL PHONES */
+@media(max-width:390px){
+  .main{padding:0.8rem 0.6rem 4rem;}
+  .games-grid{grid-template-columns:1fr 1fr;gap:0.4rem;}
+  .demo-grid{grid-template-columns:1fr 1fr;gap:0.4rem;}
+  .game-name{font-size:0.85rem;}
+  .vip-levels{grid-template-columns:1fr;gap:0.5rem;}
+  .how-step-icon{font-size:1.8rem;}
+  .promo-title{font-size:0.9rem;}
+  .jb-amount{font-size:1rem;}
+  .footer-inner{grid-template-columns:1fr;}
+  .footer-brand{grid-column:auto;}
+}
 </style>
 </head>
 <body>
