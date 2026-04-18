@@ -320,25 +320,147 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(60,120,255,0.15);pa
 .loading-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold-light);margin-top:0.4rem;}
 
 /* RESPONSIVE */
+/* ═══ TABLET ═══ */
 @media(max-width:1024px){
   .top-grid,.sec-grid,.featured-main,.featured-sec,.why-grid{grid-template-columns:repeat(2,1fr);}
   .icon-grid{grid-template-columns:repeat(6,1fr);}
   .info-grid{grid-template-columns:repeat(2,1fr);}
   .footer-inner{grid-template-columns:1fr 1fr;}
+  .hero-stats{gap:1rem;padding:0.7rem 1.2rem;}
+  .hls-sep{display:none;}
 }
+
+/* ═══ TABLET SMALL ═══ */
 @media(max-width:768px){
   .icon-grid{grid-template-columns:repeat(4,1fr);}
-  header{padding:0 1rem;}nav{display:none;}.hamburger{display:flex;}
+  header{padding:0 1rem;}
+  nav{display:none;}
+  .hamburger{display:flex;}
+  .btc-balance{display:none;}
   .modal-box{width:100vw;height:100vh;border-radius:0;border:none;}
-  .jackpot-banner{flex-wrap:wrap;gap:0.5rem;justify-content:center;padding:0.5rem 1rem;}
+  .jackpot-banner{flex-wrap:wrap;gap:0.5rem;justify-content:center;padding:0.6rem 1rem;}
+  .jp-amount{font-size:1.4rem;}
+  .hero{height:88vh;}
+  .hero-btns{flex-direction:column;align-items:center;gap:0.6rem;}
+  .btn-enter,.btn-dep-hero{width:100%;max-width:280px;text-align:center;}
+  .hero-stats{gap:0.8rem;padding:0.6rem 1rem;flex-wrap:wrap;justify-content:center;}
+  .promo-wrap{padding:0 0.8rem;}
+  .promo-box{padding:1.2rem 1rem;}
+  .promo-title{font-size:1rem;}
+  .section{padding:0 0.8rem;}
+  .sec-title{font-size:0.65rem;}
 }
+
+/* ═══ MOBILE ═══ */
 @media(max-width:640px){
+  /* Header */
+  header{height:54px;}
+  .logo{font-size:1rem;}
+  .logo-icon{width:28px;height:28px;font-size:0.85rem;}
+  .btn-deposit,.btn-login{padding:0.35rem 0.8rem;font-size:0.65rem;}
+
+  /* Hero */
+  .hero{height:90vh;min-height:500px;}
+  .hero-title{font-size:clamp(1.8rem,10vw,3.5rem);}
+  .hero-sub{font-size:0.75rem;letter-spacing:0.08em;}
+  .hero-badges{gap:0.4rem;}
+  .h-badge{font-size:0.5rem;padding:0.2rem 0.6rem;}
+  .hero-btns{margin-top:1.2rem;gap:0.5rem;}
+  .btn-enter{font-size:0.8rem;padding:0.7rem 1.8rem;}
+  .btn-dep-hero{font-size:0.8rem;padding:0.7rem 1.5rem;}
+  .hero-stats{margin-top:1rem;padding:0.6rem 0.8rem;gap:0.6rem;}
+  .hls-val{font-size:0.9rem;}
+  .hls-lbl{font-size:0.42rem;}
+
+  /* Jackpot banner */
+  .jackpot-banner{padding:0.5rem 0.8rem;gap:0.4rem;}
+  .jp-amount{font-size:1.2rem;}
+  .jp-label{font-size:0.5rem;}
+  .jp-btn{font-size:0.55rem;padding:0.28rem 0.8rem;}
+  .jp-online{font-size:0.9rem;}
+
+  /* Promo */
+  .promo-wrap{padding:0 0.6rem;margin:1rem auto;}
+  .promo-box{padding:1.2rem 1rem;border-radius:12px;}
+  .promo-title{font-size:1rem;}
+  .promo-text{font-size:0.8rem;}
+  .promo-cta{font-size:0.75rem;padding:0.6rem 1.5rem;}
+
+  /* Grids */
   .top-grid,.sec-grid,.featured-main,.featured-sec{grid-template-columns:1fr 1fr;gap:0.6rem;}
   .icon-grid{grid-template-columns:repeat(3,1fr);gap:0.5rem;}
-  .why-grid{grid-template-columns:1fr;}
-  .info-grid{grid-template-columns:1fr;}
-  .footer-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .why-grid{grid-template-columns:1fr;gap:0.8rem;}
+  .info-grid{grid-template-columns:1fr;gap:0.6rem;}
+
+  /* Icons */
+  .ic-icon{width:40px;height:40px;margin-bottom:0.5rem;}
+  .ic-name{font-size:0.65rem;}
+  .ic-line{display:none;}
+  .ic-live-val{font-size:0.5rem;}
+  .icon-card{padding:1rem 0.4rem 0.8rem;}
+
+  /* Section */
+  .section{padding:0 0.6rem;margin-top:1.5rem;}
+  .own-games{padding:0 0.6rem;}
+  .bets-wrap,.why-wrap{padding:0 0.6rem;}
+  .sec-title{font-size:0.62rem;letter-spacing:0.18em;margin-bottom:1rem;}
+
+  /* Cards */
+  .card-name{font-size:1rem;}
+  .card-label{font-size:0.5rem;}
+  .card-play{font-size:0.55rem;padding:0.3rem 0.8rem;}
+
+  /* Info banner */
+  .info-banner{padding:0 0.6rem;margin:1.5rem auto 0;}
+  .info-grid{padding:1rem;}
+  .info-icon{font-size:1.6rem;}
+  .info-title{font-size:0.7rem;}
+  .info-desc{font-size:0.68rem;}
+
+  /* Featured */
+  .featured-wrap{padding:0 0.6rem;margin:1.5rem auto;}
+
+  /* Bets table */
+  .bets-header{grid-template-columns:2fr 1.5fr 1fr;padding:0.6rem 0.8rem;font-size:0.55rem;}
+  .bet-row{grid-template-columns:2fr 1.5fr 1fr;padding:0.5rem 0.8rem;font-size:0.75rem;}
+  .bet-game{display:none;}
+  .bets-header span:nth-child(2){display:none;}
+
+  /* Why */
+  .why-item{padding:1.2rem 0.8rem;}
+  .why-icon{font-size:2rem;}
+  .why-title{font-size:0.8rem;}
+  .why-desc{font-size:0.75rem;}
+
+  /* Footer */
+  .footer-inner{grid-template-columns:1fr 1fr;gap:1.2rem;}
   .footer-brand{grid-column:1/-1;}
+  .footer-brand p{font-size:0.8rem;}
+  .footer-col h4{font-size:0.62rem;}
+  .footer-col a{font-size:0.78rem;}
+  .footer-bottom{flex-direction:column;align-items:center;text-align:center;gap:0.4rem;font-size:0.68rem;}
+
+  /* Modal */
+  .modal-header{padding:0.5rem 0.8rem;}
+  .modal-title{font-size:0.75rem;}
+  .modal-provider{font-size:0.5rem;}
+}
+
+/* ═══ SMALL PHONES (iPhone SE, Galaxy A) ═══ */
+@media(max-width:390px){
+  .hero-title{font-size:1.7rem;}
+  .top-grid,.sec-grid,.featured-main,.featured-sec{grid-template-columns:1fr 1fr;gap:0.4rem;}
+  .icon-grid{grid-template-columns:repeat(3,1fr);gap:0.4rem;}
+  .icon-card{padding:0.8rem 0.3rem 0.6rem;}
+  .ic-icon{width:34px;height:34px;}
+  .ic-name{font-size:0.58rem;}
+  .ic-live-val{display:none;}
+  .hero-stats{display:none;}
+  .jackpot-banner{gap:0.3rem;}
+  .jp-amount{font-size:1.1rem;}
+  .btn-enter{font-size:0.75rem;padding:0.65rem 1.5rem;}
+  .footer-inner{grid-template-columns:1fr;}
+  .footer-brand{grid-column:auto;}
 }
 </style>
 </head>
