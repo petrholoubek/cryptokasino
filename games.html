@@ -6,6 +6,10 @@
 <title>Casino Games – CryptoKasino</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
 <style>
 :root {
   --gold:#D4A017;--gold-light:#F5C842;--gold-glow:rgba(212,160,23,0.6);
@@ -28,8 +32,15 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 .btn-deposit:hover{background:var(--gold-light);}
 .btn-login{background:transparent;color:var(--text);border:1px solid rgba(60,120,255,0.35);padding:0.45rem 1.2rem;border-radius:6px;font-family:'Cinzel',serif;font-size:0.7rem;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .btn-login:hover{border-color:var(--blue);color:var(--blue);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;}
+.mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:rgba(2,6,20,0.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(60,120,255,0.2);z-index:199;padding:1rem 1.5rem 1.5rem;flex-direction:column;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Cinzel',serif;font-size:0.85rem;color:var(--text-dim);text-decoration:none;padding:0.9rem 0;border-bottom:1px solid rgba(60,120,255,0.08);}
+.mobile-menu a:hover{color:var(--gold-light);}
+.mobile-menu-btns{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.mobile-menu-btns a{flex:1;text-align:center;padding:0.7rem;}
 
-/* PAGE HERO */
 .page-hero{position:relative;z-index:1;padding:3rem 1.5rem 2rem;text-align:center;}
 .hero-icon{font-size:2.8rem;margin-bottom:0.6rem;display:block;animation:iconFloat 3s ease-in-out infinite;}
 @keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
@@ -41,7 +52,6 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 .breadcrumb a{color:var(--text-dim);text-decoration:none;}
 .breadcrumb a:hover{color:var(--gold-light);}
 
-/* FILTER */
 .filter-bar{position:relative;z-index:1;max-width:1400px;margin:0 auto 2rem;padding:0 1.2rem;display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;}
 .filter-tab{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.55rem 1.4rem;border-radius:10px;background:rgba(3,10,40,0.7);border:1px solid rgba(60,120,255,0.25);color:var(--text-dim);cursor:pointer;transition:all 0.3s;}
 .filter-tab:hover{border-color:rgba(100,160,255,0.5);color:var(--text);}
@@ -50,11 +60,9 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 .games-count{position:relative;z-index:1;max-width:1400px;margin:0 auto 1rem;padding:0 1.2rem;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--text-dim);}
 .games-count span{color:var(--gold-light);}
 
-/* GRID */
 .games-section{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 1.2rem 4rem;}
 .games-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
 
-/* CARD */
 .game-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;background:#050d2a;border:1px solid rgba(60,120,255,0.2);box-shadow:0 4px 20px rgba(10,30,120,0.3);transition:all 0.35s ease;aspect-ratio:3/4;}
 .game-card:hover{transform:translateY(-10px) scale(1.03);}
 .game-card::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);transform:skewX(-15deg);transition:left 0.6s ease;z-index:2;pointer-events:none;}
@@ -84,10 +92,10 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 
 .gc-slots:hover{border-color:rgba(212,160,23,0.8)!important;box-shadow:0 0 60px rgba(212,160,23,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 .gc-table:hover{border-color:rgba(34,197,94,0.8)!important;box-shadow:0 0 60px rgba(34,197,94,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
+.gc-instant:hover{border-color:rgba(239,68,68,0.8)!important;box-shadow:0 0 60px rgba(239,68,68,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 .gc-dice:hover{border-color:rgba(6,182,212,0.8)!important;box-shadow:0 0 60px rgba(6,182,212,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 .gc-roulette:hover{border-color:rgba(239,68,68,0.8)!important;box-shadow:0 0 60px rgba(239,68,68,0.25),0 20px 40px rgba(0,0,0,0.6)!important;}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,8,0.92);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-box{position:relative;width:95vw;max-width:1280px;height:90vh;background:#020610;border:2px solid rgba(60,120,255,0.4);border-radius:16px;overflow:hidden;box-shadow:0 0 80px rgba(60,120,255,0.3);transform:scale(0.94);transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);display:flex;flex-direction:column;}
@@ -114,7 +122,7 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 @media(max-width:1024px){.games-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:768px){
   .games-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem;}
-  header{padding:0 1rem;}nav{display:none;}
+  header{padding:0 1rem;}nav{display:none;}.hamburger{display:flex;}
   .modal-box{width:100vw;height:100vh;border-radius:0;border:none;}
 }
 @media(max-width:480px){.games-grid{grid-template-columns:repeat(2,1fr);gap:0.6rem;}}
@@ -129,6 +137,7 @@ nav a:hover,nav a.active{color:var(--gold-light);}
   </a>
   <nav>
     <a href="index.html">Home</a>
+    <a href="casino.html">Casino</a>
     <a href="games.html" class="active">Games</a>
     <a href="live.html">Live</a>
     <a href="sports.html">Sports</a>
@@ -137,8 +146,22 @@ nav a:hover,nav a.active{color:var(--gold-light);}
   <div class="header-right">
     <a href="deposit.html" class="btn-deposit">Deposit</a>
     <a href="login.html" class="btn-login">Login</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="casino.html" onclick="closeMenu()">Casino</a>
+  <a href="games.html" onclick="closeMenu()">Games</a>
+  <a href="live.html" onclick="closeMenu()">Live</a>
+  <a href="sports.html" onclick="closeMenu()">Sports</a>
+  <a href="promotions.html" onclick="closeMenu()">Promotions</a>
+  <div class="mobile-menu-btns">
+    <a href="deposit.html" class="btn-deposit">Deposit</a>
+    <a href="login.html" class="btn-login">Login</a>
+  </div>
+</div>
 
 <div class="page-hero">
   <div class="breadcrumb">
@@ -150,18 +173,19 @@ nav a:hover,nav a.active{color:var(--gold-light);}
   <h1 class="hero-title">
     <span class="casino">Casino</span> <span class="games">Games</span>
   </h1>
-  <p>25 premium BGaming titles — fully animated, instant demo mode</p>
+  <p>31 premium BGaming titles — fully animated, instant demo mode</p>
 </div>
 
 <div class="filter-bar">
   <div class="filter-tab active" onclick="filterGames('all',this)">🎮 All Games</div>
   <div class="filter-tab" onclick="filterGames('slots',this)">🎰 Slots</div>
+  <div class="filter-tab" onclick="filterGames('instant',this)">⚡ Instant</div>
   <div class="filter-tab" onclick="filterGames('table',this)">🃏 Table</div>
   <div class="filter-tab" onclick="filterGames('roulette',this)">🎡 Roulette</div>
   <div class="filter-tab" onclick="filterGames('dice',this)">🎲 Dice</div>
 </div>
 
-<div class="games-count" id="gamesCount">Zobrazeno <span>25</span> her</div>
+<div class="games-count" id="gamesCount">Zobrazeno <span>31</span> her</div>
 
 <div class="games-section">
   <div class="games-grid" id="gamesGrid"></div>
@@ -192,34 +216,40 @@ nav a:hover,nav a.active{color:var(--gold-light);}
 
 <script>
 var GAMES = [
-  // ═══ ŘADA 1 ═══
+  // ═══ SLOTS ═══
   { id:'joker-x-love', name:'Joker X Love', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.1%', img:'images/joker-x-love.jpg', emoji:'🃏', url:'https://demo.bgaming-network.com/play/JokerXLove/FUN?server=demo', desc:'Classic joker vibes' },
   { id:'face-off', name:'Face Off', provider:'BGaming', category:'slots', badge:'new', rtp:'96.4%', img:'images/face-off.jpg', emoji:'🥊', url:'https://demo.bgaming-network.com/play/FaceOff/FUN?server=demo', desc:'Action-packed slots' },
   { id:'totally-hot', name:'Totally Hot', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.8%', img:'images/totally-hot.jpg', emoji:'🔥', url:'https://demo.bgaming-network.com/play/TotallyHot/FUN?server=demo', desc:'Sizzling fruit slots' },
   { id:'book-of-cats', name:'Book of Cats', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.0%', img:'images/book-of-cats.jpg', emoji:'🐱', url:'https://demo.bgaming-network.com/play/BookOfCats/FUN?server=demo', desc:'Mystical cat adventure' },
   { id:'lucky-lady-moon', name:'Lucky Lady Moon', provider:'BGaming', category:'slots', badge:'new', rtp:'96.2%', img:'images/lucky-lady-moon.jpg', emoji:'🌙', url:'https://demo.bgaming-network.com/play/LuckyLadyMoon/FUN?server=demo', desc:'Lunar fortune slots' },
-  // ═══ ŘADA 2 ═══
   { id:'wild-cash', name:'Wild Cash', provider:'BGaming', category:'slots', badge:'new', rtp:'96.5%', img:'images/wild-cash.jpg', emoji:'💰', url:'https://demo.bgaming-network.com/play/WildCash/FUN?server=demo', desc:'Wild multiplier slots' },
   { id:'candy-monsta', name:'Candy Monsta', provider:'BGaming', category:'slots', badge:'new', rtp:'96.3%', img:'images/candy-monsta.jpg', emoji:'🍬', url:'https://demo.bgaming-network.com/play/CandyMonsta/FUN?server=demo', desc:'Sweet monster slots' },
   { id:'lucky-oak', name:'Lucky Oak', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/lucky-oak.jpg', emoji:'🌳', url:'https://demo.bgaming-network.com/play/LuckyOak/FUN?server=demo', desc:'Lucky tree fortune' },
   { id:'aztec-magic-deluxe', name:'Aztec Magic Deluxe', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.0%', img:'images/aztec-magic-deluxe.jpg', emoji:'🏛️', url:'https://demo.bgaming-network.com/play/AztecMagicDeluxe/FUN?server=demo', desc:'Ancient Aztec riches' },
   { id:'burning-chilli-243', name:'Burning Chilli 243', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.0%', img:'images/burning-chilli-243.jpg', emoji:'🌶️', url:'https://demo.bgaming-network.com/play/BurningChilli243/FUN?server=demo', desc:'Spicy 243 ways slot' },
-  // ═══ ŘADA 3 ═══
-  { id:'clash-of-gods-anubis', name:'Clash of Gods: Anubis vs Hades', provider:'BGaming', category:'slots', badge:'new', rtp:'96.5%', img:'images/clash-of-gods-anubis.jpg', emoji:'⚡', url:'https://demo.bgaming-network.com/play/BookOfPyramids/FUN?server=demo', desc:'Epic mythology clash' },
+  { id:'clash-of-gods-anubis', name:'Clash of Gods: Anubis vs Hades', provider:'BGaming', category:'slots', badge:'new', rtp:'96.5%', img:'images/clash-of-gods-anubis.jpg', emoji:'⚡', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=ClashofGodsAnubisvsHades', desc:'Epic mythology clash' },
   { id:'big-bucks-saloon', name:'Big Bucks Saloon', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/big-bucks-saloon.jpg', emoji:'🤠', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=BigBucksSaloon', desc:'Wild West fortune' },
   { id:'jewel-boom', name:'Jewel Boom', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/jewel-boom.jpg', emoji:'💎', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=JewelBoom', desc:'Gem explosion slots' },
   { id:'derby-rush', name:'Derby Rush', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/derby-rush.jpg', emoji:'🏇', url:'https://demo.bgaming-network.com/play/DerbyRush/FUN?server=demo', desc:'Horse racing slots' },
   { id:'wild-card-gang', name:'Wild Card Gang', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/wild-card-gang.jpg', emoji:'🃏', url:'https://demo.bgaming-network.com/play/WildCardGang/FUN?server=demo', desc:'Wild card adventure' },
-  // ═══ ŘADA 4 ═══
-  { id:'clash-of-gods', name:'Clash of Gods', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.5%', img:'images/clash-of-gods.jpg', emoji:'⚡', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=ClashofGodsAnubisvsHades', desc:'Epic gods battle' },
+  { id:'clash-of-gods', name:'Clash of Gods', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.5%', img:'images/clash-of-gods.jpg', emoji:'⚡', url:'https://demo.bgaming-network.com/play/ClashOfGods/FUN?server=demo', desc:'Epic gods battle' },
   { id:'wild-million', name:'Wild Million', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/wild-million.jpg', emoji:'💸', url:'https://demo.bgaming-network.com/play/WildMillion/FUN?server=demo', desc:'Million dollar wilds' },
   { id:'loki-loot', name:'Loki Loot', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/loki-loot.jpg', emoji:'🪄', url:'https://demo.bgaming-network.com/play/LokiLoot/FUN?server=demo', desc:'Norse god riches' },
   { id:'dragon-queen-megaways', name:'Dragon Queen Megaways', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/dragon-queen-megaways.jpg', emoji:'🐉', url:'https://demo.bgaming-network.com/play/DragonQueenMegaways/FUN?server=demo', desc:'Dragon megaways slots' },
   { id:'snoop-dogg-dollars', name:'Snoop Dogg Dollars', provider:'BGaming', category:'slots', badge:'hot', rtp:'96.0%', img:'images/snoop-dogg-dollars.jpg', emoji:'🎤', url:'https://demo.bgaming-network.com/play/SnoopDoggDollars/FUN?server=demo', desc:'Hip-hop dollar slots' },
-  // ═══ ŘADA 5 ═══
   { id:'star-trek', name:'Star Trek Next Gen', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/star-trek.jpg', emoji:'🚀', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=StarTrekNextGen', desc:'Space adventure slots' },
+  { id:'fruit-million', name:'Fruit Million', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/fruitmilion.jpg', emoji:'🍒', url:'https://demo.bgaming-network.com/play/FruitMillion/FUN?server=demo', desc:'Fruity million slots' },
+  { id:'recycle-riches', name:'Recycle Riches', provider:'BGaming', category:'slots', badge:'new', rtp:'96.0%', img:'images/RecycleRiches.jpg', emoji:'♻️', url:'https://demo.publishing.bgaming-system.com/launch_demo?game_code=RecycleRiches', desc:'Go green win big' },
+  // ═══ INSTANT ═══
+  { id:'crash', name:'Crash', provider:'BGaming', category:'instant', badge:'hot', rtp:'97.0%', img:'images/crash.jpg', emoji:'🚀', url:'https://demo.bgaming-network.com/play/SpaceXY/FUN?server=demo', desc:'Crash & cash out' },
+  { id:'mines', name:'Mines', provider:'BGaming', category:'instant', badge:'hot', rtp:'97.0%', img:'images/mines.jpg', emoji:'💣', url:'https://demo.bgaming-network.com/play/MinesweeperXY/FUN?server=demo', desc:'Avoid the mines' },
+  { id:'plinko', name:'Plinko', provider:'BGaming', category:'instant', badge:'new', rtp:'97.0%', img:'images/plinko.jpg', emoji:'🔵', url:'https://demo.bgaming-network.com/play/Plinko/FUN?server=demo', desc:'Drop & win big' },
+  // ═══ TABLE ═══
   { id:'surrender-blackjack', name:'Surrender Blackjack', provider:'BGaming', category:'table', badge:'live', rtp:'99.6%', img:'images/surrender-blackjack.jpg', emoji:'♠️', url:'https://demo.bgaming-network.com/play/SurrenderMultihandBlackjack/FUN?server=demo', desc:'Multihand Blackjack' },
-  { id:'rocket-dice', name:'Rocket Dice', provider:'BGaming', category:'dice', badge:'new', rtp:'97.0%', img:'images/rocket-dice.jpg', emoji:'🎲', url:'https://demo.bgaming-network.com/play/RocketDice/FUN?server=demo', desc:'Provably fair dice' },
+  // ═══ DICE ═══
+  { id:'dice', name:'Dice', provider:'BGaming', category:'dice', badge:'new', rtp:'97.0%', img:'images/dice.jpg', emoji:'🎲', url:'https://demo.bgaming-network.com/play/RocketDiceXY/FUN?server=demo', desc:'Provably fair dice' },
+  { id:'rocket-dice', name:'Rocket Dice', provider:'BGaming', category:'dice', badge:'new', rtp:'97.0%', img:'images/rocket-dice.jpg', emoji:'🎲', url:'https://demo.bgaming-network.com/play/RocketDice/FUN?server=demo', desc:'Rocket powered dice' },
+  // ═══ ROULETTE ═══
   { id:'european-roulette', name:'European Roulette', provider:'BGaming', category:'roulette', badge:'live', rtp:'97.3%', img:'images/european-roulette.jpg', emoji:'🎡', url:'https://demo.bgaming-network.com/play/EuropeanRoulette/FUN?server=demo', desc:'Classic European Roulette' },
   { id:'royal-roulette', name:'Royal Roulette 500X', provider:'BGaming', category:'roulette', badge:'jackpot', rtp:'97.3%', img:'images/royal-roulette.jpg', emoji:'👑', url:'https://demo.bgaming-network.com/play/RoyalRoulette500X/FUN?server=demo', desc:'Royal Roulette 500X multiplier' }
 ];
@@ -303,7 +333,19 @@ function toggleFullscreen() {
   else { document.exitFullscreen&&document.exitFullscreen(); }
 }
 
+function toggleMenu(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModalBtn(); });
+document.addEventListener('click', function(e){
+  var m=document.getElementById('mobileMenu');
+  var h=document.getElementById('hamburger');
+  if(m&&h&&!m.contains(e.target)&&!h.contains(e.target)) closeMenu();
+});
 
 document.getElementById('gameIframe').addEventListener('load', function(){
   var loading = document.getElementById('modalLoading');
@@ -311,6 +353,17 @@ document.getElementById('gameIframe').addEventListener('load', function(){
 });
 
 renderGames('all');
+
+(async function(){
+  var tries=0;
+  while(!window.CK&&tries<100){await new Promise(function(r){setTimeout(r,100);});tries++;}
+  if(!window.CK)return;
+  var session=await CK.getSession();
+  if(session){
+    var loginBtn=document.querySelector('.btn-login');
+    if(loginBtn){loginBtn.textContent='My Account';loginBtn.href='profile.html';}
+  }
+})();
 </script>
 </body>
 </html>
